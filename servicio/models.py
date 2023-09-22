@@ -1,13 +1,21 @@
 from django.db import models
+from core.models import Empleado, Cliente
 
 # Create your models here.
 
-class servicio(models.Model):
+class Servicio(models.Model):
     ESTADO = {
         (1, 'Presupuestodo'),
-        (2, 'Contratado'),
-        (3, 'Finalizado'),
-        (4,'Cancelado'),
+        (2, 'Vencido'),
+        (3, 'Contratado'),
+        (4, 'En Curso'),
+        (5, 'Suspendido'),
+        (6, 'Finalizado'),
+        (7,'Cancelado'),
+    }
+    TIPO = {
+        (1, 'Eventual')
+        (2, 'Determinado')
     }
     nro_servicio = models.AutoField(primary_key=True)
     fecha_emision = models.DateField(auto_now=True, auto_now_add=False)
@@ -18,69 +26,44 @@ class servicio(models.Model):
     porcentaje = models.IntegerField()
     cant_empleados = models.IntegerField()
     importe_total = models.IntegerField()
-    estado = models.PositiveIntegerField(choices=TIPO)
+    estado = models.PositiveIntegerField(choices=ESTADO)
+    tipo = models.PositiveIntegerField(choices=TIPO)
     fecha_inicio = models.DateField(auto_now=False, auto_now_add=False)
     fecha_finaliza = models.DateField(auto_now=False, auto_now_add=False)
     fecha_cancelada = models.DateField(auto_now=False, auto_now_add=False)
-    #Empleados = models.ManytoMany
-    #Frecuencia = ForeaignKey
-    #CLIENTE
+    empleado = models.ManyToManyField(Empleado) 
+    cliente = models.ForeignKey(Cliente)
+    
+class HojaTrabajo(models.Model):
+    fecha = models.DateField()
+    empleado = models.ForeignKey(Empleado)
+    servicio = models.ForeignKey(Servicio)    
 
-class tipoServicio(models.Model):
-    UNIDAD = {
-        (1, 'm2'),
-        (2, 'unidad')
+class Frecuencia(models.Model):
+    DIA={
+        (1, 'Lunes'),
+        (2, 'Martes'),
+        (3, 'Miercoles'),
+        (4, 'Jueves'),
+        (5, 'Viernes'),
+        (6, 'Sabado')
     }
-    descripcion = models.CharField(max_length=50)
-    unidad_medida = models.PositiveIntegerField(choices=UNIDAD)
-    precio = models.IntegerField()
-    #INSUMO
-    #MAQUINARIA
-
-class insumo(models.Model):
-    UNIDAD = {
-        (1, 'm2'),
-        (2, 'unidad')
+    TURNO={
+        (1, 'Mañana'),
+        (2, 'Tarde'),
+        (3, 'Noche')
     }
-    codigo = models.IntegerField()
-    descripcion = models.TextField()
-    unidad_med = models.PositiveIntegerField(choices=UNIDADES)
-    contenido_neto = models.IntegerField()
-    marca = models.CharField(max_length=50)
-    cantidad = models.IntegerField()
-
-class maquinaria(models.Model):
-    nombre = models.CharField(max_length=50)
-    modelo = models.CharField(max_length=50)
-    marca = models.CharField(max_length=50)
-    cantidad = models.IntegerField()
-    observaciones = models.TextField()
-    baja = models.BooleanField()
-
-class cliente(models.model):
-    TIPO = {
-        (1, 'Ocacional'),
-        (2, 'Habitual'),
-    }
-    TIPOPERSONA = {
-        (1, 'Particular'),
-        (2, 'Juridico')
-    }
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=50)
-    tipo = models.PositiveIntegerField(choices=TIPO)
-    tipopersona = models.PositiveIntegerField(choices=TIPO)
-    cuil = models.IntegerField()
-    telefono = models.IntegerField()
-    email = models.EmailField(max_length=254)
+    dia = models.PositiveIntegerField(choices=DIA)
+    turno = models.PositiveIntegerField(choices=TURNO)
+    horaInicio = models.DateTimeField()
+    horaFin = models.DateTimeField()
+    servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
+    
+class Reclamo(models.Model):
+    nroReclamo = models.IntegerField()
+    descripcion = models.CharField(max_length=400)
+    servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     
 
-class empleado(models.Model):
-    numdocumento = models.IntegerField()
-    numlegajo = models.IntegerField()
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=50)
-    telefono = models.IntegerField()
-    email = models.EmailField(max_length=254)
-    sueldo = models.IntegerField()
-    #SANCION
+    
+
