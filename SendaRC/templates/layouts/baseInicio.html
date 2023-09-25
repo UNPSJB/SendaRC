@@ -1,0 +1,108 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block css %}
+    <link href="{% static 'css/baseInicio.css' %}" rel="stylesheet" />
+    {% block extracss %}{% endblock %}
+{% endblock %}
+
+{% block container %}
+<main class="container-main">
+    <aside class="nav-container">
+        <nav class="navbar d-flex flex-column flex-shrink-0 bg-body-tertiary">
+            <a href="/" class="d-block p-3 link-body-emphasis text-decoration-none" data-bs-toggle="tooltip"
+                data-bs-placement="right" data-bs-original-title="Icon-only">
+                <span class="icono-sendaRC">SendaRC</span>
+            </a>
+            <ul class="list-navbar nav nav-pills nav-flush flex-column mb-auto text-center">
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-list"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'home' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-house"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-geo-alt"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-people"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-hammer"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-truck"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-box2"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-person-vcard"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-clipboard-x"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-person-x"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-journal-text"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-cash-coin"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                        data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
+                        <i class="bi bi-newspaper"></i>
+                    </a>
+                </li>
+            </ul>
+            <div class="container-btn-cerrar-sesion">
+                <button class="cerrar-sesion-btn btn btn-primary d-inline-flex align-items-center" type="button">
+                    <i class="bi bi-arrow-bar-left"></i>
+                </button>
+            </div>
+        </nav>
+    </aside>
+    <section class="container-seccion-main">
+        {% block seccion-main %}
+        {% endblock %}
+    </section>
+</main>
+{% endblock %}

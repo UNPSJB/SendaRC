@@ -1,0 +1,44 @@
+.container-home{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+.container-tarjetas{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    height: 199px;
+}
+.card{
+    background-color: black !important;
+    border:1px solid #505050 ;
+    border-radius: 15px !important;
+    max-height: 100%;
+    overflow: hidden;
+    text-overflow: clip;
+    min-height: 100%;
+}
+.card:hover{
+    filter: brightness(80%);
+    cursor: pointer;
+}
+.card-header{
+    font-size: 40px;
+}
+.icono-tarjeta{
+    padding-inline: 10px;
+    border-radius: 5px;
+    border: 1px solid #505050;
+}
+.card-body{
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.card-text{
+    font-size: 12px;
+}

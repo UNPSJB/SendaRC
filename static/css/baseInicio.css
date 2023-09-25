@@ -1,0 +1,54 @@
+.container-main{
+    display: flex;
+}
+.container-seccion-main{
+    width: 100%;
+    height: 100vh;
+}
+.nav-container{
+    min-width: 8%;
+    height: 100vh;
+    border-right: 1px solid #505050;
+}
+.navbar{
+    background-color: black !important;
+    height: 100%;
+}
+.nav-link{
+    width: 38px !important;
+    height: 35px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+.nav-link:hover{
+    background-color: white !important;
+    color: black !important;
+}
+.nav-link:active{
+    background-color: white !important;
+    color: black !important;
+}
+.list-navbar{
+    gap: 4px;
+}
+.container-btn-cerrar-sesion > button {
+    width: 38px !important;
+    height: 35px !important;
+    background-color: black;
+    border: 1px solid #505050;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin-bottom: 20px;
+}
+.cerrar-sesion-btn:hover{
+    background-color: white;
+    border: 1px solid white;
+    color: black;
+}
+.icono-sendaRC{
+    color: white;
+}

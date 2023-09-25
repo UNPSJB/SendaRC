@@ -38,7 +38,7 @@ class CantInsumoServicio(models.Model):
     tipoServicio = models.ForeignKey(TipoServicio, on_delete=models.DO_NOTHING)
     
 class Localidad(models.Model):
-    cd = models.IntegerField()
+    cp = models.IntegerField()
     nombre = models.CharField(max_length=100)
 
 class Cliente(models.Model):
@@ -53,7 +53,7 @@ class Cliente(models.Model):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     tipo = models.PositiveIntegerField(choices=TIPO)
-    tipopersona = models.PositiveIntegerField(choices=TIPO)
+    tipoPersona = models.PositiveIntegerField(choices=TIPO)
     cuil = models.IntegerField()
     telefono = models.IntegerField()
     email = models.EmailField(max_length=254)

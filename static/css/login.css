@@ -1,0 +1,93 @@
+.container-main{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.container-form{
+    width: 500px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    margin-bottom: auto;
+    top: 200px;
+}
+.container-form > form{
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.container-login-buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+#recuperar-contraseña{
+    color: white;
+}
+#logo{
+    width: 300px;
+    height: 300px;
+}
+.container-login-buttons > button{
+    width: 100%;
+    color: white;
+    border-radius: 20px;
+    background-color: #ffff;
+    border: 1px solid #ffff;
+    color:black;
+    font-weight: 700;
+}
+.container-recuperar-contraseña{
+    display: flex;
+    justify-content: center;
+}
+
+.container-makers > p{
+    color: #ffff;
+    font-weight: 500;
+}
+.form-control{
+    border-radius: 12px; 
+    color: #505050;
+    font-size: 20px;
+    font-weight: 500;
+}
+.form-control:focus{
+    border: 1px solid white;
+    outline: none !important;
+}
+.form-control:active{
+    background-color: white; 
+    border: 1px solid white;
+}
+.login-btn{
+    transition: all 0.3s;
+}
+.login-btn:hover{
+    background-color: white;
+    color: black;
+    filter: brightness(80%);
+    border: 1px solid white;
+}
+.login-btn:active{
+    background-color: black !important; 
+    border: 1px solid #505050 !important;
+}
+#recuperar-contraseña:hover{
+    filter: brightness(80%);
+}
+#makers-brand{
+    color: white;
+    text-decoration: none;
+    transition: all .3s;
+}
+
+#makers-brand:hover{
+    filter: brightness(80%)
+}

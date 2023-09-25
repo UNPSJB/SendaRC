@@ -1,0 +1,46 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% block extracss %}
+<link href="{% static 'css/clientes.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+<div class="container">
+    <form action="POST" class="form">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="CUIT/CUIL" aria-label="CUIT/CUIL"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="nombre" aria-label="nombre"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="apellido" aria-label="apellido"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="telefono" aria-label="telefono"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="dirección" aria-label="dirección"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="localidad" aria-label="localidad"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="mb-3">
+            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+        </div>
+        <select class="form-select mb-3" aria-label="Default select example">
+            <option selected>Particular</option>
+            <option value="1">Juridico</option>
+        </select>
+        <select class="form-select" aria-label="Default select example">
+            <option selected>Ocacional</option>
+            <option value="1">Habitual</option>
+        </select>
+    </form>
+</div>
+{% endblock %}
