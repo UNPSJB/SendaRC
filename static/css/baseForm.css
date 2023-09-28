@@ -1,0 +1,82 @@
+.container-Form {
+    color: #ffffff;
+}
+
+.container-Cabecera{
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 20px;
+}
+.container-Cabecera > h1{
+    font-size: 20px;
+    font-weight: 600;
+}
+.container-Cabecera > h2{
+    font-size: 15px;
+} 
+.container-form{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form{
+    width: 308px; 
+    height: 500px; 
+}
+
+.form-control, .form-select{
+    width: 87px; 
+    height: 45px; 
+    left: 0px; 
+    top: 0px; 
+    background-color: black;
+    color: #FFF;
+    font-size: 18px; 
+    word-wrap: break-word"
+}
+
+.form-control:focus, .form-select:focus{
+    background-color: black;
+    border: 1px solid aqua;
+}
+
+.form-control::placeholder{
+    color: gray;
+}
+
+.btn-Agregar{
+    width: 79px; 
+    height: 45px; 
+    left: 11px; 
+    top: 0px;
+    background-color: black; 
+    color: white; 
+    font-size: 20px;  
+    word-wrap: break-word
+}
+
+.btn-Agregar:hover{
+    color: green;
+}
+
+.btn-Cancelar{
+    width: 82px; 
+    height: 45px; 
+    left: 11px; 
+    top: 0px;
+    background-color: black; 
+    color: white; 
+    font-size: 20px;  
+    word-wrap: break-word
+}
+
+.btn-Cancelar:hover{
+    color: green;
+}
+

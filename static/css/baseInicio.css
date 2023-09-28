@@ -4,6 +4,7 @@
 .container-seccion-main{
     width: 100%;
     height: 100vh;
+    color: white;
 }
 .nav-container{
     min-width: 8%;

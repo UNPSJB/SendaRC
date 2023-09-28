@@ -1,0 +1,14 @@
+.btn-Agregar{
+    width: 79px; 
+    height: 45px; 
+    left: 11px; 
+    top: 0px;
+    background-color: black; 
+    color: white; 
+    font-size: 20px;  
+    word-wrap: break-word
+}
+
+.btn-Agregar:hover{
+    color: green;
+}
