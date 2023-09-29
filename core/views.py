@@ -9,3 +9,6 @@ def gestionClientes(request):
 
 def altaCliente(request):
     return render (request, 'cliente/altaCliente.html')
+
+def altaTipoServicio(request):
+    return render(request, 'tipoServicio/altaTipoServicio.html')

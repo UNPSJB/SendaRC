@@ -1,0 +1,33 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% block extracss %}
+<link href="{% static 'css/clientes.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+<div class="conteiner">
+    <form action="POST" class="form">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Descripcion" aria-label="Descripcion"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <select class="form-select mb-3" aria-label="Default select example">
+                <option value="1" selected>m2</option>
+                <option value="2">Unidad</option>
+            </select>
+        </div>
+        <div class="input-group mb-3">
+            <input type="number" class="form-control" placeholder="Precio" aria-label="Precio"
+                aria-describedby="basic-addon1">
+        </div>
+        <select class="form-select mb-3" name="Insumo">
+            <!-- Opciones de Insumos-->
+        </select>
+        <select class="form-select mb-3" name="Maquinaria">
+            <!-- Opciones de Maquinaria-->
+        </select>
+    </form>
+</div>
+{% endblock %}
+
+

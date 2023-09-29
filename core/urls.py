@@ -4,5 +4,6 @@ from core.views import *
 urlpatterns = [
     path('altaInsumo/', altaInsumo),
     path('altaCliente/', altaCliente),
-    path('gestionClientes/', gestionClientes)
+    path('gestionClientes/', gestionClientes),
+    path('altaTipoServicio/', altaTipoServicio)
 ]
