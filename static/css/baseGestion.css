@@ -31,10 +31,6 @@
 .table>tbody>tr:nth-child(even)>th{
     background-color: #000;
 }
-.container{
-    margin-bottom: 20px;
-    padding-inline: 0px !important;
-}
 .table{
     text-align: center;
 }
