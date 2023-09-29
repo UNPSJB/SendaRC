@@ -52,6 +52,7 @@ class Cliente(models.Model):
     }
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
+    direccion = models.CharField(max_length=50,default=' ')
     tipo = models.PositiveIntegerField(choices=TIPO)
     tipoPersona = models.PositiveIntegerField(choices=TIPO)
     cuil = models.IntegerField()

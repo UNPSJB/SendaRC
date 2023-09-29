@@ -3,66 +3,47 @@
 {% block cssVista %}
     <link href="{% static 'css/insumo.css' %}" rel="stylesheet" />
 {% endblock %}
-{% block seccion-main %}
-    {% block title %}
-    <div class="container-Cabecera">
-        <h1>Insumo</h1>
-        <h2>Alta Insumo</h2>
-    </div>
-    {% endblock %}
-    {% block formulario %}
-    <div class="container-Form">
+{% block title %}
+    <h1 class="titulo">Insumo</h1>
+    <h2 class="operacion">Alta Insumo</h2>
+{% endblock %}
+{% block formulario %}
+    <div class="container container-form">
         <form action="POST" class="form">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 info-formulario">
                 <p>Agrega un insumo aquí. Dale click en agregar al terminar.</p>
             </div>
             <div class="input-group mb-3">
-                <input type="text"
-                class="form-control"
-                placeholder="Descripcion"
-                aria-label="Descripcion"
-                    aria-describedby="basic-addon1"> 
+                <input type="text" class="form-control" placeholder="Descripcion" aria-label="Descripcion"
+                    aria-describedby="basic-addon1">
             </div>
             <div class="input-group mb-3">
-                <input type="text"
-                class="form-control"
-                placeholder="Marca"
-                aria-label="Marca"
-                    aria-describedby="basic-addon1"> 
+                <input type="text" class="form-control" placeholder="Marca" aria-label="Marca"
+                    aria-describedby="basic-addon1">
             </div>
-            <div class="input-group mb-3">
-                <label for="lang" class="txt-UniMed">Unidad de Medida</label>    
-                <select 
-                class="form-select"
-                aria-label="Default select example">
+            <div class="input-group mb-3 unidad-medida">
+                <label for="lang">Unidad de Medida</label>
+                <select class="form-select" aria-label="Default select example">
                     <option selected>gr</option>
-                    <option value="1"></option>
+                    <option value="1">opcion 2</option>
                 </select>
             </div>
             <div class="input-group mb-3">
-                <input type="number"
-                class="form-control"
-                placeholder="Contenido neto"
-                aria-label="Contenido neto"
+                <input type="number" class="form-control" placeholder="Contenido neto" aria-label="Contenido neto"
                     aria-describedby="basic-addon1">
             </div>
             <div class="input-group mb-3">
-                <input type="number"
-                class="form-control"
-                placeholder="Cantidad"
-                aria-label="Cantidad"
+                <input type="number" class="form-control" placeholder="Cantidad" aria-label="Cantidad"
                     aria-describedby="basic-addon1">
             </div>
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 operaciones">
                 <button class="btn-Agregar">
-                    Agregar
+                    <span>Agregar</span>
                 </button>
                 <button class="btn-Cancelar">
-                    Cancelar
+                    <span>Cancelar</span>
                 </button>
             </div>
         </form>
     </div>
-    {% endblock %}
-
 {% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% block extracss %}
+    <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block cssGestion %}
+{% endblock %}
+{% block seccion-main %}
+        <div class="seccion-cabecera">
+            {% block title %}
+            {% endblock %}
+        </div>
+        <div class="secccion-listado"> 
+            {% block listado %}
+            {% endblock %}
+        </div>
+{% endblock %}

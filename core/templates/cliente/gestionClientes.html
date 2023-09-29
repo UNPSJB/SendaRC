@@ -1,136 +1,44 @@
-{% extends 'layouts/baseInicio.html' %}
+{% extends 'layouts/baseGestion.html' %}
 {% load static %}
-{% block extracss %}
-<link href="{% static 'css/clientes.css' %}" rel="stylesheet" />
+{% block cssGestion %}
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
-{% block seccion-main %}
-    <div class="container-gestion-clienets">
-        <div class="container">
-            <div class="container-entidad">
-                <div class="container-info">
-                    <h2 class="entidad">Clientes</h2>
-                    <p class="info-entidad">Gestión clientes</p>
-                </div>
-                <div class="contenedor-botonAltaCliente">
-                    <a href="#" class="btn-AltaCliente">Agregar cliente</a>
-                </div>
-            </div>
-            <div class="container-table">
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">CUIT/CUIL</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellido</th>
-                            <th scope="col">Telefono</th>
-                            <th scope="col">Direccion</th>
-                            <th scope="col">Tipo cliente</th>
-                            <th scope="col">Tipo persona</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                        <tr class="">
-                            <td scope="row">43826336</td>
-                            <td>Agustin</td>
-                            <td>Bowen</td>
-                            <td>2804657519</td>
-                            <td>Juan C. Evans 168</td>
-                            <td>Particular</td>
-                            <td>Ocacional</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+{% block title%}
+    <h1>Clientes</h1>
+    <h2>Gestion de clientes</h2>
+    <a href="{% url 'altaCliente' %}" class="btn-agregarEntidad">Agregar Cliente</a>
+{% endblock %}
+{% block listado%}
+    <div class="container">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">CUIT/CUIL</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">Telefono</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Localidad</th>
+                    <th scope="col">Tipo cliente</th>
+                    <th scope="col">Tipo persona</th>
+                </tr>
+                </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                    <tr class="fila-tabla">
+                        <td scope="row">{{ cliente.cuil }}</td>
+                        <td scope="row">{{ cliente.nombre }}</td>
+                        <td scope="row">{{ cliente.apellido }}</td>
+                        <td scope="row">{{ cliente.telefono }}</td>
+                        <td scope="row">{{ cliente.direccion }}</td>
+                        <td scope="row">{{ cliente.email }}</td>
+                        <td scope="row">{{ cliente.localidad.nombre }}</td>
+                        <td scope="row">{{ cliente.tipo }}</td>
+                        <td scope="row">{{ cliente.tipoPersona }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

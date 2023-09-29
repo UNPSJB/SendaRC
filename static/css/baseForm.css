@@ -1,82 +1,149 @@
-.container-Form {
-    color: #ffffff;
-}
-
-.container-Cabecera{
+.seccion-cabecera{  
+    color: #FFF;
     width: 100%;
-    height: 10%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+    height: 12%;
     padding-left: 20px;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
 }
-.container-Cabecera > h1{
-    font-size: 20px;
+.seccion-cabecera > h1{  
+    font-size: 1.5rem;
     font-weight: 600;
 }
-.container-Cabecera > h2{
-    font-size: 15px;
-} 
-.container-form{
-    width: 100%;
-    height: 100%;
+.seccion-cabecera > h2{  
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.secccion-form{
+    height: 88%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
-
-.form{
-    width: 308px; 
-    height: 500px; 
+.container-form{
+    color: #fff;
+    border: 1px solid #505050;
+    padding: 20px;
+    width: auto;
+    border-radius: 12px;
 }
-
-.form-control, .form-select{
-    width: 87px; 
-    height: 45px; 
-    left: 0px; 
-    top: 0px; 
-    background-color: black;
+.container-form > form{
     color: #FFF;
-    font-size: 18px; 
-    word-wrap: break-word"
+    background-color: black;
+    max-height: 474px;
+}
+.form-control, .form-select{
+    width: 30px; 
+    height: 40px; 
+    background-color: #0c0c0c;
+    color: #FFF;
+    font-size: 14px; 
+    border: none;
+    border-radius: 6px !important;
 }
 
 .form-control:focus, .form-select:focus{
     background-color: black;
-    border: 1px solid aqua;
+    border: 1px solid #FFF;
+    color: #FFF;
 }
 
 .form-control::placeholder{
-    color: gray;
+    color: #505050;
 }
 
-.btn-Agregar{
-    width: 79px; 
-    height: 45px; 
-    left: 11px; 
-    top: 0px;
-    background-color: black; 
-    color: white; 
-    font-size: 20px;  
-    word-wrap: break-word
+.operaciones{
+    width: 100%;
+    height: 35px;
+    display: flex;
+    justify-content: end;
+    gap: 8px;
+}
+.operaciones > button{
+    background-color: #000;
+    color: #FFF;
+    border: 1px solid #505050;
+    border-radius: 8px !important;
+    padding-inline: 20px;
+}
+.btn-Agregar, .btn-Cancelar > span{
+    font-size: 13px;
+}
+.btn-Agregar:hover, .btn-Cancelar:hover{
+    filter: brightness(80%);
 }
 
-.btn-Agregar:hover{
-    color: green;
+
+
+
+/*ESTO VA EN EL CSS insumo.css, esta aca por ahora porque no lo carga*/
+.unidad-medida{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.unidad-medida > label{
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+/*ESTO VA EN EL CSS cliente.css, esta aca por ahora porque no lo carga*/
+.container-inputs{
+    height: 350px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-auto-flow: dense;
+    grid-template-areas: 
+        "infoFormulario info-formulario info-formulario"
+        "cuitCuil nombre apellido"
+        "telefono direccion email"
+        "tipoCliente tipoPersona localidad"
+        "operaciones operaciones operaciones";
+    gap: 10px;
 }
 
-.btn-Cancelar{
-    width: 82px; 
-    height: 45px; 
-    left: 11px; 
-    top: 0px;
-    background-color: black; 
-    color: white; 
-    font-size: 20px;  
-    word-wrap: break-word
+.comboBox-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-weight: 600;
 }
-
-.btn-Cancelar:hover{
-    color: green;
+.info-formulario{
+    width: 100%;
+    font-weight: 600;
+    grid-area: infoFormulario;
 }
-
+.cuit-cuil{
+    grid-area: cuitCuil;
+}
+.nombre{
+    grid-area: nombre;
+}
+.apellido{
+    grid-area: apellido;
+}
+.telefono{
+    grid-area: telefono;
+}
+.direccion{
+    grid-area: direccion;
+}
+.email{
+    grid-area: email;
+}
+.tipoCliente{
+    grid-area: tipoCliente;
+}
+.tipoPersona{
+    grid-area: tipoPersona;
+}
+.localidad{
+    grid-area: localidad;
+}
+.operaciones{
+    grid-area: operaciones;
+}
