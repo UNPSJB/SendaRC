@@ -1,0 +1,48 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% block extracss %}
+<link href="{% static 'css/insumo.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+    <div>
+        <div>
+            <div>
+                <p>Aca va lo de Insumo y Gestion Insumo, que ibamos a hacer un layouts</p>
+            </div>
+            <div>
+                <input type="text" 
+                placeholder="Descripcion"
+                aria-label="Descripcion"
+                    aria-labelledby="basic-addon1">
+                <button >
+                    Filtrar
+                </button>
+                <input type="text" 
+                placeholder="Marca"
+                aria-label="Marca"
+                    aria-labelledby="basic-addon1">
+                <button >
+                    Filtrar
+                </button>
+            </div>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Marca</th>
+                            <th scope="col">U. de Medida</th>
+                            <th scope="col">Cont. Neto</th>
+                            <th scope="col">Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <p>BD</p>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

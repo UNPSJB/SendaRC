@@ -1,46 +1,73 @@
-{% extends 'layouts/baseInicio.html' %}
+{% extends 'layouts/baseForm.html' %}
 {% load static %}
-{% block extracss %}
-<link href="{% static 'css/clientes.css' %}" rel="stylesheet" />
+{% block cssVista %}
+    <link href="{% static 'css/cliente.css' %}" rel="stylesheet" />
 {% endblock %}
-{% block seccion-main %}
-<div class="container">
-    <form action="POST" class="form">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="CUIT/CUIL" aria-label="CUIT/CUIL"
-                aria-describedby="basic-addon1">
-        </div>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="nombre" aria-label="nombre"
-                aria-describedby="basic-addon1">
-        </div>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="apellido" aria-label="apellido"
-                aria-describedby="basic-addon1">
-        </div>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="telefono" aria-label="telefono"
-                aria-describedby="basic-addon1">
-        </div>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="dirección" aria-label="dirección"
-                aria-describedby="basic-addon1">
-        </div>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="localidad" aria-label="localidad"
-                aria-describedby="basic-addon1">
-        </div>
-        <div class="mb-3">
-            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-        </div>
-        <select class="form-select mb-3" aria-label="Default select example">
-            <option selected>Particular</option>
-            <option value="1">Juridico</option>
-        </select>
-        <select class="form-select" aria-label="Default select example">
-            <option selected>Ocacional</option>
-            <option value="1">Habitual</option>
-        </select>
-    </form>
-</div>
+{% block title %}
+    <h1 class="titulo">Clientes</h1>
+    <h2 class="operacion">Alta Cliente</h2>
+{% endblock %}
+{% block formulario %}
+    <div class="container container-form">
+        <form action="POST" class="form formulario-altaCliente">
+            <div class=" container-inputs">
+                <div class="input-group mb-3 info-formulario">
+                    <p>Agrega un cliente aquí. Dale click en agregar al terminar.</p>
+                </div>
+                <div class="input-group mb-3 cuit-cuil">
+                    <input type="text" class="form-control" placeholder="CUIT/CUIL"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3 nombre">
+                    <input type="text" class="form-control" placeholder="Nombre" aria-label="Nombre"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3 apellido">
+                    <input type="text" class="form-control" placeholder="Apellido" aria-label="Apellido"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3 telefono">
+                    <input type="text" class="form-control" placeholder="Telefono" aria-label="Telefono"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3 direccion">
+                    <input type="text" class="form-control" placeholder="Dirección" aria-label="Dirección"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3 email">
+                    <input type="email" class="form-control" placeholder="Email" aria-label="Email"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3 tipoCliente comboBox-container">
+                    <label for="lang">Tipo de cliente</label>
+                    <select class="form-select comboBox" aria-label="Default select example">
+                        <option selected>Particular</option>
+                        <option value="1">Juridico</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3 tipoPersona comboBox-container">
+                    <label for="lang">Tipo de persona</label>
+                    <select class="form-select comboBox" aria-label="Default select example">
+                        <option selected>Ocacional</option>
+                        <option value="1">Habitual</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3 localidad comboBox-container">
+                    <label for="lang">Tipo de persona</label>
+                    <select class="form-select comboBox" aria-label="Default select example">
+                        <option selected>Ocacional</option>
+                        <option value="1">Habitual</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group mb-3 operaciones">
+                <button class="btn-Agregar">
+                    <span>Agregar</span>
+                </button>
+                <button class="btn-Cancelar">
+                    <span>Cancelar</span>
+                </button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

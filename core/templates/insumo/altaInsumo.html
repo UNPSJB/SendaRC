@@ -1,4 +1,49 @@
-
-<h1>Alta Insumo</h1>
-
-<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis cupiditate quod nam quidem molestiae distinctio sunt quam recusandae in, sint animi enim qui necessitatibus obcaecati! Neque blanditiis ad delectus, unde alias officia minus aliquid a laudantium, soluta reiciendis asperiores placeat obcaecati sapiente dolorum dolores tempora nostrum nobis at expedita rem officiis eos animi cumque! Corrupti, nulla rerum. Dicta pariatur ducimus similique nulla eligendi quibusdam alias non velit quasi maiores, impedit neque corrupti molestias! Facere numquam rem sint tenetur consequuntur voluptatum porro ullam doloribus neque perferendis, eius dolores tempora laudantium odio eaque, officia vitae ea, explicabo dolorum? Rerum temporibus incidunt asperiores!</p>
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% block cssVista %}
+    <link href="{% static 'css/insumo.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Insumo</h1>
+    <h2 class="operacion">Alta Insumo</h2>
+{% endblock %}
+{% block formulario %}
+    <div class="container container-form">
+        <form action="POST" class="form">
+            <div class="input-group mb-3 info-formulario">
+                <p>Agrega un insumo aquí. Dale click en agregar al terminar.</p>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Descripcion" aria-label="Descripcion"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Marca" aria-label="Marca"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3 unidad-medida">
+                <label for="lang">Unidad de Medida</label>
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>gr</option>
+                    <option value="1">opcion 2</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Contenido neto" aria-label="Contenido neto"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Cantidad" aria-label="Cantidad"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3 operaciones">
+                <button class="btn-Agregar">
+                    <span>Agregar</span>
+                </button>
+                <button class="btn-Cancelar">
+                    <span>Cancelar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
