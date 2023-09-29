@@ -1,6 +1,6 @@
-from django.shortcuts import render
-from django.forms import *
-from .models import Cliente
+from django.shortcuts import render,redirect
+from .models import *
+from .forms import *
 
 # Create your views here.
 def gestionClientes(request):
@@ -11,7 +11,16 @@ def altaCliente(request):
     return render (request, 'cliente/altaCliente.html')
 
 def altaInsumo(request):
-    return render(request, 'insumo/altaInsumo.html')
+    if request.method == 'GET':
+        return render(request, 'insumo/altaInsumo.html', {
+            'form': FormAltaInsumo()})
+    else:
+        form = FormAltaInsumo(request.POST)
+        if form.is_valid():
+            insumo = form.save()
+            return redirect('gestionInsumos')
+    return render(request, 'insumo/altaInsumo.html', {
+        'form': form})
 
 def gestionInsumos(request):
     return render(request, 'insumo/gestionInsumos.html')

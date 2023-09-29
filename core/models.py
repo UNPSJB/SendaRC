@@ -3,10 +3,12 @@ from django.db import models
 # Create your models here.
 class Insumo(models.Model):
     UNIDAD = {
-        (1, 'm2'),
-        (2, 'unidad')
+        (1, 'gr'),
+        (2, 'Kg'),
+        (3, 'ml'),
+        (4, 'Lts')
     }
-    codigo = models.IntegerField()
+    codigo = models.IntegerField(auto_created=True, primary_key=True)
     descripcion = models.TextField()
     unidad_med = models.PositiveIntegerField(choices=UNIDAD)
     contenido_neto = models.IntegerField()
@@ -26,16 +28,17 @@ class TipoServicio(models.Model):
         (1, 'm2'),
         (2, 'unidad')
     }
+    codigo = models.IntegerField(auto_created=True, primary_key=True)
     descripcion = models.CharField(max_length=50)
     unidad_medida = models.PositiveIntegerField(choices=UNIDAD)
     precio = models.IntegerField()
-    insumos = models.ManyToManyField(Insumo)
+    insumos = models.ManyToManyField(Insumo, through='CantInsumoServicio')
     maquinarias = models.ManyToManyField(Maquinaria)
     
 class CantInsumoServicio(models.Model):
-    cantidad = models.IntegerField()
     insumo = models.ForeignKey(Insumo, on_delete=models.DO_NOTHING)
     tipoServicio = models.ForeignKey(TipoServicio, on_delete=models.DO_NOTHING)
+    cantidad = models.IntegerField()
     
 class Localidad(models.Model):
     cp = models.IntegerField()
