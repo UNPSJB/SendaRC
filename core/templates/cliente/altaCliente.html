@@ -10,20 +10,6 @@
 {% endblock %}
 {% block formulario %}
     <div class="container container-form">
-        <form method="POST" class="form" action='{% url "altaCliente" %}'>
-            {% csrf_token %}
-            <div class="input-group mb-3 info-formulario">
-                <p>Agrega un cliente aquí. Dale click en agregar al terminar.</p>
-            </div>
-            {{ form|crispy }}
-            <div class="input-group mb-3 operaciones">
-                <button class="btn-Agregar" type="submit">
-                    <span>Agregar</span>
-                </button>
-                <button class="btn-Cancelar">
-                    <span>Cancelar</span>
-                </button>
-            </div>
-        </form>
+        {% crispy form %}
     </div>
 {% endblock %}

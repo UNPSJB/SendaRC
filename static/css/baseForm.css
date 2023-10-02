@@ -23,7 +23,7 @@
     justify-content: center;
 }
 .container-form{
-    color: #fff;
+    color: #505050;
     border: 1px solid #505050;
     padding: 20px;
     width: auto;
@@ -41,7 +41,7 @@
 }
 .form-control, .form-select{
     width: 100%; 
-    height: 40px; 
+    height: 40px !important; 
     background-color: #0c0c0c;
     color: #FFF;
     font-size: 14px; 
@@ -66,7 +66,7 @@
     justify-content: end;
     gap: 8px;
 }
-.operaciones > button{
+.btn-Agregar, .btn-Cancelar{
     background-color: #000;
     color: #FFF;
     border: 1px solid #505050;
@@ -78,4 +78,8 @@
 }
 .btn-Agregar:hover, .btn-Cancelar:hover{
     filter: brightness(80%);
+}
+.select-form{
+    color: #505050;
+    background-color: #505050;
 }

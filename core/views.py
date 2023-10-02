@@ -36,9 +36,6 @@ def gestionInsumos(request):
 
 def modificarInsumo(request):
     return render(request, 'insumo/modificarInsumo.html')
-    
-def altaCliente(request):
-    return render (request, 'cliente/altaCliente.html')
 
 def altaTipoServicio(request):
     return render(request, 'tipoServicio/altaTipoServicio.html')
