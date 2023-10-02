@@ -13,12 +13,14 @@ class FormAltaInsumo(forms.ModelForm):
             "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'})
         }
 
-    #def save(self, commit=True):
-        #insumo = super().save(commit=commit)
-        #if self.cleaned_data['incrementar']:
-            #insumo.cantidad += 10
-            #insumo.save()
-        #return insumo
+    """
+    def save(self, commit=True):
+        insumo = super().save(commit=commit)
+        if self.cleaned_data['incrementar']:
+            insumo.cantidad += 10
+            insumo.save()
+        return insumo
+    """
     
     def __init__(self, *args, **kwargs):
         super(FormAltaInsumo, self).__init__(*args, **kwargs)
@@ -30,16 +32,6 @@ class FormAltaInsumo(forms.ModelForm):
         self.fields['cantidad'].label = False
 
 class ClienteForm(forms.ModelForm):
-    TIPO = {
-        (1, 'Ocacional'),
-        (2, 'Habitual'),
-    }
-    TIPOPERSONA = {
-        (1, 'Particular'),
-        (2, 'Juridico')
-    }
-    tipo = forms.ChoiceField(choices=TIPO, widget=forms.Select(attrs={'class': 'form-select'}))
-    tipoPersona = forms.ChoiceField(choices=TIPOPERSONA, widget=forms.Select(attrs={'class': 'form-select'}))
     class Meta:
         model = Cliente
         fields = ['cuil','nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona','telefono','email','localidad']
@@ -50,16 +42,11 @@ class ClienteForm(forms.ModelForm):
             "direccion": forms.TextInput(attrs={'class': 'form-control','placeholder':'Dirección'}),
             "telefono": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Telefono'}),
             "email": forms.EmailInput(attrs={'class': 'form-control','placeholder':'Email'}),
+            "tipo": forms.Select(attrs={'class': 'form-select','placeholder':'Tipo cliente'}),
+            "tipoPersona": forms.Select(attrs={'class': 'form-select','placeholder':'Tipo persona'}),
             "localidad": forms.TextInput(attrs={'class': 'form-control','placeholder':'Localidad'}),
         }
 
-    #def save(self, commit=True):
-        #insumo = super().save(commit=commit)
-        #if self.cleaned_data['incrementar']:
-            #insumo.cantidad += 10
-            #insumo.save()
-        #return insumo
-    
     def __init__(self, *args, **kwargs):
         super(FormAltaInsumo, self).__init__(*args, **kwargs)
         # Oculta las etiquetas de los campos

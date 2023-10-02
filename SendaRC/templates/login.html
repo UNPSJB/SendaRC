@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block css %} 
     <link href="{% static 'css/login.css' %}" rel="stylesheet"/>
 {% endblock %} 
@@ -13,12 +14,7 @@
         <section class="container-form">
             <form method="POST" action="{% url 'home' %}">
                 {% csrf_token %}
-                <div class="mb-2">
-                    <input placeholder="Usuario" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                </div>
-                <div class="">
-                    <input placeholder="Contraseña" type="password" class="form-control" id="exampleInputPassword1">
-                </div>
+                {{ form|crispy }}
                 <div class="container-recuperar-contraseña">
                     <a href="#" id="recuperar-contraseña">olvido su contraseña?</a>
                 </div>
