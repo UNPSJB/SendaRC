@@ -1,5 +1,6 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block cssVista %}
     <link href="{% static 'css/cliente.css' %}" rel="stylesheet" />
 {% endblock %}
@@ -9,59 +10,14 @@
 {% endblock %}
 {% block formulario %}
     <div class="container container-form">
-        <form action="POST" class="form formulario-altaCliente">
-            <div class=" container-inputs">
-                <div class="input-group mb-3 info-formulario">
-                    <p>Agrega un cliente aquí. Dale click en agregar al terminar.</p>
-                </div>
-                <div class="input-group mb-3 cuit-cuil">
-                    <input type="text" class="form-control" placeholder="CUIT/CUIL"
-                        aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3 nombre">
-                    <input type="text" class="form-control" placeholder="Nombre" aria-label="Nombre"
-                        aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3 apellido">
-                    <input type="text" class="form-control" placeholder="Apellido" aria-label="Apellido"
-                        aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3 telefono">
-                    <input type="text" class="form-control" placeholder="Telefono" aria-label="Telefono"
-                        aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3 direccion">
-                    <input type="text" class="form-control" placeholder="Dirección" aria-label="Dirección"
-                        aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3 email">
-                    <input type="email" class="form-control" placeholder="Email" aria-label="Email"
-                        aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3 tipoCliente comboBox-container">
-                    <label for="lang">Tipo de cliente</label>
-                    <select class="form-select comboBox" aria-label="Default select example">
-                        <option selected>Particular</option>
-                        <option value="1">Juridico</option>
-                    </select>
-                </div>
-                <div class="input-group mb-3 tipoPersona comboBox-container">
-                    <label for="lang">Tipo de persona</label>
-                    <select class="form-select comboBox" aria-label="Default select example">
-                        <option selected>Ocacional</option>
-                        <option value="1">Habitual</option>
-                    </select>
-                </div>
-                <div class="input-group mb-3 localidad comboBox-container">
-                    <label for="lang">Tipo de persona</label>
-                    <select class="form-select comboBox" aria-label="Default select example">
-                        <option selected>Ocacional</option>
-                        <option value="1">Habitual</option>
-                    </select>
-                </div>
+        <form method="POST" class="form" action='{% url "altaCliente" %}'>
+            {% csrf_token %}
+            <div class="input-group mb-3 info-formulario">
+                <p>Agrega un cliente aquí. Dale click en agregar al terminar.</p>
             </div>
+            {{ form|crispy }}
             <div class="input-group mb-3 operaciones">
-                <button class="btn-Agregar">
+                <button class="btn-Agregar" type="submit">
                     <span>Agregar</span>
                 </button>
                 <button class="btn-Cancelar">

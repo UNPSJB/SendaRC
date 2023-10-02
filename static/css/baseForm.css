@@ -34,8 +34,13 @@
     background-color: black;
     max-height: 474px;
 }
+.textarea{
+    min-height: 100px !important;
+    scroll-behavior: auto;
+    resize: none;
+}
 .form-control, .form-select{
-    width: 30px; 
+    width: 100%; 
     height: 40px; 
     background-color: #0c0c0c;
     color: #FFF;

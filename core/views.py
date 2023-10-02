@@ -8,7 +8,16 @@ def gestionClientes(request):
     return render(request, 'cliente/gestionClientes.html', {'clientes': clientes})
 
 def altaCliente(request):
-    return render (request, 'cliente/altaCliente.html')
+    if request.method == 'GET':
+        return render(request, 'cliente/altaCliente.html', {
+            'form': ClienteForm()})
+    else:
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            cliente = form.save()
+            return redirect('gestionClientes')
+    return render(request, 'cliente/altaCliente.html', {
+        'form': form})
 
 def altaInsumo(request):
     if request.method == 'GET':

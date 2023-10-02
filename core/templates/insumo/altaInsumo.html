@@ -1,5 +1,6 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block cssVista %}
     <link href="{% static 'css/insumo.css' %}" rel="stylesheet" />
 {% endblock %}
@@ -11,10 +12,10 @@
     <div class="container container-form">
         <form method="POST" class="form" action='{% url "altaInsumo" %}'>
             {% csrf_token %}
-            {{form}}
             <div class="input-group mb-3 info-formulario">
                 <p>Agrega un insumo aquí. Dale click en agregar al terminar.</p>
             </div>
+            {{ form|crispy }}
             <div class="input-group mb-3 operaciones">
                 <button class="btn-Agregar" type="submit">
                     <span>Agregar</span>
