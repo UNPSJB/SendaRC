@@ -1,0 +1,40 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% block cssGestion %}
+    <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title%}
+    <h1>Tipo de Servicio</h1>
+    <h2>Gestion de Tipo de Servicio</h2>
+    <a href="{% url 'altaTipoServicio' %}" class="btn-agregarEntidad">Agregar Tipo de Servicio</a>
+{% endblock %}
+{% block listado%}
+    <div class="table-responsive rounded">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Unidad de Medida</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Insumos</th>
+                    <th scope="col">Maquinarias</th>
+                </tr>
+                </thead>
+            <tbody>
+                {% if tipos%}
+                {% for tipo in tipos %}
+                    <tr class="fila-tabla">
+                        <td scope="row">{{ tipo.descripcion }}</td>
+                        <td scope="row">{{ tipo.unidad_medida }}</td>
+                        <td scope="row">{{ tipo.precio }}</td>
+                        <td scope="row">{{ tipo.insumos }}</td>
+                        <td scope="row">{{ tipo.maquinarias }}</td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                    <p> No hay Tipo de Servicio </p>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

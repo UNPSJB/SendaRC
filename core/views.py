@@ -38,4 +38,17 @@ def modificarInsumo(request):
     return render(request, 'insumo/modificarInsumo.html')
 
 def altaTipoServicio(request):
-    return render(request, 'tipoServicio/altaTipoServicio.html')
+    if request.method == 'GET':
+        return render(request, 'tipoServicio/altaTipoServicio.html', {
+            'form': TipoServicioForm()})
+    else:
+        form = FormAltaTipoServicio(request.POST)
+        if form.is_valid():
+            tipoServicio = form.save()
+            return redirect('gestionTipoServicio', {
+                'tipoServicio': tipoServicio})
+
+def gestionTipoServicio(request):
+    return render(request, 'tipoServicio/gestionTipoServicio.html', {
+        'tipoServicios': TipoServicio.objects.all()
+    })

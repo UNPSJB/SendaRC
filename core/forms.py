@@ -18,8 +18,7 @@ class FormAltaInsumo(forms.ModelForm):
             Div(
                 Fieldset(
                     Div(
-                        'Alta Insumo',
-                        css_class='input-group mb-3 info-formulario'
+                        'Alta Insumo'
                     ),
                     Div(
                         FloatingField('descripcion'),
@@ -63,6 +62,36 @@ class ClienteForm(forms.ModelForm):
                     FloatingField('telefono'),
                     FloatingField('email'),
                     FloatingField('localidad'),
+                    css_class='container-inputs'
+                ),
+            ),
+            Div(
+                Submit('submit', 'Guardar', css_class='btn-Agregar'),
+                Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                css_class='input-group mb-3 operaciones'
+            )
+        )
+
+class TipoServicioForm(forms.ModelForm):
+    class Meta:
+        model = TipoServicio
+        fields = ['descripcion', 'unidad_medida', 'precio', 'insumos', 'maquinarias']
+    
+    def __init__(self, *args, **kwargs):
+        super(TipoServicioForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                Div(
+                    'Alta Servicio',
+                    css_class='input-group mb-3 info-formulario'
+                ),
+                Div(
+                    FloatingField('descripcion'),
+                    FloatingField('unidad_medida'),
+                    FloatingField('precio'),
+                    FloatingField('insumos'),
+                    FloatingField('maquinarias'),
                     css_class='container-inputs'
                 ),
             ),
