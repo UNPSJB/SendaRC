@@ -18,7 +18,7 @@ class FormAltaInsumo(forms.ModelForm):
             Div(
                 Fieldset(
                     Div(
-                        'Alta Insumo'
+                        'Agrega un insumo aquí. Dale click en agregar al finalizar'
                     ),
                     Div(
                         FloatingField('descripcion'),
