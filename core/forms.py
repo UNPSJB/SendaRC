@@ -13,7 +13,7 @@ class FormAltaInsumo(forms.ModelForm):
             "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'})
         }
 
-    """
+    """ Para agregar campo adicion que no es de Insumo
     def save(self, commit=True):
         insumo = super().save(commit=commit)
         if self.cleaned_data['incrementar']:
@@ -48,7 +48,7 @@ class ClienteForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(FormAltaInsumo, self).__init__(*args, **kwargs)
+        super(ClienteForm, self).__init__(*args, **kwargs)
         # Oculta las etiquetas de los campos
         self.fields['cuil'].label = False
         self.fields['nombre'].label = False
