@@ -1,17 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-
+from crispy_bootstrap5.bootstrap5 import FloatingField
 # Login
 class AuthenticationForm(AuthenticationForm):
     username = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'Usuario'}),
+        widget=forms.TextInput(attrs={'class': 'input-login'}),
     )
     password = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'Contraseña'}),
+        widget=forms.TextInput(attrs={'class': 'input-login'}),
     )
-
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
-        # Oculta las etiquetas de los campos
-        self.fields['username'].label = False
-        self.fields['password'].label = False

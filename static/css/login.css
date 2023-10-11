@@ -50,21 +50,22 @@
 
 .container-makers > p{
     color: #ffff;
-    font-weight: 500;
+    font-weight: 600;
 }
-.form-control{
+.input-login{
     border-radius: 12px; 
-    color: #505050;
+    color: #000000;
     font-size: 20px;
     font-weight: 500;
+    background-color: #fff;
 }
-.form-control:focus{
-    border: 1px solid white;
-    outline: none !important;
+.input-login:focus{
+    outline: none;
+    color: #000;
 }
-.form-control:active{
+.input-login:active{
     background-color: white; 
-    border: 1px solid white;
+    color: #000;
 }
 .login-btn{
     transition: all 0.3s;
