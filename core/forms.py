@@ -26,7 +26,6 @@ class FormAltaInsumo(forms.ModelForm):
                         FloatingField('contenido_neto'),
                         FloatingField('marca'),
                         FloatingField('cantidad'),
-                        css_class='container-inputs'
                     )
                 ),
                 Div(
@@ -47,28 +46,30 @@ class ClienteForm(forms.ModelForm):
         super(ClienteForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Fieldset(
-                Div(
-                    'Alta Cliente',
-                    css_class='input-group mb-3 info-formulario'
-                ),
-                Div(
-                    FloatingField('cuil'),
-                    FloatingField('nombre'),
-                    FloatingField('apellido'),
-                    FloatingField('direccion'),
-                    FloatingField('tipo'),
-                    FloatingField('tipoPersona', class_name='select-form'),
-                    FloatingField('telefono'),
-                    FloatingField('email'),
-                    FloatingField('localidad'),
-                    css_class='container-inputs'
-                ),
-            ),
             Div(
-                Submit('submit', 'Guardar', css_class='btn-Agregar'),
-                Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
-                css_class='input-group mb-3 operaciones'
+                Fieldset(
+                    Div(
+                        'Agrega un cliente aquí. Dale click en agregar al finalizar'
+                    ),
+                    Div(
+                        FloatingField('cuil'),
+                        FloatingField('nombre'),
+                        FloatingField('apellido'),
+                        FloatingField('direccion'),
+                        FloatingField('tipo'),
+                        FloatingField('tipoPersona'),
+                        FloatingField('telefono'),
+                        FloatingField('email'),
+                        FloatingField('localidad'),
+                        css_class='container-inputs-form'
+                    )
+                ),
+                Div(
+                    Submit('submit', 'Agregar', css_class='btn-Agregar'),
+                    Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    css_class='input-group mb-3 operaciones'
+                ),
+                css_class='container-forms'
             )
         )
 
@@ -81,11 +82,12 @@ class TipoServicioForm(forms.ModelForm):
         super(TipoServicioForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Fieldset(
-                Div(
-                    'Alta Servicio',
-                    css_class='input-group mb-3 info-formulario'
-                ),
+            Div(
+                Fieldset(
+                    Div(
+                        'Alta Servicio',
+                        css_class='input-group mb-3 info-formulario'
+                    ),
                 Div(
                     FloatingField('descripcion'),
                     FloatingField('unidad_medida'),
@@ -101,3 +103,4 @@ class TipoServicioForm(forms.ModelForm):
                 css_class='input-group mb-3 operaciones'
             )
         )
+    )
