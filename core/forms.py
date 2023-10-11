@@ -38,6 +38,7 @@ class FormAltaInsumo(forms.ModelForm):
         )
         
 class ClienteForm(forms.ModelForm):
+    localidad = forms.CharField(widget=forms.TextInput)
     class Meta:
         model = Cliente
         fields = ['cuil','nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona','telefono','email','localidad']
