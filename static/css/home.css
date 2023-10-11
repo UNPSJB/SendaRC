@@ -42,3 +42,14 @@
 .card-text{
     font-size: 12px;
 }
+@media (max-width: 950px) {
+    .container-home > svg{
+        display: none;
+    }
+    .container-tarjetas{
+        display: block;
+        height: 200px;
+        top: 10px;
+        position: absolute;
+    }
+}

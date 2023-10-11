@@ -8,7 +8,7 @@
     height: 100vh;
 }
 .nav-container{
-    min-width: 8%;
+    min-width: 60px;
     height: 100vh;
     border-right: 1px solid #505050;
 }
@@ -53,4 +53,9 @@
 }
 .icono-sendaRC{
     color: white;
+}
+@media (max-width: 768px) {
+    .nav-container{
+        min-width: 60px;
+    }
 }
