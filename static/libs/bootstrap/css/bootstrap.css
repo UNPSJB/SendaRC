@@ -1874,6 +1874,8 @@ progress {
   margin-bottom: 1rem;
   vertical-align: top;
   border-color: var(--bs-table-border-color);
+  padding-right:1px;
+  padding-left: 1px;
 }
 .table > :not(caption) > * > * {
   padding: 0.5rem 0.5rem;
@@ -2125,7 +2127,7 @@ progress {
   appearance: none;
   background-color: #1b1b1b;
   background-clip: padding-box;
-  border-radius: 6px;
+  border-radius: 10px;
   border: 1px solid #000;
   transition: border-color 0.15s ease-in-out;
 }
@@ -2142,7 +2144,7 @@ progress {
 }
 .form-control:focus {
   color: #fff;
-  border-color: #fff;
+  border-color: #1887cc;
   outline: 0;
 }
 .form-control::-webkit-date-and-time-value {
