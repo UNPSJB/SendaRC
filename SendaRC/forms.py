@@ -7,7 +7,7 @@ class AuthenticationForm(AuthenticationForm):
         widget=forms.TextInput(attrs={'class': 'input-login'}),
     )
     password = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'input-login'}),
+        widget=forms.PasswordInput(attrs={'class': 'input-login'}),
     )
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
