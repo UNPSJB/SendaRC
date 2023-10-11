@@ -10,20 +10,17 @@ def gestionClientes(request):
 
 def altaCliente(request):
     if request.method == 'GET':
+        localidades = Localidad.objects.all()
         return render(request, 'cliente/altaCliente.html', {
-            'form': ClienteForm()})
+            'form': ClienteForm(),
+            'localidadesList':localidades
+        })
     else:
         form = ClienteForm(request.POST)
         if form.is_valid():
             cliente = form.save()
             return redirect('gestionClientes')
-        
-    if '?term' in request.GET:
-        qs = Localidad.objects.filter(nombre__icontains=request.GET.get('term'))
-        nombres = list()
-        for localidad in qs:
-            nombres = [localidad.nombre for localidad in qs]
-        return JsonResponse(nombres, safe=False)
+    
     return render(request, 'cliente/altaCliente.html', {
         'form': form})
 

@@ -1,7 +1,7 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Div
+from crispy_forms.layout import Layout, Fieldset, Submit, Div, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField
 
 from .models import *
@@ -16,6 +16,7 @@ class FormAltaInsumo(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
+                HTML('<p class="info-formulario">Agrega un insumo aquí. Dale click en agregar al finalizar</p>'),
                 Fieldset(
                     Div(
                         'Agrega un insumo aquí. Dale click en agregar al finalizar'
@@ -38,19 +39,21 @@ class FormAltaInsumo(forms.ModelForm):
         )
         
 class ClienteForm(forms.ModelForm):
-    localidad = forms.CharField(widget=forms.TextInput)
+    localidad = forms.CharField(widget=forms.TextInput(attrs={'list': 'localidadlist', 'class': 'form-control'}))
+    
     class Meta:
         model = Cliente
-        fields = ['cuil','nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona','telefono','email','localidad']
+        fields = ['cuil', 'nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, localidades=None, *args, **kwargs):
         super(ClienteForm, self).__init__(*args, **kwargs)
+        self.fields['localidad'].queryset = localidades  
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
+                HTML('<p class="info-formulario">Agrega un cliente aquí. Dale click en agregar al finalizar</p>'),
                 Fieldset(
                     Div(
-                        'Agrega un cliente aquí. Dale click en agregar al finalizar'
                     ),
                     Div(
                         FloatingField('cuil'),

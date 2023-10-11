@@ -1,7 +1,7 @@
 .seccion-cabecera{  
     color: #FFF;
     width: 100%;
-    height: 12%;
+    height: 15%;
     padding-left: 20px;
     padding-top: 10px;
     display: flex;
@@ -14,10 +14,10 @@
 }
 .seccion-cabecera > h2{  
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 .secccion-listado{
-    height: 88%;
+    height: 85%;
     display: flex;
     justify-content: center;
 }

@@ -14,7 +14,7 @@
 }
 .seccion-cabecera > h2{  
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 .secccion-form{
     height: 88%;
@@ -41,7 +41,6 @@
 }
 .form-control, .form-select{
     width: 100%; 
-    height: 40px !important; 
     background-color: #0c0c0c;
     color: #FFF;
     font-size: 14px; 
@@ -51,12 +50,8 @@
 
 .form-control:focus, .form-select:focus{
     background-color: black;
-    border: 1px solid #FFF;
+    border: 1px solid #1887cc;
     color: #FFF;
-}
-
-.form-control::placeholder{
-    color: #505050;
 }
 
 .operaciones{
@@ -86,4 +81,8 @@
 }
 .form-floating > label{
     font-size: 13px !important;
+}   
+.info-formulario{
+    font-weight: 600;
+    color: #fff;
 }

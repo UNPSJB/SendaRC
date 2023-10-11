@@ -2129,7 +2129,6 @@ progress {
   background-clip: padding-box;
   border-radius: 10px;
   border: 1px solid #000;
-  transition: border-color 0.15s ease-in-out;
 }
 @media (prefers-reduced-motion: reduce) {
   .form-control {
@@ -2600,9 +2599,8 @@ textarea.form-control-lg {
 .form-floating > .form-control,
 .form-floating > .form-control-plaintext,
 .form-floating > .form-select {
-  height: calc(3.5rem + calc(var(--bs-border-width) * 2));
-  min-height: calc(3.5rem + calc(var(--bs-border-width) * 2));
-  line-height: 1.25;
+  height: calc(2.8rem + calc(var(--bs-border-width) * 1));
+  line-height: 0;
 }
 .form-floating > label {
   position: absolute;
@@ -2610,7 +2608,7 @@ textarea.form-control-lg {
   left: 0;
   z-index: 2;
   height: 100%;
-  padding: 1rem 0.75rem;
+  padding: 0.7rem 0.75rem;
   overflow: hidden;
   text-align: start;
   text-overflow: ellipsis;
@@ -2656,14 +2654,14 @@ textarea.form-control-lg {
   padding-bottom: 0.625rem;
 }
 .form-floating > .form-control:not(:-moz-placeholder-shown) ~ label {
-  color: rgba(var(--bs-body-color-rgb), 0.65);
+
   transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
 .form-floating > .form-control-plaintext ~ label,
 .form-floating > .form-select ~ label {
-  color: rgba(var(--bs-body-color-rgb), 0.65);
+  
   transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }
 .form-floating > .form-control:not(:-moz-placeholder-shown) ~ label::after {
@@ -6304,13 +6302,14 @@ textarea.form-control-lg {
   --bs-offcanvas-height: 30vh;
   --bs-offcanvas-padding-x: 1rem;
   --bs-offcanvas-padding-y: 1rem;
-  --bs-offcanvas-color: var(--bs-body-color);
-  --bs-offcanvas-bg: var(--bs-body-bg);
+  --bs-offcanvas-color: #000;
+  --bs-offcanvas-bg: #000;
   --bs-offcanvas-border-width: var(--bs-border-width);
-  --bs-offcanvas-border-color: var(--bs-border-color-translucent);
+  --bs-offcanvas-border-color: #505050;
   --bs-offcanvas-box-shadow: var(--bs-box-shadow-sm);
   --bs-offcanvas-transition: transform 0.3s ease-in-out;
   --bs-offcanvas-title-line-height: 1.5;
+  --bs-offcanvas-border-radius: 15px 0 0 15px;
 }
 
 @media (max-width: 575.98px) {
@@ -6710,12 +6709,13 @@ textarea.form-control-lg {
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  color: var(--bs-offcanvas-color);
+  color: #fff;
   visibility: hidden;
-  background-color: var(--bs-offcanvas-bg);
+  background-color:var(--bs-offcanvas-bg);
   background-clip: padding-box;
   outline: 0;
   transition: var(--bs-offcanvas-transition);
+  border-radius: var(--bs-offcanvas-border-radius);
 }
 @media (prefers-reduced-motion: reduce) {
   .offcanvas {

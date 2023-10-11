@@ -44,10 +44,8 @@ class Localidad(models.Model):
     cp = models.IntegerField()
     nombre = models.CharField(max_length=100)
 
-    def getCodigoPostal(self):
-        return self.cp
-    def getNombre(self):
-        return self.nombre
+    def __str__(self):
+        return self.name
 
 class Cliente(models.Model):
     TIPO = {
