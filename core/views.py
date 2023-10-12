@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
 from django.http import JsonResponse
+from django.views.generic import CreateView, ListView, UpdateView
+from django.urls import reverse_lazy
 
 # Create your views here.
 def gestionClientes(request):
@@ -24,23 +26,22 @@ def altaCliente(request):
     return render(request, 'cliente/altaCliente.html', {
         'form': form})
 
-def altaInsumo(request):
-    if request.method == 'GET':
-        return render(request, 'insumo/altaInsumo.html', {
-            'form': FormAltaInsumo()})
-    else:
-        form = FormAltaInsumo(request.POST)
-        if form.is_valid():
-            insumo = form.save()
-            return redirect('gestionInsumos')
-    return render(request, 'insumo/altaInsumo.html', {
-        'form': form})
+class altaInsumo(CreateView):
+    model = Insumo
+    form_class = FormAltaInsumo
+    template_name = 'insumo/altaInsumo.html'
+    success_url = reverse_lazy('gestionInsumos')
 
-def gestionInsumos(request):
-    return render(request, 'insumo/gestionInsumos.html')
+class gestionInsumos(ListView):
+    model = Insumo
+    template_name = 'insumo/gestionInsumos.html'
+    context_object_name = 'insumos'
 
-def modificarInsumo(request):
-    return render(request, 'insumo/modificarInsumo.html')
+class updateInsumo(UpdateView):
+    model = Insumo
+    form_class = FormModificarInsumo
+    template_name = 'insumo/modificarInsumo.html'
+    success_url = reverse_lazy('gestionInsumos')
 
 def altaTipoServicio(request):
     if request.method == 'GET':

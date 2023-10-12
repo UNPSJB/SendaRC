@@ -9,8 +9,8 @@ class Insumo(models.Model):
         (4, 'Lts')
     }
     codigo = models.IntegerField(auto_created=True, primary_key=True)
-    descripcion = models.TextField()
-    unidad_med = models.PositiveIntegerField(choices=UNIDAD)
+    descripcion = models.CharField(max_length=50)
+    unidad_med = models.IntegerField(choices=UNIDAD)
     contenido_neto = models.IntegerField()
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
