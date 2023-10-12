@@ -12,9 +12,9 @@
     <div class="container container-form">
         {% crispy form %}
     </div>
-    <datalist id="localidadlist">
+    <datalist id="localidadlist" class="datalist">
         {% for localidad in localidadesList %}
-               <option value="{{ localidad.name }}">
+               <option value="{{ localidad.nombre }}">
         {% endfor %}
     </datalist>
 {% endblock %}
