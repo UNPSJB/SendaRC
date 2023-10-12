@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
+from django.http import JsonResponse
 
 # Create your views here.
 def gestionClientes(request):
@@ -9,13 +10,17 @@ def gestionClientes(request):
 
 def altaCliente(request):
     if request.method == 'GET':
+        localidades = Localidad.objects.all()
         return render(request, 'cliente/altaCliente.html', {
-            'form': ClienteForm()})
+            'form': ClienteForm(),
+            'localidadesList':localidades
+        })
     else:
         form = ClienteForm(request.POST)
         if form.is_valid():
             cliente = form.save()
             return redirect('gestionClientes')
+    
     return render(request, 'cliente/altaCliente.html', {
         'form': form})
 

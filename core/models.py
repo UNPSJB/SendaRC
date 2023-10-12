@@ -44,6 +44,9 @@ class Localidad(models.Model):
     cp = models.IntegerField()
     nombre = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 class Cliente(models.Model):
     TIPO = {
         (1, 'Ocacional'),
@@ -57,7 +60,7 @@ class Cliente(models.Model):
     apellido = models.CharField(max_length=50)
     direccion = models.CharField(max_length=50)
     tipo = models.PositiveIntegerField(choices=TIPO)
-    tipoPersona = models.PositiveIntegerField(choices=TIPO)
+    tipoPersona = models.PositiveIntegerField(choices=TIPOPERSONA)
     cuil = models.IntegerField()
     telefono = models.IntegerField()
     email = models.EmailField(max_length=254)

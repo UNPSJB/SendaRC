@@ -1,59 +1,8 @@
-.container-inputs{
-    height: 350px;
+.container-inputs-form{
+    height: 300px;
+    width: 1080px;
     display: grid;
     grid-template-columns: repeat(3,1fr);
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-    grid-auto-flow: dense;
-    grid-template-areas: 
-        "infoFormulario info-formulario info-formulario"
-        "cuitCuil nombre apellido"
-        "telefono direccion email"
-        "tipoCliente tipoPersona localidad"
-        "operaciones operaciones operaciones";
     gap: 10px;
     color: #505050;
-}
-
-.comboBox-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    font-weight: 600;
-}
-.info-formulario{
-    width: 100%;
-    font-weight: 600;
-    grid-area: infoFormulario;
-}
-.cuit-cuil{
-    grid-area: cuitCuil;
-}
-.nombre{
-    grid-area: nombre;
-}
-.apellido{
-    grid-area: apellido;
-}
-.telefono{
-    grid-area: telefono;
-}
-.direccion{
-    grid-area: direccion;
-}
-.email{
-    grid-area: email;
-    color: black;
-}
-.tipoCliente{
-    grid-area: tipoCliente;
-}
-.tipoPersona{
-    grid-area: tipoPersona;
-}
-.localidad{
-    grid-area: localidad;
-}
-.operaciones{
-    grid-area: operaciones;
 }
