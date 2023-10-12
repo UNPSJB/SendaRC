@@ -1,4 +1,9 @@
 from django import forms
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Submit, Div
+from crispy_bootstrap5.bootstrap5 import FloatingField
+
 from .models import *
 
 class FormAltaInsumo(forms.ModelForm):
@@ -20,32 +25,38 @@ class FormAltaInsumo(forms.ModelForm):
             insumo.cantidad += 10
             insumo.save()
         return insumo
-    """
-    
+    """    
     def __init__(self, *args, **kwargs):
         super(FormAltaInsumo, self).__init__(*args, **kwargs)
-        # Oculta las etiquetas de los campos
-        self.fields['descripcion'].label = False
-        self.fields['unidad_med'].label = False
-        self.fields['contenido_neto'].label = False
-        self.fields['marca'].label = False
-        self.fields['cantidad'].label = False
-
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Fieldset(
+                    Div(
+                        'Agrega un insumo aquí. Dale click en agregar al finalizar'
+                    ),
+                    Div(
+                        FloatingField('descripcion'),
+                        FloatingField('unidad_med'),
+                        FloatingField('contenido_neto'),
+                        FloatingField('marca'),
+                        FloatingField('cantidad'),
+                        css_class='container-inputs'
+                    )
+                ),
+                Div(
+                    Submit('submit', 'Agregar', css_class='btn-Agregar'),
+                    Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    css_class='input-group mb-3 operaciones'
+                ),
+                css_class='container-forms'
+            )
+        )
+        
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ['cuil','nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona','telefono','email','localidad']
-        widgets = {
-            "cuil": forms.NumberInput(attrs={'class': 'form-control textarea','placeholder':'CUIL/CUIT'}),
-            "nombre": forms.TextInput(attrs={'class': 'form-control','placeholder':'Nombre'}),
-            "apellido": forms.TextInput(attrs={'class': 'form-control','placeholder':'Apellido'}),
-            "direccion": forms.TextInput(attrs={'class': 'form-control','placeholder':'Dirección'}),
-            "telefono": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Telefono'}),
-            "email": forms.EmailInput(attrs={'class': 'form-control','placeholder':'Email'}),
-            "tipo": forms.Select(attrs={'class': 'form-select','placeholder':'Tipo cliente'}),
-            "tipoPersona": forms.Select(attrs={'class': 'form-select','placeholder':'Tipo persona'}),
-            "localidad": forms.TextInput(attrs={'class': 'form-control','placeholder':'Localidad'}),
-        }
 
     def __init__(self, *args, **kwargs):
         super(ClienteForm, self).__init__(*args, **kwargs)
@@ -59,3 +70,59 @@ class ClienteForm(forms.ModelForm):
         self.fields['telefono'].label = False
         self.fields['email'].label = False
         self.fields['localidad'].label = False
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                Div(
+                    'Alta Cliente',
+                    css_class='input-group mb-3 info-formulario'
+                ),
+                Div(
+                    FloatingField('cuil'),
+                    FloatingField('nombre'),
+                    FloatingField('apellido'),
+                    FloatingField('direccion'),
+                    FloatingField('tipo'),
+                    FloatingField('tipoPersona', class_name='select-form'),
+                    FloatingField('telefono'),
+                    FloatingField('email'),
+                    FloatingField('localidad'),
+                    css_class='container-inputs'
+                ),
+            ),
+            Div(
+                Submit('submit', 'Guardar', css_class='btn-Agregar'),
+                Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                css_class='input-group mb-3 operaciones'
+            )
+        )
+
+class TipoServicioForm(forms.ModelForm):
+    class Meta:
+        model = TipoServicio
+        fields = ['descripcion', 'unidad_medida', 'precio', 'insumos', 'maquinarias']
+    
+    def __init__(self, *args, **kwargs):
+        super(TipoServicioForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                Div(
+                    'Alta Servicio',
+                    css_class='input-group mb-3 info-formulario'
+                ),
+                Div(
+                    FloatingField('descripcion'),
+                    FloatingField('unidad_medida'),
+                    FloatingField('precio'),
+                    FloatingField('insumos'),
+                    FloatingField('maquinarias'),
+                    css_class='container-inputs'
+                ),
+            ),
+            Div(
+                Submit('submit', 'Guardar', css_class='btn-Agregar'),
+                Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                css_class='input-group mb-3 operaciones'
+            )
+        )

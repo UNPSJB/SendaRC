@@ -11,6 +11,7 @@
         "tipoCliente tipoPersona localidad"
         "operaciones operaciones operaciones";
     gap: 10px;
+    color: #505050;
 }
 
 .comboBox-container{
@@ -42,6 +43,7 @@
 }
 .email{
     grid-area: email;
+    color: black;
 }
 .tipoCliente{
     grid-area: tipoCliente;
