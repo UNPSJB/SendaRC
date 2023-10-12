@@ -27,11 +27,11 @@
                         <td scope="row">{{ cliente.cuil }}</td>
                         <td scope="row">{{ cliente.nombre }}</td>
                         <td scope="row">{{ cliente.apellido }}</td>
-                        <td scope="row">{{ cliente.tipo }}</td>
-                        <td scope="row">{{ cliente.tipoPersona }}</td>
+                        <td scope="row">{{ cliente.getTipo }}</td>
+                        <td scope="row">{{ cliente.getTipoPersona }}</td>
                         <td scope="row">
                             <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                            <a href="#" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                            <a href="{% url 'modificarCliente' cliente.cuil %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                             <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>

@@ -93,29 +93,17 @@ class FormModificarInsumo(forms.ModelForm):
     
 
 class ClienteForm(forms.ModelForm):
-    localidad = forms.CharField(widget=forms.TextInput(attrs={'list': 'localidadlist', 'class': 'form-control'}))
-    
     class Meta:
         model = Cliente
         fields = ['cuil', 'nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad']
 
-    def __init__(self, localidades=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ClienteForm, self).__init__(*args, **kwargs)
-        # Oculta las etiquetas de los campos
-        self.fields['cuil'].label = False
-        self.fields['nombre'].label = False
-        self.fields['apellido'].label = False
-        self.fields['direccion'].label = False
-        self.fields['tipo'].label = False
-        self.fields['tipoPersona'].label = False
-        self.fields['telefono'].label = False
-        self.fields['email'].label = False
-        self.fields['localidad'].label = False
-        self.fields['localidad'].queryset = localidades  
         self.helper = FormHelper()
+        self.fields['localidad'].to_field_name = 'nombre'
+        self.fields['telefono'].widget.attrs['input_type'] = 'tel'
         self.helper.layout = Layout(
             Div(
-                HTML('<p class="info-formulario">Agrega un cliente aquí. Dale click en agregar al finalizar</p>'),
                 Fieldset(
                     Div(
                     ),

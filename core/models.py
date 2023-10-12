@@ -43,9 +43,9 @@ class CantInsumoServicio(models.Model):
 class Localidad(models.Model):
     cp = models.IntegerField()
     nombre = models.CharField(max_length=100)
-
+    
     def __str__(self):
-        return self.name
+        return self.nombre
 
 class Cliente(models.Model):
     TIPO = {
@@ -61,10 +61,16 @@ class Cliente(models.Model):
     direccion = models.CharField(max_length=50)
     tipo = models.PositiveIntegerField(choices=TIPO)
     tipoPersona = models.PositiveIntegerField(choices=TIPOPERSONA)
-    cuil = models.IntegerField()
+    cuil = models.IntegerField(primary_key=True)
     telefono = models.IntegerField()
     email = models.EmailField(max_length=254)
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
+
+    def getTipo(self):
+        return dict(self.TIPO)[self.tipo]
+
+    def getTipoPersona(self):
+        return dict(self.TIPOPERSONA)[self.tipoPersona]
 
 class Empleado(models.Model):
     numdocumento = models.IntegerField()

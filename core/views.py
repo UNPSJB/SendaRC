@@ -5,26 +5,22 @@ from django.http import JsonResponse
 from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 
-# Create your views here.
-def gestionClientes(request):
-    clientes = Cliente.objects.all()
-    return render(request, 'cliente/gestionClientes.html', {'clientes': clientes})
+class altaCliente(CreateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'cliente/altaCliente.html'
+    success_url = reverse_lazy('gestionClientes')
 
-def altaCliente(request):
-    if request.method == 'GET':
-        localidades = Localidad.objects.all()
-        return render(request, 'cliente/altaCliente.html', {
-            'form': ClienteForm(),
-            'localidadesList':localidades
-        })
-    else:
-        form = ClienteForm(request.POST)
-        if form.is_valid():
-            cliente = form.save()
-            return redirect('gestionClientes')
-    
-    return render(request, 'cliente/altaCliente.html', {
-        'form': form})
+class gestionClientes(ListView):
+    model = Cliente
+    template_name = 'cliente/gestionClientes.html'
+    context_object_name = 'clientes'
+
+class updateCliente(UpdateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'cliente/modificarCliente.html'
+    success_url = reverse_lazy('gestionClientes')
 
 class altaInsumo(CreateView):
     model = Insumo
