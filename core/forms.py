@@ -160,3 +160,43 @@ class TipoServicioForm(forms.ModelForm):
             )
         )
     )
+class FormAltaMaquinaria(forms.ModelForm):
+    class Meta:
+        model = Maquinaria
+        fields = ['nombre', 'modelo', 'marca', 'cantidad', 'observaciones', 'baja']
+        widgets = {
+            "nombre": forms.TextInput(attrs={'class': 'form-control','placeholder':'Nombre'}),
+            "modelo": forms.TextInput(attrs={'class': 'form-control','placeholder':'Modelo'}),
+            "marca": forms.TextInput(attrs={'class': 'form-control','placeholder':'Marca'}),
+            "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'}),
+            "observaciones": forms.TextInput(attrs={'class': 'form-control textarea','placeholder':'Observaciones'}),
+            "estado": forms.BooleanField()
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(FormAltaMaquinaria, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                HTML('<p class="info-formulario">Agrega una maquinaria aquí. Dale click en agregar al finalizar</p>'),
+                Fieldset(
+                    Div(
+                        'Agrega una maquinaria aquí. Dale click en agregar al finalizar'
+                    ),
+                    Div(
+                        FloatingField('nombre'),
+                        FloatingField('modelo'),
+                        FloatingField('marca'),
+                        FloatingField('cantidad'),
+                        FloatingField('observaciones'),
+                        FloatingField('estado')
+                    )
+                ),
+                Div(
+                    Submit('submit', 'Agregar', css_class='btn-Agregar'),
+                    Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    css_class='input-group mb-3 operaciones'
+                ),
+                css_class='container-forms'
+            )
+        )    

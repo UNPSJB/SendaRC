@@ -54,3 +54,13 @@ def gestionTipoServicio(request):
     return render(request, 'tipoServicio/gestionTipoServicio.html', {
         'tipoServicios': TipoServicio.objects.all()
     })
+
+
+class altaMaquinaria(CreateView):
+    model = Maquinaria
+    form_class = FormAltaMaquinaria
+    template_name = 'maquinaria/altaMaquinaria.html'
+
+
+    
+
