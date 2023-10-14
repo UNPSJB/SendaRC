@@ -31,7 +31,7 @@
 }
 .container-form > form{
     background-color: black;
-    max-height: 474px;
+    max-height: 25rem;
 }
 .textarea{
     min-height: 100px !important;
@@ -42,9 +42,9 @@
     width: 100%; 
     background-color: #0c0c0c;
     color: #FFF;
-    font-size: 14px; 
+    font-size: 13px; 
     border: none;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
 }
 
 .form-control:focus, .form-select:focus{
@@ -60,23 +60,28 @@
     justify-content: end;
     gap: 8px;
 }
-.btn-Agregar, .btn-Cancelar{
+.btn-Guardar{
     background-color: #1DA1F2;
     color: #FFF;
     border-radius: 8px !important;
     padding-inline: 20px;
     font-weight: 700;
     border: none !important;
-}
-.btn-Agregar, .btn-Cancelar > span{
     font-size: 13px;
 }
-.btn-Agregar:hover, .btn-Cancelar:hover{
-    background-color: #1887cc;
+.btn-Cancelar{
+    background-color: #1DA1F2;
+    color: #FFF;
+    border-radius: 8px !important;
+    padding-inline: 20px;
+    font-weight: 700;
+    border: none !important;
+    font-size: 13px;
+    text-decoration: none;
+    padding-top: 8px;    
 }
-.select-form{
-    color: #505050;
-    background-color: #505050;
+.btn-Guardar:hover{
+    background-color: #1887cc;
 }
 .form-floating > label{
     font-size: 13px !important;
@@ -84,8 +89,4 @@
 .info-formulario{
     font-weight: 600;
     color: #fff;
-}
-
-.datalist{
-    background-color: #f70000;
 }

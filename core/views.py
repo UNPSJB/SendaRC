@@ -21,6 +21,10 @@ class updateCliente(UpdateView):
     form_class = ClienteForm
     template_name = 'cliente/modificarCliente.html'
     success_url = reverse_lazy('gestionClientes')
+    def get_form_kwargs(self):
+        kwargs = super(updateCliente, self).get_form_kwargs()
+        kwargs['is_modificar'] = True  
+        return kwargs
 
 class altaInsumo(CreateView):
     model = Insumo

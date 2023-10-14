@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('altaTipoServicio/(?)', altaTipoServicio, name='altaTipoServicio'),
     path('gestionTipoServicio/', gestionTipoServicio, name='gestionTipoServicio'),
+    
     path('altaMaquinaria/', altaMaquinaria.as_view(), name='altaMaquinaria'),
 ]
 

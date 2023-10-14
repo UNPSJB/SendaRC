@@ -1,5 +1,4 @@
 from django import forms
-
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Div, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField
@@ -26,7 +25,7 @@ class FormAltaInsumo(forms.ModelForm):
                 HTML('<p class="info-formulario">Agrega un insumo aquí. Dale click en agregar al finalizar</p>'),
                 Fieldset(
                     Div(
-                        'Agrega un insumo aquí. Dale click en agregar al finalizar'
+                        
                     ),
                     Div(
                         FloatingField('descripcion'),
@@ -37,8 +36,8 @@ class FormAltaInsumo(forms.ModelForm):
                     )
                 ),
                 Div(
-                    Submit('submit', 'Guardar', css_class='btn-Agregar'),
-                    Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    Submit('submit', 'Guardar', css_class='btn-Guardar'),
+                    HTML('<a href="{% url "gestionInsumos" %}" class="btn-Cancelar">Cancelar</a>'),
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
@@ -83,8 +82,8 @@ class FormModificarInsumo(forms.ModelForm):
                     )
                 ),
                 Div(
-                    Submit('submit', 'Agregar', css_class='btn-Agregar'),
-                    Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    Submit('submit', 'Guardar', css_class='btn-Guardar'),
+                    HTML('<a href="{% url "gestionInsumos" %}" class="btn-Cancelar">Cancelar</a>'),
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
@@ -98,14 +97,19 @@ class ClienteForm(forms.ModelForm):
         fields = ['cuil', 'nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad']
 
     def __init__(self, *args, **kwargs):
+        is_modificar = kwargs.pop('is_modificar', False)
+        if is_modificar:
+            mensaje = 'Modifica un cliente aquí. Dale clic en guardar al terminar'
+        else:
+            mensaje = 'Agrega un cliente aquí. Dale clic en guardar al terminar'
         super(ClienteForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.fields['localidad'].to_field_name = 'nombre'
-        self.fields['telefono'].widget.attrs['input_type'] = 'tel'
         self.helper.layout = Layout(
             Div(
+                HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
                 Fieldset(
                     Div(
+
                     ),
                     Div(
                         FloatingField('cuil'),
@@ -121,8 +125,8 @@ class ClienteForm(forms.ModelForm):
                     )
                 ),
                 Div(
-                    Submit('submit', 'Agregar', css_class='btn-Agregar'),
-                    Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    Submit('submit', 'Guardar', css_class='btn-Guardar'),
+                    HTML('<a href="{% url "gestionClientes" %}" class="btn-Cancelar">Cancelar</a>'),
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
@@ -154,8 +158,8 @@ class TipoServicioForm(forms.ModelForm):
                 ),
             ),
             Div(
-                Submit('submit', 'Guardar', css_class='btn-Agregar'),
-                Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    Submit('submit', 'Guardar', css_class='btn-Guardar'),
+                    HTML('<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Cancelar</a>'),
                 css_class='input-group mb-3 operaciones'
             )
         )
@@ -193,8 +197,8 @@ class FormAltaMaquinaria(forms.ModelForm):
                     )
                 ),
                 Div(
-                    Submit('submit', 'Agregar', css_class='btn-Agregar'),
-                    Submit('cancel', 'Cancelar', css_class='btn-Agregar'),
+                    Submit('submit', 'Guardar', css_class='btn-Guardar'),
+                    HTML('<a href="{% url "gestionMaquinarias" %}" class="btn-Cancelar">Cancelar</a>'),
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
