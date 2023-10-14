@@ -173,7 +173,7 @@ class FormAltaMaquinaria(forms.ModelForm):
             "modelo": forms.TextInput(attrs={'class': 'form-control','placeholder':'Modelo'}),
             "marca": forms.TextInput(attrs={'class': 'form-control','placeholder':'Marca'}),
             "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'}),
-            "observaciones": forms.TextInput(attrs={'class': 'form-control textarea','placeholder':'Observaciones'}),
+            "observaciones": forms.Textarea(attrs={'class': 'form-control textarea','placeholder':'Observaciones'}),
             "estado": forms.BooleanField()
         }
     
