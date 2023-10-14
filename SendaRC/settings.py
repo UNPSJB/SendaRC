@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'SendaRC',
+    'servicio',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
