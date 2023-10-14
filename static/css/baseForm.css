@@ -60,7 +60,7 @@
     justify-content: end;
     gap: 8px;
 }
-.btn-Guardar{
+.btn-Guardar, .btn-Cancelar{
     background-color: #1DA1F2;
     color: #FFF;
     border-radius: 8px !important;
@@ -70,17 +70,10 @@
     font-size: 13px;
 }
 .btn-Cancelar{
-    background-color: #1DA1F2;
-    color: #FFF;
-    border-radius: 8px !important;
-    padding-inline: 20px;
-    font-weight: 700;
-    border: none !important;
-    font-size: 13px;
     text-decoration: none;
-    padding-top: 8px;    
+    padding-top: 0.5rem;    
 }
-.btn-Guardar:hover{
+.btn-Guardar:hover, .btn-Cancelar:hover{
     background-color: #1887cc;
 }
 .form-floating > label{
