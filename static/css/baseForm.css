@@ -14,7 +14,7 @@
 }
 .seccion-cabecera > h2{  
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 .secccion-form{
     height: 88%;
@@ -26,14 +26,14 @@
     color: #505050;
     border: 1px solid #505050;
     padding: 20px;
-    width: auto;
-    border-radius: 12px;
+    border-radius: 8px;
+    transition: box-shadow 0.1s ease-out;
 }
 .container-form > form{
-    color: #FFF;
     background-color: black;
-    max-height: 474px;
+    max-height: 36rem;
 }
+
 .textarea{
     min-height: 100px !important;
     scroll-behavior: auto;
@@ -41,22 +41,17 @@
 }
 .form-control, .form-select{
     width: 100%; 
-    height: 40px !important; 
     background-color: #0c0c0c;
     color: #FFF;
-    font-size: 14px; 
+    font-size: 13px; 
     border: none;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
 }
 
 .form-control:focus, .form-select:focus{
     background-color: black;
-    border: 1px solid #FFF;
+    border: 1px solid #1887cc;
     color: #FFF;
-}
-
-.form-control::placeholder{
-    color: #505050;
 }
 
 .operaciones{
@@ -66,20 +61,26 @@
     justify-content: end;
     gap: 8px;
 }
-.btn-Agregar, .btn-Cancelar{
-    background-color: #000;
+.btn-Guardar, .btn-Cancelar{
+    background-color: #1DA1F2;
     color: #FFF;
-    border: 1px solid #505050;
     border-radius: 8px !important;
     padding-inline: 20px;
-}
-.btn-Agregar, .btn-Cancelar > span{
+    font-weight: 700;
+    border: none !important;
     font-size: 13px;
 }
-.btn-Agregar:hover, .btn-Cancelar:hover{
-    filter: brightness(80%);
+.btn-Cancelar{
+    text-decoration: none;
+    padding-top: 0.5rem;    
 }
-.select-form{
-    color: #505050;
-    background-color: #505050;
+.btn-Guardar:hover, .btn-Cancelar:hover{
+    background-color: #1887cc;
+}
+.form-floating > label{
+    font-size: 13px !important;
+}   
+.info-formulario{
+    font-weight: 600;
+    color: #fff;
 }

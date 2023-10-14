@@ -14,7 +14,7 @@ class Servicio(models.Model):
         (7,'Cancelado'),
     }
     TIPO = {
-        (1, 'Eventual')
+        (1, 'Eventual'),
         (2, 'Determinado')
     }
     nro_servicio = models.AutoField(primary_key=True)
@@ -32,12 +32,12 @@ class Servicio(models.Model):
     fecha_finaliza = models.DateField(auto_now=False, auto_now_add=False)
     fecha_cancelada = models.DateField(auto_now=False, auto_now_add=False)
     empleado = models.ManyToManyField(Empleado) 
-    cliente = models.ForeignKey(Cliente)
+    cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
     
 class HojaTrabajo(models.Model):
     fecha = models.DateField()
-    empleado = models.ForeignKey(Empleado)
-    servicio = models.ForeignKey(Servicio)    
+    empleado = models.ForeignKey(Empleado,on_delete=models.DO_NOTHING)
+    servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)    
 
 class Frecuencia(models.Model):
     DIA={
@@ -60,7 +60,7 @@ class Frecuencia(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     
 class Reclamo(models.Model):
-    nroReclamo = models.IntegerField()
+    nroReclamo = models.IntegerField(primary_key= True)
     descripcion = models.CharField(max_length=400)
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     

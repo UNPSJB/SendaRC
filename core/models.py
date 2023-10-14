@@ -9,8 +9,8 @@ class Insumo(models.Model):
         (4, 'Lts')
     }
     codigo = models.IntegerField(auto_created=True, primary_key=True)
-    descripcion = models.TextField()
-    unidad_med = models.PositiveIntegerField(choices=UNIDAD)
+    descripcion = models.CharField(max_length=50)
+    unidad_med = models.IntegerField(choices=UNIDAD)
     contenido_neto = models.IntegerField()
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
@@ -43,6 +43,9 @@ class CantInsumoServicio(models.Model):
 class Localidad(models.Model):
     cp = models.IntegerField()
     nombre = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.nombre
 
 class Cliente(models.Model):
     TIPO = {
@@ -57,11 +60,17 @@ class Cliente(models.Model):
     apellido = models.CharField(max_length=50)
     direccion = models.CharField(max_length=50)
     tipo = models.PositiveIntegerField(choices=TIPO)
-    tipoPersona = models.PositiveIntegerField(choices=TIPO)
-    cuil = models.IntegerField()
+    tipoPersona = models.PositiveIntegerField(choices=TIPOPERSONA)
+    cuil = models.IntegerField(primary_key=True)
     telefono = models.IntegerField()
     email = models.EmailField(max_length=254)
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
+
+    def getTipo(self):
+        return dict(self.TIPO)[self.tipo]
+
+    def getTipoPersona(self):
+        return dict(self.TIPOPERSONA)[self.tipoPersona]
 
 class Empleado(models.Model):
     numdocumento = models.IntegerField()
