@@ -2,7 +2,7 @@ $(document).ready(
   function () {
     $('.table').DataTable({
       "pageLength": 8,
-    "lengthChange": false,
+      "lengthChange": false,
     });
   }
 ); //esto hay que mejorarlo

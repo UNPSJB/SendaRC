@@ -30,7 +30,11 @@
 .table>tbody>tr:nth-child(even)>th{
     background-color: #000;
 }
-.table{
+.table.dataTable thead th {
+    text-align: center;
+  }
+
+.table.dataTable tbody td {
     text-align: center;
 }
 .table thead{
