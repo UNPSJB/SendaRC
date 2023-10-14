@@ -26,13 +26,12 @@
     color: #505050;
     border: 1px solid #505050;
     padding: 20px;
-    width: auto;
     border-radius: 8px;
     transition: box-shadow 0.1s ease-out;
 }
 .container-form > form{
     background-color: black;
-    max-height: 25rem;
+    max-height: 36rem;
 }
 
 .textarea{

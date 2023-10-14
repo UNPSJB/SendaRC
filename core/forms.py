@@ -198,7 +198,7 @@ class FormAltaMaquinaria(forms.ModelForm):
                 ),
                 Div(
                     Submit('submit', 'Guardar', css_class='btn-Guardar'),
-                    HTML('<a href="{% url "gestionMaquinarias" %}" class="btn-Cancelar">Cancelar</a>'),
+                    HTML('<a href="#" class="btn-Cancelar">Cancelar</a>'),
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
