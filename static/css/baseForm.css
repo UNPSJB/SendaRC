@@ -28,10 +28,15 @@
     padding: 20px;
     width: auto;
     border-radius: 8px;
+    transition: box-shadow 0.1s ease-in-out;
 }
 .container-form > form{
     background-color: black;
     max-height: 25rem;
+}
+
+.container-form:hover{
+    box-shadow: 0 0 15px #1d1d1d;
 }
 .textarea{
     min-height: 100px !important;
