@@ -50,9 +50,10 @@
     padding-inline: 20px;
     padding-block: 2px;
     background-color: #000;
+    transition: background-color 0.1s ease-in-out;
 }
 .seccion-cabecera > a:hover{
-    filter: brightness(80%);
+    background-color: #111111;
 }
 .page-link.disabled, .disabled > .page-link{
     color: #000;
