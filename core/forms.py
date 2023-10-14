@@ -1,7 +1,7 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Div
+from crispy_forms.layout import *
 from crispy_bootstrap5.bootstrap5 import FloatingField
 
 from .models import *
@@ -76,9 +76,18 @@ class TipoServicioForm(forms.ModelForm):
     class Meta:
         model = TipoServicio
         fields = ['descripcion', 'unidad_medida', 'precio', 'insumos', 'maquinarias']
+        widgets = {
+            'insumos': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            'maquinarias': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
     
     def __init__(self, *args, **kwargs):
         super(TipoServicioForm, self).__init__(*args, **kwargs)
+        self.fields['insumos'].queryset = Insumo.objects.all()
+        self.fields['maquinarias'].queryset = Maquinaria.objects.all()
+
+        self.fields['insumos'].widget.choices = [(insumo.codigo, insumo.descripcion) for insumo in Insumo.objects.all()]
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
@@ -90,10 +99,13 @@ class TipoServicioForm(forms.ModelForm):
                     FloatingField('descripcion'),
                     FloatingField('unidad_medida'),
                     FloatingField('precio'),
-                    FloatingField('insumos'),
-                    FloatingField('maquinarias'),
                     css_class='container-inputs'
                 ),
+                Row(
+                    Field('insumos', multiple=True, css_class='form-control'),
+                    Field('maquinarias', multiple=True, css_class='form-control'),    
+                    css_class='container-inputs'
+                )
             ),
             Div(
                 Submit('submit', 'Guardar', css_class='btn-Agregar'),
