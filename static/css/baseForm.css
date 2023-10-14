@@ -28,7 +28,7 @@
     padding: 20px;
     width: auto;
     border-radius: 8px;
-    transition: box-shadow 0.1s ease-in-out;
+    transition: box-shadow 0.1s ease-out;
 }
 .container-form > form{
     background-color: black;
