@@ -2600,7 +2600,6 @@ textarea.form-control-lg {
 .form-floating > .form-control-plaintext,
 .form-floating > .form-select {
   height: calc(2.8rem + calc(var(--bs-border-width) * 1));
-  line-height: 0;
 }
 .form-floating > label {
   position: absolute;
