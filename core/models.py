@@ -41,7 +41,7 @@ class CantInsumoServicio(models.Model):
     cantidad = models.IntegerField()
     
 class Localidad(models.Model):
-    cp = models.IntegerField()
+    cp = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
     
     def __str__(self):
@@ -73,8 +73,8 @@ class Cliente(models.Model):
         return dict(self.TIPOPERSONA)[self.tipoPersona]
 
 class Empleado(models.Model):
-    numdocumento = models.IntegerField()
-    numlegajo = models.IntegerField()
+    numDNI = models.IntegerField(primary_key=True)
+    numLegajo = models.IntegerField()
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     telefono = models.IntegerField()
@@ -88,8 +88,11 @@ class Sancion(models.Model):
         (2, 'Suspension')
     }
     tipo = models.PositiveIntegerField(choices=TIPO)
-    nroSancion = models.IntegerField()
+    nroSancion = models.IntegerField(primary_key=True)
     empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
+    
+    def getEmpleado(self):
+        return self.empleado.numLegajo
     
   
 
