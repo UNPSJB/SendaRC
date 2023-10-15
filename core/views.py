@@ -4,12 +4,17 @@ from .forms import *
 from django.http import JsonResponse
 from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib import messages
 
 class altaCliente(CreateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'cliente/altaCliente.html'
     success_url = reverse_lazy('gestionClientes')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'El cliente se ha dado de alta con éxito.')
+        return super().form_valid(form)
 
 class gestionClientes(ListView):
     model = Cliente
