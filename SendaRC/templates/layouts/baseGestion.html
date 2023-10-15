@@ -13,5 +13,21 @@
         <div class="secccion-listado"> 
             {% block listado %}
             {% endblock %}
+            {% if messages %}
+                {% for m in messages %}
+                    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+                    <script src="{% static 'libs/jqueryToast/src/jquery.toast.js'%}"></script>
+                    <script>
+                        var myToast = $.toast({
+                            heading : 'Agustin Bowen',
+                            text: '{{m}}',
+                            showHideTransition: 'fade',
+                            position:'bottom-right',
+                            stack: 4,
+                            loader: false, 
+                        })
+                    </script>
+                {% endfor %}
+            {% endif %}
         </div>
 {% endblock %}

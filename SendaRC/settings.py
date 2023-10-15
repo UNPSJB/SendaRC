@@ -53,7 +53,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACKS = ('bootstrap5')
 
-
+MESSAGE_STORE = "django.contrib.messages.storage.cookie.CookieStorage"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
