@@ -1,4 +1,5 @@
 from django import forms
+import re
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Div, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField
@@ -132,6 +133,20 @@ class ClienteForm(forms.ModelForm):
                 css_class='container-forms'
             )
         )
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        cuil= str(cleaned_data.get('cuil', ''))
+        telefono = str(cleaned_data.get('telefono', ''))
+
+        regex_pattern_cuil = r'^\d{11}$'
+        regex_pattern_telefono = r'^\d{10}$'
+
+        if not re.match(regex_pattern_cuil, cuil):
+            self.add_error('cuil', "Formato requerido(sin guiones): xx-xxxxxxxx-x")
+
+        if not re.match(regex_pattern_telefono, telefono):
+            self.add_error('telefono', "Formato requerido(sin guiones): codigoArea-número")
 
 class TipoServicioForm(forms.ModelForm):
     class Meta:
