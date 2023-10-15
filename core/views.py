@@ -13,7 +13,7 @@ class altaCliente(CreateView):
     success_url = reverse_lazy('gestionClientes')
 
     def form_valid(self, form):
-        messages.success(self.request, 'El cliente se ha dado de alta con éxito.')
+        messages.success(self.request, 'El cliente se ha dado de alta correctamente.')
         return super().form_valid(form)
 
 class gestionClientes(ListView):
@@ -26,10 +26,15 @@ class updateCliente(UpdateView):
     form_class = ClienteForm
     template_name = 'cliente/modificarCliente.html'
     success_url = reverse_lazy('gestionClientes')
+
     def get_form_kwargs(self):
         kwargs = super(updateCliente, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'El cliente se ha modificado correctamente.')
+        return super().form_valid(form)
 
 class altaInsumo(CreateView):
     model = Insumo
