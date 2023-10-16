@@ -9,39 +9,37 @@
     <a href="{% url 'altaSancion' %}" class="btn-agregarEntidad">Registrar Sancion</a>
 {% endblock %}
 {% block listado %}
-    <div class="table-responsive rounded">
-        <table class="table table-striped table-dark">
-            <thead>
-                <tr>
-                    <th scope="col">Num Sancion</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Legajo Empleado</th>
-                    <th scope="col">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for sancion in sanciones %}
-                    <tr class="fila-tabla">
-                        <td scope="row">{{ sancion.nroSancion }}</td>
-                        <td scope="row">{{ sancion.tipo }}</td>
-                        <td scope="row">{{ sancion.getEmpleado }}</td>
-                        <td scope="row">
-                            <a href="{% url 'modificarSancion' sancion.nroSancion %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                            <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sancion:{{ sancion.nroSancion }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
-                </button>
-            </div>
-            <div>
-
-            </div>
-        </div>
+<table class="table table-striped table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Num Sancion</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Legajo Empleado</th>
+            <th scope="col">Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sancion in sanciones %}
+            <tr class="fila-tabla">
+                <td scope="row">{{ sancion.nroSancion }}</td>
+                <td scope="row">{{ sancion.tipo }}</td>
+                <td scope="row">{{ sancion.getEmpleado }}</td>
+                <td scope="row">
+                    <a href="{% url 'modificarSancion' sancion.nroSancion %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sancion:{{ sancion.nroSancion }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+        </button>
     </div>
+    <div>
+
+    </div>
+</div>
 {% endblock %}

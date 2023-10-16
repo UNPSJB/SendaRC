@@ -9,40 +9,38 @@
     <a href="{% url 'altaTipoServicio' %}" class="btn-agregarEntidad">Agregar Tipo de Servicio</a>
 {% endblock %}
 {% block listado%}
-    <div class="table-responsive rounded">
-        <table class="table table-dark">
-            <thead>
-                <tr>
-                    <th scope="col">Descripción</th>
-                    <th scope="col">Unidad de Medida</th>
-                    <th scope="col">Precio</th>
-                    <th scope="col">Insumos</th>
-                    <th scope="col">Maquinarias</th>
-                </tr>
-                </thead>
-            <tbody>
-                {% for tipo in tipos %}
-                    <tr class="fila-tabla">
-                        <td scope="row">{{ tipo.descripcion }}</td>
-                        <td scope="row">{{ tipo.unidad_medida }}</td>
-                        <td scope="row">{{ tipo.precio }}</td>
-                        <td scope="row">{{ tipo.insumos }}</td>
-                        <td scope="row">{{ tipo.maquinarias }}</td>
-                        <td scope="row">
-                            <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                            <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                            <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-            </tbody>
-        </table>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="offcanvasExampleLabel">Tipo de Servicio:{{ tipo.descripcion }}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body"></div>
-        </div>
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Descripción</th>
+            <th scope="col">Unidad de Medida</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Insumos</th>
+            <th scope="col">Maquinarias</th>
+        </tr>
+        </thead>
+    <tbody>
+        {% for tipo in tipos %}
+            <tr class="fila-tabla">
+                <td scope="row">{{ tipo.descripcion }}</td>
+                <td scope="row">{{ tipo.unidad_medida }}</td>
+                <td scope="row">{{ tipo.precio }}</td>
+                <td scope="row">{{ tipo.insumos }}</td>
+                <td scope="row">{{ tipo.maquinarias }}</td>
+                <td scope="row">
+                    <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                    <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+            {% endfor %}
+    </tbody>
+</table>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Tipo de Servicio:{{ tipo.descripcion }}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
+    <div class="offcanvas-body"></div>
+</div>
 {% endblock %}

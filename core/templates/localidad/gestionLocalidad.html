@@ -9,36 +9,35 @@
     <a href="{% url 'altaLocalidad' %}" class="btn-agregarEntidad">Agregar Localidad</a>
 {% endblock %}
 {% block listado %}
-    <div class="table-responsive rounded">
-        <table class="table table-striped table-dark">
-            <thead>
-                <tr>
-                    <th scope="col">Codigo Postal</th>
-                    <th scope="col">Nombre</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for localidad in localidades %}
-                    <tr class="fila-tabla">
-                        <td scope="row">{{ localidad.cp }}</td>
-                        <td scope="row">{{ localidad.nombre }}</td>
-                        <td scope="row">
-                            <a href="{% url 'modificarLocalidad' localidad.cp %}" class="opcion"><i class="bi bi-pencil-square"></i></a>
-                            <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasExampleLabel">Localidad:{{ localidad.nombre }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
-                </button>
-            </div>
-            <div>
-
-            </div>
-        </div>
+<table class="table table-striped table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Codigo Postal</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for localidad in localidades %}
+            <tr class="fila-tabla">
+                <td scope="row">{{ localidad.cp }}</td>
+                <td scope="row">{{ localidad.nombre }}</td>
+                <td scope="row">
+                    <a href="{% url 'modificarLocalidad' localidad.cp %}" class="opcion"><i class="bi bi-pencil-square"></i></a>
+                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Localidad:{{ localidad.nombre }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+        </button>
     </div>
+    <div>
+
+    </div>
+</div>
 {% endblock %}
