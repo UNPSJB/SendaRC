@@ -11,8 +11,9 @@ urlpatterns = [
     path('gestionInsumos/', gestionInsumos.as_view(), name = 'gestionInsumos'),
     path('modificarInsumo/<int:pk>', updateInsumo.as_view(), name = 'modificarInsumo'),
 
-    path('altaTipoServicio/(?)', altaTipoServicio, name='altaTipoServicio'),
-    path('gestionTipoServicio/', gestionTipoServicio, name='gestionTipoServicio'),
+    path('altaTipoServicio/', altaTipoServicio.as_view(), name='altaTipoServicio'),
+    path('gestionTipoServicio/', gestionTipoServicio.as_view(), name='gestionTipoServicio'),
+    path('modificarTipoServicio/<int:pk>', updateTipoServicio.as_view(), name='modificarTipoServicio'),
     
     path('altaMaquinaria/', altaMaquinaria.as_view(), name='altaMaquinaria'),
 ]

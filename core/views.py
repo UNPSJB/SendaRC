@@ -42,23 +42,27 @@ class updateInsumo(UpdateView):
     form_class = FormModificarInsumo
     template_name = 'insumo/modificarInsumo.html'
     success_url = reverse_lazy('gestionInsumos')
+    def get_form_kwargs(self):
+        kwargs = super(updateCliente, self).get_form_kwargs()
+        kwargs['is_modificar'] = True  
+        return kwargs
 
-def altaTipoServicio(request):
-    if request.method == 'GET':
-        return render(request, 'tipoServicio/altaTipoServicio.html', {
-            'form': TipoServicioForm()})
-    else:
-        form = FormAltaTipoServicio(request.POST)
-        if form.is_valid():
-            tipoServicio = form.save()
-            return redirect('gestionTipoServicio', {
-                'tipoServicio': tipoServicio})
+class altaTipoServicio(CreateView):
+    model = TipoServicio
+    form_class = TipoServicioForm
+    template_name = 'tipoServicio/altaTipoServicio.html'
+    success_url = reverse_lazy('gestionTipoServicio')
 
-def gestionTipoServicio(request):
-    return render(request, 'tipoServicio/gestionTipoServicio.html', {
-        'tipoServicios': TipoServicio.objects.all()
-    })
+class gestionTipoServicio(ListView):
+    model = TipoServicio
+    template_name = 'tipoServicio/gestionTipoServicio.html'
+    context_object_name = 'tipoServicios'
 
+class updateTipoServicio(UpdateView):
+    model = TipoServicio
+    form_class = TipoServicioForm
+    template_name = 'tipoServicio/modificarTipoServicio.html'
+    success_url = reverse_lazy('gestionTipoServicio')
 
 class altaMaquinaria(CreateView):
     model = Maquinaria
