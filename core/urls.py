@@ -3,6 +3,18 @@ from core.views  import *
 
 urlpatterns = [
 
+    path('altaSancion/', altaSancion.as_view(), name = 'altaSancion'),
+    path('modificarSancion/<int:pk>', updateSancion.as_view(), name = 'modificarSancion'),
+    path('gestionSanciones/', gestionSancion.as_view(), name = 'gestionSanciones'),
+
+    path('altaEmpleado/', altaEmpleado.as_view(), name = 'altaEmpleado'),
+    path('modificarEmpleado/<int:pk>', updateEmpleado.as_view(), name = 'modificarEmpleado'),
+    path('gestionEmpleado/', gestionEmpleado.as_view(), name = 'gestionEmpleado'),
+    
+    path('altaLocalidad/', altaLocalidad.as_view(), name = 'altaLocalidad'),
+    path('modificarLocalidad/<int:pk>', updateLocalidad.as_view(), name = 'modificarLocalidad'),
+    path('gestionLocalidad/', gestionLocalidad.as_view(), name = 'gestionLocalidad'),
+
     path('altaCliente/', altaCliente.as_view(), name = 'altaCliente'),
     path('gestionClientes/', gestionClientes.as_view(), name = 'gestionClientes'),
     path('modificarCliente/<int:pk>', updateCliente.as_view(), name = 'modificarCliente'),

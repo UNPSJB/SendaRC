@@ -1,77 +1,142 @@
 from django import forms
+import re
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField
 
 from .models import *
 
-class FormAltaInsumo(forms.ModelForm):
+class FormSancion(forms.ModelForm):
     class Meta:
-        model = Insumo
-        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad']
-        widgets = {
-            "descripcion": forms.TextInput(attrs={'class': 'form-control textinput','placeholder':'Descripción'}),
-            "unidad_med": forms.Select(attrs={'class': 'form-select'}),
-            "contenido_neto": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Contenido neto'}),
-            "marca": forms.TextInput(attrs={'class': 'form-control','placeholder':'Marca'}),
-            "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'})
-        }
-
+        model = Sancion
+        fields = ['tipo', 'nroSancion', 'empleado']
+            
     def __init__(self, *args, **kwargs):
-        super(FormAltaInsumo, self).__init__(*args, **kwargs)
+        is_modificar = kwargs.pop('is_modificar', False)
+        if is_modificar:
+            mensaje = 'Modificar una sancion aquí. Dale clic en guardar al terminar'
+        else:
+            mensaje = 'Agregar una sancion aquí. Dale clic en guardar al terminar'
+        super(FormSancion, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
-                HTML('<p class="info-formulario">Agrega un insumo aquí. Dale click en agregar al finalizar</p>'),
+                HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
                 Fieldset(
                     Div(
                         
                     ),
                     Div(
-                        FloatingField('descripcion'),
-                        FloatingField('unidad_med'),
-                        FloatingField('contenido_neto'),
-                        FloatingField('marca'),
-                        FloatingField('cantidad'),
+                        FloatingField('tipo'),
+                        FloatingField('nroSancion'),
+                        FloatingField('empleado'),
+                        css_class='container-inputs-form'
                     )
                 ),
                 Div(
                     Submit('submit', 'Guardar', css_class='btn-Guardar'),
-                    HTML('<a href="{% url "gestionInsumos" %}" class="btn-Cancelar">Cancelar</a>'),
+                    HTML('<a href="{% url "gestionSanciones" %}" class="btn-Cancelar">Cancelar</a>'),
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
             )
         )
-        
-class FormModificarInsumo(forms.ModelForm):
+
+class FormEmpleado(forms.ModelForm):
     class Meta:
-        model = Insumo
-        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad']
-        widgets = {
-            "descripcion": forms.Textarea(attrs={'class': 'form-control textarea','placeholder':'Decripción'}),
-            "unidad_med": forms.Select(attrs={'class': 'form-select','placeholder':'Unidad de medida'}),
-            "contenido_neto": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Contenido neto'}),
-            "marca": forms.TextInput(attrs={'class': 'form-control','placeholder':'Marca'}),
-            "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'})
-        }
-    """ Para agregar campo adicion que no es de Insumo
-    def save(self, commit=True):
-        insumo = super().save(commit=commit)
-        if self.cleaned_data['incrementar']:
-            insumo.cantidad += 10
-            insumo.save()
-        return insumo
-    """
+        model = Empleado
+        fields = ['numDNI', 'numLegajo', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad']
+        
     def __init__(self, *args, **kwargs):
-        super(FormModificarInsumo, self).__init__(*args, **kwargs)
+        is_modificar = kwargs.pop('is_modificar', False)
+        if is_modificar:
+            mensaje = 'Modificar un empleado aquí. Dale clic en guardar al terminar'
+        else:
+            mensaje = 'Agregar un empleado aquí. Dale clic en guardar al terminar'
+        super(FormEmpleado, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
-                HTML('<p class="info-formulario">Modificar un insumo aquí. Dale click en guardar al finalizar</p>'),
+                HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
                 Fieldset(
                     Div(
-                        'Agrega un insumo aquí. Dale click en agregar al finalizar'
+
+                    ),
+                    Div(
+                        FloatingField('numDNI'),
+                        FloatingField('numLegajo'),
+                        FloatingField('nombre'),
+                        FloatingField('apellido'),
+                        FloatingField('telefono'),
+                        FloatingField('email'),
+                        FloatingField('sueldo'),
+                        FloatingField('localidad'),
+                        css_class='container-inputs-form'
+                    )
+                ),
+                Div(
+                    Submit('submit', 'Guardar', css_class='btn-Guardar'),
+                    HTML('<a href="{% url "gestionEmpleado" %}" class="btn-Cancelar">Cancelar</a>'),
+                    css_class='input-group mb-3 operaciones'
+                ),
+                css_class='container-forms'
+            )
+        )
+
+class FormLocalidad(forms.ModelForm):
+    class Meta:
+        model = Localidad
+        fields = ['cp', 'nombre']
+    
+    def __init__(self, *args, **kwargs):
+        is_modificar = kwargs.pop('is_modificar', False)
+        if is_modificar:
+            mensaje = 'Modificar una localidad aquí. Dale clic en guardar al terminar'
+        else:
+            mensaje = 'Agregar una localidad aquí. Dale clic en guardar al terminar'
+        super(FormLocalidad, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
+                Fieldset(
+                    Div(
+                        
+                    ),
+                    Div(
+                        FloatingField('cp'),
+                        FloatingField('nombre'),
+                        css_class='container-inputs-form'
+                    )
+                ),
+                Div(
+                    Submit('submit', 'Guardar', css_class='btn-Guardar'),
+                    HTML('<a href="{% url "gestionLocalidad" %}" class="btn-Cancelar">Cancelar</a>'),
+                    css_class='input-group mb-3 operaciones'
+                ),
+                css_class='container-forms'
+            )
+        )    
+
+class FormInsumo(forms.ModelForm):
+    class Meta:
+        model = Insumo
+        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad']
+       
+    def __init__(self, *args, **kwargs):
+        is_modificar = kwargs.pop('is_modificar', False)
+        if is_modificar:
+            mensaje = 'Modificar un insumo aquí. Dale clic en guardar al terminar'
+        else:
+            mensaje = 'Agregar un insumo aquí. Dale clic en guardar al terminar'
+        super(FormInsumo, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
+                Fieldset(
+                    Div(
+                        
                     ),
                     Div(
                         FloatingField('descripcion'),
@@ -99,9 +164,9 @@ class ClienteForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = 'Modifica un cliente aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar un cliente aquí. Dale clic en guardar al terminar'
         else:
-            mensaje = 'Agrega un cliente aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar un cliente aquí. Dale clic en guardar al terminar'
         super(ClienteForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -132,6 +197,20 @@ class ClienteForm(forms.ModelForm):
                 css_class='container-forms'
             )
         )
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        cuil= str(cleaned_data.get('cuil', ''))
+        telefono = str(cleaned_data.get('telefono', ''))
+
+        regex_pattern_cuil = r'^\d{11}$'
+        regex_pattern_telefono = r'^\d{10}$'
+
+        if not re.match(regex_pattern_cuil, cuil):
+            self.add_error('cuil', "Formato requerido(sin guiones): xx-xxxxxxxx-x")
+
+        if not re.match(regex_pattern_telefono, telefono):
+            self.add_error('telefono', "Formato requerido(sin guiones): codigoArea-número")
 
 class TipoServicioForm(forms.ModelForm):
     class Meta:

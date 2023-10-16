@@ -1,0 +1,15 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block cssVista %}
+    <link href="{% static 'css/cliente.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Empleado</h1>
+    <h2 class="operacion">Alta Empleado</h2>
+{% endblock %}
+{% block formulario %}
+    <div class="container container-form">
+        {% crispy form %}
+    </div>
+{% endblock %}
