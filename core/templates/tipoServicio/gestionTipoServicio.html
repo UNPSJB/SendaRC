@@ -1,7 +1,7 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
 {% block cssGestion %}
-    <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block title%}
     <h1>Tipo de Servicio</h1>
@@ -17,10 +17,11 @@
             <th scope="col">Precio</th>
             <th scope="col">Insumos</th>
             <th scope="col">Maquinarias</th>
+            <th scope="col">Opciones</th>
         </tr>
         </thead>
     <tbody>
-        {% for tipo in tipos %}
+        {% for tipo in tipoServicios %}
             <tr class="fila-tabla">
                 <td scope="row">{{ tipo.descripcion }}</td>
                 <td scope="row">{{ tipo.unidad_medida }}</td>
@@ -33,7 +34,7 @@
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>
-            {% endfor %}
+        {% endfor %}
     </tbody>
 </table>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">

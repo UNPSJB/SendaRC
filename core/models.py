@@ -38,7 +38,7 @@ class TipoServicio(models.Model):
 class CantInsumoServicio(models.Model):
     insumo = models.ForeignKey(Insumo, on_delete=models.DO_NOTHING)
     tipoServicio = models.ForeignKey(TipoServicio, on_delete=models.DO_NOTHING)
-    cantidad = models.IntegerField()
+    cantidad = models.IntegerField(null=True)
     
 class Localidad(models.Model):
     cp = models.IntegerField(primary_key=True)
