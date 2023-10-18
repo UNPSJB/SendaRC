@@ -27,6 +27,7 @@ urlpatterns = [
     path('gestionTipoServicio/', gestionTipoServicio.as_view(), name='gestionTipoServicio'),
     path('modificarTipoServicio/<int:pk>', updateTipoServicio.as_view(), name='modificarTipoServicio'),
     
-    path('altaMaquinaria/', altaMaquinaria.as_view(), name='altaMaquinaria'),
+    path('altaMaquinaria/', altaMaquinaria.as_view(), name='altaMaquinaria'), 
+    path('gestionMaquinaria/', gestionMaquinaria.as_view(), name='gestionMaquinaria'), 
 ]
 

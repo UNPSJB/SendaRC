@@ -300,4 +300,6 @@ class FormAltaMaquinaria(forms.ModelForm):
                 ),
                 css_class='container-forms'
             )
-        )    
+        )
+
+        
