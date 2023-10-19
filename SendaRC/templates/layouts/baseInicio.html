@@ -20,49 +20,49 @@
                         <i class="bi bi-list"></i>
                     </button>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/home/' %}active{% endif %}">
                     <a href="{% url 'home' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
                         <i class="bi bi-house"></i>
                         <span class="nav-item-span">Home</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/gestionLocalidad/' %}active{% endif %}">
                     <a href="{% url 'gestionLocalidad' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Localidades" data-bs-original-title="Localidades">
                         <i class="bi bi-geo-alt"></i>
                         <span class="nav-item-span">Localidades</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/gestionEmpleado/' %}active{% endif %}">
                     <a href="{% url 'gestionEmpleado' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Empleados" data-bs-original-title="Empleados">
                         <i class="bi bi-people"></i>
                         <span class="nav-item-span">Empleados</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/gestionMaquinaria/' %}active{% endif %}">
                     <a href="{% url 'gestionMaquinaria' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Maquinarias" data-bs-original-title="Maquinarias">
                         <i class="bi bi-hammer"></i>
                         <span class="nav-item-span">Maquinarias</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/home/' %}gestionTipoServicio{% endif %}">
                     <a href="{% url 'gestionTipoServicio' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="TipoServicios" data-bs-original-title="TipoServicios">
                         <i class="bi bi-truck"></i>
                         <span class="nav-item-span">Tipos de servicios</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/gestionInsumos/' %}active{% endif %}">
                     <a href="{% url 'gestionInsumos' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Insumos" data-bs-original-title="Insumos">
                         <i class="bi bi-box2"></i>
                         <span class="nav-item-span">Insumo</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/gestionClientes/' %}active{% endif %}">
                     <a href="{% url 'gestionClientes' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Clientes" data-bs-original-title="Clientes">
                         <i class="bi bi-person-vcard"></i>
@@ -76,7 +76,7 @@
                         <span class="nav-item-span">Reclamos</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/gestionSanciones/' %}active{% endif %}">
                     <a href="{% url 'gestionSanciones' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Sanciones" data-bs-original-title="Sanciones">
                         <i class="bi bi-person-x"></i>
@@ -90,7 +90,7 @@
                         <span class="nav-item-span">Asistencias</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/gestionServicios/' %}active{% endif %}">
                     <a href="{% url 'gestionServicios' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Presupuestos" data-bs-original-title="Presupuestos">
                         <i class="bi bi-cash-coin"></i>

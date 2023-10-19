@@ -11,7 +11,7 @@
     width: 60px;
     height: 100vh;
     border-right: 1px solid #505050;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out;
     overflow: hidden;
 }
 .nav-container.expanded {
@@ -44,6 +44,9 @@
 .nav-item-span{
     display: none;
 }
+.nav-item{
+    border-radius: 7px;
+}
 .navbar{
     background-color: black !important;
     height: 100%;
@@ -61,12 +64,8 @@
     transition: none;
 }
 .nav-link:hover{
-    background-color: white !important;
-    color: black !important;
-}
-.nav-link:active{
-    background-color: white !important;
-    color: black !important;
+    background-color: white;
+    color: black;
 }
 .list-navbar{
     gap: 2px;
@@ -91,4 +90,22 @@
     color: white;
     font-weight:bold;
     font-size: 10px;
+}
+.active{
+    background-color: white;
+}
+.active > a > i{
+    color: #000;
+}
+.active > a > span{
+    color: #000;
+}
+
+#btn-toExpand{
+    background:none;
+    color: #fff;
+}
+
+#btn-toExpand:hover{
+    background: none;
 }
