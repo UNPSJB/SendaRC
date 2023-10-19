@@ -81,7 +81,8 @@ class updateTipoServicio(UpdateView):
 class altaMaquinaria(CreateView):
     model = Maquinaria
     form_class = FormAltaMaquinaria
-    template_name = 'maquinaria/altaMaquinaria.html' 
+    template_name = 'maquinaria/altaMaquinaria.html'
+    success_url = reverse_lazy('gestionMaquinaria')
 
 class gestionMaquinaria(ListView):
     model = Maquinaria

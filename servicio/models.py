@@ -17,7 +17,6 @@ class Servicio(models.Model):
         (1, 'Eventual'),
         (2, 'Determinado')
     }
-    nro_servicio = models.AutoField(primary_key=True)
     fecha_emision = models.DateField(auto_now=True, auto_now_add=False)
     plazo_vigencia = models.DateField(auto_now=False, auto_now_add=False)
     direccion = models.CharField(max_length=90)
@@ -60,7 +59,6 @@ class Frecuencia(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     
 class Reclamo(models.Model):
-    nroReclamo = models.IntegerField(primary_key= True)
     descripcion = models.CharField(max_length=400)
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     

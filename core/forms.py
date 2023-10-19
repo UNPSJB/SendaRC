@@ -163,11 +163,13 @@ class ClienteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
+        super(ClienteForm, self).__init__(*args, **kwargs)
         if is_modificar:
             mensaje = 'Modificar un cliente aquí. Dale clic en guardar al terminar'
+            self.fields['tipo'].widget.attrs['hidden'] = False
         else:
             mensaje = 'Agregar un cliente aquí. Dale clic en guardar al terminar'
-        super(ClienteForm, self).__init__(*args, **kwargs)
+            self.fields['tipo'].widget.attrs['hidden'] = True
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
@@ -231,7 +233,7 @@ class TipoServicioForm(forms.ModelForm):
         self.fields['insumos'].queryset = Insumo.objects.all()
         self.fields['maquinarias'].queryset = Maquinaria.objects.all()
 
-        self.fields['insumos'].widget.choices = [(insumo.codigo, insumo.descripcion) for insumo in Insumo.objects.all()]
+        self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.objects.all()]
         self.fields['maquinarias'].widget.choices = [(maquinaria.pk, maquinaria.nombre) for maquinaria in Maquinaria.objects.all()]
 
         self.helper = FormHelper()

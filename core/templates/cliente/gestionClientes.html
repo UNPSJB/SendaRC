@@ -30,7 +30,7 @@
                 <td scope="row">{{ cliente.getTipoPersona }}</td>
                 <td scope="row">
                     <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                    <a href="{% url 'modificarCliente' cliente.cuil %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                    <a href="{% url 'modificarCliente' cliente.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>

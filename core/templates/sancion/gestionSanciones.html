@@ -21,11 +21,11 @@
     <tbody>
         {% for sancion in sanciones %}
             <tr class="fila-tabla">
-                <td scope="row">{{ sancion.nroSancion }}</td>
+                <td scope="row">{{ sancion.pk }}</td>
                 <td scope="row">{{ sancion.tipo }}</td>
                 <td scope="row">{{ sancion.getEmpleado }}</td>
                 <td scope="row">
-                    <a href="{% url 'modificarSancion' sancion.nroSancion %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                    <a href="{% url 'modificarSancion' sancion.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>

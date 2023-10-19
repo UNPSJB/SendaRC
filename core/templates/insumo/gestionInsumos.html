@@ -24,14 +24,14 @@
     <tbody>
         {% for insumo in insumos %}
             <tr class="fila-tabla">
-                <td scope="row">{{ insumo.codigo }} </td>
+                <td scope="row">{{ insumo.pk }} </td>
                 <td scope="row">{{ insumo.descripcion }} </td>
                 <td scope="row">{{ insumo.unidad_med }} </td>
                 <td scope="row">{{ insumo.contenido_neto }} </td>
                 <td scope="row">{{ insumo.marca }} </td>
                 <td scope="row">{{ insumo.cantidad }} </td>
                 <td scope="row">      
-                    <a href="{% url 'modificarInsumo' insumo.codigo %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                    <a href="{% url 'modificarInsumo' insumo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>

@@ -8,7 +8,6 @@ class factura(models.Model):
         (2, 'Cheque'),
         (3, 'Transferencia'),
     }
-    numfactura = models.IntegerField()
     importetotal = models.IntegerField()
     fechaemision = models.DateField(auto_now=True, auto_now_add=False)
     formapago =  models.PositiveIntegerField(choices=FORMAPAGO)

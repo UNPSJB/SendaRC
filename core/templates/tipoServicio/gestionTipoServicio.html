@@ -12,6 +12,7 @@
 <table class="table table-dark">
     <thead>
         <tr>
+            <th scope="col">Codigo</th>
             <th scope="col">Descripción</th>
             <th scope="col">Unidad de Medida</th>
             <th scope="col">Precio</th>
@@ -23,6 +24,7 @@
     <tbody>
         {% for tipo in tipoServicios %}
             <tr class="fila-tabla">
+                <td scope="row">{{ tipo.pk }}</td>
                 <td scope="row">{{ tipo.descripcion }}</td>
                 <td scope="row">{{ tipo.unidad_medida }}</td>
                 <td scope="row">{{ tipo.precio }}</td>
@@ -39,9 +41,10 @@
 </table>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Tipo de Servicio:{{ tipo.descripcion }}</h5>
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Tipo de Servicio:</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body"></div>
+    <div class="offcanvas-body">
+    </div>
 </div>
 {% endblock %}

@@ -8,7 +8,6 @@ class Insumo(models.Model):
         (3, 'ml'),
         (4, 'Lts')
     }
-    codigo = models.IntegerField(auto_created=True, primary_key=True)
     descripcion = models.CharField(max_length=50)
     unidad_med = models.IntegerField(choices=UNIDAD)
     contenido_neto = models.IntegerField()
@@ -16,7 +15,7 @@ class Insumo(models.Model):
     cantidad = models.IntegerField()
     
 class Maquinaria(models.Model):
-    nombre = models.CharField(max_length=50, primary_key=True)
+    nombre = models.CharField(max_length=50)
     modelo = models.CharField(max_length=50)
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
@@ -28,7 +27,6 @@ class TipoServicio(models.Model):
         (1, 'm2'),
         (2, 'unidad')
     }
-    codigo = models.IntegerField(auto_created=True, primary_key=True)
     descripcion = models.CharField(max_length=50)
     unidad_medida = models.PositiveIntegerField(choices=UNIDAD)
     precio = models.IntegerField()
@@ -41,7 +39,7 @@ class CantInsumoServicio(models.Model):
     cantidad = models.IntegerField(null=True)
     
 class Localidad(models.Model):
-    cp = models.IntegerField(primary_key=True)
+    cp = models.CharField(unique=True, max_length=10)
     nombre = models.CharField(max_length=100)
     
     def __str__(self):
@@ -59,9 +57,9 @@ class Cliente(models.Model):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     direccion = models.CharField(max_length=50)
-    tipo = models.PositiveIntegerField(choices=TIPO)
+    tipo = models.PositiveIntegerField(choices=TIPO, default=1)
     tipoPersona = models.PositiveIntegerField(choices=TIPOPERSONA)
-    cuil = models.IntegerField(primary_key=True)
+    cuil = models.IntegerField(unique=True)
     telefono = models.IntegerField()
     email = models.EmailField(max_length=254)
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
@@ -73,8 +71,8 @@ class Cliente(models.Model):
         return dict(self.TIPOPERSONA)[self.tipoPersona]
 
 class Empleado(models.Model):
-    numDNI = models.IntegerField(primary_key=True)
-    numLegajo = models.IntegerField()
+    numDNI = models.IntegerField(unique=True)
+    numLegajo = models.IntegerField(unique=True)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     telefono = models.IntegerField()
@@ -88,7 +86,7 @@ class Sancion(models.Model):
         (2, 'Suspension')
     }
     tipo = models.PositiveIntegerField(choices=TIPO)
-    nroSancion = models.IntegerField(primary_key=True)
+    nroSancion = models.IntegerField()
     empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
     
     def getEmpleado(self):
