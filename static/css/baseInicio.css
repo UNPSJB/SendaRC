@@ -19,9 +19,6 @@
     display: flex;
     align-items: start ;
 }
-.nav-container.expanded > .navbar > a > .icono-sendaRC{
-    font-size: 25px;
-}
 .sideBarExpand{
     width: 100%;
 }
