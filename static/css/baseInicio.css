@@ -8,17 +8,50 @@
     height: 100vh;
 }
 .nav-container{
-    min-width: 60px;
+    width: 60px;
     height: 100vh;
     border-right: 1px solid #505050;
+    transition: all 0.2s ease-in-out;
+    overflow: hidden;
+}
+.nav-container.expanded {
+    width: 210px;
+    display: flex;
+    align-items: start ;
+}
+.nav-container.expanded > .navbar > a > .icono-sendaRC{
+    font-size: 25px;
+}
+.sideBarExpand{
+    width: 100%;
+}
+.sideBarExpand > ul > li > .nav-link{
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+    padding-inline: 10px;
+}
+.sideBarExpand > ul > li > #btn-toExpand{
+    display: flex;
+    justify-content: center;
+}
+.sideBarExpand > ul > li > .nav-link > .nav-item-span{
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+}
+.nav-item-span{
+    display: none;
 }
 .navbar{
     background-color: black !important;
     height: 100%;
+    align-content: center;
 }
 .nav-link{
-    width: 38px !important;
-    height: 35px !important;
+    width: 38px;
+    height: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,4 +86,6 @@
 }
 .icono-sendaRC{
     color: white;
+    font-weight:bold;
+    font-size: 10px;
 }

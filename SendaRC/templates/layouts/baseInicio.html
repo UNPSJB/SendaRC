@@ -11,11 +11,11 @@
         <nav class="navbar d-flex flex-column flex-shrink-0 bg-body-tertiary">
             <a href="/" class="d-block p-3 link-body-emphasis text-decoration-none" data-bs-toggle="tooltip"
                 data-bs-placement="right" data-bs-original-title="Icon-only">
-                <span class="icono-sendaRC"><i class="bi bi-twitter-x"></i></span>
+                <span class="icono-sendaRC">SendaRC</span>
             </a>
             <ul class="list-navbar nav nav-pills nav-flush flex-column mb-auto text-center">
-                <li class="nav-item">
-                    <button href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                <li class="nav-item" id="expand-button">
+                    <button id="btn-toExpand" href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="open-bar" data-bs-original-title="open-bar">
                         <i class="bi bi-list"></i>
                     </button>
@@ -24,72 +24,84 @@
                     <a href="{% url 'home' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
                         <i class="bi bi-house"></i>
+                        <span class="nav-item-span">Home</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionLocalidad' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Localidades" data-bs-original-title="Localidades">
                         <i class="bi bi-geo-alt"></i>
+                        <span class="nav-item-span">Localidades</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionEmpleado' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Empleados" data-bs-original-title="Empleados">
                         <i class="bi bi-people"></i>
+                        <span class="nav-item-span">Empleados</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionMaquinaria' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Maquinarias" data-bs-original-title="Maquinarias">
                         <i class="bi bi-hammer"></i>
+                        <span class="nav-item-span">Maquinarias</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionTipoServicio' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="TipoServicios" data-bs-original-title="TipoServicios">
                         <i class="bi bi-truck"></i>
+                        <span class="nav-item-span">Tipos de servicios</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionInsumos' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Insumos" data-bs-original-title="Insumos">
                         <i class="bi bi-box2"></i>
+                        <span class="nav-item-span">Insumo</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionClientes' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Clientes" data-bs-original-title="Clientes">
                         <i class="bi bi-person-vcard"></i>
+                        <span class="nav-item-span">Clientes</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Reclamos" data-bs-original-title="Reclamos">
                         <i class="bi bi-clipboard-x"></i>
+                        <span class="nav-item-span">Reclamos</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionSanciones' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Sanciones" data-bs-original-title="Sanciones">
                         <i class="bi bi-person-x"></i>
+                        <span class="nav-item-span">Sanciones</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Asistencias" data-bs-original-title="Asistencias">
                         <i class="bi bi-journal-text"></i>
+                        <span class="nav-item-span">Insumo</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'gestionServicios' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Presupuestos" data-bs-original-title="Presupuestos">
                         <i class="bi bi-cash-coin"></i>
+                        <span class="nav-item-span">Servicios</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Facturas" data-bs-original-title="Facturas">
                         <i class="bi bi-newspaper"></i>
+                        <span class="nav-item-span">Facturas</span>
                     </a>
                 </li>
             </ul>
