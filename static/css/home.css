@@ -1,3 +1,6 @@
+.atajo-link{
+    text-decoration: none;
+}
 .container-home{
     display: flex;
     flex-direction: column;
