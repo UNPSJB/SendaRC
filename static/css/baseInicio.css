@@ -57,6 +57,9 @@
     align-items: center;
     color: white;
 }
+.no-transition {
+    transition: none;
+}
 .nav-link:hover{
     background-color: white !important;
     color: black !important;

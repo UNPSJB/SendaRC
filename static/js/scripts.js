@@ -9,12 +9,12 @@ function initializeDataTable() {
 }
 document.addEventListener("DOMContentLoaded", function () {
   initializeDataTable();
-});
-
-document.addEventListener("DOMContentLoaded", function () {
   const navContainer = document.querySelector(".nav-container");
   const sideBar = document.querySelector(".navbar");
   const expandButton = document.getElementById("expand-button");
+
+  // Desactivar la transición al cargar la página
+  navContainer.classList.add("no-transition");
 
   const isExpanded = localStorage.getItem("isNavExpanded") === "true";
 
@@ -23,9 +23,15 @@ document.addEventListener("DOMContentLoaded", function () {
     sideBar.classList.add("sideBarExpand");
   }
 
+  // Habilitar la transición después de un pequeño retraso
+  setTimeout(() => {
+    navContainer.classList.remove("no-transition");
+  }, 100);
+
   expandButton.addEventListener("click", function () {
     navContainer.classList.toggle("expanded");
     sideBar.classList.toggle("sideBarExpand");
     localStorage.setItem("isNavExpanded", navContainer.classList.contains("expanded"));
   });
 });
+
