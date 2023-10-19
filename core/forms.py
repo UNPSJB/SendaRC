@@ -275,6 +275,11 @@ class FormAltaMaquinaria(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+        is_modificar = kwargs.pop('is_modificar', False)
+        if is_modificar:
+            mensaje = 'Modificar maquinaria aquí. Dale clic en guardar al terminar'
+        else:
+            mensaje = 'Agregar maquinaria aquí. Dale clic en guardar al terminar'
         super(FormAltaMaquinaria, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -295,11 +300,9 @@ class FormAltaMaquinaria(forms.ModelForm):
                 ),
                 Div(
                     Submit('submit', 'Guardar', css_class='btn-Guardar'),
-                    HTML('<a href="#" class="btn-Cancelar">Cancelar</a>'),
+                    HTML('<a href="{% url "gestionMaquinaria" %}" class="btn-Cancelar">Cancelar</a>'),
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
             )
         )
-
-        

@@ -16,7 +16,7 @@ class Insumo(models.Model):
     cantidad = models.IntegerField()
     
 class Maquinaria(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, primary_key=True)
     modelo = models.CharField(max_length=50)
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()

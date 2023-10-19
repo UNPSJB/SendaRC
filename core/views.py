@@ -86,7 +86,17 @@ class altaMaquinaria(CreateView):
 class gestionMaquinaria(ListView):
     model = Maquinaria
     template_name = 'maquinaria/gestionMaquinaria.html'
-    context_object_name = 'maquinarias'
+    context_object_name = 'maquinarias' 
+
+class updateMaquinaria(UpdateView):
+    model = Maquinaria
+    form_class = FormAltaMaquinaria
+    template_name = 'maquinaria/modificarMaquinaria.html'
+    success_url = reverse_lazy('gestionMaquinaria')
+    def get_form_kwargs(self):
+        kwargs = super(updateMaquinaria, self).get_form_kwargs()
+        kwargs['is_modificar'] = True  
+        return kwargs
 
 class altaLocalidad(CreateView):
     model = Localidad

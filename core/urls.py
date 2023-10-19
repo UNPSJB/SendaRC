@@ -28,6 +28,8 @@ urlpatterns = [
     path('modificarTipoServicio/<int:pk>', updateTipoServicio.as_view(), name='modificarTipoServicio'),
     
     path('altaMaquinaria/', altaMaquinaria.as_view(), name='altaMaquinaria'), 
+    path('modificarMaquinaria/<str:pk>', updateMaquinaria.as_view(), name='modificarMaquinaria'),
     path('gestionMaquinaria/', gestionMaquinaria.as_view(), name='gestionMaquinaria'), 
+
 ]
 
