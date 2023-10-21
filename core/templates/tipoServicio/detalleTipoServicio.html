@@ -1,0 +1,11 @@
+{% load static %}
+{% block detalle %}
+
+<h1> Tipo De Servicio</h1>
+<h2> Nombre: {{tipo.descripcion}} </h2>
+<h2> Unidad de Medida: {{tipo.unidad_medida}} </h2>
+{%for insumo in tipo.insumos%}
+<h2> Insumos: {{insumo.str}} </h2>
+{%endfor%}
+
+{% endblock %}

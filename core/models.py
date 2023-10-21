@@ -13,6 +13,11 @@ class Insumo(models.Model):
     contenido_neto = models.IntegerField()
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
+
+    def getInsumo(self):
+        return self.insumo.descripcion
+    def __str__(self):
+        return self.descripcion
     
 class Maquinaria(models.Model):
     nombre = models.CharField(max_length=50)

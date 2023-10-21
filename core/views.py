@@ -68,6 +68,10 @@ class gestionTipoServicio(ListView):
     template_name = 'tipoServicio/gestionTipoServicio.html'
     context_object_name = 'tipoServicios'
 
+def tipoServicioDetalles(request, pk):
+    tipo = TipoServicio.objects.get(id=pk)
+    return render(request, 'tipoServicio/detalleTipoServicio.html', {'tipo': tipo})
+
 class updateTipoServicio(UpdateView):
     model = TipoServicio
     form_class = TipoServicioForm
