@@ -215,13 +215,10 @@ class ClienteForm(forms.ModelForm):
             self.add_error('telefono', "Formato requerido(sin guiones): codigoArea-número")
 
 class TipoServicioForm(forms.ModelForm):
+    
     class Meta:
         model = TipoServicio
         fields = ['descripcion', 'unidad_medida', 'precio', 'insumos', 'maquinarias']
-        widgets = {
-            'insumos': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
-            'maquinarias': forms.SelectMultiple(attrs={'class': 'form-control'}),
-        }
     
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -248,11 +245,8 @@ class TipoServicioForm(forms.ModelForm):
                         FloatingField('descripcion'),
                         FloatingField('unidad_medida'),
                         FloatingField('precio'),
-                        css_class='container-inputs'
-                    ),
-                    Div(
-                        Field('insumos', multiple=True, css_class='form-control'),
-                        Field('maquinarias', multiple=True, css_class='form-control'),    
+                        Field('insumos', multiple=True),
+                        Field('maquinarias', multiple=True),    
                         css_class='container-inputs'
                     )
                 ),

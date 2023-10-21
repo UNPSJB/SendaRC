@@ -11,7 +11,11 @@
 {% block formulario %}
     <div class="container container-form">
         {% crispy form %}
-    </div>
+    </div>    
+    <script>
+        $("#id_insumos").select2();
+        $("#id_maquinarias").select2();
+    </script>
 {% endblock %}
 
 
