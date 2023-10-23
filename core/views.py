@@ -70,7 +70,15 @@ class gestionTipoServicio(ListView):
 
 def tipoServicioDetalles(request, pk):
     tipo = TipoServicio.objects.get(id=pk)
-    return render(request, 'tipoServicio/detalleTipoServicio.html', {'tipo': tipo})
+    insumos = CantInsumoServicio.objects.filter(tipoServicio=pk)
+    maquinarias = TipoServicio.maquinarias.through.objects.filter(tiposervicio_id=pk)
+    listInsumos = []
+    listMaquinarias = []
+    for insumo in insumos:
+        listInsumos.append(Insumo.objects.get(id=insumo.insumo_id))
+    for maquinaria in maquinarias:
+        listMaquinarias.append(Maquinaria.objects.get(id=maquinaria.maquinaria_id))
+    return render(request, 'tipoServicio/detalleTipoServicio.html', {'tipo': tipo, 'insumos': listInsumos, 'maquinarias': listMaquinarias})
 
 class updateTipoServicio(UpdateView):
     model = TipoServicio

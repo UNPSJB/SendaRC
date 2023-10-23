@@ -1,7 +1,6 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
-
-{% block cssGestion %}
+{% block extracss %}{{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
 

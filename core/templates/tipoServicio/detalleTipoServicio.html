@@ -1,11 +1,13 @@
 {% load static %}
 {% block detalle %}
-
-<h1> Tipo De Servicio</h1>
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
 <h2> Nombre: {{tipo.descripcion}} </h2>
 <h2> Unidad de Medida: {{tipo.unidad_medida}} </h2>
-{%for insumo in tipo.insumos%}
-<h2> Insumos: {{insumo.str}} </h2>
-{%endfor%}
+{% for insumo in insumos %}
+<h2> Insumos: {{insumo.descripcion}} </h2>
+{% endfor %}
+{% for maquinaria in maquinarias %}
+<h2> Maquinarias: {{maquinaria.nombre}} </h2>
+{% endfor %}
 
 {% endblock %}

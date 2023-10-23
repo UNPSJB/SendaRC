@@ -1,7 +1,7 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block cssVista %}
+{% block extracss %}{{block.super}}
     <link href="{% static 'css/cliente.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block title %}

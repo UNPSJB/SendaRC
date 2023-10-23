@@ -45,7 +45,7 @@ class FormSancion(forms.ModelForm):
 class FormEmpleado(forms.ModelForm):
     class Meta:
         model = Empleado
-        fields = ['numDNI', 'numLegajo', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad']
+        fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad']
         
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -64,7 +64,6 @@ class FormEmpleado(forms.ModelForm):
                     ),
                     Div(
                         FloatingField('numDNI'),
-                        FloatingField('numLegajo'),
                         FloatingField('nombre'),
                         FloatingField('apellido'),
                         FloatingField('telefono'),
@@ -260,14 +259,13 @@ class TipoServicioForm(forms.ModelForm):
 class FormAltaMaquinaria(forms.ModelForm):
     class Meta:
         model = Maquinaria
-        fields = ['nombre', 'modelo', 'marca', 'cantidad', 'observaciones', 'baja']
+        fields = ['nombre', 'modelo', 'marca', 'cantidad', 'observaciones', 'activo']
         widgets = {
             "nombre": forms.TextInput(attrs={'class': 'form-control','placeholder':'Nombre'}),
             "modelo": forms.TextInput(attrs={'class': 'form-control','placeholder':'Modelo'}),
             "marca": forms.TextInput(attrs={'class': 'form-control','placeholder':'Marca'}),
             "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'}),
             "observaciones": forms.Textarea(attrs={'class': 'form-control textarea','placeholder':'Observaciones'}),
-            "estado": forms.BooleanField()
         }
     
     def __init__(self, *args, **kwargs):
@@ -291,7 +289,6 @@ class FormAltaMaquinaria(forms.ModelForm):
                         FloatingField('marca'),
                         FloatingField('cantidad'),
                         FloatingField('observaciones'),
-                        FloatingField('estado')
                     )
                 ),
                 Div(

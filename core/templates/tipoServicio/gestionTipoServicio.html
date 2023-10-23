@@ -1,6 +1,7 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
-{% block cssGestion %}
+{% block extracss %}
+    {{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block title%}
@@ -16,8 +17,7 @@
             <th scope="col">Descripción</th>
             <th scope="col">Unidad de Medida</th>
             <th scope="col">Precio</th>
-            <th scope="col">Insumos</th>
-            <th scope="col">Maquinarias</th>
+            <th scope="col">Activo</th>
             <th scope="col">Opciones</th>
         </tr>
         </thead>
@@ -28,23 +28,31 @@
                 <td scope="row">{{ tipo.descripcion }}</td>
                 <td scope="row">{{ tipo.unidad_medida }}</td>
                 <td scope="row">{{ tipo.precio }}</td>
-                <td scope="row">{{ tipo.insumos.str }}</td>
-                <td scope="row">{{ tipo.maquinarias }}</td>
+                <td scope="row">{{ tipo.activo }}</td>
                 <td scope="row">
-                    <button href="{% url 'detalleTipoServicio' tipo.pk%}" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                    <button href="{% url 'detalleTipoServicio' tipo.pk %}" class="opcion" type="button" 
+                        data-url="/gestionTipoServicio/{{tipo.pk}}"
+                        data-bs-toggle="offcanvas" 
+                        data-bs-target="#offcanvasExample" 
+                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
                     <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>
+
         {% endfor %}
     </tbody>
 </table>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Tipo de Servicio:</h5>
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Tipo de Servicio</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
     </div>
 </div>
+{% endblock %}
+
+{% block extrajs %}{{block.super}}
+   
 {% endblock %}

@@ -1,9 +1,7 @@
 {% extends 'layouts/baseInicio.html' %}
 {% load static %}
-{% block extracss %}
+{% block extracss %}{{block.super}}
     <link href="{% static 'css/baseForm.css' %}" rel="stylesheet" />
-    {% block cssVista %}
-    {% endblock %}
 {% endblock %}
 {% block seccion-main %}
         <div class="seccion-cabecera">
