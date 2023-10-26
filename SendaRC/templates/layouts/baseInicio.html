@@ -1,8 +1,8 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
-{% block css %}
+{% block extracss %}
+    {{block.super}}
     <link href="{% static 'css/baseInicio.css' %}" rel="stylesheet" />
-    {% block extracss %}{% endblock %}
 {% endblock %}
 
 {% block container %}

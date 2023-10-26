@@ -1,6 +1,7 @@
 {% extends 'layouts/baseInicio.html' %}
 {% load static %}
 {% block extracss %}
+    {{block.super}}
     <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet"/>
 {% endblock %}
 {% block cssGestion %}
@@ -13,10 +14,12 @@
         <div class="secccion-listado"> 
             {% block listado %}
             {% endblock %}
+        </div>
+{% endblock %}
+
+{% block extrajs %}{{block.super}}
             {% if messages %}
                 {% for m in messages %}
-                    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-                    <script src="{% static 'libs/jqueryToast/src/jquery.toast.js'%}"></script>
                     <script>
                         var myToast = $.toast({
                             heading : 'Mr.Marston',
@@ -29,5 +32,4 @@
                     </script>
                 {% endfor %}
             {% endif %}
-        </div>
-{% endblock %}
+            {% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'layouts/baseInicio.html' %}
 {% load static %}
-{% block extracss %}
+{% block extracss %}{{block.super}}
 <link href="{% static 'css/home.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block seccion-main %}

@@ -1,6 +1,6 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
-{% block cssGestion %}
+{% block extracss %}{{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
@@ -17,7 +17,7 @@
             <th scope="col">Marca</th>
             <th scope="col">Cantidad</th>
             <th scope="col">Observaciones</th>
-            <th scope="col">Baja</th>
+            <th scope="col">Activa</th>
             <th scope="col">Opciones</th>
         </tr>
     </thead>
@@ -29,7 +29,7 @@
                 <td scope="row">{{ maquinaria.marca }}</td>
                 <td scope="row">{{ maquinaria.cantidad }}</td>
                 <td scope="row">{{ maquinaria.observaciones }}</td>
-                <td scope="row">{{ maquinaria.baja }}</td> 
+                <td scope="row">{{ maquinaria.activo }}</td> 
                 <td scope="row">    
                     <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>  
                     <a href="{% url 'modificarMaquinaria' maquinaria.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
@@ -38,7 +38,7 @@
             </tr>
         {% endfor %}
     </tbody>
-</table>}
+</table>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">Maquinaria:{{ maquinaria.nombre }}</h5>

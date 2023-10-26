@@ -13,6 +13,7 @@ class Insumo(models.Model):
     contenido_neto = models.IntegerField()
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
+    activo = models.BooleanField(default=True)
 
     def getInsumo(self):
         return self.insumo.descripcion
@@ -25,7 +26,7 @@ class Maquinaria(models.Model):
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
     observaciones = models.TextField()
-    baja = models.BooleanField()
+    activo = models.BooleanField(default=True)
     
 class TipoServicio(models.Model):
     UNIDAD = {
@@ -37,6 +38,7 @@ class TipoServicio(models.Model):
     precio = models.IntegerField()
     insumos = models.ManyToManyField(Insumo, through='CantInsumoServicio')
     maquinarias = models.ManyToManyField(Maquinaria)
+    activo = models.BooleanField(default=True)
     
 class CantInsumoServicio(models.Model):
     insumo = models.ForeignKey(Insumo, on_delete=models.DO_NOTHING)
@@ -68,6 +70,7 @@ class Cliente(models.Model):
     telefono = models.IntegerField()
     email = models.EmailField(max_length=254)
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
+    activo = models.BooleanField(default=True)
 
     def getTipo(self):
         return dict(self.TIPO)[self.tipo]
@@ -77,13 +80,13 @@ class Cliente(models.Model):
 
 class Empleado(models.Model):
     numDNI = models.IntegerField(unique=True)
-    numLegajo = models.IntegerField(unique=True)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     telefono = models.IntegerField()
     email = models.EmailField(max_length=254)
     sueldo = models.IntegerField()
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
+    activo = models.BooleanField(default=True)
     
 class Sancion(models.Model):
     TIPO = {

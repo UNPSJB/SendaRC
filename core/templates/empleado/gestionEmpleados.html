@@ -1,6 +1,6 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
-{% block cssGestion %}
+{% block extracss %}{{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block title%}
@@ -24,7 +24,7 @@
         {% for empleado in empleados %}
             <tr class="fila-tabla">
                 <td scope="row">{{ empleado.numDNI }}</td>
-                <td scope="row">{{ empleado.numLegajo }}</td>
+                <td scope="row">{{ empleado.pk }}</td>
                 <td scope="row">{{ empleado.nombre }}</td>
                 <td scope="row">{{ empleado.apellido }}</td>
                 <td scope="row">{{ empleado.telefono }}</td>
