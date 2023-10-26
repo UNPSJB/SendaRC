@@ -15,7 +15,11 @@
 {% endblock %}
 {% block extrajs %}
 <script>
-    $("#id_insumos").select2();
-    $("#id_maquinarias").select2();
+    $("#id_insumos").select2({
+        placeholder: "Busque y seleccione los insumos necesarios..",
+    });
+    $("#id_maquinarias").select2({
+        placeholder: "Busque y seleccione las maquinarias necesarias..",
+    });
 </script>
 {% endblock %}
