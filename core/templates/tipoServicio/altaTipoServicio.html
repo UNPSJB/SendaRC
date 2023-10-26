@@ -13,7 +13,11 @@
         {% crispy form %}
     </div>
     <script>
-        $("#id_insumos").select2();
-        $("#id_maquinarias").select2();
+        $("#id_insumos").select2({
+            placeholder: "Seleccione insumos",
+        });
+        $("#id_maquinarias").select2({
+            placeholder: "Seleccione maquinarias",
+        });
     </script>
 {% endblock %}
