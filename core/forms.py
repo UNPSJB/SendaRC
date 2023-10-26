@@ -1,8 +1,10 @@
+from typing import Any
 from django import forms
 import re
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField
+from localflavor.ar.forms import ARCUITField,ARDNIField,ARPostalCodeField
 
 from .models import *
 
@@ -43,6 +45,7 @@ class FormSancion(forms.ModelForm):
         )
 
 class FormEmpleado(forms.ModelForm):
+    numDNI = ARDNIField(label='DNI', error_messages={'invalid': 'DNI no válido'})
     class Meta:
         model = Empleado
         fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad']
@@ -83,6 +86,7 @@ class FormEmpleado(forms.ModelForm):
         )
 
 class FormLocalidad(forms.ModelForm):
+    cp = ARPostalCodeField(label='Codigo Postal', error_messages={'invalid': 'Codigo postal no válido'})
     class Meta:
         model = Localidad
         fields = ['cp', 'nombre']
@@ -156,9 +160,10 @@ class FormInsumo(forms.ModelForm):
     
 
 class ClienteForm(forms.ModelForm):
+    cuil = ARCUITField(label='CUIL', error_messages={'invalid': 'CUIL no válido'})
     class Meta:
         model = Cliente
-        fields = ['cuil', 'nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad']
+        fields = ['cuil','nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad']
 
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -198,20 +203,6 @@ class ClienteForm(forms.ModelForm):
                 css_class='container-forms'
             )
         )
-    
-    def clean(self):
-        cleaned_data = super().clean()
-        cuil= str(cleaned_data.get('cuil', ''))
-        telefono = str(cleaned_data.get('telefono', ''))
-
-        regex_pattern_cuil = r'^\d{11}$'
-        regex_pattern_telefono = r'^\d{10}$'
-
-        if not re.match(regex_pattern_cuil, cuil):
-            self.add_error('cuil', "Formato requerido(sin guiones): xx-xxxxxxxx-x")
-
-        if not re.match(regex_pattern_telefono, telefono):
-            self.add_error('telefono', "Formato requerido(sin guiones): codigoArea-número")
 
 class TipoServicioForm(forms.ModelForm):
     

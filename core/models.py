@@ -66,8 +66,8 @@ class Cliente(models.Model):
     direccion = models.CharField(max_length=50)
     tipo = models.PositiveIntegerField(choices=TIPO, default=1)
     tipoPersona = models.PositiveIntegerField(choices=TIPOPERSONA)
-    cuil = models.IntegerField(unique=True)
-    telefono = models.IntegerField()
+    cuil = models.CharField(unique=True,max_length=13)
+    telefono =models.CharField(max_length=10)
     email = models.EmailField(max_length=254)
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
     activo = models.BooleanField(default=True)
@@ -79,10 +79,10 @@ class Cliente(models.Model):
         return dict(self.TIPOPERSONA)[self.tipoPersona]
 
 class Empleado(models.Model):
-    numDNI = models.IntegerField(unique=True)
+    numDNI = models.CharField(unique=True,max_length=10)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
-    telefono = models.IntegerField()
+    telefono = models.CharField(max_length=10)
     email = models.EmailField(max_length=254)
     sueldo = models.IntegerField()
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
