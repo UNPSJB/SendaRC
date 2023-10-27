@@ -9,5 +9,5 @@ urlpatterns = [
     path('home/', home, name = 'home'),
     path('', login, name = 'login'),
     path('', include('core.urls')),
-    path('', include('servicio.urls'))
+    path('servicio/', include('servicio.urls'))
 ]

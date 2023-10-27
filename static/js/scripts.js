@@ -35,14 +35,11 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-$(function() {
-    $('#offcanvasExample').on('show.bs.offcanvas', function (event) {
-var button = $(event.relatedTarget) // Button that triggered the modal
-var url = button.data('url') // Extract info from data-* attributes
-// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-var modal = $(this)
-modal.find('.offcanvas-body').load(url);
-})
-
+$(function () {
+  $('#offcanvasExample').on('show.bs.offcanvas', function (event) {
+    var button = $(event.relatedTarget) 
+    var url = button.data('url') 
+    var modal = $(this)
+    modal.find('.offcanvas-body').load(url);
+  })
 })
