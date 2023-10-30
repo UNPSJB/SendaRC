@@ -1,7 +1,25 @@
 from django.db import models
-from core.models import Empleado, Cliente
+from core.models import Empleado, Cliente, TipoServicio
 
 # Create your models here.
+class Frecuencia(models.Model):
+    DIA={
+        (1, 'Lunes'),
+        (2, 'Martes'),
+        (3, 'Miercoles'),
+        (4, 'Jueves'),
+        (5, 'Viernes'),
+        (6, 'Sabado')
+    }
+    TURNO={
+        (1, 'Mañana'),
+        (2, 'Tarde'),
+        (3, 'Noche')
+    }
+    dia = models.PositiveIntegerField(choices=DIA)
+    turno = models.PositiveIntegerField(choices=TURNO)
+    horaInicio = models.DateTimeField()
+    horaFin = models.DateTimeField()
 
 class Servicio(models.Model):
     ESTADO = {
@@ -32,31 +50,13 @@ class Servicio(models.Model):
     fecha_cancelada = models.DateField(auto_now=False, auto_now_add=False)
     empleado = models.ManyToManyField(Empleado) 
     cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
+    tipoServicios = models.ManyToManyField(TipoServicio)
+    frecuencias = models.ManyToManyField(Frecuencia)
     
 class HojaTrabajo(models.Model):
     fecha = models.DateField()
     empleado = models.ForeignKey(Empleado,on_delete=models.DO_NOTHING)
     servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)    
-
-class Frecuencia(models.Model):
-    DIA={
-        (1, 'Lunes'),
-        (2, 'Martes'),
-        (3, 'Miercoles'),
-        (4, 'Jueves'),
-        (5, 'Viernes'),
-        (6, 'Sabado')
-    }
-    TURNO={
-        (1, 'Mañana'),
-        (2, 'Tarde'),
-        (3, 'Noche')
-    }
-    dia = models.PositiveIntegerField(choices=DIA)
-    turno = models.PositiveIntegerField(choices=TURNO)
-    horaInicio = models.DateTimeField()
-    horaFin = models.DateTimeField()
-    servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     
 class Reclamo(models.Model):
     descripcion = models.CharField(max_length=400)
