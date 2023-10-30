@@ -30,7 +30,7 @@ urlpatterns = [
     
     path('altaMaquinaria/', altaMaquinaria.as_view(), name='altaMaquinaria'), 
     path('modificarMaquinaria/<int:pk>', updateMaquinaria.as_view(), name='modificarMaquinaria'),
-    path('gestionMaquinaria/', gestionMaquinaria.as_view(), name='gestionMaquinaria'), 
+    path('gestionMaquinaria/', gestionMaquinaria.as_view(), name='gestionMaquinaria'),
+    path('gestionMaquinaria/<int:pk>', maquinariaDetalles, name='detalleMaquinaria'),
 
 ]
-

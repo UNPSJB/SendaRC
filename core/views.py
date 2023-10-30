@@ -80,6 +80,10 @@ def tipoServicioDetalles(request, pk):
         listMaquinarias.append(Maquinaria.objects.get(id=maquinaria.maquinaria_id))
     return render(request, 'tipoServicio/detalleTipoServicio.html', {'tipo': tipo, 'insumos': listInsumos, 'maquinarias': listMaquinarias})
 
+def maquinariaDetalles(request, pk):
+    maquinaria = Maquinaria.objects.get(id=pk)
+    return render(request, 'maquinaria/detalleMaquinaria.html', {'maquinaria': maquinaria})
+
 class updateTipoServicio(UpdateView):
     model = TipoServicio
     form_class = TipoServicioForm

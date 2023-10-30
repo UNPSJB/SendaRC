@@ -30,9 +30,14 @@
                 <td scope="row">{{ maquinaria.cantidad }}</td>
                 <td scope="row">{{ maquinaria.observaciones }}</td>
                 <td scope="row">{{ maquinaria.activo }}</td> 
-                <td scope="row">    
-                    <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>  
-                    <a href="{% url 'modificarMaquinaria' maquinaria.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                <td scope="row">
+                    <button href="{% url 'detalleMaquinaria' maquinaria.pk %}" class="opcion" type="button" 
+                        data-url="/gestionMaquinaria/{{maquinaria.pk}}"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasExample"
+                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                    <a href="{% url 'modificarMaquinaria' maquinaria.pk%}" cl
+                    ass="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>
@@ -41,12 +46,14 @@
 </table>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Maquinaria:{{ maquinaria.nombre }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
-        </button>
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Maquinaria</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div>
-
+    <div class="offcanvas-body">
     </div>
 </div>
+{% endblock %}
+
+{% block extrajs %}{{block.super}}
+   
 {% endblock %}
