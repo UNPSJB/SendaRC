@@ -4,6 +4,7 @@ from .forms import *
 
 class PresupuestoSession(dict):
     FIELDS = ["direccion", "metros2", "observaciones", "tipo"]
+    FIELDS2 = ["tipoServicio"]
     # Create init for PresupuestoSession
     def __init__(self, session=None):
         self.session = session
@@ -15,13 +16,30 @@ class PresupuestoSession(dict):
     @classmethod
     def getOrCreate(cls, session):
         p = PresupuestoSession.create(session)
+        
         if "presupuesto" in session:
             p.update(session["presupuesto"])
+        if "listaServicios" in session:
+            p.update(session["listaServicios"])
         return p
     
     def store(self):
         data = {k: v for k, v in self.items() if k in self.FIELDS}
         data["cliente_pk"] = self["cliente"].pk
+        self.session["presupuesto"] = data
+        
+    def storeServicio(self):
+        data = {k: v for k, v in self.items() if k in self.FIELDS2}
+        print(data)
+        lista = []
+        lista.append(self["tipoServicios"].pk)
+        data["listaServicio"] = lista
+        self.session["presupuesto"] = data
+        print(data)
+    
+    def storeFrecuencia(self):
+        data = {k: v for k, v in self.items() if k in self.FIELDS}
+        
         self.session["presupuesto"] = data
 
     def save():
@@ -54,14 +72,15 @@ def presupuestarCliente(request):
 def presupuestarServicios(request):
     p = PresupuestoSession.getOrCreate(request.session)
     if (request.method == 'POST'):
-        form = FormPresupuestoServicios(request.POST)
-        if form.is_valid():
-            p.update(form.cleaned_data)
-            p.store()
-            return redirect('presupuestarConfirmar')
+        formS = FormPresupuestoServicios(request.POST)
+        if formS.is_valid():
+            p.update(formS.cleaned_data)
+            p.storeServicio()
+            return redirect('presupuestarServicios')
     else:
-        form = FormPresupuestoServicios()
-    return render(request, 'servicio/presupuestarServicios.html', {'form': form, 'presupuesto': p})
+        formS = FormPresupuestoServicios()
+        formF = FormPresupuestoFrecuencias()
+    return render(request, 'servicio/presupuestarServicios.html', {'formS': formS, 'formF': formF, 'presupuesto': p})
 
 def presupuestarConfirmar(request):
     p = PresupuestoSession.getOrCreate(request.session)

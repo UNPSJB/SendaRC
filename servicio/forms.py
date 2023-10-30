@@ -31,7 +31,7 @@ class FormPresupuestoCliente(forms.ModelForm):
                         css_class='container-inputs'
                     ),
                     Div(
-                HTML('<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Volver</a>'),        
+                HTML('<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Volver</a>'),
                 Submit('submit', 'Siguiente', css_class='btn-Guardar'),
                 css_class='input-group mb-3 operaciones'
             )
@@ -46,7 +46,6 @@ class FormPresupuestoServicios(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(FormPresupuestoServicios, self).__init__(*args, **kwargs)
-        self.fields['tipoServicios'].queryset = Cliente.objects.all()
         self.fields['tipoServicios'].widget.choices = [(tipoServicio.pk, tipoServicio.descripcion) for tipoServicio in TipoServicio.objects.all()]
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -60,7 +59,39 @@ class FormPresupuestoServicios(forms.ModelForm):
                         css_class='container-inputs'
                     ),
                     Div(
-                HTML('<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Volver</a>'),        
+                HTML('<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Volver</a>'),
+                HTML('<button class="btn-Guardar" id="agregar">Agregar</button>'),
+                Submit('submit', 'Siguiente', css_class='btn-Guardar'),
+                css_class='input-group mb-3 operaciones'
+            )
+
+                )
+            )
+        )
+        
+class FormPresupuestoFrecuencias(forms.ModelForm):
+    class Meta:
+        model = Frecuencia
+        fields = ['dia', 'turno']
+    
+    def __init__(self, *args, **kwargs):
+        super(FormPresupuestoFrecuencias, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Fieldset(
+                    Div(
+                        
+                    ),
+                    Div(
+                        FloatingField('dia'),
+                        FloatingField('turno'),
+                        HTML('Horario: <span id="textoHora">-</span>'),
+                        css_class='container-inputs'
+                    ),
+                    Div(
+                HTML('<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Volver</a>'),
+                Submit('submit', 'Agregar', css_class='btn-Guardar'),         
                 Submit('submit', 'Siguiente', css_class='btn-Guardar'),
                 css_class='input-group mb-3 operaciones'
             )

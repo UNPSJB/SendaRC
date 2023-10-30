@@ -10,14 +10,59 @@
 {% endblock %}
 {% block formulario %}
     <div class="container container-form">
-        {% crispy form %}
+        {% crispy formS %}
+        <div>
+            <table class="table-dark">
+                <thead>
+                    <tr>
+                        <th>Dia</th>
+                        <th>Turno</th>
+                        <th>hora Inicio</th>
+                        <th>hora Fin</th>
+                        <th colspan="2">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
 {% block extrajs %}
 <script>
     $("#id_tipoServicios").select2({
         allowClear: true,
-        placeholder: "Seleccione cliente",
+        placeholder: "Seleccione Tipo de Servicios",
+    })
+
+    // Maneja el clic en el botón "Agregar"
+    $("#agregar").click(function() {
+        // Obtiene los elementos seleccionados
+        var elementosSeleccionados = $("#id_tipoServicios").val()
+
+
+
+    })
+    
+</script>
+<script>
+    var select = document.getElementById('{{ formF.turno.id_for_label }}') // Accede al campo select
+    var textoHora = document.getElementById('textoHora') // Accede al elemento donde mostrar la selección
+
+    // Agrega un escuchador de eventos al campo select
+    select.addEventListener('change', function () {
+        // Obtiene el valor seleccionado
+        var seleccion = select.value
+        // Oculta todos los mensajes
+        textoHora.textContent = 'none'
+
+        if (seleccion == 1)
+            textoHora.textContent = '8:00 a 12:00'
+        else if (seleccion == 2)
+            textoHora.textContent = '14:00 a 18:00'
+            else if (seleccion == 3)
+                textoHora.textContent = '19:00 a 23:00'
     })
 </script>
 {% endblock %}
