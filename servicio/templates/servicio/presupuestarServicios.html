@@ -10,42 +10,17 @@
 {% endblock %}
 {% block formulario %}
     <div class="container container-form">
-        {% crispy formS %}
-        <div>
-            <table class="table-dark">
-                <thead>
-                    <tr>
-                        <th>Dia</th>
-                        <th>Turno</th>
-                        <th>hora Inicio</th>
-                        <th>hora Fin</th>
-                        <th colspan="2">Opciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                </tbody>
-            </table>
-        </div>
+        {% crispy form %}
     </div>
 {% endblock %}
 {% block extrajs %}
 <script>
     $("#id_tipoServicios").select2({
-        allowClear: true,
+        multiple: false,
         placeholder: "Seleccione Tipo de Servicios",
-    })
-
-    // Maneja el clic en el botón "Agregar"
-    $("#agregar").click(function() {
-        // Obtiene los elementos seleccionados
-        var elementosSeleccionados = $("#id_tipoServicios").val()
-
-
-
-    })
-    
+    })    
 </script>
+
 <script>
     var select = document.getElementById('{{ formF.turno.id_for_label }}') // Accede al campo select
     var textoHora = document.getElementById('textoHora') // Accede al elemento donde mostrar la selección

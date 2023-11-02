@@ -50,9 +50,14 @@ class Servicio(models.Model):
     fecha_cancelada = models.DateField(auto_now=False, auto_now_add=False)
     empleado = models.ManyToManyField(Empleado) 
     cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
-    tipoServicios = models.ManyToManyField(TipoServicio)
+    tipoServicios = models.ManyToManyField(TipoServicio, through='CantServicioTipoServicio')
     frecuencias = models.ManyToManyField(Frecuencia)
-    
+
+class CantServicioTipoServicio(models.Model):
+    servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
+    tipoServicio = models.ForeignKey(TipoServicio, on_delete=models.DO_NOTHING)
+    cantidad = models.IntegerField()
+
 class HojaTrabajo(models.Model):
     fecha = models.DateField()
     empleado = models.ForeignKey(Empleado,on_delete=models.DO_NOTHING)

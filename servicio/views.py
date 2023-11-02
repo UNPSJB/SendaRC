@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from core.models import *
 from .forms import *
 
+
 class PresupuestoSession(dict):
     FIELDS = ["direccion", "metros2", "observaciones", "tipo"]
     FIELDS2 = ["tipoServicio"]
@@ -32,10 +33,9 @@ class PresupuestoSession(dict):
         data = {k: v for k, v in self.items() if k in self.FIELDS2}
         print(data)
         lista = []
-        lista.append(self["tipoServicios"].pk)
+        lista.append(self["tipoServicios"])
         data["listaServicio"] = lista
         self.session["presupuesto"] = data
-        print(data)
     
     def storeFrecuencia(self):
         data = {k: v for k, v in self.items() if k in self.FIELDS}
@@ -72,15 +72,14 @@ def presupuestarCliente(request):
 def presupuestarServicios(request):
     p = PresupuestoSession.getOrCreate(request.session)
     if (request.method == 'POST'):
-        formS = FormPresupuestoServicios(request.POST)
-        if formS.is_valid():
-            p.update(formS.cleaned_data)
+        form = FormServicios(request.POST)
+        if form.is_valid():
+            p.update(form.cleaned_data)
             p.storeServicio()
-            return redirect('presupuestarServicios')
+        return redirect('presupuestarConfirmar')
     else:
-        formS = FormPresupuestoServicios()
-        formF = FormPresupuestoFrecuencias()
-    return render(request, 'servicio/presupuestarServicios.html', {'formS': formS, 'formF': formF, 'presupuesto': p})
+        form = FormServicios()
+    return render(request, 'servicio/presupuestarServicios.html', {'form': form, 'presupuesto': p})
 
 def presupuestarConfirmar(request):
     p = PresupuestoSession.getOrCreate(request.session)
