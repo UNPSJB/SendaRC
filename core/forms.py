@@ -250,13 +250,9 @@ class TipoServicioForm(forms.ModelForm):
 class FormAltaMaquinaria(forms.ModelForm):
     class Meta:
         model = Maquinaria
-        fields = ['nombre', 'modelo', 'marca', 'cantidad', 'observaciones', 'activo']
+        fields = ['nombre', 'modelo', 'marca', 'cantidad', 'activo', 'observaciones']
         widgets = {
-            "nombre": forms.TextInput(attrs={'class': 'form-control','placeholder':'Nombre'}),
-            "modelo": forms.TextInput(attrs={'class': 'form-control','placeholder':'Modelo'}),
-            "marca": forms.TextInput(attrs={'class': 'form-control','placeholder':'Marca'}),
-            "cantidad": forms.NumberInput(attrs={'class': 'form-control','placeholder':'Cantidad'}),
-            "observaciones": forms.Textarea(attrs={'class': 'form-control textarea','placeholder':'Observaciones'}),
+            'activo' : forms.CheckboxInput(attrs={'class': 'form-check-input'}), 
         }
     
     def __init__(self, *args, **kwargs):
@@ -279,6 +275,7 @@ class FormAltaMaquinaria(forms.ModelForm):
                         FloatingField('modelo'),
                         FloatingField('marca'),
                         FloatingField('cantidad'),
+                        Field('activo'),
                         FloatingField('observaciones'),
                     )
                 ),
