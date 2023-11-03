@@ -16,7 +16,6 @@
             <th scope="col">Modelo</th>
             <th scope="col">Marca</th>
             <th scope="col">Cantidad</th>
-            <th scope="col">Observaciones</th>
             <th scope="col">Activa</th>
             <th scope="col">Opciones</th>
         </tr>
@@ -28,7 +27,6 @@
                 <td scope="row">{{ maquinaria.modelo }}</td>
                 <td scope="row">{{ maquinaria.marca }}</td>
                 <td scope="row">{{ maquinaria.cantidad }}</td>
-                <td scope="row">{{ maquinaria.observaciones }}</td>
                 <td scope="row">{{ maquinaria.activo }}</td> 
                 <td scope="row">
                     <button href="{% url 'detalleMaquinaria' maquinaria.pk %}" class="opcion" type="button" 

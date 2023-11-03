@@ -58,6 +58,7 @@ class FormServicios(forms.ModelForm):
             Field('tipoServicios'),
             ButtonHolder(
                 Submit('submit', 'Guardar', css_class='btn-Guardar')
+                ##DragandDrop
             )
         )
 
