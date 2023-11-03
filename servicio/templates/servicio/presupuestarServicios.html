@@ -10,34 +10,44 @@
 {% endblock %}
 {% block formulario %}
     <div class="container container-form">
-        {% crispy form %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            {% for f in formset %}
+                <div id="form-tipoServicios", class="input-group mb-3">
+                   {{ f.as_p }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Siguiente" class="btn-Guardar">
+        </form>
+        <button type="button" onclick="agregarTipoServicio()" class="btn-Guardar">Añadir Servicio</button>
     </div>
 {% endblock %}
 {% block extrajs %}
-<script>
-    $("#id_tipoServicios").select2({
-        multiple: false,
-        placeholder: "Seleccione Tipo de Servicios",
-    })    
-</script>
 
 <script>
-    var select = document.getElementById('{{ formF.turno.id_for_label }}') // Accede al campo select
-    var textoHora = document.getElementById('textoHora') // Accede al elemento donde mostrar la selección
+    function agregarTipoServicio() {
+        console.log("hola")
+        var total_forms = document.querySelector('#id_form-TOTAL_FORMS')
+        console.log(total_forms.value)
+        var nuevolabel_Tipo = document.createElement('label')
+        nuevolabel_Tipo.innerHTML = 'Tipo de Servicio:'
+        var nuevoInput_Tipo = document.querySelector('#id_form-0-tipo_servicio').cloneNode(true)
 
-    // Agrega un escuchador de eventos al campo select
-    select.addEventListener('change', function () {
-        // Obtiene el valor seleccionado
-        var seleccion = select.value
-        // Oculta todos los mensajes
-        textoHora.textContent = 'none'
+        nuevoInput_Tipo.name = 'form-'+total_forms.value+'-tipo_servicio'
+        nuevoInput_Tipo.id = 'id_form-'+total_forms.value+'-tipo_servicio'
 
-        if (seleccion == 1)
-            textoHora.textContent = '8:00 a 12:00'
-        else if (seleccion == 2)
-            textoHora.textContent = '14:00 a 18:00'
-            else if (seleccion == 3)
-                textoHora.textContent = '19:00 a 23:00'
-    })
+        var nuevolabel_cantidad = document.createElement('label')
+        nuevolabel_cantidad.innerHTML = 'Cantidad:'
+        var nuevoInput_cantidad = document.querySelector('#id_form-0-cantidad').cloneNode(true)
+        nuevoInput_cantidad.name = 'form-' + total_forms.value + '-cantidad'
+        nuevoInput_cantidad.id = 'id_form-'+total_forms.value+'-cantidad'
+
+        document.querySelector('#form-tipoServicios').appendChild(nuevolabel_Tipo)
+        document.querySelector('#form-tipoServicios').appendChild(nuevoInput_Tipo)
+        document.querySelector('#form-tipoServicios').appendChild(nuevolabel_cantidad)
+        document.querySelector('#form-tipoServicios').appendChild(nuevoInput_cantidad)
+        total_forms.value = parseInt(total_forms.value) + 1
+    }
 </script>
 {% endblock %}

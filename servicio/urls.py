@@ -3,8 +3,9 @@ from servicio.views import *
 
 urlpatterns = [
     path('gestionServicios/', gestionServicios, name = 'gestionServicios'),
-    path('presupuestar1/', presupuestarCliente, name = 'presupuestarCliente'),
-    path('presupuestar2/', presupuestarServicios, name = 'presupuestarServicios'),
-    path('presupuestar3/', presupuestarConfirmar, name = 'presupuestarConfirmar'),
-    path('presupuestar4/', presupuestarImprimir, name = 'presupuestarImprimir'),
+    path('presupuestarCliente/', presupuestarCliente, name = 'presupuestarCliente'),
+    path('presupuestarServicios/', presupuestarServicios, name = 'presupuestarServicios'),
+    path('presupuestarFrecuencias/', presupuestarFrecuencias, name = 'presupuestarFrecuencias'),
+    path('presupuestarConfirmar/', presupuestarConfirmar, name = 'presupuestarConfirmar'),
+    path('presupuestarImprimir/', presupuestarImprimir, name = 'presupuestarImprimir'),
 ]

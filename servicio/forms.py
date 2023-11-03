@@ -43,24 +43,13 @@ class FormPresupuestoCliente(forms.ModelForm):
             )
         )
 
-class FormServicios(forms.ModelForm):
-    tipoServicios = forms.ModelMultipleChoiceField(queryset=TipoServicio.objects.all(), widget=CheckboxSelectMultiple)
-    class Meta:
-        model = Servicio
-        fields = ["tipoServicios"]
-
-    def __init__(self, *args, **kwargs):
-        super(FormServicios, self).__init__(*args, **kwargs)
-        self.fields['tipoServicios'].widget.choices = [
-            (TipoServicio.pk, TipoServicio.descripcion) for TipoServicio in TipoServicio.objects.all()]
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Field('tipoServicios'),
-            ButtonHolder(
-                Submit('submit', 'Guardar', css_class='btn-Guardar')
-                ##DragandDrop
-            )
-        )
+class FormBaseTipoServicio(forms.Form):
+    tipo_servicio = forms.ModelChoiceField(
+        queryset=TipoServicio.objects.all(),
+        widget=forms.Select(attrs={'class': 'input'}),
+        label='Tipo de Servicio'
+    )
+    cantidad = forms.IntegerField(label='Cantidad')
 
 class FormFrecuencias(forms.ModelForm):
     class Meta:

@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
+from django.forms import formset_factory
 from core.models import *
 from .forms import *
 
 
 class PresupuestoSession(dict):
     FIELDS = ["direccion", "metros2", "observaciones", "tipo"]
-    FIELDS2 = ["tipoServicio"]
+    FIELDS2 = ["tipo_servicio", "cantidad"]
     # Create init for PresupuestoSession
     def __init__(self, session=None):
         self.session = session
@@ -17,7 +20,6 @@ class PresupuestoSession(dict):
     @classmethod
     def getOrCreate(cls, session):
         p = PresupuestoSession.create(session)
-        
         if "presupuesto" in session:
             p.update(session["presupuesto"])
         if "listaServicios" in session:
@@ -30,11 +32,14 @@ class PresupuestoSession(dict):
         self.session["presupuesto"] = data
         
     def storeServicio(self):
+        print("Inicio storeServicio")
+        print(self.items())
         data = {k: v for k, v in self.items() if k in self.FIELDS2}
+        print("storeServicio")
         print(data)
-        lista = []
-        lista.append(self["tipoServicios"])
-        data["listaServicio"] = lista
+        print("-------------------------------------------")
+        data["tipo_servicio"] = self["tipo_servicio"].pk
+        data["cantidad"] = self["cantidad"]
         self.session["presupuesto"] = data
     
     def storeFrecuencia(self):
@@ -47,7 +52,6 @@ class PresupuestoSession(dict):
 
     @property
     def cliente(self):
-        print("hoa")
         if "cliente" not in self:
             self["cliente"] = Cliente.objects.get(pk=self["cliente_pk"])
         return self["cliente"]
@@ -63,6 +67,9 @@ def presupuestarCliente(request):
             p = PresupuestoSession.getOrCreate(request.session)
             p.update(form.cleaned_data)
             p.store()
+            print("Presupuestar cliente")
+            print(p)
+            print("-------------------------------------------")
             return redirect('presupuestarServicios')
     else:
         p = PresupuestoSession.create(request.session)
@@ -72,14 +79,28 @@ def presupuestarCliente(request):
 def presupuestarServicios(request):
     p = PresupuestoSession.getOrCreate(request.session)
     if (request.method == 'POST'):
-        form = FormServicios(request.POST)
-        if form.is_valid():
-            p.update(form.cleaned_data)
-            p.storeServicio()
-        return redirect('presupuestarConfirmar')
+        formset = formset_factory(FormBaseTipoServicio, extra=1)
+        formset = formset(request.POST)
+        if formset.is_valid():
+            print(formset.cleaned_data)
+            for f in formset:
+                p.update(f.cleaned_data)
+                p.storeServicio()
+            print("Presupuestar Servicios")
+            print(p)
+            print("-------------------------------------------")
+            return redirect('presupuestarFrecuencias')
+        else :
+            print(formset.errors)
     else:
-        form = FormServicios()
-    return render(request, 'servicio/presupuestarServicios.html', {'form': form, 'presupuesto': p})
+        formset = formset_factory(FormBaseTipoServicio, extra=1)
+    return render(request, 'servicio/presupuestarServicios.html', {'formset': formset, 'presupuesto': p})
+
+def presupuestarFrecuencias(request):
+    p = PresupuestoSession.getOrCreate(request.session)
+    print(p)
+    return render(request, 'servicio/presupuestarFrecuencia.html')
+
 
 def presupuestarConfirmar(request):
     p = PresupuestoSession.getOrCreate(request.session)
