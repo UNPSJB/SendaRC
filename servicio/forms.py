@@ -50,35 +50,28 @@ class FormBaseTipoServicio(forms.Form):
         label='Tipo de Servicio'
     )
     cantidad = forms.IntegerField(label='Cantidad')
-
-class FormFrecuencias(forms.ModelForm):
-    class Meta:
-        model = Frecuencia
-        fields = ['dia', 'turno']
-
+    
     def __init__(self, *args, **kwargs):
-        super(FormPresupuestoFrecuencias, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Div(
-                Fieldset(
-                    Div(
+        super(FormBaseTipoServicio, self).__init__(*args, **kwargs)
+        #self.fields['tipo_servicio'].label_from_instance = lambda obj: obj.nombre
+        self.fields['tipo_servicio'].choices = [(tipo.id, tipo.descripcion) for tipo in TipoServicio.objects.all()]
+        
+        #self.fields['insumos'].queryset = Insumo.objects.all()
+        #self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.objects.all()]
+        
 
-                    ),
-                    Div(
-                        FloatingField('dia'),
-                        FloatingField('turno'),
-                        HTML('Horario: <span id="textoHora">-</span>'),
-                        css_class='container-inputs'
-                    ),
-                    Div(
-                        HTML(
-                            '<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Volver</a>'),
-                        Submit('submit', 'Agregar', css_class='btn-Guardar'),
-                        Submit('submit', 'Siguiente', css_class='btn-Guardar'),
-                        css_class='input-group mb-3 operaciones'
-                    )
+class FormBaseFrecuencia(forms.Form):
+    dia = forms.ChoiceField(
+        choices=Frecuencia.DIA,
+        widget=forms.Select(attrs={'class': 'input'}),
+        label='Dia'
+    )
+    turno = forms.ChoiceField(
+        choices=Frecuencia.TURNO,
+        widget=forms.Select(attrs={'class': 'input'}),
+        label='Turno'
+    )
+    
+class FormConfirmar(forms.Form):
+    porcentaje = forms.CharField(label='Porcentaje declarado')
 
-                )
-            )
-        )

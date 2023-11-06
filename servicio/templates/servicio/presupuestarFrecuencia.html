@@ -1,3 +1,70 @@
-<div>
-    <h1>Hola Frecuencias</h1>
-</div>
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Presupuestar Servicio</h1>
+    <h2 class="operacion">Agregar Servicios / {{presupuesto.cliente.nombre}}</h2>
+{% endblock %}
+{% block formulario %}
+    <div class="container container-form">
+        <form method="POST">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            {% for f in formset %}
+                <div id="form-frecuencias", class="input-group mb-3">
+                    {{ f.as_p }}
+                    <h6 id="textoHora" class="text-muted"></h6>
+                </div>
+            {% endfor %}
+            <input type="submit" value="Siguiente" class="btn-Guardar">
+        </form>
+        <button type="button" onclick="agregarFrecuencia()" class="btn-Guardar">Añadir Frecuencia</button>
+        <a href="javascript:history.back()" class="btn-Volver">Volver</a>
+    </div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    var select = document.getElementById('{{ f.turno.id_for_label }}') // Accede al campo select
+    var textoHora = document.getElementById('textoHora') // Accede al elemento donde mostrar la selección
+
+    select.addEventListener('change', function () {
+        // Obtiene el valor seleccionado
+        var seleccion = select.value
+        textoHora.textContent = 'none'
+
+        if (seleccion == 1)
+            textoHora.textContent = '8:00 a 12:00'
+        else if (seleccion == 2)
+            textoHora.textContent = '14:00 a 18:00'
+            else if (seleccion == 3)
+                textoHora.textContent = '19:00 a 23:00'
+    })
+</script>
+<script>
+    function agregarFrecuencia() {
+        var total_forms = document.querySelector('#id_form-TOTAL_FORMS')
+        
+        var nuevoLabel_Dia = document.createElement('label')
+        nuevoLabel_Dia.innerHTML = 'Dia'
+        var nuevoInput_Dia = document.querySelector('#id_form-0-dia').cloneNode(true)
+        nuevoInput_Dia.name = 'form-'+total_forms.value+'-dia'
+        nuevoInput_Dia.id = 'id_form-'+total_forms.value+'-dia'
+
+        var nuevoLabel_Turno = document.createElement('label')
+        nuevoLabel_Turno.innerHTML = 'Turno'
+        var nuevoInput_Turno = document.querySelector('#id_form-0-turno').cloneNode(true)
+        nuevoInput_Turno.name = 'form-'+total_forms.value+'-turno'
+        nuevoInput_Turno.id = 'id_form-'+total_forms.value+'-turno'
+
+        document.querySelector('#form-frecuencias').appendChild(nuevoLabel_Dia)
+        document.querySelector('#form-frecuencias').appendChild(nuevoInput_Dia)
+        document.querySelector('#form-frecuencias').appendChild(nuevoLabel_Turno)
+        document.querySelector('#form-frecuencias').appendChild(nuevoInput_Turno)
+
+        total_forms.value = parseInt(total_forms.value) + 1        
+    }
+</script>
+{% endblock %}

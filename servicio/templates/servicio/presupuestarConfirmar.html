@@ -6,11 +6,50 @@
 {% endblock %}
 {% block title %}
     <h1 class="titulo">Presupuestar Servicio</h1>
-    <h2 class="operacion">Agregar cliente / Datos de Presupuesto</h2>
+    <h2 class="operacion">Resumen de Presupuesto</h2>
 {% endblock %}
 {% block formulario %}
-    <div class="container container-form">
-        {% crispy form %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Listado Tipos de Servicios</h2>
+                    {% for s in tipo_Servicios %}
+                        {{ s }}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Datos Personales Presupuesto</h2>
+                    <p class="operacion">Datos: {{ presupuesto }}</p>
+                    <p class="operacion">Cliente: {{presupuesto.cliente.nombre}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Listado de Frecuencias</h2>
+                    {% for f in frecuencias %}
+                        {{ f }}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Datos Importe</h2>
+                    <div class="container-form">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input type="submit" value="Confirmar" class="btn-Guardar">
+                        </form>
+                        <button type="button" class="btn-Guardar">Calcular</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 {% block extrajs %}
