@@ -71,3 +71,16 @@ class FormBaseFrecuencia(forms.Form):
 class FormConfirmar(forms.Form):
     porcentaje = forms.CharField(label='Porcentaje declarado')
 
+class FormContratarServicio(forms.Form):
+    cliente = forms.ModelChoiceField(
+        queryset=Cliente.objects.all(),
+        widget=forms.Select(attrs={'class': 'input'}),
+        label='Cliente'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(FormContratarServicio, self).__init__(*args, **kwargs)
+        self.fields['cliente'].choices = [(cliente.id, cliente.cuil+' | '+cliente.nombre+' '+cliente.apellido) for cliente in Cliente.objects.all()]
+
+class FormAsignarEmpleado(forms.Form):
+    empleado = forms.ModelChoiceField(queryset=Empleado.objects.all())

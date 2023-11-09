@@ -158,3 +158,17 @@ def presupuestarConfirmar(request):
 
 def presupuestarImprimir(request, pk):
     return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
+
+"""                 --- Contratacion Servicio ---           """
+def contratarServicio(request, pk):
+    if (request == POST):
+        contratoForm = FormContratarServicio(request.POST)
+        asignacionForm = FormAsignarEmpleado(request.POST)
+        if contratoForm.is_valid() and asignacionForm.is_valid():
+            contratoForm.save()
+            asignacionForm.save()
+            return redirect('contratarAccion')
+    return render(request, 'servicio/contratarServicio.html', {'contratoform': contratoForm, 'asignacionform': asignacionForm})
+
+def contratarOpciones(request):
+    return render(request, 'servicio/contratarAccion.html')

@@ -60,6 +60,7 @@ class CantServicioTipoServicio(models.Model):
 
 class HojaTrabajo(models.Model):
     fecha = models.DateField()
+    frecuencia = models.ForeignKey(Frecuencia, on_delete=models.DO_NOTHING)
     empleado = models.ForeignKey(Empleado,on_delete=models.DO_NOTHING)
     servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)    
     

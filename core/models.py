@@ -99,6 +99,3 @@ class Sancion(models.Model):
     
     def getEmpleado(self):
         return self.empleado.numLegajo
-    
-  
-
