@@ -85,7 +85,7 @@ def presupuestarCliente(request):
 def presupuestarServicios(request):
     p = PresupuestoSession.getOrCreate(request.session)
     if (request.method == 'POST'):
-        formset = formset_factory(FormBaseTipoServicio, extra=1)
+        formset = formset_factory(FormBaseTipoServicio)
         formset = formset(request.POST)
         if formset.is_valid():
             for f in formset:
@@ -98,9 +98,15 @@ def presupuestarServicios(request):
         else :
             print(formset.errors)
     else:
-        formset = formset_factory(FormBaseTipoServicio, extra=1)
-        if "servicios" in p.session["servicios"]:
-            formset = formset(initial=p.session["servicios"])
+        
+        lista = request.session.get("servicios", [])
+        if len(lista) == 0:
+            formset = formset_factory(FormBaseTipoServicio, extra=1)
+        else:
+            formset = formset_factory(FormBaseTipoServicio, extra=0)
+            if "servicios" in p.session:
+                formset = formset(initial=p.session["servicios"])
+                p.session["servicios"] = []
         print("-------Estoy en GET Presupuestar Servicios")
         print(p.session["presupuesto"])
     return render(request, 'servicio/presupuestarServicios.html', {'formset': formset, 'presupuesto': p})
@@ -121,11 +127,13 @@ def presupuestarFrecuencias(request):
         else :
             print(formset.errors)
     else:
-        formset = formset_factory(FormBaseFrecuencia, extra=1)
+        formset = formset_factory(FormBaseFrecuencia)
         # Accede a todos los elementos guardados en la lista 'servicios' en la sesión
         servicios_guardados = p.session["servicios"]
-        if "frecuencias" in p.session["frecuencias"]:
+        if "frecuencias" in p.session:
             formset = formset(initial=p.session["frecuencias"])
+            p.session["frecuencias"] = []
+            
         print("----------------Estoy en GET Presupuestar Frecuencias ")
         print(servicios_guardados)
     return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p, 'tipo_Servicios': servicios_guardados})

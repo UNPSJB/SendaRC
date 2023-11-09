@@ -13,42 +13,82 @@
         <form method="POST">
             {% csrf_token %}
             {{ formset.management_form }}
+            <div id="form-servicios" class="form-group mb-3">
             {% for f in formset %}
-                <div id="form-tipoServicios", class="input-group mb-3">
-                   {{ f.as_p }}
+                    <div class="form-servicio">
+                        <button type="button" class="quitar-servicio" data-form-index="{{ forloop.counter0 }}">X</button>
+                    {{ f | crispy }}
                 </div>
             {% endfor %}
+            </div>
             <input type="submit" value="Siguiente" class="btn-Guardar">
         </form>
-        <button type="button" onclick="agregarTipoServicio()" class="btn-Guardar">Añadir Servicio</button>
+        <button type="button" class="btn-Guardar agregar-servicio">Añadir Tipo Servicio</button>
         <a href="javascript:history.back()" class="btn-Volver">Volver</a>
     </div>
 {% endblock %}
 {% block extrajs %}
-
 <script>
-    function agregarTipoServicio() {
-        console.log("hola")
-        var total_forms = document.querySelector('#id_form-TOTAL_FORMS')
-        console.log(total_forms.value)
-        var nuevolabel_Tipo = document.createElement('label')
-        nuevolabel_Tipo.innerHTML = 'Tipo de Servicio:'
-        var nuevoInput_Tipo = document.querySelector('#id_form-0-tipo_servicio').cloneNode(true)
+    const TEMPLATE_FORM = `
+    <div class="form-servicio">
+        <button type="button" class="quitar-servicio" data-form-index="__prefix__">X</button>
+        {{formset.empty_form | crispy}}
+    </div>
+    `;
 
-        nuevoInput_Tipo.name = 'form-'+total_forms.value+'-tipo_servicio'
-        nuevoInput_Tipo.id = 'id_form-'+total_forms.value+'-tipo_servicio'
+    const bindAcciones = (container) => {
+        $(".quitar-servicio").on("click", function () { 
+            console.log("click")          
+            const formIndex = $(this).data(/__prefix__/g);
+            const $formContainer = $(this).closest('.form-servicio'); // Todo lo que hay en .form-servicio de ese formulario a eliminar
+            const formValues = {}; 
 
-        var nuevolabel_cantidad = document.createElement('label')
-        nuevolabel_cantidad.innerHTML = 'Cantidad:'
-        var nuevoInput_cantidad = document.querySelector('#id_form-0-cantidad').cloneNode(true)
-        nuevoInput_cantidad.name = 'form-' + total_forms.value + '-cantidad'
-        nuevoInput_cantidad.id = 'id_form-'+total_forms.value+'-cantidad'
+            // Copiar los valores de los campos del formulario antes de eliminarlo  form-'+'[0-100]'+'$cantidad
+            $formContainer.find(':input[name^="form-${formIndex}-cantidad"]').each(function() {
+                // Procede a copiar
+                formValues.cantidad = 'name=^="form-${formIndex}-cantidad"]'
+                console.log("encontrando cantidad")
+                console.log($formContainer.find(':input[name^="form-${formIndex}-cantidad"]').val());
+            });
+            console.log(formValues.cantidad)
 
-        document.querySelector('#form-tipoServicios').appendChild(nuevolabel_Tipo)
-        document.querySelector('#form-tipoServicios').appendChild(nuevoInput_Tipo)
-        document.querySelector('#form-tipoServicios').appendChild(nuevolabel_cantidad)
-        document.querySelector('#form-tipoServicios').appendChild(nuevoInput_cantidad)
-        total_forms.value = parseInt(total_forms.value) + 1
+            $formContainer.remove(); // Eliminar el formulario
+
+            // Actualizar el total de formularios
+            const $total_forms = $('#id_form-TOTAL_FORMS');
+            const total = parseInt($total_forms.val());
+            $total_forms.val(total - 1);
+
+            // Recargar los formularios restantes y con sus valores guardados
+            const formsetContainer = $("#form-servicios");
+            formsetContainer.empty();
+            for (let i = 0; i < total - 1; i++) {
+                const form = TEMPLATE_FORM.replace(/__prefix__/g, i);
+                formsetContainer.append(form);
+                const $form = formsetContainer.find(`[data-form-index="${i}"]`);
+                // Hacer por cada elemento del formulario
+                //$form.find(':input[name^="form-${formIndex}-cantidad"]')
+                for (const name in formValues) {
+                    $form.find(`[name="${name}"]`).val(formValues[name]);
+                }
+                bindAcciones($form)
+            }
+            //bindAcciones(formsetContainer);
+        })
     }
+
+    $(function () {
+        const $total_forms = $('#id_form-TOTAL_FORMS')
+        
+        $('.form-group').each(e => bindAcciones(e))
+        $('.agregar-servicio').on("click", function() {
+                const total = parseInt($total_forms.val());
+                const form = TEMPLATE_FORM.replace(/__prefix__/g, total);
+                const $form = $(form);
+                bindAcciones($form)
+                $("#form-servicios").append($form)
+                $total_forms.val(total + 1)               
+        });
+    })
 </script>
 {% endblock %}

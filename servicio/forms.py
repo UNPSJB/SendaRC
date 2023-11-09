@@ -53,11 +53,7 @@ class FormBaseTipoServicio(forms.Form):
     
     def __init__(self, *args, **kwargs):
         super(FormBaseTipoServicio, self).__init__(*args, **kwargs)
-        #self.fields['tipo_servicio'].label_from_instance = lambda obj: obj.nombre
         self.fields['tipo_servicio'].choices = [(tipo.id, tipo.descripcion) for tipo in TipoServicio.objects.all()]
-        
-        #self.fields['insumos'].queryset = Insumo.objects.all()
-        #self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.objects.all()]
         
 
 class FormBaseFrecuencia(forms.Form):

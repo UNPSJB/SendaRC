@@ -13,58 +13,58 @@
         <form method="POST">
             {% csrf_token %}
             {{ formset.management_form }}
+            <div id="form-frecuencias" class="form-group mb-3">
             {% for f in formset %}
-                <div id="form-frecuencias", class="input-group mb-3">
-                    {{ f.as_p }}
-                    <h6 id="textoHora" class="text-muted"></h6>
+                    <div class="form-frecuencia">
+                        <div class="quitar-frecuencia">quitar</div>
+                    {{ f | crispy }}
                 </div>
             {% endfor %}
+            </div>
             <input type="submit" value="Siguiente" class="btn-Guardar">
         </form>
-        <button type="button" onclick="agregarFrecuencia()" class="btn-Guardar">Añadir Frecuencia</button>
-        <a href="javascript:history.back()" class="btn-Volver">Volver</a>
+        <button type="button" class="btn-Guardar agregar-frecuencia">Añadir Frecuencia</button>
+        <a href="{% url 'presupuestarServicios' %}" class="btn-Volver">Volver</a>
     </div>
 {% endblock %}
 {% block extrajs %}
 <script>
-    var select = document.getElementById('{{ f.turno.id_for_label }}') // Accede al campo select
-    var textoHora = document.getElementById('textoHora') // Accede al elemento donde mostrar la selección
+    const TEMPLATE_FORM = `
+    <div class="form-frecuencia">
+        <div class="quitar-frecuencia">quitar</div>
+        {{formset.empty_form | crispy}}
+    </div>
+    `;
 
-    select.addEventListener('change', function () {
-        // Obtiene el valor seleccionado
-        var seleccion = select.value
-        textoHora.textContent = 'none'
-
-        if (seleccion == 1)
-            textoHora.textContent = '8:00 a 12:00'
-        else if (seleccion == 2)
-            textoHora.textContent = '14:00 a 18:00'
-            else if (seleccion == 3)
-                textoHora.textContent = '19:00 a 23:00'
-    })
-</script>
-<script>
-    function agregarFrecuencia() {
-        var total_forms = document.querySelector('#id_form-TOTAL_FORMS')
-        
-        var nuevoLabel_Dia = document.createElement('label')
-        nuevoLabel_Dia.innerHTML = 'Dia'
-        var nuevoInput_Dia = document.querySelector('#id_form-0-dia').cloneNode(true)
-        nuevoInput_Dia.name = 'form-'+total_forms.value+'-dia'
-        nuevoInput_Dia.id = 'id_form-'+total_forms.value+'-dia'
-
-        var nuevoLabel_Turno = document.createElement('label')
-        nuevoLabel_Turno.innerHTML = 'Turno'
-        var nuevoInput_Turno = document.querySelector('#id_form-0-turno').cloneNode(true)
-        nuevoInput_Turno.name = 'form-'+total_forms.value+'-turno'
-        nuevoInput_Turno.id = 'id_form-'+total_forms.value+'-turno'
-
-        document.querySelector('#form-frecuencias').appendChild(nuevoLabel_Dia)
-        document.querySelector('#form-frecuencias').appendChild(nuevoInput_Dia)
-        document.querySelector('#form-frecuencias').appendChild(nuevoLabel_Turno)
-        document.querySelector('#form-frecuencias').appendChild(nuevoInput_Turno)
-
-        total_forms.value = parseInt(total_forms.value) + 1        
+    const bindAcciones = (container) => {
+        $(".quitar-frecuencia", container).on("click", function () {
+            // Eliminar un formulario
+            console.log("click")
+        })
+        $('select[name$=turno]', container).on('change', function () {
+            // Obtiene el valor seleccionado
+            var seleccion = this.value
+            $(this).siblings(".texto").remove();
+            let textContent = (seleccion == 1) ? '8:00 a 12:00' :
+                (seleccion == 2) ? '14:00 a 18:00' :
+                (seleccion == 3) ? '19:00 a 23:00' : 'none';
+            $(`<h6 class="texto">${textContent}</h6>`).insertAfter(this);
+        })
     }
+
+    // Se ejecuta cuando el documento esta listo
+    $(function () {
+        const $total_forms = $('#id_form-TOTAL_FORMS')
+        
+        $('.form-group').each(e => bindAcciones(e))
+        $('.agregar-frecuencia').on("click", function() {
+                const total = parseInt($total_forms.val());
+                const form = TEMPLATE_FORM.replace(/__prefix__/g, total);
+                const $form = $(form);
+                bindAcciones($form)
+                $("#form-frecuencias").append($form)
+                $total_forms.val(total + 1)               
+        });
+    })
 </script>
 {% endblock %}
