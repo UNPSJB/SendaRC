@@ -69,15 +69,16 @@ def presupuestarCliente(request):
         form = FormPresupuestoCliente(request.POST)
         if form.is_valid():
             p = PresupuestoSession.getOrCreate(request.session)
-            p.update(form.cleaned_data)     # Se guarda todos los campos y sus valores del formularios en p ?
+            p.update(form.cleaned_data)     # Se guarda todos  los campos y sus valores 
             p.store()
             return redirect('presupuestarServicios')
     else:
-        request.session['presupuesto'] = {}
-        request.session['servicios'] = []
-        request.session['frecuencias'] = []
         p = PresupuestoSession.create(request.session)
-        form = FormPresupuestoCliente(initial=p)
+        dicc = request.session.get("presupuesto", {})
+        if len(dicc) == 0:
+            form = FormPresupuestoCliente()
+        else:
+            form = FormPresupuestoCliente(initial=p.session["presupuesto"])
         print("-------Estoy en GET Presupuestar Cliente-- Valido session vacia")
         print(p.session["presupuesto"])
     return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'presupuesto': p})
@@ -89,7 +90,6 @@ def presupuestarServicios(request):
         formset = formset(request.POST)
         if formset.is_valid():
             for f in formset:
-                #cleaned_data = f.cleaned_data
                 p.update(f.cleaned_data)
                 p.storeServicio()
                 print("-------Estoy en POST Presupuestar Servicio")
@@ -98,7 +98,6 @@ def presupuestarServicios(request):
         else :
             print(formset.errors)
     else:
-        
         lista = request.session.get("servicios", [])
         if len(lista) == 0:
             formset = formset_factory(FormBaseTipoServicio, extra=1)
@@ -127,13 +126,15 @@ def presupuestarFrecuencias(request):
         else :
             print(formset.errors)
     else:
-        formset = formset_factory(FormBaseFrecuencia)
-        # Accede a todos los elementos guardados en la lista 'servicios' en la sesión
-        servicios_guardados = p.session["servicios"]
-        if "frecuencias" in p.session:
-            formset = formset(initial=p.session["frecuencias"])
-            p.session["frecuencias"] = []
-            
+        lista = request.session.get("frecuencias", [])
+        if len(lista) == 0:
+            formset = formset_factory(FormBaseFrecuencia, extra=1)    
+        else:
+            formset = formset_factory(FormBaseFrecuencia, extra=0)
+            if "frecuencias" in p.session:
+                formset = formset(initial=p.session["frecuencias"])
+                p.session["frecuencias"] = []    
+        servicios_guardados = p.session["frecuencias"]
         print("----------------Estoy en GET Presupuestar Frecuencias ")
         print(servicios_guardados)
     return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p, 'tipo_Servicios': servicios_guardados})

@@ -2,91 +2,90 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
-    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+    <link href="{%static 'css/formset.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
     <h1 class="titulo">Presupuestar Servicio</h1>
     <h2 class="operacion">Agregar Servicios / {{presupuesto.cliente.nombre}}</h2>
 {% endblock %}
 {% block formulario %}
-    <div class="container container-form">
-        <form method="POST">
-            {% csrf_token %}
-            {{ formset.management_form }}
-            <div id="form-servicios" class="form-group mb-3">
-            {% for f in formset %}
-                    <div class="form-servicio">
-                        <button type="button" class="quitar-servicio" data-form-index="{{ forloop.counter0 }}">X</button>
-                    {{ f | crispy }}
+    <div class="container">
+        <div class="container-formSets">
+            <form method="POST" class="mi-formset">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                <div id="form-servicios" class="form-group form-set mb-3">
+                {% for f in formset %}
+                        <div class="form-servicio">
+                            <button type="button" class="quitar-servicio quitar-form"><i class="bi bi-trash3"></i></button>
+                        {{ f | crispy }}
+                    </div>
+                {% endfor %}
                 </div>
-            {% endfor %}
-            </div>
-            <input type="submit" value="Siguiente" class="btn-Guardar">
-        </form>
-        <button type="button" class="btn-Guardar agregar-servicio">Añadir Tipo Servicio</button>
-        <a href="javascript:history.back()" class="btn-Volver">Volver</a>
+            </form>
+        </div>
+        <div class="container-acciones">
+            <button type="submit" class="accion btn-siguiente-vista">Siguiente</button>
+            <button type="button" class="accion agregar-servicio">Añadir Tipo Servicio</button>
+            <a href="{% url 'presupuestarCliente' %}" class="accion">Volver</a>
+        </div>
     </div>
 {% endblock %}
 {% block extrajs %}
 <script>
     const TEMPLATE_FORM = `
     <div class="form-servicio">
-        <button type="button" class="quitar-servicio" data-form-index="__prefix__">X</button>
+        <button type="button" class="quitar-servicio quitar-form"><i class="bi bi-trash3"></i></button>
         {{formset.empty_form | crispy}}
     </div>
     `;
 
-    const bindAcciones = (container) => {
-        $(".quitar-servicio").on("click", function () { 
-            console.log("click")          
-            const formIndex = $(this).data(/__prefix__/g);
-            const $formContainer = $(this).closest('.form-servicio'); // Todo lo que hay en .form-servicio de ese formulario a eliminar
-            const formValues = {}; 
-
-            // Copiar los valores de los campos del formulario antes de eliminarlo  form-'+'[0-100]'+'$cantidad
-            $formContainer.find(':input[name^="form-${formIndex}-cantidad"]').each(function() {
-                // Procede a copiar
-                formValues.cantidad = 'name=^="form-${formIndex}-cantidad"]'
-                console.log("encontrando cantidad")
-                console.log($formContainer.find(':input[name^="form-${formIndex}-cantidad"]').val());
-            });
-            console.log(formValues.cantidad)
-
-            $formContainer.remove(); // Eliminar el formulario
-
-            // Actualizar el total de formularios
-            const $total_forms = $('#id_form-TOTAL_FORMS');
-            const total = parseInt($total_forms.val());
-            $total_forms.val(total - 1);
-
-            // Recargar los formularios restantes y con sus valores guardados
-            const formsetContainer = $("#form-servicios");
-            formsetContainer.empty();
-            for (let i = 0; i < total - 1; i++) {
-                const form = TEMPLATE_FORM.replace(/__prefix__/g, i);
-                formsetContainer.append(form);
-                const $form = formsetContainer.find(`[data-form-index="${i}"]`);
-                // Hacer por cada elemento del formulario
-                //$form.find(':input[name^="form-${formIndex}-cantidad"]')
-                for (const name in formValues) {
-                    $form.find(`[name="${name}"]`).val(formValues[name]);
-                }
-                bindAcciones($form)
-            }
-            //bindAcciones(formsetContainer);
-        })
+    const buildForm = (id) => {
+        const form = TEMPLATE_FORM.replace(/__prefix__/g, id);
+        return $(form);
     }
 
     $(function () {
         const $total_forms = $('#id_form-TOTAL_FORMS')
+        const $forms_container = $("#form-servicios");
+
+        $('.btn-siguiente-vista').on("click", function() {
+            $(".mi-formset").submit();
+        })
+
+        const getValues = () => {
+            let inputs = $forms_container.find("input, select, textarea");
+                return inputs.toArray().map(i => $(i).val());
+                
+        }
+        const setValues = (values) => {
+            inputs = $forms_container.find("input, select, textarea");
+            inputs.toArray().forEach((el, index) => $(el).val(values[index]));
+        }
+
+        const bindAcciones = ($container) => {
+            $(".quitar-servicio", $container).on("click", function () { 
+                let total = parseInt($total_forms.val());
+                total = total - 1;
+                $(this).parent(".form-servicio").remove();
+                const values = getValues();
+                $forms_container.empty();
+                for (let i = 0; i < total; i++) {
+                    $form = buildForm(i);
+                    bindAcciones($form);
+                    $forms_container.append($form)
+                }
+                setValues(values);
+                $total_forms.val(total)
+            })
+        }    
         
         $('.form-group').each(e => bindAcciones(e))
         $('.agregar-servicio').on("click", function() {
                 const total = parseInt($total_forms.val());
-                const form = TEMPLATE_FORM.replace(/__prefix__/g, total);
-                const $form = $(form);
-                bindAcciones($form)
-                $("#form-servicios").append($form)
+                $form = buildForm(total);
+                bindAcciones($form);
+                $forms_container.append($form)
                 $total_forms.val(total + 1)               
         });
     })
