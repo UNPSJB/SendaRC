@@ -5,6 +5,9 @@ from .forms import *
 
 # Create your views here.
 def home(request):
+    request.session['presupuesto'] = {}
+    request.session['servicios'] = []
+    request.session['frecuencias'] = []
     return render(request, 'home.html')
 
 def login(request):

@@ -1,0 +1,100 @@
+.container{
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    overflow: hidden;
+}
+
+.quitar-form{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 70px;
+    height: 25px;
+    background-color: rgb(255, 32, 32);
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffff;
+    font-size: 13px;
+}
+
+.quitar-form:hover{
+    background-color: rgb(139, 18, 18);
+}
+
+.form-set{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: auto;
+    height: 450px;
+    border-radius: 4px;
+    border: 1px solid #505050;
+}
+
+#form-servicios{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 400px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+#form-frecuencias{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 400px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.form-servicio{
+    position: relative;
+    width: auto;
+    height: 160px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #505050;
+}
+
+.form-frecuencia{
+    position: relative;
+    width: auto;
+    height: 160px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #505050;
+}
+
+.accion{
+    height: 30px;
+    background-color: #1DA1F2;
+    color: #FFF;
+    border-radius: 8px !important;
+    padding-inline: 15px;
+    font-weight: 700;
+    border: none !important;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.container-acciones{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+}
+
+.container-acciones > a{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
