@@ -8,13 +8,33 @@
     flex-direction: column;
     align-items: start;
 }
-.seccion-cabecera > h1{  
+.seccion-cabecera> h1{  
     font-size: 1.5rem;
     font-weight: 700;
 }
-.seccion-cabecera > h2{  
+.container-pasos-info > h2{  
     font-size: 0.8rem;
     font-weight: 700;
+
+}
+.container-pasos-info{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.paso{
+    background-color: #fff;
+    height: 20px;
+    width: 20px;
+    border-radius: 10%;
+    margin-bottom: 0.5rem;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    font-weight: 700;
+    align-items: center;
+    font-size: 13px;
 }
 .secccion-form{
     height: 88%;
@@ -26,11 +46,11 @@
     color: #505050;
     border: 1px solid #505050;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: box-shadow 0.1s ease-out;
 }
 .container-form > form{
-    background-color: rgb(2, 2,2);;
+    background-color: #000;
     max-height: 36rem;
 }
 
@@ -45,7 +65,7 @@
     color: #FFF;
     font-size: 13px; 
     border: none;
-    border-radius: 8px !important;
+    border-radius: 4px !important;
 }
 
 .form-control:focus, .form-select:focus{
@@ -63,11 +83,12 @@
     display: flex;
     justify-content: end;
     gap: 8px;
+    background-color: #000;
 }
 .btn-Guardar, .btn-Cancelar, .btn-Volver{
     background-color: #1DA1F2;
     color: #FFF;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     padding-inline: 20px;
     font-weight: 700;
     border: none !important;
