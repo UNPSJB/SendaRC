@@ -5,7 +5,7 @@
 {% endblock %}
 {% block title %}
     <h1>Maquinarias</h1>
-    <h2>Gestion de Maquinarias</h2>
+    <h2>Gestión de Maquinarias</h2>
     <a href="{% url 'altaMaquinaria' %}" class="btn-agregarEntidad">Registrar Maquinaria</a>
 {% endblock %}
 {% block listado %}
@@ -34,9 +34,7 @@
                         data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasExample"
                         aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                    <a href="{% url 'modificarMaquinaria' maquinaria.pk%}" cl
-                    ass="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                    <a href="{% url 'modificarMaquinaria' maquinaria.pk%}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                 </td>
             </tr>
         {% endfor %}
