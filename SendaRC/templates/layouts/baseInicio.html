@@ -26,6 +26,7 @@
                         <i class="bi bi-house"></i>
                         <span class="nav-item-span">Home</span>
                     </a>
+                    <span class="spanSideBarExpand">Home</span>
                 </li>
                 <li class="nav-item {% if '/gestionLocalidad/' in request.path or '/altaLocalidad/' in request.path or '/modificarLocalidad/' in request.path %}active{% endif %}">
                     <a href="{% url 'gestionLocalidad' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -33,6 +34,7 @@
                         <i class="bi bi-geo-alt"></i>
                         <span class="nav-item-span">Localidades</span>
                     </a>
+                    <span class="spanSideBarExpand">Localidades</span>
                 </li>
                 <li class="nav-item {% if '/gestionEmpleado/' in request.path or '/altaEmpleado/' in request.path or '/modificarEmpleado/' in request.path %}active{% endif %}">
                     <a href="{% url 'gestionEmpleado' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -40,6 +42,7 @@
                         <i class="bi bi-people"></i>
                         <span class="nav-item-span">Empleados</span>
                     </a>
+                    <span class="spanSideBarExpand">Empleados</span>
                 </li>
                 <li class="nav-item {% if '/gestionMaquinaria/' in request.path or '/altaMaquinaria/' in request.path or '/modificarMaquinaria/' in request.path %}active{% endif %}">
                     <a href="{% url 'gestionMaquinaria' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -47,6 +50,7 @@
                         <i class="bi bi-hammer"></i>
                         <span class="nav-item-span">Maquinarias</span>
                     </a>
+                    <span class="spanSideBarExpand">Maquinarias</span>
                 </li>
                 <li class="nav-item {% if '/gestionTipoServicio/' in request.path or '/altaTipoServicio/' in request.path or '/modificarTipoServicio/' in request.path %}active{% endif %}">
                     <a href="{% url 'gestionTipoServicio' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -54,6 +58,7 @@
                         <i class="bi bi-truck"></i>
                         <span class="nav-item-span">Tipos de servicios</span>
                     </a>
+                    <span class="spanSideBarExpand">Tipos de servicios</span>
                 </li>
                 <li class="nav-item {% if '/gestionInsumos/' in request.path or '/altaInsumo/' in request.path or '/modificarInsumo/' in request.path %}active{% endif %}">
                     <a href="{% url 'gestionInsumos' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -61,6 +66,7 @@
                         <i class="bi bi-box2"></i>
                         <span class="nav-item-span">Insumos</span>
                     </a>
+                    <span class="spanSideBarExpand">Insumos</span>
                 </li>
                 <li class="nav-item {% if '/gestionClientes/' in request.path or '/altaCliente/' in request.path or '/modificarCliente/' in request.path %}active{% endif %}">
                     <a href="{% url 'gestionClientes' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -68,6 +74,7 @@
                         <i class="bi bi-person-vcard"></i>
                         <span class="nav-item-span">Clientes</span>
                     </a>
+                    <span class="spanSideBarExpand">Clientes</span>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -75,6 +82,7 @@
                         <i class="bi bi-clipboard-x"></i>
                         <span class="nav-item-span">Reclamos</span>
                     </a>
+                    <span class="spanSideBarExpand">Reclamos</span>
                 </li>
                 <li class="nav-item {% if '/gestionSanciones/' in request.path or '/altaSancion/' in request.path or '/modificarSancion/' in request.path %}active{% endif %}">
                     <a href="{% url 'gestionSanciones' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -82,6 +90,7 @@
                         <i class="bi bi-person-x"></i>
                         <span class="nav-item-span">Sanciones</span>
                     </a>
+                    <span class="spanSideBarExpand">Sanciones</span>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -89,6 +98,7 @@
                         <i class="bi bi-journal-text"></i>
                         <span class="nav-item-span">Asistencias</span>
                     </a>
+                    <span class="spanSideBarExpand">Asistencias</span>
                 </li>
                 <li class="nav-item {% if '/servicio/' in request.path%}active{% endif %}">
                     <a href="{% url 'gestionServicios' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -96,6 +106,7 @@
                         <i class="bi bi-cash-coin"></i>
                         <span class="nav-item-span">Servicios</span>
                     </a>
+                    <span class="spanSideBarExpand">Servicios</span>
                 </li>
                 <li class="nav-item {% if request.path == '/factura/gestionFacturas/' %}active{% endif %}">
                     <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
@@ -103,6 +114,7 @@
                         <i class="bi bi-newspaper"></i>
                         <span class="nav-item-span">Facturas</span>
                     </a>
+                    <span class="spanSideBarExpand">Facturas</span>
                 </li>
             </ul>
             <div class="container-btn-cerrar-sesion">
