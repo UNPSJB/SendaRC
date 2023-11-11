@@ -161,27 +161,30 @@ class FormInsumo(forms.ModelForm):
 
 class ClienteForm(forms.ModelForm):
     cuil = ARCUITField(label='CUIL', error_messages={'invalid': 'CUIL no válido'})
+    
     class Meta:
         model = Cliente
-        fields = ['cuil','nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad']
+        fields = ['cuil', 'nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad', 'activo']
 
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         super(ClienteForm, self).__init__(*args, **kwargs)
+        
         if is_modificar:
-            mensaje = 'Modificar un cliente aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar un cliente aquí. Dale click en guardar al terminar'
             self.fields['tipo'].widget.attrs['hidden'] = False
+            div_class = 'container-inputs-form'
         else:
-            mensaje = 'Agregar un cliente aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar un cliente aquí. Dale click en guardar al terminar'
             self.fields['tipo'].widget.attrs['hidden'] = True
+            div_class = 'container-inputs-form ocultar'
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
                 HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
                 Fieldset(
-                    Div(
-
-                    ),
+                    Div(),
                     Div(
                         FloatingField('cuil'),
                         FloatingField('nombre'),
@@ -192,7 +195,8 @@ class ClienteForm(forms.ModelForm):
                         FloatingField('telefono'),
                         FloatingField('email'),
                         FloatingField('localidad'),
-                        css_class='container-inputs-form'
+                        Field('activo'),
+                        css_class=div_class
                     )
                 ),
                 Div(

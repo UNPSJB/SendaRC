@@ -18,16 +18,16 @@
                 {% for f in formset %}
                         <div class="form-frecuencia">
                             <button type="button" class="quitar-frecuencia quitar-form"><i class="bi bi-trash3"></i></button>
-                        {{ f | crispy }}
-                    </div>
+                            {{ f | crispy }}
+                        </div>
                 {% endfor %}
                 </div>
             </form>
         </div>
         <div class="container-acciones">
-            <button type="submit"  class="accion btn-siguiente-vista">Siguiente</button>
             <button type="button" class="accion agregar-frecuencia">Añadir Frecuencia</button>
             <a href="{% url 'presupuestarServicios' %}" class="accion">Volver</a>
+            <button type="submit"  class="accion btn-siguiente-vista">Siguiente</button>
         </div>
     </div>
 {% endblock %}
@@ -84,11 +84,11 @@
             $('select[name$=turno]', container).on('change', function () {
                 // Obtiene el valor seleccionado
                 var seleccion = this.value
-                $(this).siblings(".texto").remove();
+                $(this).siblings(".texto,.container-hora").remove();
                 let textContent = (seleccion == 1) ? '8:00 a 12:00' :
                     (seleccion == 2) ? '14:00 a 18:00' :
                     (seleccion == 3) ? '19:00 a 23:00' : 'none';
-                $(`<h6 class="texto">${textContent}</h6>`).insertAfter(this);
+                $(`<div class="container-hora"> <h6 class="texto">${textContent}<i class="bi bi-clock"></i></h6></div>`).insertAfter(this);
             })
         }
         

@@ -35,6 +35,9 @@ class updateCliente(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'El cliente se ha modificado correctamente.')
         return super().form_valid(form)
+def detalleCliente(request, pk):
+    cliente = Cliente.objects.get(id=pk)
+    return render(request, 'cliente/detalleCliente.html', {'cliente': cliente})
 
 class altaInsumo(CreateView):
     model = Insumo

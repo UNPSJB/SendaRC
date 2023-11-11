@@ -90,14 +90,14 @@
                         <span class="nav-item-span">Asistencias</span>
                     </a>
                 </li>
-                <li class="nav-item {% if request.path == '/gestionServicios/' %}active{% endif %}">
+                <li class="nav-item {% if request.path == '/servicio/gestionServicios/' %}active{% endif %}">
                     <a href="{% url 'gestionServicios' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Presupuestos" data-bs-original-title="Presupuestos">
                         <i class="bi bi-cash-coin"></i>
                         <span class="nav-item-span">Servicios</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/factura/gestionFacturas/' %}active{% endif %}">
                     <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Facturas" data-bs-original-title="Facturas">
                         <i class="bi bi-newspaper"></i>

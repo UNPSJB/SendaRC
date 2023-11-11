@@ -4,6 +4,9 @@ function initializeDataTable() {
     const dataTable = new DataTable(table, {
       pageLength: 8,
       lengthChange: false,
+      columnDefs: [
+        { orderable: false, targets: -1 }
+      ]
     });
   }
 }

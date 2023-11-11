@@ -1,0 +1,41 @@
+.container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+.container-acciones{
+    display: flex;
+    justify-content: end; 
+}
+.generar-presupuesto{
+    color: #FFF;
+    font-size: 13px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    border: 1px solid #505050;
+    padding-inline: 20px;
+    padding-block: 10px;
+    background-color: #000;
+    transition: background-color 0.1s ease-in-out;
+}
+.generar-presupuesto:hover{
+    background-color: #111111;
+}
+.nombre-cliente{
+    font-size: 20px;
+    padding-bottom: 5px;
+    font-weight: 700;
+}
+
+.divisor{
+    border: 1px solid #505050;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+.detalles-personales{
+    font-weight: 700;
+    font-size: 13px;
+}

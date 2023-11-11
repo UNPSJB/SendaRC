@@ -3,11 +3,40 @@
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
-
 {% block title%}
+    <h1>Servicios</h1>
+    <h2>Gestión de Servicios</h2>
+    <a href="{% url 'presupuestarCliente' %}" class="btn-agregarEntidad">Generar Servicio</a>
 {% endblock %}
-
 {% block listado%}
-    <h1 style="color: white;">EN PROCESO...</h1>
-    <div class="tenor-gif-embed" data-postid="17176906" data-share-method="host" data-aspect-ratio="1.40969" data-width="40%"><a href="https://tenor.com/view/the-simpsons-homer-simpson-punch-sleeping-gif-17176906">The Simpsons Homer Simpson GIF</a>from <a href="https://tenor.com/search/the+simpsons-gifs">The Simpsons GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<table class="table table-striped table-dark">
+    <thead>
+        <tr>
+            <th scope="col">N.Servicio</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Metros cuadrados</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Total</th>
+            <th scope="col">Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for servicio in servicios %}
+            <tr class="fila-tabla">
+                <td scope="row">{{ servicio.pk }}</td>
+                <td scope="row">{{ servicio.cliente }}</td>
+                <td scope="row">{{ servicio.metros2 }}</td>
+                <td scope="row">{{ servicio.tipo }}</td>
+                <td scope="row">{{ servicio.estado }}</td>
+                <td scope="row"><span>$</span>{{ servicio.importe_total }}</td>
+                <td scope="row">
+                    <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                    <a href="#" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

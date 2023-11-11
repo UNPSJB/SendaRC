@@ -17,6 +17,7 @@
             <th scope="col">Apellido</th>
             <th scope="col">Tipo cliente</th>
             <th scope="col">Tipo persona</th>
+            <th scope="col">Activo</th>
             <th scope="col">Opciones</th>
         </tr>
     </thead>
@@ -28,8 +29,17 @@
                 <td scope="row">{{ cliente.apellido }}</td>
                 <td scope="row">{{ cliente.getTipo }}</td>
                 <td scope="row">{{ cliente.getTipoPersona }}</td>
+                {% if cliente.activo %}
+                    <td scope="row"><i class="bi bi-check-circle"></i></td>
+                {% else %}
+                    <td scope="row"><i class="bi bi-x-circle"></i></td>
+                {% endif %}
                 <td scope="row">
-                    <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                    <button href="{% url 'detalleCliente' cliente.pk %}" class="opcion" type="button" 
+                        data-url="/gestionClientes/{{cliente.pk}}"
+                        data-bs-toggle="offcanvas" 
+                        data-bs-target="#offcanvasExample" 
+                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
                     <a href="{% url 'modificarCliente' cliente.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
@@ -39,11 +49,13 @@
 </table>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Cliente:{{ cliente.nombre }}</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="offcanvas-body">
-    
-    </div>  
+    </div>
 </div>
+{% endblock %}
+
+{% block extrajs %}{{block.super}}
+   
 {% endblock %}

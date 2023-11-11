@@ -82,3 +82,9 @@ div.dataTables_length,div.dataTables_filter > label{
     border: none;
     color: #fff;
 }
+.bi-check-circle{
+    color: rgb(0, 158, 0);
+}
+.bi-x-circle{
+    color: rgb(194, 0, 0);
+}
