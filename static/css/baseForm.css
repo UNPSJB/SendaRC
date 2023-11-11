@@ -30,7 +30,7 @@
     transition: box-shadow 0.1s ease-out;
 }
 .container-form > form{
-    background-color: black;
+    background-color: rgb(2, 2,2);;
     max-height: 36rem;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .form-control:focus, .form-select:focus{
-    background-color: black;
+    background-color: rgb(2, 2,2);;
     border: 1px solid #1887cc;
     color: #FFF;
 }

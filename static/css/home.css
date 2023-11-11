@@ -29,10 +29,11 @@
     overflow: hidden;
     text-overflow: clip;
     min-height: 100%;
+    transition: border 0.1s ease-in-out;
 }
 .card:hover{
     cursor: pointer;
-    background-color: #080808 !important;
+    border: 1px solid #3b89ff !important;
 }
 .card-header{
     font-size: 40px;

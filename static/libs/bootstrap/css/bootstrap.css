@@ -3841,7 +3841,7 @@ textarea.form-control-lg {
   }
 }
 .nav-link:hover, .nav-link:focus {
-  color: var(--bs-nav-link-hover-color);
+  color: #2b2b2b;
 }
 .nav-link:focus-visible {
   outline: 0;
@@ -6732,6 +6732,7 @@ textarea.form-control-lg {
   width: var(--bs-offcanvas-width);
   border-left: var(--bs-offcanvas-border-width) solid var(--bs-offcanvas-border-color);
   transform: translateX(100%);
+  box-shadow: 0px 0px 20px #000;
 }
 .offcanvas.offcanvas-top {
   top: 0;
@@ -6770,7 +6771,8 @@ textarea.form-control-lg {
   opacity: 0;
 }
 .offcanvas-backdrop.show {
-  opacity: 0.5;
+  opacity: 0.1;
+  background-color: #fff;
 }
 
 .offcanvas-header {

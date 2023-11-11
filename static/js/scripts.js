@@ -6,7 +6,14 @@ function initializeDataTable() {
       lengthChange: false,
       columnDefs: [
         { orderable: false, targets: -1 }
-      ]
+      ],
+      "language": {
+        "info": "Mostrando _END_ de _TOTAL_ registros",
+        "paginate": {
+          "previous": "Anterior",
+          "next": "Siguiente",
+        }
+      },
     });
   }
 }
