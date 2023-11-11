@@ -34,7 +34,7 @@ class FormPresupuestoCliente(forms.ModelForm):
                     ),
                     Div(
                         HTML(
-                            '<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Cancelar</a>'),
+                            '<a href="{% url "gestionServicios" %}" class="btn-Cancelar">Cancelar</a>'),
                         Submit('submit', 'Siguiente', css_class='btn-Guardar'),
                         css_class='input-group mb-3 operaciones'
                     )

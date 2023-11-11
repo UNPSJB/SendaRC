@@ -12,12 +12,12 @@
     font-size: 1.5rem;
     font-weight: 700;
 }
-.container-pasos-info > h2{  
+.container-info > h2{  
     font-size: 0.8rem;
     font-weight: 700;
 
 }
-.container-pasos-info{
+.container-info{
     display: flex;
     gap: 10px;
     justify-content: center;
