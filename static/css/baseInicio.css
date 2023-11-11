@@ -119,18 +119,17 @@
 /* Estilos adicionales para el span cuando no hay sideBarExpand */
 .navbar:not(.sideBarExpand) .spanSideBarExpand {
     position: absolute;
-    top: 4px;
+    top: 3px;
     z-index: 100;
-    background-color: #00ff55;
+    background-color: rgb(255, 255, 255);
     padding-inline: 14px;
     padding-block: 4px;
     border-radius: 4px;
     font-size: 14px;
     font-weight: 700;
-    box-shadow: 0 0 10px #202020;
-    left: 52px;
+    left: 45px;
     width: max-content;
-    color: #000;
+    color: #000000;
 }
 
 .navbar:not(.sideBarExpand) .nav-item .nav-item-span {
