@@ -8,12 +8,16 @@ class Insumo(models.Model):
         (3, 'ml'),
         (4, 'Lts')
     }
+    ESTADO = {
+        (1, 'Deshabilitado'),
+        (2, 'Habilitado')
+    }
     descripcion = models.CharField(max_length=50)
     unidad_med = models.IntegerField(choices=UNIDAD)
     contenido_neto = models.IntegerField()
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
-    activo = models.BooleanField(default=True)
+    estado = models.IntegerField(choices=ESTADO, default=2)
 
     def getInsumo(self):
         return self.insumo.descripcion
@@ -39,6 +43,9 @@ class TipoServicio(models.Model):
     insumos = models.ManyToManyField(Insumo, through='CantInsumoServicio')
     maquinarias = models.ManyToManyField(Maquinaria)
     activo = models.BooleanField(default=True)
+    
+    def getPrecio(self, cantidad):
+        return self.precio * cantidad
     
 class CantInsumoServicio(models.Model):
     insumo = models.ForeignKey(Insumo, on_delete=models.DO_NOTHING)
@@ -87,6 +94,17 @@ class Empleado(models.Model):
     sueldo = models.IntegerField()
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
     activo = models.BooleanField(default=True)
+    
+    sueldo_basico = 58000
+    
+    def save(self, *args, **kargs):
+        self.sueldo += self.sueldo_basico
+        super().save(*args, **kargs)
+    
+    @classmethod
+    def getSueldoBasico(cls):
+        return cls.sueldo_basico
+    
     
 class Sancion(models.Model):
     TIPO = {
