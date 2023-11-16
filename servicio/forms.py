@@ -1,6 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Div, Field, HTML, Submit
+from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML, ButtonHolder
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from django.forms import formset_factory, modelformset_factory, ModelMultipleChoiceField, CheckboxSelectMultiple
 from core.models import *
@@ -69,9 +69,5 @@ class FormBaseFrecuencia(forms.Form):
     )
     
 class FormConfirmar(forms.Form):
-    porcentaje = forms.IntegerField(label='Porcentaje declarado (opcional)')
-    cantidad_empleados = forms.IntegerField(label='Cantidad de Empleados por Turno')
-    
-    
-    
+    porcentaje = forms.CharField(label='Porcentaje declarado')
 

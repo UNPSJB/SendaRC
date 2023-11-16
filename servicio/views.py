@@ -4,88 +4,7 @@ from django.urls import reverse_lazy
 from django.forms import formset_factory
 from core.models import *
 from .forms import *
-from django.utils import timezone
-from datetime import timedelta
 
-def calcularPorcentaje(total_importe, porcentaje):
-    cambio = (porcentaje / 100) * total_importe
-    total_importe = total_importe + cambio
-    return total_importe
-
-def calcularImportePresupuesto(listaTipoServicio, cantEmpleados, cantFrecuencias, tipo):
-    total_importe = 0
-    tipos_servicios_precios = 0
-    for tipo in listaTipoServicio:
-        tipos_servicios_precios += tipo['tipo_servicio'].getPrecio(tipo['cantidad']) #Su suma el precio de cada tipoServicio por su cantidad
-    #El total de los servicios que se hacen todos los turnos
-    total_servicios = tipos_servicios_precios * cantFrecuencias
-    #Calculamos la cantidad de empleados real que vamos a necesitar para todo el servicio 
-    if tipo == 'Determinado':
-        cant_empleados = cantFrecuencias * cantEmpleados *  4      #El 4 es por el mes tiene cuatro semanas
-    else:
-        cant_empleados = cantFrecuencias * cantEmpleados    #El Eventual puede tener min=1 y max=3, 3 siempre y cuando sean el mismo dia
-    mano_obra = Empleado.getSueldoBasico() / 24     #Empleados trabajan solo un turno por dia, por lo tanto los posibles dias de trabajo son 24
-    #La cantidad de empleados damos a entender que es la estimativa por turno
-    total_importe = 1.15 * total_servicios + (mano_obra * cant_empleados)   #El 1.15 representa el costo mas el 15% de ganancias 
-    return total_importe
-
-def saveServicio(servicio):
-    new_servicio = Servicio(fecha_emision=timezone.now(),
-                            plazo_vigencia=timezone.now() + timedelta(days=10),
-                            cliente=servicio['cliente'],
-                            direccion=servicio['direccion'],
-                            metros2=servicio['metros2'],
-                            observaciones=servicio['observaciones'],
-                            #cant_empleados=
-                            #porcentaje=
-                            tipo=servicio['tipo'],
-                            estado=1,
-                            #importe_total=
-                            )
-    new_servicio.save()
-    return new_servicio
-
-def saveTipoServicios(servicio, listTipoServicio):
-    for tipo in listTipoServicio:
-        new_servicio_tipo_servicio = CantServicioTipoServicio(servicio=servicio,
-                                                              tipoServicio=tipo['tipo_servicio'].pk,
-                                                              cantidad=tipo['cantidad'])
-        new_servicio_tipo_servicio.save()
-    #return servicio
-        
-def saveFrecuenca(servicio, listFrecuencias):
-    for frecuencia in listFrecuencias:
-        dia_num = next((value for key, value in Frecuencia.DIA if key == frecuencia['dia']), None)
-        turno_num = next((value for key, value in Frecuencia.TURNO if key == frecuencia['turno']), None)
-        new_frecuencia = Frecuencia(dia=dia_num, turno=turno_num)
-        new_frecuencia.save()
-        #Esto no se si es valido
-        servicio.frecuencias.add(new_frecuencia)
-    #return servicio
-        
-def recargarSession(servicio, presupuestoSession):
-    datos_cliente = {'direccion': servicio.direccion,
-                     'metros2': servicio.metros2,
-                     'observaciones': servicio.observaciones,
-                     'tipo': servicio.tipo,
-                     'cliente_pk': servicio.cliente.pk}
-    presupuestoSession.update(datos_cliente)
-    presupuestoSession.store()
-    #Cargamos la lista de tipos de servicio del servicio a modificar
-    lista_tipos_servicio = CantServicioTipoServicio.objects.filter(servicio=servicio)
-    for tipo_servicio in lista_tipos_servicio:
-        tipo_servicio_data = {'tipo_servicio': tipo_servicio.tipoServicio.pk,
-                              'cantidad': tipo_servicio.cantidad}
-        presupuestoSession.update(tipo_servicio_data)
-        presupuestoSession.storeServicio()
-    #Cargamos la lista de frecuencias del servicio a modificar
-    lista_frecuencias = servicio.frecuencias.all()
-    for frecuencia in lista_frecuencias:
-        frecuencia_data = {'dia': frecuencia.dia,
-                           'turno': frecuencia.turno}
-        presupuestoSession.update(frecuencia_data)
-        PresupuestoSession.storeFrecuencia()
-    #return presupuestoSession
 
 class PresupuestoSession(dict):
     FIELDS = ["direccion", "metros2", "observaciones", "tipo"]
@@ -105,31 +24,9 @@ class PresupuestoSession(dict):
         return p
     
     @classmethod
-    def getTipoServicio(cls, session):
-        listaS = []
-        if "servicios" in session:
-            listaS = session["servicios"]
-        for item in listaS:
-            print(type(item))
-            item['tipo_servicio'] = TipoServicio.objects.get(pk=item['tipo_servicio'])
-        return listaS
-    
-    @classmethod
-    def getFrecuencia(cls, session):
-        print("-------Estoy en METODO GETFRECUENCIA")
-        listaF = []    
-        MAP_DIA = dict(Frecuencia.DIA)
-        MAP_TURNO = dict(Frecuencia.TURNO)
-        print(MAP_DIA)
-        if "frecuencias" in session:
-            listaF = session["frecuencias"]
-        for item in listaF:
-            print(item)
-            dia = int(item['dia'])
-            item['dia'] = MAP_DIA.get(dia)
-            turno = int(item['turno'])
-            item['turno'] = MAP_TURNO.get(turno)
-        return listaF
+    def limpiarSession(cls, session):
+        p = PresupuestoSession.create(session)
+        
     
     def store(self):
         data = {k: v for k, v in self.items() if k in self.FIELDS} #Empareja y guarda solo los campos del formulario que nos interesa no ?
@@ -153,13 +50,15 @@ class PresupuestoSession(dict):
         }
         data.append(frecuencia_data)
         self.session["frecuencias"] = data
-            
+
+    def save():
+        pass
+
     @property
     def cliente(self):
         if "cliente" not in self:
             self["cliente"] = Cliente.objects.get(pk=self["cliente_pk"])
         return self["cliente"]
-    
     
 # Create your views here.
 def gestionServicios(request):
@@ -189,7 +88,6 @@ def presupuestarServicios(request):
     if (request.method == 'POST'):
         formset = formset_factory(FormBaseTipoServicio)
         formset = formset(request.POST)
-        p.session["servicios"] = []
         if formset.is_valid():
             for f in formset:
                 p.update(f.cleaned_data)
@@ -207,6 +105,7 @@ def presupuestarServicios(request):
             formset = formset_factory(FormBaseTipoServicio, extra=0)
             if "servicios" in p.session:
                 formset = formset(initial=p.session["servicios"])
+                p.session["servicios"] = []
         print("-------Estoy en GET Presupuestar Servicios")
         print(p.session["presupuesto"])
     return render(request, 'servicio/presupuestarServicios.html', {'formset': formset, 'presupuesto': p})
@@ -216,9 +115,9 @@ def presupuestarFrecuencias(request):
     if (request.method == 'POST'):
         formset = formset_factory(FormBaseFrecuencia, extra=1)
         formset = formset(request.POST)
-        p.session["frecuencias"] = []    
         if formset.is_valid():
             for f in formset:
+                #cleaned_data = f.cleaned_data
                 p.update(f.cleaned_data)
                 p.storeFrecuencia()
                 print("-------Estoy en POST Presupuestar Frecuencia")
@@ -234,148 +133,29 @@ def presupuestarFrecuencias(request):
             formset = formset_factory(FormBaseFrecuencia, extra=0)
             if "frecuencias" in p.session:
                 formset = formset(initial=p.session["frecuencias"])
+                p.session["frecuencias"] = []    
         servicios_guardados = p.session["frecuencias"]
         print("----------------Estoy en GET Presupuestar Frecuencias ")
         print(servicios_guardados)
     return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p, 'tipo_Servicios': servicios_guardados})
 
 def presupuestarConfirmar(request):
-    datos_cliente = PresupuestoSession.getOrCreate(request.session)
-    tipos_servicios = PresupuestoSession.getTipoServicio(request.session)
-    frecuencias = PresupuestoSession.getFrecuencia(request.session)
+    p = PresupuestoSession.getOrCreate(request.session)
     if (request.method == 'POST'):
         form = FormConfirmar(request.POST)
         if form.is_valid():
             print("-------Estoy en POST Presupuestar Confirmar")
-            new_servicio = saveServicio(datos_cliente)
-            saveTipoServicios(new_servicio, tipos_servicios)
-            saveFrecuenca(new_servicio, frecuencias)
-            request.session['presupuesto'] = {}
-            request.session['servicios'] = []
-            request.session['frecuencias'] = []
-            return redirect('gestionServicios')
+            p.update(form.cleaned_data)
+            model = p.save()
+            return redirect('presupuestarImprimir', {"pk": model.pk})
     else:
-        form = FormConfirmar(request.GET)
+        form = FormConfirmar()
+        servicios_guardados = p.session["servicios"]
+        frecuencias_guardadas = p.session["frecuencias"]
         print("-------Estoy en GET Presupuestar Confirmar")
-        print(datos_cliente)
-        print(tipos_servicios)
-        print(frecuencias)
-        importe_total = 0
-        importe_sugerido = 0
-        if int(request.GET['cantidad_empleados']) >= 1:
-            cant_empleados = int(request.GET['cantidad_empleados'])
-            importe_sugerido = calcularImportePresupuesto(tipos_servicios, cant_empleados, len(frecuencias), datos_cliente['tipo'])
-            if int(request.GET['porcentaje']) != 0:
-                porcentaje = int(request.GET['porcentaje'])
-                importe_total = calcularPorcentaje(importe_sugerido, int(request.GET['porcentaje']))
-                print("-------------------CALCULAR PORCENTAJE", importe_total)
-            else:
-                importe_total = importe_sugerido
-        importe_sugerido = "{:.2f}".format(importe_sugerido)
-        importe_total = "{:.2f}".format(importe_total)
-    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
+        print(p.session["servicios"])
+        print(p.session["frecuencias"])
+    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': p, 'tipo_Servicios': servicios_guardados, 'frecuencias': frecuencias_guardadas})
 
 def presupuestarImprimir(request, pk):
     return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
-
-#VISTAS PARA MODIFICAR PRESUPUESTO
-def modificarPresupuestarCliente(request, pk):
-    servicio = Servicio.objects.get(pk=pk)
-    presupuesto_session = PresupuestoSession.getOrCreate(request.session)
-    recargarSession(servicio, presupuesto_session)
-    if (request.method == 'POST'):
-        form = FormPresupuestoCliente(request.POST)
-        if form.is_valid():
-            p = PresupuestoSession.getOrCreate(request.session)
-            p.update(form.cleaned_data)     # Se guarda todos  los campos y sus valores 
-            p.store()
-            return redirect('presupuestarServicios')
-    else:
-        #p = PresupuestoSession.create(request.session)
-        dicc = request.session.get("presupuesto", {})
-        if len(dicc) == 0:
-            form = FormPresupuestoCliente()
-        else:
-            form = FormPresupuestoCliente(initial=p.session["presupuesto"])
-        print("-------Estoy en GET Presupuestar Cliente-- Valido session vacia")
-        print(p.session["presupuesto"])
-    return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'presupuesto': p})
-
-def modificarPresupuestarServicios(request):
-    p = PresupuestoSession.getOrCreate(request.session)
-    if (request.method == 'POST'):
-        formset = formset_factory(FormBaseTipoServicio)
-        formset = formset(request.POST)
-        p.session["servicios"] = []
-        if formset.is_valid():
-            for f in formset:
-                p.update(f.cleaned_data)
-                p.storeServicio()
-                print("-------Estoy en POST Presupuestar Servicio")
-                print(p.session["servicios"])
-            return redirect('presupuestarFrecuencias')
-        else :
-            print(formset.errors)
-    else:
-        lista = request.session.get("servicios", [])
-        if len(lista) == 0:
-            formset = formset_factory(FormBaseTipoServicio, extra=1)
-        else:
-            formset = formset_factory(FormBaseTipoServicio, extra=0)
-            if "servicios" in p.session:
-                formset = formset(initial=p.session["servicios"])
-        print("-------Estoy en GET Presupuestar Servicios")
-        print(p.session["presupuesto"])
-    return render(request, 'servicio/presupuestarServicios.html', {'formset': formset, 'presupuesto': p})
-
-def modificarPresupuestarFrecuencias(request):
-    p = PresupuestoSession.getOrCreate(request.session)
-    if (request.method == 'POST'):
-        formset = formset_factory(FormBaseFrecuencia, extra=1)
-        formset = formset(request.POST)
-        p.session["frecuencias"] = []    
-        if formset.is_valid():
-            for f in formset:
-                p.update(f.cleaned_data)
-                p.storeFrecuencia()
-                print("-------Estoy en POST Presupuestar Frecuencia")
-                print(p.session["servicios"])
-            return redirect('presupuestarConfirmar')
-        else :
-            print(formset.errors)
-    else:
-        lista = request.session.get("frecuencias", [])
-        if len(lista) == 0:
-            formset = formset_factory(FormBaseFrecuencia, extra=1)    
-        else:
-            formset = formset_factory(FormBaseFrecuencia, extra=0)
-            if "frecuencias" in p.session:
-                formset = formset(initial=p.session["frecuencias"])
-        servicios_guardados = p.session["frecuencias"]
-        print("----------------Estoy en GET Presupuestar Frecuencias ")
-        print(servicios_guardados)
-    return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p, 'tipo_Servicios': servicios_guardados})
-
-def modificarPresupuestarConfirmar(request):
-    datos_cliente = PresupuestoSession.getOrCreate(request.session)
-    tipos_servicios = PresupuestoSession.getTipoServicio(request.session)
-    frecuencias = PresupuestoSession.getFrecuencia(request.session)
-    if (request.method == 'POST'):
-        form = FormConfirmar(request.POST)
-        if form.is_valid():
-            print("-------Estoy en POST Presupuestar Confirmar")
-            new_servicio = saveServicio(datos_cliente)
-            saveTipoServicios(new_servicio, tipos_servicios)
-            saveFrecuenca(new_servicio, frecuencias)
-            
-            return redirect('gestionServicios')
-    else:
-        form = FormConfirmar()
-        print("-------Estoy en GET Presupuestar Confirmar")
-        print(datos_cliente)
-        print(tipos_servicios)
-        print(frecuencias)
-        #total = calcularImportePresupuesto(tipos_servicios, 1, len(frecuencias), datos_cliente['tipo'])
-        total_servicios = calcularTotalServicios(tipos_servicios, len(frecuencias))
-        mano_obra = Empleado.getSueldoBasico() / 24
-    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'total_servicios': total_servicios, 'mano_obra': mano_obra})

@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
-    <link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
+    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
     <h1 class="titulo">Presupuestar Servicio</h1>
@@ -12,134 +12,54 @@
 {% endblock %}
 {% block formulario %}
     <div class="container">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="seccion">
-                        <h4>Listado Tipos de Servicios</h4>
-                        <table class="table table-striped table-dark" data-sorteable="falsa" data-search="false" id="tabla-servicios">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Tipo de Servicio</th>
-                                    <th scope="col">Cantidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for s in tipo_Servicios %}
-                                    <tr class="fila-tabla">
-                                        <td scope="row">{{ s.tipo_servicio.descripcion }}</td>
-                                        <td scope="row">{{ s.cantidad }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="seccion">
-                        <h4>Datos Personales Presupuesto</h4>
-                        <p class="operacion">Cliente: {{presupuesto.cliente.nombre}}</p>
-                        <p class="operacion">Cuit/Cuil: {{presupuesto.cliente.cuil}}</p>
-                        <p class="operacion">Direccion Inmueble: {{presupuesto.direccion}}</p>
-                        <p class="operacion">Metros2: {{presupuesto.metros2}} </p>
-                        <p class="operacion">Fecha Emision: </p>
-                        <p class="operacion">Fecha Emision: </p>
-                        <p class="operacion">Tipo de Presupuesto: {{presupuesto.tipo}} </p>
-                        <p class="operacion">Observaciones: {{ presupuesto.observaciones }}</p>
-                    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Listado Tipos de Servicios</h2>
+                    {% for s in tipo_Servicios %}
+                        {{ s }}
+                    {% endfor %}
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="seccion">
-                        <h4>Listado de Frecuencias</h4>
-                        <table class="table table-striped table-dark" id="tabla-frecuencias">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Dia</th>
-                                    <th scope="col">turno</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for frecu in frecuencias %}
-                                    <tr class="fila-tabla">
-                                        <td scope="row">{{ frecu.dia }}</td>
-                                        <td scope="row">{{ frecu.turno }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="seccion">
-                        <h4>Datos Importe</h4>
-                        <div class="container-form">
-                            <form method="GET" class="mi-form">
-                                {{ form.cantidad_empleados | as_crispy_field }}
-                                <p class="operacion" id="importe-sugerido">Importe sugerido: {{ importe_sugerido }}</p>
-                                {{ form.porcentaje | as_crispy_field }}
-                                <p class="operacion" id="importe-total">Importe total: {{ importe_total }}</p>
-                                <button type="submit" class="calcular btn-Guardar">Calcular</button>
-                            </form>
-                        </div>
-                    </div>
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Datos Personales Presupuesto</h2>
+                    <p class="operacion">Datos: {{ presupuesto }}</p>
+                    <p class="operacion">Cliente: {{presupuesto.cliente.nombre}}</p>
                 </div>
             </div>
         </div>
-        <div class="container-acciones">
-            <button type="submit" class="btn-Guardar confirmar-presupuesto">Confirmar</button>
-            <a href="{% url 'presupuestarFrecuencias' %}" class="btn-Guardar">Volver</a>
-            <a href="{% url 'presupuestarImprimir' %}" class="btn-Guardar">Imprimir</a>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Listado de Frecuencias</h2>
+                    {% for f in frecuencias %}
+                        {{ f }}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="seccion">
+                    <h2>Datos Importe</h2>
+                    <div class="container-form">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input type="submit" value="Confirmar" class="btn-Guardar">
+                        </form>
+                        <button type="button" class="btn-Guardar">Calcular</button>
+                        <a href="{% url 'presupuestarFrecuencias' %}" class="btn-Guardar">Volver</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
 {% block extrajs %}
 <script>
-
-    /*$(document).ready(function() {
-        $('.confirmar-presupuesto').click(function() {
-            document.getElementsByClassName("mi-form").method = 'POST'
-            console.log(document.getElementsByClassName("mi-form"))
-        })
-    })*/
-    
-    $(function () {
-        $('.confirmar-presupuesto').click(function() {
-            $(".mi-form").attr('method', 'POST')
-            console.log($(".mi-form"))
-            $(".mi-form").submit()
-            console.log($(this))
-        })
+    $("#id_cliente").select2({
+        allowClear: true,
+        placeholder: "Seleccione cliente",
     })
-
-    /*$(function() {
-        $('#sortable').change(function () {
-          $('#table-servicios').bootstrapTable('refreshOptions', {
-            sortable: $('#sortable').prop('checked'),
-            search: $('#search').prop('checked')
-          })
-        })
-    })*/
-
-    /*$(document).ready(function() {
-        // Desactivar la barra de búsqueda y las opciones de ordenación
-        $('#tabla-servicios').DataTable({
-          "searching": false,
-          "ordering": false
-        });
-    });*/
-
-    /*$(function () {
-        // Aplicar opciones a ambas tablas
-        $('#tabla-servicios, #tabla-frecuencias').each(function() {
-            $(this).data('bs.table').options.search = false;
-            $(this).data('bs.table').options.sortable = false;
-            $(this).bootstrapTable('refreshOptions', { search: false, sortable: false });
-        });
-    });*/
-    
-
 </script>
 {% endblock %}
