@@ -1,0 +1,30 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Contratar Servicio</h1>
+    <h2 class="operacion">Busqueda de Servicio / Confirmacion</h2>
+{% endblock %}
+{% block formulario %}
+    <div class="container container-form">
+        <form id="servicioForm" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+    </div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    $("#id_cliente").select2({
+        allowClear: true,
+        placeholder: "Seleccione cliente",
+    })
+    $("#id_nroServicio").select2({
+        allowClear: true,
+        placeholder: "Seleccione Servicio",
+    })
+</script>
+{% endblock %}

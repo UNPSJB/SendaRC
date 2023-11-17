@@ -1,6 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML, ButtonHolder
+from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML, ButtonHolder, DateField
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from django.forms import formset_factory, modelformset_factory, ModelMultipleChoiceField, CheckboxSelectMultiple
 from core.models import *
@@ -71,16 +71,37 @@ class FormBaseFrecuencia(forms.Form):
 class FormConfirmar(forms.Form):
     porcentaje = forms.CharField(label='Porcentaje declarado')
 
-class FormContratarServicio(forms.Form):
-    cliente = forms.ModelChoiceField(
-        queryset=Cliente.objects.all(),
-        widget=forms.Select(attrs={'class': 'input'}),
-        label='Cliente'
-    )
+class FormContratarServicio(forms.ModelForm):
+    class Meta:
+        model = Servicio
+        fields = ['cliente', 'direccion', 'metros2', 'observaciones', 'tipo', 'fecha_inicio', 'fecha_finaliza']
 
     def __init__(self, *args, **kwargs):
         super(FormContratarServicio, self).__init__(*args, **kwargs)
-        self.fields['cliente'].choices = [(cliente.id, cliente.cuil+' | '+cliente.nombre+' '+cliente.apellido) for cliente in Cliente.objects.all()]
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Fieldset(
+                    Div(
+                        Field('cliente', readonly=True),
+                        Field('direccion', readonly=True),
+                        Field('metros2', readonly=True),
+                        Field('observaciones', readonly=True),
+                        Field('tipo', readonly=True),
+                        DateField('fecha_inicio'),
+                        DateField('fecha_finaliza'),
+                        css_class='container-inputs'
+                    ),
+                    Div(
+                        HTML(
+                            '<a href="{% url "gestionServicio" %}" class="btn-Cancelar">Volver</a>'),
+                        Submit('submit', 'Contratar', css_class='btn-Guardar'),
+                        css_class='input-group mb-3 operaciones'
+                    )
+
+                )
+            )
+        )
 
 class FormAsignarEmpleado(forms.Form):
     empleado = forms.ModelChoiceField(queryset=Empleado.objects.all())

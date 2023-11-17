@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse_lazy
 from django.forms import formset_factory
 from core.models import *
@@ -162,14 +162,13 @@ def presupuestarImprimir(request, pk):
 
 """                 --- Contratacion Servicio ---           """
 def contratarServicio(request, pk):
-    if (request == POST):
-        contratoForm = FormContratarServicio(request.POST)
-        asignacionForm = FormAsignarEmpleado(request.POST)
-        if contratoForm.is_valid() and asignacionForm.is_valid():
-            contratoForm.save()
-            asignacionForm.save()
-            return redirect('contratarAccion')
-    return render(request, 'servicio/contratarServicio.html', {'contratoform': contratoForm, 'asignacionform': asignacionForm})
+    form = FormContratarServicio(initial={'servicio_id': pk})
+    return render(request, 'servicio/contratarServicio.html', {'form': form})
 
 def contratarOpciones(request):
     return render(request, 'servicio/contratarAccion.html')
+
+def listaServicioClientes(request):
+    clienteId = request.GET.get('cliente_id')
+    servicios = Servicio.objects.filter(cliente_id=clienteId).all()
+    return render(request, 'servicio/listaServiciosClientes.html', {'servicios': servicios})
