@@ -6,13 +6,14 @@
 .container-seccion-main{
     width: 100%;
     height: 100vh;
+    position: relative;
+    z-index: 50;
 }
 .nav-container{
     width: 60px;
     height: 100vh;
     border-right: 1px solid #505050;
     transition: all 0.3s ease-in-out;
-    overflow: hidden;
 }
 .nav-container.expanded {
     width: 210px;
@@ -38,14 +39,12 @@
     font-size: 13px;
     font-weight: 600;
 }
-.nav-item-span{
-    display: none;
-}
 .nav-item{
     border-radius: 7px;
+    position: relative;
 }
 .navbar{
-    background-color: black !important;
+    background-color: #000 !important;
     height: 100%;
     align-content: center;
 }
@@ -70,7 +69,7 @@
 .container-btn-cerrar-sesion > button {
     width: 38px !important;
     height: 35px !important;
-    background-color: black;
+    background-color: #000;
     border: 1px solid #505050;
     display: flex;
     justify-content: center;
@@ -105,4 +104,37 @@
 
 #btn-toExpand:hover{
     background: none;
+}
+/* Oculta el span por defecto */
+.navbar .spanSideBarExpand {
+    display: none;
+}
+
+/* Muestra el span cuando haces hover en el nav-item */
+.navbar:not(.sideBarExpand) .nav-item:hover .spanSideBarExpand {
+    display: block;  
+    opacity: 1;
+}
+
+/* Estilos adicionales para el span cuando no hay sideBarExpand */
+.navbar:not(.sideBarExpand) .spanSideBarExpand {
+    position: absolute;
+    top: 3px;
+    z-index: 100;
+    background-color: rgb(255, 255, 255);
+    padding-inline: 14px;
+    padding-block: 4px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    left: 45px;
+    width: max-content;
+    color: #000000;
+}
+
+.navbar:not(.sideBarExpand) .nav-item .nav-item-span {
+    display: none;  
+}
+.bi-list{
+    color: #fff !important;
 }

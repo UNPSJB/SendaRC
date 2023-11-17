@@ -1,6 +1,10 @@
 from django import forms
 from crispy_forms.helper import FormHelper
+<<<<<<< HEAD
 from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML, ButtonHolder, DateField
+=======
+from crispy_forms.layout import Layout, Fieldset, Div, Field, HTML, Submit
+>>>>>>> 3ed01547b6cd44254d472bc344b153021e75b991
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from django.forms import formset_factory, modelformset_factory, ModelMultipleChoiceField, CheckboxSelectMultiple
 from core.models import *
@@ -34,7 +38,7 @@ class FormPresupuestoCliente(forms.ModelForm):
                     ),
                     Div(
                         HTML(
-                            '<a href="{% url "gestionTipoServicio" %}" class="btn-Cancelar">Volver</a>'),
+                            '<a href="{% url "gestionServicios" %}" class="btn-Cancelar">Cancelar</a>'),
                         Submit('submit', 'Siguiente', css_class='btn-Guardar'),
                         css_class='input-group mb-3 operaciones'
                     )
@@ -69,7 +73,13 @@ class FormBaseFrecuencia(forms.Form):
     )
     
 class FormConfirmar(forms.Form):
-    porcentaje = forms.CharField(label='Porcentaje declarado')
+    porcentaje = forms.IntegerField(label='Porcentaje declarado (opcional)')
+    cantidad_empleados = forms.IntegerField(label='Cantidad de Empleados por Turno')
+    importe_sugerido = forms.FloatField(widget=forms.HiddenInput())
+    importe_total = forms.FloatField(widget=forms.HiddenInput())
+    
+    
+    
 
 class FormContratarServicio(forms.ModelForm):
     class Meta:

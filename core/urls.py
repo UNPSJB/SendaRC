@@ -18,6 +18,7 @@ urlpatterns = [
     path('altaCliente/', altaCliente.as_view(), name = 'altaCliente'),
     path('gestionClientes/', gestionClientes.as_view(), name = 'gestionClientes'),
     path('modificarCliente/<int:pk>', updateCliente.as_view(), name = 'modificarCliente'),
+    path('gestionClientes/<int:pk>', detalleCliente, name='detalleCliente'),
 
     path('altaInsumo/', altaInsumo.as_view(), name = 'altaInsumo'),
     path('gestionInsumos/', gestionInsumos.as_view(), name = 'gestionInsumos'),

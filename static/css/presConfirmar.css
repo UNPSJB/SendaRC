@@ -16,6 +16,7 @@
     font-size: 0.8rem;
     font-weight: 700;
 }
+
 .secccion-listado{
     height: 85%;
     display: flex;
@@ -26,10 +27,7 @@
     background-color: #000;
 
 }
-.table>tbody>tr:nth-child(even)>td,
-.table>tbody>tr:nth-child(even)>th{
-    background-color: #000;
-}
+
 .table.dataTable thead th {
     text-align: center;
   }
@@ -77,14 +75,25 @@ div.dataTables_length,div.dataTables_filter > label{
     color: #fff !important;
     font-weight: 600 !important;
 }
-.opcion{
-    background: none;
-    border: none;
-    color: #fff;
+
+.container-form{
+    width: 25rem;
 }
-.bi-check-circle{
-    color: rgb(0, 158, 0);
+
+.seccion-datos-cliente{
+
 }
-.bi-x-circle{
-    color: rgb(194, 0, 0);
+
+.container-acciones{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+}
+
+.container-acciones > a{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

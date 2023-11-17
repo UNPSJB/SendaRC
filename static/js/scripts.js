@@ -4,6 +4,16 @@ function initializeDataTable() {
     const dataTable = new DataTable(table, {
       pageLength: 8,
       lengthChange: false,
+      columnDefs: [
+        { orderable: false, targets: -1 }
+      ],
+      "language": {
+        "info": "Mostrando _END_ de _TOTAL_ registros",
+        "paginate": {
+          "previous": "Anterior",
+          "next": "Siguiente",
+        }
+      },
     });
   }
 }

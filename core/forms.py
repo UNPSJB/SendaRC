@@ -16,9 +16,9 @@ class FormSancion(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = 'Modificar una sancion aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar una sancion aquí. Dale click en guardar al terminar'
         else:
-            mensaje = 'Agregar una sancion aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar una sancion aquí. Dale click en guardar al terminar'
         super(FormSancion, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -53,9 +53,9 @@ class FormEmpleado(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = 'Modificar un empleado aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar un empleado aquí. Dale click en guardar al terminar'
         else:
-            mensaje = 'Agregar un empleado aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar un empleado aquí. Dale click en guardar al terminar'
         super(FormEmpleado, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -94,9 +94,9 @@ class FormLocalidad(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = 'Modificar una localidad aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar una localidad aquí. Dale click en guardar al terminar'
         else:
-            mensaje = 'Agregar una localidad aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar una localidad aquí. Dale click en guardar al terminar'
         super(FormLocalidad, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -129,9 +129,9 @@ class FormInsumo(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = 'Modificar un insumo aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar un insumo aquí. Dale click en guardar al terminar'
         else:
-            mensaje = 'Agregar un insumo aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar un insumo aquí. Dale click en guardar al terminar'
         super(FormInsumo, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -161,27 +161,30 @@ class FormInsumo(forms.ModelForm):
 
 class ClienteForm(forms.ModelForm):
     cuil = ARCUITField(label='CUIL', error_messages={'invalid': 'CUIL no válido'})
+    
     class Meta:
         model = Cliente
-        fields = ['cuil','nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad']
+        fields = ['cuil', 'nombre', 'apellido', 'direccion', 'tipo', 'tipoPersona', 'telefono', 'email', 'localidad', 'activo']
 
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         super(ClienteForm, self).__init__(*args, **kwargs)
+        
         if is_modificar:
-            mensaje = 'Modificar un cliente aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar un cliente aquí. Dale click en guardar al terminar'
             self.fields['tipo'].widget.attrs['hidden'] = False
+            div_class = 'container-inputs-form'
         else:
-            mensaje = 'Agregar un cliente aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar un cliente aquí. Dale click en guardar al terminar'
             self.fields['tipo'].widget.attrs['hidden'] = True
+            div_class = 'container-inputs-form ocultar'
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
                 HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
                 Fieldset(
-                    Div(
-
-                    ),
+                    Div(),
                     Div(
                         FloatingField('cuil'),
                         FloatingField('nombre'),
@@ -192,7 +195,8 @@ class ClienteForm(forms.ModelForm):
                         FloatingField('telefono'),
                         FloatingField('email'),
                         FloatingField('localidad'),
-                        css_class='container-inputs-form'
+                        Field('activo'),
+                        css_class=div_class
                     )
                 ),
                 Div(
@@ -213,9 +217,9 @@ class TipoServicioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = 'Agregue los nuevos datos del tipo de servicio. Dale clic en guardar al terminar'
+            mensaje = 'Agregue los nuevos datos del tipo de servicio. Dale click en guardar al terminar'
         else:
-            mensaje = 'Agrega los datos de un nuevo tipo de servicio. Dale clic en guardar al terminar'
+            mensaje = 'Agrega los datos de un nuevo tipo de servicio. Dale click en guardar al terminar'
         super(TipoServicioForm, self).__init__(*args, **kwargs)
         self.fields['insumos'].queryset = Insumo.objects.all()
         self.fields['maquinarias'].queryset = Maquinaria.objects.all()
@@ -258,9 +262,9 @@ class FormAltaMaquinaria(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = 'Modificar maquinaria aquí. Dale clic en guardar al terminar'
+            mensaje = 'Modificar maquinaria aquí. Dale click en guardar al terminar'
         else:
-            mensaje = 'Agregar maquinaria aquí. Dale clic en guardar al terminar'
+            mensaje = 'Agregar maquinaria aquí. Dale click en guardar al terminar'
         super(FormAltaMaquinaria, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(

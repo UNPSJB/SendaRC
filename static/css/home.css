@@ -16,6 +16,10 @@
     gap: 15px;
     flex-wrap: wrap;
     height: 199px;
+    z-index: 30;
+}
+.logo-senda-svg{
+    z-index: 40;
 }
 .card{
     background-color: black !important;
@@ -25,10 +29,11 @@
     overflow: hidden;
     text-overflow: clip;
     min-height: 100%;
+    transition: border 0.1s ease-in-out;
 }
 .card:hover{
-    filter: brightness(80%);
     cursor: pointer;
+    border: 1px solid #3b89ff !important;
 }
 .card-header{
     font-size: 40px;
@@ -45,6 +50,8 @@
 .card-text{
     font-size: 12px;
 }
+
+
 @media (max-width: 950px) {
     .container-home > svg{
         display: none;

@@ -5,3 +5,9 @@
     grid-template-columns: repeat(3,1fr);
     gap: 10px;
 }
+.ocultar > #div_id_tipo{
+    display: none;
+}
+#div_id_activo{
+    padding: 10px 0 0 27px;
+}
