@@ -19,8 +19,6 @@ class Frecuencia(models.Model):
     }
     dia = models.PositiveIntegerField(choices=DIA)
     turno = models.PositiveIntegerField(choices=TURNO)
-    #horaInicio = models.DateTimeField()
-    #horaFin = models.DateTimeField()
     
     def getHoraInicio(self):
         if self.turno == 1: #Mañana

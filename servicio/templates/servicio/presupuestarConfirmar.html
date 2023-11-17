@@ -78,8 +78,10 @@
                         <div class="container-form">
                             <form method="GET" class="mi-form">
                                 {{ form.cantidad_empleados | as_crispy_field }}
+                                <input type="hidden" name="{{ form.importe_sugerido.name }}" value="{{ importe_sugerido }}">
                                 <p class="operacion" id="importe-sugerido">Importe sugerido: {{ importe_sugerido }}</p>
                                 {{ form.porcentaje | as_crispy_field }}
+                                <input type="hidden" name="{{ form.importe_total.name }}" value="{{ importe_total }}">
                                 <p class="operacion" id="importe-total">Importe total: {{ importe_total }}</p>
                                 <button type="submit" class="calcular btn-Guardar">Calcular</button>
                             </form>
@@ -98,21 +100,19 @@
 {% block extrajs %}
 <script>
 
+    $(function () {
+        $('.confirmar-presupuesto').click(function() {
+            $(".mi-form").attr('method', 'POST').submit()
+            console.log($(this))
+        })
+    })
+    
     /*$(document).ready(function() {
         $('.confirmar-presupuesto').click(function() {
             document.getElementsByClassName("mi-form").method = 'POST'
             console.log(document.getElementsByClassName("mi-form"))
         })
     })*/
-    
-    $(function () {
-        $('.confirmar-presupuesto').click(function() {
-            $(".mi-form").attr('method', 'POST')
-            console.log($(".mi-form"))
-            $(".mi-form").submit()
-            console.log($(this))
-        })
-    })
 
     /*$(function() {
         $('#sortable').change(function () {

@@ -71,6 +71,8 @@ class FormBaseFrecuencia(forms.Form):
 class FormConfirmar(forms.Form):
     porcentaje = forms.IntegerField(label='Porcentaje declarado (opcional)')
     cantidad_empleados = forms.IntegerField(label='Cantidad de Empleados por Turno')
+    importe_sugerido = forms.FloatField(widget=forms.HiddenInput())
+    importe_total = forms.FloatField(widget=forms.HiddenInput())
     
     
     
