@@ -1,5 +1,7 @@
+from typing import Any
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from django.forms import formset_factory
 from core.models import *
@@ -70,13 +72,13 @@ def recargarSession(servicio, presupuestoSession):
                      'metros2': servicio.metros2,
                      'observaciones': servicio.observaciones,
                      'tipo': servicio.tipo,
-                     'cliente_pk': servicio.cliente.pk}
+                     'cliente': servicio.cliente}
     presupuestoSession.update(datos_cliente)
     presupuestoSession.store()
     #Cargamos la lista de tipos de servicio del servicio a modificar
     lista_tipos_servicio = CantServicioTipoServicio.objects.filter(servicio=servicio)
     for tipo_servicio in lista_tipos_servicio:
-        tipo_servicio_data = {'tipo_servicio': tipo_servicio.tipoServicio.pk,
+        tipo_servicio_data = {'tipo_servicio': tipo_servicio.tipoServicio,
                               'cantidad': tipo_servicio.cantidad}
         presupuestoSession.update(tipo_servicio_data)
         presupuestoSession.storeServicio()
@@ -86,7 +88,7 @@ def recargarSession(servicio, presupuestoSession):
         frecuencia_data = {'dia': frecuencia.dia,
                            'turno': frecuencia.turno}
         presupuestoSession.update(frecuencia_data)
-        PresupuestoSession.storeFrecuencia()
+        presupuestoSession.storeFrecuencia()
     #Debemos devolver el presupuestoSession ? creo que no
     #return presupuestoSession
 
@@ -172,6 +174,13 @@ def presupuestarCliente(request, pk=None):
         print("TRAIGO PK A PRESUPUESTAR CLIENTE")
         servicio = Servicio.objects.get(pk=pk)
         recargarSession(servicio, presupuesto_session)
+        print(presupuesto_session.session['presupuesto'])
+        print(presupuesto_session.session['servicios'])
+        print(presupuesto_session.session['frecuencias'])
+        print("----------------------SESSIOS---------")
+        print(request.session.get("presupuesto", {}))
+        print(request.session.get("servicios", []))
+        print(request.session.get("frecuencias", []))
     else:
         print("NO TRAIGO PK A PRESUPUESTAR CLIENTE")    
     
@@ -213,6 +222,7 @@ def presupuestarServicios(request):
         if len(lista) == 0:
             formset = formset_factory(FormBaseTipoServicio, extra=1)
         else:
+            print("COSAS DE LA LISTA EN GET", lista, len(lista))
             formset = formset_factory(FormBaseTipoServicio, extra=0)
             if "servicios" in p.session:
                 formset = formset(initial=p.session["servicios"])
@@ -239,6 +249,7 @@ def presupuestarFrecuencias(request):
         lista = request.session.get("frecuencias", [])
         if len(lista) == 0:
             formset = formset_factory(FormBaseFrecuencia, extra=1)    
+            print("COSAS DE LA LISTA EN GET", lista, len(lista))
         else:
             formset = formset_factory(FormBaseFrecuencia, extra=0)
             if "frecuencias" in p.session:
@@ -268,7 +279,7 @@ def presupuestarConfirmar(request):
             print(form.errors)
     else:
         print("-------Estoy en GET Presupuestar Confirmar")
-        form = FormConfirmar()
+        form = FormConfirmar(request.GET)
         print(datos_cliente)
         print(tipos_servicios)
         print(frecuencias)
@@ -286,21 +297,31 @@ def presupuestarConfirmar(request):
     return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
 
 def presupuestarImprimir(request, pk):
-<<<<<<< HEAD
     return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
 
-"""                 --- Contratacion Servicio ---           """
-def contratarServicio(request, pk):
-    form = FormContratarServicio(initial={'servicio_id': pk})
-    return render(request, 'servicio/contratarServicio.html', {'form': form})
+class contratarServicio(UpdateView):
+    model = Servicio
+    form_class = FormContratarServicio
+    template_name = 'servicio/contratarServicio.html'
+    success_url = reverse_lazy('gestionServicios')
 
-def contratarOpciones(request):
-    return render(request, 'servicio/contratarAccion.html')
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        self.object = self.get_object()
+        if self.object.estado != "1":
+            return redirect('errorServicio')
+        return super().get(request, *args, **kwargs)
 
-def listaServicioClientes(request):
-    clienteId = request.GET.get('cliente_id')
-    servicios = Servicio.objects.filter(cliente_id=clienteId).all()
-    return render(request, 'servicio/listaServiciosClientes.html', {'servicios': servicios})
-=======
-    return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
->>>>>>> 3ed01547b6cd44254d472bc344b153021e75b991
+class errorServicio(TemplateView):
+    template_name = 'servicio/errorServicio.html'
+
+class asignarEmpleados(FormView):
+    template_name = 'servicio/asignarEmpleados.html'
+    form_class = FormAsignarEmpleados
+    success_url = reverse_lazy('gestionServicios')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        servicio_pk = self.kwargs.get('pk')
+        servicio = Servicio.objects.get(pk=servicio_pk)
+        kwargs['instance'] = servicio  # Pasar una instancia de Servicio como modelo al formulario
+        return kwargs
