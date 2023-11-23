@@ -10,4 +10,8 @@ urlpatterns = [
     path('presupuestarImprimir/', presupuestarImprimir, name = 'presupuestarImprimir'),
     #Modificar Presupuestos
     path('modificarPresupuesto/<int:pk>/', presupuestarCliente, name = 'modificarPresupuesto'),
+    #Contratar Servicio
+    path('contratarServicio/<int:pk>/', contratarServicio.as_view(), name = 'contratarServicio'),
+    path('asignarEmpleados/<int:pk>/', asignarEmpleados.as_view(), name = 'asignarEmpleados'),
+    path('error/', errorServicio.as_view(), name = 'errorServicio'),
 ]

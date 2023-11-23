@@ -1,0 +1,36 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Contratar Servicio</h1>
+    <div class="container-info">
+        <h2 class="operacion">Confirmar Contratacion / Asignar Fechas</h2>
+    </div>
+{% endblock %}
+{% block formulario %}
+    <div class="detalles-servicio">
+        <script>
+            console.log("{{servicio.fecha_emision}}")
+        </script>
+        <h2>Cliente:{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</h2>
+        <p>Direccion:{{servicio.cliente.direccion}}</p>
+        <p>Telefono:{{servicio.cliente.telefono}}</p>
+        <h1>Numero de servicio: {{servicio.id}}</h1>
+        <p>Fecha de emision: {{servicio.fecha_emision}}</p>
+        <p>Costo: ${{servicio.importe_total}}</p>
+        <p>Observaciones: {{servicio.observaciones}}</p>
+    </div>
+    <div class="container container-form">
+        <form method="POST" class="mi-form">
+            {%csrf_token %}
+            {{form | crispy}}
+            <button type="submit" class="btn-siguiente-vista">Siguiente</button>
+        </form>
+    </div>
+{% endblock %}
+{% block extrajs %}
+
+{% endblock %}
