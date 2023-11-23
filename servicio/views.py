@@ -1,7 +1,7 @@
 from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic.edit import FormView
+from django.views.generic import ListView, UpdateView, TemplateView, FormView
 from django.urls import reverse_lazy
 from django.forms import formset_factory
 from core.models import *
