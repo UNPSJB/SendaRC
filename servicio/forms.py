@@ -1,8 +1,10 @@
+from typing import Any
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Field, HTML, Submit
 from crispy_bootstrap5.bootstrap5 import FloatingField
-from django.forms import formset_factory, modelformset_factory, ModelMultipleChoiceField, CheckboxSelectMultiple
+from django.forms import ValidationError, formset_factory, modelformset_factory, ModelMultipleChoiceField, CheckboxSelectMultiple
+from datetime import datetime
 from core.models import *
 from .models import *
 
@@ -74,6 +76,50 @@ class FormConfirmar(forms.Form):
     importe_sugerido = forms.FloatField(widget=forms.HiddenInput())
     importe_total = forms.FloatField(widget=forms.HiddenInput())
     
+class FormContratarServicio(forms.ModelForm):
+    fecha_inicio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha_finaliza = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    class Meta:
+        model = Servicio
+        fields = ['fecha_inicio', 'fecha_finaliza']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_finaliza = cleaned_data.get('fecha_finaliza')
+
+        if fecha_inicio and fecha_finaliza:
+            if fecha_inicio > fecha_finaliza:
+                raise ValidationError(('La fecha de finalización no puede ser anterior a la de inicio'))
+            if fecha_inicio < self.instance.fecha_emision:
+                raise ValidationError(('La fecha de inicio no puede ser anterior a la fecha de emisión'))
+        return cleaned_data
     
+    def save(self, commit: bool = ...) -> Any:
+        self.instance.estado = 2
+        return super().save(commit)
+   
+class FormAsignarEmpleados(forms.ModelForm):
+    empleados = forms.ModelMultipleChoiceField(
+        queryset=Empleado.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'input'}),
+        label='Empleados'
+    )
+    frecuencia = forms.ModelChoiceField(
+        queryset=Frecuencia.objects.all(),
+        widget=forms.Select(attrs={'class': 'input'}),
+        label='Frecuencia'
+    )
+    class Meta:
+        model = Servicio
+        fields = ['frecuencia', 'empleados']
     
+    def __init__(self, *args, **kwargs):
+        servicio_instance = kwargs.pop('instance', None)
+        super(FormAsignarEmpleados, self).__init__(*args, **kwargs)
+        if servicio_instance:
+            # Filtra las frecuencias basadas en la instancia del servicio
+            self.fields['frecuencia'].queryset = servicio_instance.frecuencias.all()
+            self.fields['frecuencia'].widget.choices = [(frecuencia.pk, frecuencia.get_dia_display() + ' | ' + frecuencia.get_turno_display()) for frecuencia in servicio_instance.frecuencias.all()]
+        self.fields['empleados'].widget.choices = [(empleado.pk, empleado.numDNI+' | '+empleado.nombre+' '+empleado.apellido) for empleado in Empleado.objects.all()]
 

@@ -1,0 +1,17 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Contratar Servicio</h1>
+    <div class="container-info">
+        <h2 class="operacion">Confirmar Contratacion / Asignar Fechas</h2>
+    </div>
+{% endblock %}
+{% block formulario %}
+    <h1>ERROR: {{error}}</h1>
+    <p>El servicio seleccionado ya esta contratado</p>
+    <a href="{% url 'gestionServicios' %}" class="btn-agregarEntidad">Volver al listado de Servicios</a>
+{% endblock %}

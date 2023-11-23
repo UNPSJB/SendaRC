@@ -1,5 +1,7 @@
+from typing import Any
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView, TemplateView, FormView
 from django.urls import reverse_lazy
 from django.forms import formset_factory
 from core.models import *
@@ -296,3 +298,30 @@ def presupuestarConfirmar(request):
 
 def presupuestarImprimir(request, pk):
     return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
+
+class contratarServicio(UpdateView):
+    model = Servicio
+    form_class = FormContratarServicio
+    template_name = 'servicio/contratarServicio.html'
+    success_url = reverse_lazy('gestionServicios')
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        self.object = self.get_object()
+        if self.object.estado != "1":
+            return redirect('errorServicio')
+        return super().get(request, *args, **kwargs)
+
+class errorServicio(TemplateView):
+    template_name = 'servicio/errorServicio.html'
+
+class asignarEmpleados(FormView):
+    template_name = 'servicio/asignarEmpleados.html'
+    form_class = FormAsignarEmpleados
+    success_url = reverse_lazy('gestionServicios')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        servicio_pk = self.kwargs.get('pk')
+        servicio = Servicio.objects.get(pk=servicio_pk)
+        kwargs['instance'] = servicio  # Pasar una instancia de Servicio como modelo al formulario
+        return kwargs
