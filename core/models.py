@@ -8,21 +8,23 @@ class Insumo(models.Model):
         (3, 'ml'),
         (4, 'Lts')
     }
-    ESTADO = {
-        (1, 'Deshabilitado'),
-        (2, 'Habilitado')
-    }
     descripcion = models.CharField(max_length=50)
     unidad_med = models.IntegerField(choices=UNIDAD)
     contenido_neto = models.IntegerField()
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
-    estado = models.IntegerField(choices=ESTADO, default=2)
+    estado = models.BooleanField(default=True)
 
     def getInsumo(self):
         return self.insumo.descripcion
     def __str__(self):
         return self.descripcion
+    
+    def getEstado(self):
+        if self.estado == True:
+            return "Habilitado"
+        else:
+            return "Deshabilitado"
     
 class Maquinaria(models.Model):
     nombre = models.CharField(max_length=50)

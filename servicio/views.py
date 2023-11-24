@@ -64,40 +64,23 @@ def saveServicio(datos_cliente, form_data, total, servicio_pk):
 
 def saveTipoServicios(servicio, listTipoServicio, servicio_pk):
     if servicio_pk != None:
-        #lista_tipos_servicios = 
         CantServicioTipoServicio.objects.filter(servicio=servicio).delete()
-        #Segun la documentacion no es ideal usar el metodo remove, con la linea de arriba seria suficiente ? 
-        servicio.tipoServicios.remove()
     
     for tipo in listTipoServicio:
-        new_servicio_tipo_servicio = CantServicioTipoServicio(servicio=servicio,
+        new_servicio_tipo_servicio = CantServicioTipoServicio.objects.create(servicio=servicio,
                                                             tipoServicio= TipoServicio.objects.get(pk=tipo['tipo_servicio'].pk),
                                                             cantidad=tipo['cantidad'])
-        new_servicio_tipo_servicio.save()
-        #Segun la documentacion no es ideal usar el metodo add, con el save de CantServicioTipoServicio seria suficiente ? 
-        servicio.tipoServicios.add(TipoServicio.objects.get(pk=tipo['tipo_servicio'].pk))
         
 def saveFrecuenca(servicio, listFrecuencias, servicio_pk):
     if servicio_pk != None:
-        #Como hago para elminar las instancias de la tabla que se crea entre Servicio y Frecuencia
-        #servicio.frecuencias_set.filter(servicio=servicio).delete()
-        
-        #Necesito eso tambien para poder eliminar las frecuencias que se crearon antes, ya que se van a guardar nuevas
-        #Frecuencia.objects.filter(pk=).delete()
-        list_frecuencias = servicio.frecuencias.all()
-        for frecuencia in lista_frecuencias:
-            frecuencia.delete()
-        
-        #Segun la documentacion no es ideal usar el metodo remove
-        servicio.frecuencias.remove()
+        Frecuencia.objects.filter(servicio=servicio).delete()
         
     for frecuencia in listFrecuencias:
         dia_num = next((key for key, value in Frecuencia.DIA if value == frecuencia['dia']), None)
         turno_num = next((key for key, value in Frecuencia.TURNO if value == frecuencia['turno']), None)
-        new_frecuencia = Frecuencia(dia=dia_num, turno=turno_num)
-        new_frecuencia.save()
-        #Segun la documentacion no es ideal usar el metodo add, con el save de la new frecuencia seria suficiente ? Pero necesitara crea una instancia en la tabla intermedia 
-        servicio.frecuencias.add(new_frecuencia)
+        Frecuencia.objects.create(dia=dia_num, turno=turno_num, servicio=servicio)
+        #new_frecuencia = Frecuencia.objects.create(dia=dia_num, turno=turno_num, servicio=servicio)
+
         
 def recargarSession(servicio, presupuestoSession):
     #Cargamos los datos del cliente que ya estaban
@@ -116,7 +99,7 @@ def recargarSession(servicio, presupuestoSession):
         presupuestoSession.update(tipo_servicio_data)
         presupuestoSession.storeServicio()
     #Cargamos la lista de frecuencias del servicio a modificar
-    lista_frecuencias = servicio.frecuencias.all()
+    lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
     for frecuencia in lista_frecuencias:
         frecuencia_data = {'dia': frecuencia.dia,
                            'turno': frecuencia.turno}
@@ -296,9 +279,9 @@ def presupuestarConfirmar(request):
     importe_total = 0
     importe_sugerido = 0
     if (request.method == 'POST'):
-        form = FormConfirmar(request.POST)
+        form = FormConfirmar(request.POST)  
         if form.is_valid():
-            print("-------Estoy en POST Presupuestar Confirmar")
+            print("-------Estoy en POST Presupuestar Confirmar VALIDA FORM")
             new_servicio = saveServicio(datos_cliente, form.cleaned_data, form.cleaned_data['importe_total'], servicio_pk)
             saveTipoServicios(new_servicio, tipos_servicios, servicio_pk)
             saveFrecuenca(new_servicio, frecuencias, servicio_pk)
@@ -307,25 +290,35 @@ def presupuestarConfirmar(request):
             request.session['frecuencias'] = []
             return redirect('gestionServicios')
         else:
+            print("-------Estoy en POST Presupuestar Confirmar NOOO VALIDA FORM")
             print(form.errors)
     else:
-        print("-------Estoy en GET Presupuestar Confirmar")
-        form = FormConfirmar(request.GET)
-        print(datos_cliente)
-        print(tipos_servicios)
-        print(frecuencias)
-        print(servicio_pk)
-        if len(request.GET) > 0:
-            if int(request.GET['cantidad_empleados']) >= 1:
-                cant_empleados = int(request.GET['cantidad_empleados'])
-                importe_sugerido = calcularImportePresupuesto(tipos_servicios, cant_empleados, len(frecuencias), datos_cliente['tipo'])
-                if int(request.GET['porcentaje']) != 0:
-                    porcentaje = int(request.GET['porcentaje'])
-                    importe_total = calcularPorcentaje(importe_sugerido, int(request.GET['porcentaje']))
-                else:
-                    importe_total = importe_sugerido
+        if servicio_pk != None and len(request.GET) == 0:
+            print("-------GET PRESUPUESTAR CONFIRMAR ENTRA CON PK PARA MODIFICAR")    
+            servicio = Servicio.objects.get(pk=servicio_pk)
+            form = FormConfirmar(initial={'porcentaje': servicio.porcentaje, 'cantidad_empleados': servicio.cant_empleados})    
+            importe_sugerido = calcularImportePresupuesto(tipos_servicios, servicio.cant_empleados, len(frecuencias), datos_cliente['tipo'])
+            importe_total = calcularPorcentaje(importe_sugerido, servicio.porcentaje)
             importe_sugerido = "{:.2f}".format(importe_sugerido)
             importe_total = "{:.2f}".format(importe_total)
+        else:
+            form = FormConfirmar(request.GET)    
+            print("-------Estoy en GET Presupuestar Confirmar DA DE ALTA UNO NUEVO")
+            if len(request.GET) > 0:
+                if int(request.GET['cantidad_empleados']) >= 1:
+                    cant_empleados = int(request.GET['cantidad_empleados'])
+                    importe_sugerido = calcularImportePresupuesto(tipos_servicios, cant_empleados, len(frecuencias), datos_cliente['tipo'])
+                    if int(request.GET['porcentaje']) != 0:
+                        porcentaje = int(request.GET['porcentaje'])
+                        importe_total = calcularPorcentaje(importe_sugerido, int(request.GET['porcentaje']))
+                    else:
+                        importe_total = importe_sugerido
+                importe_sugerido = "{:.2f}".format(importe_sugerido)
+                importe_total = "{:.2f}".format(importe_total)
+    print(datos_cliente)
+    print(tipos_servicios)
+    print(frecuencias)
+    print(servicio_pk)
     return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
 
 def presupuestarImprimir(request, pk):
