@@ -93,6 +93,8 @@ class FormContratarServicio(forms.ModelForm):
                 raise ValidationError(('La fecha de finalización no puede ser anterior a la de inicio'))
             if fecha_inicio < self.instance.fecha_emision:
                 raise ValidationError(('La fecha de inicio no puede ser anterior a la fecha de emisión'))
+            if self.instance.tipo == 1 and fecha_inicio != fecha_finaliza:
+                raise ValidationError('Este servicio es eventual, la fecha de inicio debe ser igual al final')
         return cleaned_data
     
     def save(self, commit: bool = ...) -> Any:
@@ -119,41 +121,5 @@ class FormAsignarEmpleados(forms.ModelForm):
         super(FormAsignarEmpleados, self).__init__(*args, **kwargs)
         if servicio_instance:
             # Filtra las frecuencias basadas en la instancia del servicio
-            self.fields['frecuencia'].queryset = servicio_instance.frecuencias.all()
             self.fields['frecuencia'].widget.choices = [(frecuencia.pk, frecuencia.get_dia_display() + ' | ' + frecuencia.get_turno_display()) for frecuencia in servicio_instance.frecuencias.all()]
         self.fields['empleados'].widget.choices = [(empleado.pk, empleado.numDNI+' | '+empleado.nombre+' '+empleado.apellido) for empleado in Empleado.objects.all()]
-
-class FormContratarServicio(forms.ModelForm):
-    class Meta:
-        model = Servicio
-        fields = ['cliente', 'direccion', 'metros2', 'observaciones', 'tipo', 'fecha_inicio', 'fecha_finaliza']
-
-    def __init__(self, *args, **kwargs):
-        super(FormContratarServicio, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Div(
-                Fieldset(
-                    Div(
-                        Field('cliente', readonly=True),
-                        Field('direccion', readonly=True),
-                        Field('metros2', readonly=True),
-                        Field('observaciones', readonly=True),
-                        Field('tipo', readonly=True),
-                        DateField('fecha_inicio'),
-                        DateField('fecha_finaliza'),
-                        css_class='container-inputs'
-                    ),
-                    Div(
-                        HTML(
-                            '<a href="{% url "gestionServicio" %}" class="btn-Cancelar">Volver</a>'),
-                        Submit('submit', 'Contratar', css_class='btn-Guardar'),
-                        css_class='input-group mb-3 operaciones'
-                    )
-
-                )
-            )
-        )
-
-class FormAsignarEmpleado(forms.Form):
-    empleado = forms.ModelChoiceField(queryset=Empleado.objects.all())

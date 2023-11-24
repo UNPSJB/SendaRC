@@ -339,21 +339,24 @@ class contratarServicio(UpdateView):
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         self.object = self.get_object()
-        if self.object.estado != "1":
+        if self.object.estado != 1:
             return redirect('errorServicio')
         return super().get(request, *args, **kwargs)
 
 class errorServicio(TemplateView):
     template_name = 'servicio/errorServicio.html'
 
-class asignarEmpleados(FormView):
-    template_name = 'servicio/asignarEmpleados.html'
-    form_class = FormAsignarEmpleados
-    success_url = reverse_lazy('gestionServicios')
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        servicio_pk = self.kwargs.get('pk')
-        servicio = Servicio.objects.get(pk=servicio_pk)
-        kwargs['instance'] = servicio  # Pasar una instancia de Servicio como modelo al formulario
-        return kwargs
+def asignarEmpleados(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    if request.method == 'POST':
+        formset = formset(request.POST, instance=servicio)
+        if formset.is_valid():
+            formset.save()
+            return redirect('gestionServicios')
+    else:
+        formset = formset_factory(FormAsignarEmpleados,extra=servicio.frecuencias.count())
+    context = {
+        'formset': formset,
+        'servicio': servicio,
+    }
+    return render(request, 'servicio/asignarEmpleados.html', context)
