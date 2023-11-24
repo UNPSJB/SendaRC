@@ -124,7 +124,7 @@ class FormLocalidad(forms.ModelForm):
 class FormInsumo(forms.ModelForm):
     class Meta:
         model = Insumo
-        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad']
+        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad', 'estado']
        
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -147,6 +147,7 @@ class FormInsumo(forms.ModelForm):
                         FloatingField('contenido_neto'),
                         FloatingField('marca'),
                         FloatingField('cantidad'),
+                        Field('estado')
                     )
                 ),
                 Div(

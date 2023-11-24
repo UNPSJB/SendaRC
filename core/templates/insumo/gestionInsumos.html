@@ -18,6 +18,7 @@
             <th scope="col">U. de Medida</th>
             <th scope="col">Cont. Neto</th>
             <th scope="col">Cantidad</th>
+            <th scope="col">Estado</th>
             <th scope="col">Opciones</th>
         </tr>
     </thead>
@@ -30,6 +31,7 @@
                 <td scope="row">{{ insumo.contenido_neto }} </td>
                 <td scope="row">{{ insumo.marca }} </td>
                 <td scope="row">{{ insumo.cantidad }} </td>
+                <td scope="row">{{ insumo.getEstado }} </td>
                 <td scope="row">      
                     <a href="{% url 'modificarInsumo' insumo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>

@@ -59,6 +59,17 @@ class updateInsumo(UpdateView):
         kwargs = super(updateInsumo, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
+    
+    def form_valid(self, form):
+        # Verifica si el elemento está asociado con OtroModelo
+        insumo = form.save(commit=False)
+        if form.cleaned_data['estado'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists() :
+            # Logica de si quiere desactivar
+            form.add_error('estado', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
+            return self.form_invalid(form)
+        else:
+            insumo.save()
+            return super().form_valid(form)
 
 class altaTipoServicio(CreateView):
     model = TipoServicio
