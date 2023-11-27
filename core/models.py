@@ -87,6 +87,13 @@ class Cliente(models.Model):
     def getTipoPersona(self):
         return dict(self.TIPOPERSONA)[self.tipoPersona]
 
+class EmpleadoManager(models.Manager):
+    def disponibles(self, desde, dia, turno):
+        qdesde = models.Q(frecuencias__servicio__fecha_finaliza__lte=desde)
+        qdia = models.Q(frecuencias__dia=dia)
+        qturno = models.Q(frecuencias__turno=turno)
+        return self.get_queryset().exclude((qdia & qturno) | (~qdia & ~qturno & qdesde))
+
 class Empleado(models.Model):
     numDNI = models.CharField(unique=True,max_length=10)
     nombre = models.CharField(max_length=50)
@@ -96,7 +103,8 @@ class Empleado(models.Model):
     sueldo = models.IntegerField()
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
     activo = models.BooleanField(default=True)
-    
+    objects = EmpleadoManager()
+
     sueldo_basico = 58000
     
     def save(self, *args, **kargs):

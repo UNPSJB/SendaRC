@@ -341,13 +341,20 @@ class errorServicio(TemplateView):
 
 def asignarEmpleados(request, pk):
     servicio = Servicio.objects.get(pk=pk)
+    frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    formset_inicial = formset_factory(FormAsignarEmpleados,extra=len(frecuencias))
+    print(frecuencias)
     if request.method == 'POST':
         formset = formset(request.POST, instance=servicio)
         if formset.is_valid():
             formset.save()
             return redirect('gestionServicios')
     else:
-        formset = formset_factory(FormAsignarEmpleados,extra=servicio.frecuencias.count())
+        formset = formset_inicial()
+        for form, frecuencia in zip(formset, frecuencias):
+            form.fields['frecuencia'].choices = [(frecuencia.pk, str(frecuencia))]
+            form.fields['empleados'].queryset = Empleado.objects.filter(
+                EmpleadoManager.disponibles(self, servicio.fecha_inicio, frecuencia.dia, frecuencia.turno))
     context = {
         'formset': formset,
         'servicio': servicio,

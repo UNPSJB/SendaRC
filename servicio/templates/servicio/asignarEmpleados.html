@@ -16,13 +16,11 @@
             <form method="POST" class="mi-formset">
                 {% csrf_token %}
                 {{ formset.management_form }}
-                <div id="form-empleaods" class="form-group form-set mb-3">
                 {% for f in formset %}
                     <div class="form-empleados">
                         {% crispy f %}
                     </div>
                 {% endfor %}
-                </div>
             </form>
         </div>
         <div class="container-acciones">

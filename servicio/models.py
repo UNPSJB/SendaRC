@@ -60,6 +60,7 @@ class Frecuencia(models.Model):
     dia = models.PositiveIntegerField(choices=DIA)
     turno = models.PositiveIntegerField(choices=TURNO)
     servicio = models.ForeignKey(Servicio, related_name="frecuencias", on_delete=models.CASCADE)
+    empleados = models.ManyToManyField(Empleado, related_name="frecuencias")
     
     def getHoraInicio(self):
         if self.turno == 1: #Mañana
@@ -85,17 +86,15 @@ class Frecuencia(models.Model):
     def hora_fin(self):
         return self.getHoraFin()
 
-
-class HojaTrabajo(models.Model):
-    fecha = models.DateField()
-    frecuencia = models.ForeignKey(Frecuencia, on_delete=models.DO_NOTHING)
-    empleado = models.ForeignKey(Empleado,on_delete=models.DO_NOTHING)
-    servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)    
-    
 class Reclamo(models.Model):
     descripcion = models.CharField(max_length=400)
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     
-
+class Asistencia(models.Model):
+    fecha = models.DateField()
+    hora_entrada = models.TimeField()
+    hora_salida = models.TimeField()
+    empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
+    frecuencia = models.ForeignKey(Frecuencia, on_delete=models.DO_NOTHING)
     
 
