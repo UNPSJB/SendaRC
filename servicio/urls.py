@@ -16,3 +16,11 @@ urlpatterns = [
     path('error/', errorServicio.as_view(), name = 'errorServicio'),
 ]
  
+
+
+
+# fechaFinaliza = datetime.strptime("01-05-2024","%d-%m-%Y").date()
+#from core.models import *
+#from datetime import * 
+#Empleado.objects.disponibles
+#Empleado.objects.disponibles(datetime.now(),2,3)

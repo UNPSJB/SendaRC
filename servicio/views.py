@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Self
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, UpdateView, TemplateView, FormView
@@ -353,8 +353,7 @@ def asignarEmpleados(request, pk):
         formset = formset_inicial()
         for form, frecuencia in zip(formset, frecuencias):
             form.fields['frecuencia'].choices = [(frecuencia.pk, str(frecuencia))]
-            form.fields['empleados'].queryset = Empleado.objects.filter(
-                EmpleadoManager.disponibles(self, servicio.fecha_inicio, frecuencia.dia, frecuencia.turno))
+            form.fields['empleados'].queryset = Empleado.objects.disponibles(servicio.fecha_inicio, frecuencia.dia, frecuencia.turno)
     context = {
         'formset': formset,
         'servicio': servicio,
