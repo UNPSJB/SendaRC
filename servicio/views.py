@@ -249,8 +249,24 @@ def presupuestarFrecuencias(request):
         formset = formset_factory(FormBaseFrecuencia, extra=1)
         formset = formset(request.POST)
         p.session["frecuencias"] = []    
+        dias_turnos = {}
         if formset.is_valid():
             for f in formset:
+                dia = f.cleaned_data['dia']
+                turno = f.cleaned_data['turno']
+                
+                if dia in dias_turnos and len(dias_turnos[dia]) >= 3:
+                    f.add_error(None, 'No se permiten mas de 3 formularios para el mismo dia.')
+                    return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
+                
+                if dia in dias_turnos and turno in dias_turnos[dia]:
+                    f.add_error(None, 'No se permiten turnos duplicados para el mismo dia')
+                    return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
+                
+                if dia not in dias_turnos:
+                    dias_turnos[dia] = set()
+                dias_turnos[dia].add(turno)
+                
                 p.update(f.cleaned_data)
                 p.storeFrecuencia()
                 print("-------Estoy en POST Presupuestar Frecuencia")

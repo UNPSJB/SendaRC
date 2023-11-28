@@ -1,5 +1,17 @@
 from django.db import models
 
+class InsumoManager(models.Manager):
+    def __init__(self, habilitado = None, *qargs, **kwargs):
+        super().__init__(*qargs, **kwargs)
+        self.habilitado = habilitado
+        
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(estado=self.habilitado) if self.habilitado is not None else qs
+
+class InsumoQuerySet(models.QuerySet):
+    pass
+
 # Create your models here.
 class Insumo(models.Model):
     UNIDAD = {
@@ -14,7 +26,10 @@ class Insumo(models.Model):
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
     estado = models.BooleanField(default=True)
-
+    objects = InsumoManager()
+    habilitados = InsumoManager(True)
+    deshabilitados = InsumoManager(False)
+    
     def getInsumo(self):
         return self.insumo.descripcion
     def __str__(self):
@@ -25,6 +40,9 @@ class Insumo(models.Model):
             return "Habilitado"
         else:
             return "Deshabilitado"
+        
+    def getUni_Medida(self):
+        return dict(self.UNIDAD).get(self.unidad_med, '')
     
 class Maquinaria(models.Model):
     nombre = models.CharField(max_length=50)
@@ -87,6 +105,18 @@ class Cliente(models.Model):
     def getTipoPersona(self):
         return dict(self.TIPOPERSONA)[self.tipoPersona]
 
+class EmpleadoManager(models.Manager):
+    def __init__(self, habilitado = None, *qargs, **kwargs):
+        super().__init__(*qargs, **kwargs)
+        self.habilitado = habilitado
+        
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(estado=self.habilitado) if self.habilitado is not None else qs
+
+class EmpleadoQuerySet(models.QuerySet):
+    pass
+
 class Empleado(models.Model):
     numDNI = models.CharField(unique=True,max_length=10)
     nombre = models.CharField(max_length=50)
@@ -95,9 +125,11 @@ class Empleado(models.Model):
     email = models.EmailField(max_length=254)
     sueldo = models.IntegerField()
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
-    activo = models.BooleanField(default=True)
-    
+    estado = models.BooleanField(default=True)
     sueldo_basico = 58000
+    objects = EmpleadoManager()
+    habilitados = EmpleadoManager(True)
+    deshabilitados = EmpleadoManager(False)
     
     def save(self, *args, **kargs):
         self.sueldo += self.sueldo_basico
@@ -106,6 +138,12 @@ class Empleado(models.Model):
     @classmethod
     def getSueldoBasico(cls):
         return cls.sueldo_basico
+    
+    def getEstado(self):
+        if self.estado == True:
+            return "Habilitado"
+        else:
+            return "Deshabilitado"
     
     
 class Sancion(models.Model):

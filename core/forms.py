@@ -48,7 +48,7 @@ class FormEmpleado(forms.ModelForm):
     numDNI = ARDNIField(label='DNI', error_messages={'invalid': 'DNI no válido'})
     class Meta:
         model = Empleado
-        fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad']
+        fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad', 'estado']
         
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -73,6 +73,7 @@ class FormEmpleado(forms.ModelForm):
                         FloatingField('email'),
                         FloatingField('sueldo'),
                         FloatingField('localidad'),
+                        Field('estado'),
                         css_class='container-inputs-form'
                     )
                 ),
@@ -225,7 +226,7 @@ class TipoServicioForm(forms.ModelForm):
         self.fields['insumos'].queryset = Insumo.objects.all()
         self.fields['maquinarias'].queryset = Maquinaria.objects.all()
 
-        self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.objects.all()]
+        self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.habilitados.all()]
         self.fields['maquinarias'].widget.choices = [(maquinaria.pk, maquinaria.nombre) for maquinaria in Maquinaria.objects.all()]
 
         self.helper = FormHelper()

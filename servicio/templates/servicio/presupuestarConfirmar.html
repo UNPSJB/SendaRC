@@ -17,7 +17,7 @@
                 <div class="col-md-6">
                     <div class="seccion">
                         <h4>Listado Tipos de Servicios</h4>
-                        <table class="table table-striped table-dark" data-sorteable="falsa" data-search="false" id="tabla-servicios">
+                        <table class="tabla-resumen-presupuesto" id="tabla-servicios">
                             <thead>
                                 <tr>
                                     <th scope="col">Tipo de Servicio</th>
@@ -53,7 +53,7 @@
                 <div class="col-md-6">
                     <div class="seccion">
                         <h4>Listado de Frecuencias</h4>
-                        <table class="table table-striped table-dark" id="tabla-frecuencias">
+                        <table class="tabla-resumen-presupuesto" id="tabla-frecuencias">
                             <thead>
                                 <tr>
                                     <th scope="col">Dia</th>
@@ -107,39 +107,6 @@
             console.log($(this))
         })
     })
-    
-    /*$(document).ready(function() {
-        $('.confirmar-presupuesto').click(function() {
-            document.getElementsByClassName("mi-form").method = 'POST'
-            console.log(document.getElementsByClassName("mi-form"))
-        })
-    })*/
-
-    /*$(function() {
-        $('#sortable').change(function () {
-          $('#table-servicios').bootstrapTable('refreshOptions', {
-            sortable: $('#sortable').prop('checked'),
-            search: $('#search').prop('checked')
-          })
-        })
-    })*/
-
-    /*$(document).ready(function() {
-        // Desactivar la barra de búsqueda y las opciones de ordenación
-        $('#tabla-servicios').DataTable({
-          "searching": false,
-          "ordering": false
-        });
-    });*/
-
-    /*$(function () {
-        // Aplicar opciones a ambas tablas
-        $('#tabla-servicios, #tabla-frecuencias').each(function() {
-            $(this).data('bs.table').options.search = false;
-            $(this).data('bs.table').options.sortable = false;
-            $(this).bootstrapTable('refreshOptions', { search: false, sortable: false });
-        });
-    });*/
     
 
 </script>

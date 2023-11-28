@@ -90,6 +90,7 @@ class HojaTrabajo(models.Model):
     fecha = models.DateField()
     empleado = models.ForeignKey(Empleado,on_delete=models.DO_NOTHING)
     servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)    
+    #cambiar o agregar, deberia estar frecuencia
     
 class Reclamo(models.Model):
     descripcion = models.CharField(max_length=400)

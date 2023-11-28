@@ -1,10 +1,12 @@
 from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
+from servicio.models import *
 from django.http import JsonResponse
 from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib import messages
+
 
 class altaCliente(CreateView):
     model = Cliente
@@ -49,6 +51,19 @@ class gestionInsumos(ListView):
     model = Insumo
     template_name = 'insumo/gestionInsumos.html'
     context_object_name = 'insumos'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Habilitado', 'Deshabilitado', 'Todos']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Habilitado' or not estado:
+            context['insumos'] = Insumo.habilitados.all()
+        elif estado == 'Deshabilitado':
+            context['insumos'] = Insumo.deshabilitados.all()
+        elif estado == 'Todos':
+            context['insumos'] = Insumo.objects.all()
+        return context
 
 class updateInsumo(UpdateView):
     model = Insumo
@@ -63,7 +78,7 @@ class updateInsumo(UpdateView):
     def form_valid(self, form):
         # Verifica si el elemento está asociado con OtroModelo
         insumo = form.save(commit=False)
-        if form.cleaned_data['estado'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists() :
+        if form.cleaned_data['estado'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists():
             # Logica de si quiere desactivar
             form.add_error('estado', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
             return self.form_invalid(form)
@@ -89,7 +104,7 @@ def tipoServicioDetalles(request, pk):
     listInsumos = []
     listMaquinarias = []
     for insumo in insumos:
-        listInsumos.append(Insumo.objects.get(id=insumo.insumo_id))
+        listInsumos.append(Insumo.habilitados.get(id=insumo.insumo_id))
     for maquinaria in maquinarias:
         listMaquinarias.append(Maquinaria.objects.get(id=maquinaria.maquinaria_id))
     return render(request, 'tipoServicio/detalleTipoServicio.html', {'tipo': tipo, 'insumos': listInsumos, 'maquinarias': listMaquinarias})
@@ -165,11 +180,37 @@ class updateEmpleado(UpdateView):
         kwargs = super(updateEmpleado, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
+    
+    def form_valid(self, form):
+        # Verifica si el elemento está asociado con OtroModelo
+        empleado = form.save(commit=False)
+        frecuencias_empleado = Frecuencia.objects.filter(empleado=empleado)
+        servicio_frecuencia_empleado = Servicio.objects.filter()
+        if form.cleaned_data['estado'] == False and Frecuencia.objects.filter(empleado=empleado).exists():
+            # Logica de si quiere desactivar
+            form.add_error('estado', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
+            return self.form_invalid(form)
+        else:
+            insumo.save()
+            return super().form_valid(form)
 
 class gestionEmpleado(ListView):
     model = Empleado
     template_name = 'empleado/gestionEmpleados.html'  
     context_object_name = 'empleados'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Habilitado', 'Deshabilitado', 'Todos']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Habilitado' or not estado:
+            context['empleados'] = Empleado.habilitados.all()
+        elif estado == 'Deshabilitado':
+            context['empleados'] = Empleado.deshabilitados.all()
+        elif estado == 'Todos':
+            context['empleados'] = Empleado.objects.all()
+        return context
 
 class altaSancion(CreateView):
     model = Sancion
