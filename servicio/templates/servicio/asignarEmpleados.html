@@ -11,8 +11,22 @@
     </div>
 {% endblock %}
 {% block formulario %}
-    <div class="container container-form">
-        {% crispy form %}
+    <div class="container">
+        <div class="container-formSets">
+            <form method="POST" class="mi-formset">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                {% for f in formset %}
+                    <div class="form-empleados">
+                        {% crispy f %}
+                    </div>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="container-acciones">
+            <a href="{% url 'presupuestarServicios' %}" class="accion">Volver</a>
+            <button type="submit">Siguiente</button>
+        </div>
     </div>
 {% endblock %}
 {% block extrajs %}

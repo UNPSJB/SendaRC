@@ -93,33 +93,18 @@ class FormContratarServicio(forms.ModelForm):
                 raise ValidationError(('La fecha de finalización no puede ser anterior a la de inicio'))
             if fecha_inicio < self.instance.fecha_emision:
                 raise ValidationError(('La fecha de inicio no puede ser anterior a la fecha de emisión'))
+            if self.instance.tipo == 1 and fecha_inicio != fecha_finaliza:
+                raise ValidationError('Este servicio es eventual, la fecha de inicio debe ser igual al final')
         return cleaned_data
     
     def save(self, commit: bool = ...) -> Any:
         self.instance.estado = 2
         return super().save(commit)
    
-class FormAsignarEmpleados(forms.ModelForm):
+class FormAsignarEmpleados(forms.Form):
     empleados = forms.ModelMultipleChoiceField(
-        queryset=Empleado.objects.all(),
+        queryset=None,
         widget=forms.SelectMultiple(attrs={'class': 'input'}),
         label='Empleados'
     )
-    frecuencia = forms.ModelChoiceField(
-        queryset=Frecuencia.objects.all(),
-        widget=forms.Select(attrs={'class': 'input'}),
-        label='Frecuencia'
-    )
-    class Meta:
-        model = Servicio
-        fields = ['frecuencia', 'empleados']
-    
-    def __init__(self, *args, **kwargs):
-        servicio_instance = kwargs.pop('instance', None)
-        super(FormAsignarEmpleados, self).__init__(*args, **kwargs)
-        if servicio_instance:
-            # Filtra las frecuencias basadas en la instancia del servicio
-            self.fields['frecuencia'].queryset = servicio_instance.frecuencias.all()
-            self.fields['frecuencia'].widget.choices = [(frecuencia.pk, frecuencia.get_dia_display() + ' | ' + frecuencia.get_turno_display()) for frecuencia in servicio_instance.frecuencias.all()]
-        self.fields['empleados'].widget.choices = [(empleado.pk, empleado.numDNI+' | '+empleado.nombre+' '+empleado.apellido) for empleado in Empleado.objects.all()]
-
+    frecuencia = forms.ChoiceField(label='Frecuencia', choices=[], widget=forms.Select(attrs={'class': 'input'}))

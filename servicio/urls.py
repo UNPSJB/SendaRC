@@ -12,6 +12,15 @@ urlpatterns = [
     path('modificarPresupuesto/<int:pk>/', presupuestarCliente, name = 'modificarPresupuesto'),
     #Contratar Servicio
     path('contratarServicio/<int:pk>/', contratarServicio.as_view(), name = 'contratarServicio'),
-    path('asignarEmpleados/<int:pk>/', asignarEmpleados.as_view(), name = 'asignarEmpleados'),
+    path('asignarEmpleados/<int:pk>/', asignarEmpleados, name = 'asignarEmpleados'),
     path('error/', errorServicio.as_view(), name = 'errorServicio'),
 ]
+ 
+
+
+
+# fechaFinaliza = datetime.strptime("01-05-2024","%d-%m-%Y").date()
+#from core.models import *
+#from datetime import * 
+#Empleado.objects.disponibles
+#Empleado.objects.disponibles(datetime.now(),2,3)

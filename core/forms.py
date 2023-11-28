@@ -214,15 +214,16 @@ class TipoServicioForm(forms.ModelForm):
     
     class Meta:
         model = TipoServicio
-        fields = ['descripcion', 'unidad_medida', 'precio', 'insumos', 'maquinarias']
+        fields = ['descripcion', 'unidad_medida', 'precio', 'insumos', 'maquinarias', 'activo']
     
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
+        super(TipoServicioForm, self).__init__(*args, **kwargs)
         if is_modificar:
             mensaje = 'Agregue los nuevos datos del tipo de servicio. Dale click en guardar al terminar'
         else:
             mensaje = 'Agrega los datos de un nuevo tipo de servicio. Dale click en guardar al terminar'
-        super(TipoServicioForm, self).__init__(*args, **kwargs)
+
         self.fields['insumos'].queryset = Insumo.objects.all()
         self.fields['maquinarias'].queryset = Maquinaria.objects.all()
 
@@ -242,7 +243,8 @@ class TipoServicioForm(forms.ModelForm):
                         FloatingField('unidad_medida'),
                         FloatingField('precio'),
                         Field('insumos', multiple=True),
-                        Field('maquinarias', multiple=True),    
+                        Field('maquinarias', multiple=True),
+                        Field('activo'),    
                         css_class='container-inputs'
                     )
                 ),

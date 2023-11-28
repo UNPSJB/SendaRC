@@ -1,0 +1,14 @@
+{% load static %}
+{% block detalle %}
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
+<h2> Numero de Servicio: {{servicio.pk}} </h2>
+<h2> Cliente: {{servicio.cliente.nombre}} {{servicio.cliente.apellido}} {{servicio.cliente.cuil}}</h2>
+<h2> Fecha de Emision: {{servicio.fecha_emision|date:"d-m-Y"}} </h2>
+<h2> Direccion: {{servicio.direccion}} </h2>
+<h2> Importe total del servicio: {{servicio.importe_total}} </h2>
+<h2> Tipos de Servicio: </h2>
+{% for tipoServicio in servicio.tipoServicios %}
+<h2> {{tipoServicio.descripcion}} </h2>
+{% endfor %}
+
+{% endblock %}

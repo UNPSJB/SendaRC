@@ -117,6 +117,14 @@ class EmpleadoManager(models.Manager):
 class EmpleadoQuerySet(models.QuerySet):
     pass
 
+    def disponibles(self, desde,dia, turno):
+        qdesde = models.Q(frecuencias__servicio__fecha_finaliza__lt=desde)
+        qdia = models.Q(frecuencias__dia=dia)
+        qturno = models.Q(frecuencias__turno=turno)
+        #return self.get_queryset().exclude((qdia & qturno & qdesde) | (~qdia & ~qturno & qdesde))
+        #return self.get_queryset().exclude((qdia & qturno & qdesde) | (~qdia & ~qturno & ~qdesde))
+        return self.get_queryset().filter((qdia & qturno & qdesde) | (~qdia & ~qturno))
+    
 class Empleado(models.Model):
     numDNI = models.CharField(unique=True,max_length=10)
     nombre = models.CharField(max_length=50)
@@ -157,6 +165,3 @@ class Sancion(models.Model):
     
     def getEmpleado(self):
         return self.empleado.numLegajo
-    
-  
-
