@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib import messages
-
+from django.utils import timezone
 
 class altaCliente(CreateView):
     model = Cliente
@@ -78,9 +78,9 @@ class updateInsumo(UpdateView):
     def form_valid(self, form):
         # Verifica si el elemento está asociado con OtroModelo
         insumo = form.save(commit=False)
-        if form.cleaned_data['estado'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists():
+        if form.cleaned_data['activo'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists():
             # Logica de si quiere desactivar
-            form.add_error('estado', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
+            form.add_error('activo', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
             return self.form_invalid(form)
         else:
             insumo.save()
@@ -184,14 +184,21 @@ class updateEmpleado(UpdateView):
     def form_valid(self, form):
         # Verifica si el elemento está asociado con OtroModelo
         empleado = form.save(commit=False)
-        frecuencias_empleado = Frecuencia.objects.filter(empleado=empleado)
-        servicio_frecuencia_empleado = Servicio.objects.filter()
-        if form.cleaned_data['estado'] == False and Frecuencia.objects.filter(empleado=empleado).exists():
+        frecuencias_empleado = Frecuencia.objects.filter(empleados=empleado)
+        activo = False
+        for frecuencia in frecuencias_empleado:
+            servicio_frecuencia = Servicio.objects.get(pk=frecuencia.servicio.pk)
+            fecha_actual = timezone.now().date()
+            if servicio_frecuencia.fecha_finaliza >= fecha_actual:
+                activo = True
+                break
+            
+        if form.cleaned_data['activo'] == False and activo == True:
             # Logica de si quiere desactivar
-            form.add_error('estado', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
-            return self.form_invalid(form)
+            form.add_error('activo', 'No puedes dar de baja al empleado, porque esta activo en un servicio.')
+            return self.form_invalid(form)                
         else:
-            insumo.save()
+            empleado.save()
             return super().form_valid(form)
 
 class gestionEmpleado(ListView):

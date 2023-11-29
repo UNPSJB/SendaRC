@@ -48,7 +48,7 @@ class FormEmpleado(forms.ModelForm):
     numDNI = ARDNIField(label='DNI', error_messages={'invalid': 'DNI no válido'})
     class Meta:
         model = Empleado
-        fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad', 'estado']
+        fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad', 'activo']
         
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -73,7 +73,7 @@ class FormEmpleado(forms.ModelForm):
                         FloatingField('email'),
                         FloatingField('sueldo'),
                         FloatingField('localidad'),
-                        Field('estado'),
+                        Field('activo'),
                         css_class='container-inputs-form'
                     )
                 ),
@@ -125,7 +125,7 @@ class FormLocalidad(forms.ModelForm):
 class FormInsumo(forms.ModelForm):
     class Meta:
         model = Insumo
-        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad', 'estado']
+        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad', 'activo']
        
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -148,7 +148,7 @@ class FormInsumo(forms.ModelForm):
                         FloatingField('contenido_neto'),
                         FloatingField('marca'),
                         FloatingField('cantidad'),
-                        Field('estado')
+                        Field('activo')
                     )
                 ),
                 Div(

@@ -7,7 +7,7 @@ class InsumoManager(models.Manager):
         
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(estado=self.habilitado) if self.habilitado is not None else qs
+        return qs.filter(activo=self.habilitado) if self.habilitado is not None else qs
 
 class InsumoQuerySet(models.QuerySet):
     pass
@@ -25,7 +25,7 @@ class Insumo(models.Model):
     contenido_neto = models.IntegerField()
     marca = models.CharField(max_length=50)
     cantidad = models.IntegerField()
-    estado = models.BooleanField(default=True)
+    activo = models.BooleanField(default=True)
     objects = InsumoManager()
     habilitados = InsumoManager(True)
     deshabilitados = InsumoManager(False)
@@ -36,7 +36,7 @@ class Insumo(models.Model):
         return self.descripcion
     
     def getEstado(self):
-        if self.estado == True:
+        if self.activo == True:
             return "Habilitado"
         else:
             return "Deshabilitado"
@@ -112,7 +112,7 @@ class EmpleadoManager(models.Manager):
         
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(estado=self.habilitado) if self.habilitado is not None else qs
+        return qs.filter(activo=self.habilitado) if self.habilitado is not None else qs
 
 class EmpleadoQuerySet(models.QuerySet):
     pass
@@ -133,7 +133,7 @@ class Empleado(models.Model):
     email = models.EmailField(max_length=254)
     sueldo = models.IntegerField()
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
-    estado = models.BooleanField(default=True)
+    activo = models.BooleanField(default=True)
     sueldo_basico = 58000
     objects = EmpleadoManager()
     habilitados = EmpleadoManager(True)
@@ -148,7 +148,7 @@ class Empleado(models.Model):
         return cls.sueldo_basico
     
     def getEstado(self):
-        if self.estado == True:
+        if self.activo == True:
             return "Habilitado"
         else:
             return "Deshabilitado"
