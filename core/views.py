@@ -7,6 +7,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils import timezone
+from factura.models import Factura
 
 class altaCliente(CreateView):
     model = Cliente
@@ -58,8 +59,18 @@ class updateCliente(UpdateView):
         return kwargs
     
     def form_valid(self, form):
-        messages.success(self.request, 'El cliente se ha modificado correctamente.')
-        return super().form_valid(form)
+        cliente = form.save(commit=False)
+        # Verificar si el cliente está asociado a servicios presupuestados, suspendidos, contratados o en curso
+        servicios_asociados = Servicio.objects.filter(cliente=cliente, estado__in=[1, 3, 4, 5])
+        facturas_asociadas = Factura.objects.filter(cliente=cliente,fechaPago=None)
+
+        
+        if form.cleaned_data['activo'] is False and len(servicios_asociados)>0 or len(facturas_asociadas)>0:
+            form.add_error('activo', 'Error, el cliente tiene Servicios presupuestados, en curso,suspendidos o Facturas impagas.')
+            return self.form_invalid(form)
+        else:
+            cliente.save()
+            return super().form_valid(form)
 def detalleCliente(request, pk):
     cliente = Cliente.objects.get(id=pk)
     return render(request, 'cliente/detalleCliente.html', {'cliente': cliente})
