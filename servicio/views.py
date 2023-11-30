@@ -341,7 +341,7 @@ def presupuestarConfirmar(request):
     print(servicio_pk)
     return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
 
-def presupuestarImprimir(request, pk):
+def presupuestarImprimir(request):
     return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
 
 class contratarServicio(UpdateView):
