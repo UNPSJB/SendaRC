@@ -128,8 +128,8 @@ class Cliente(models.Model):
     localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING)
     activo = models.BooleanField(default=True)
     objects = ClienteManager()
-    habilitadas = ClienteManager(True)
-    deshabilitadas = ClienteManager(False)
+    habilitados = ClienteManager(True)
+    deshabilitados = ClienteManager(False)
 
     def getTipo(self):
         return dict(self.TIPO)[self.tipo]
