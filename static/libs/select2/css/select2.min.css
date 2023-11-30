@@ -40,7 +40,8 @@
     box-sizing: border-box;
     cursor: pointer;
     display: block;
-    min-height: 2.8rem;
+    height: 2.5rem;
+    overflow: auto;
     user-select: none;
     -webkit-user-select: none
 }
@@ -382,7 +383,11 @@
     border: none;
     outline: 0;
     box-shadow: none;
-    -webkit-appearance: textfield
+    -webkit-appearance: textfield;
+    color: #a7a7a7;
+    font-size: 13px;
+    padding-inline: 7px;
+    padding-top: 2px;
 }
 
 .select2-container--default .select2-results>.select2-results__options {

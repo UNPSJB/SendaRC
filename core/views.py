@@ -1,11 +1,13 @@
 from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
-from servicio.models import CantServicioTipoServicio
+from servicio.models import *
 from django.http import JsonResponse
 from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.utils import timezone
+from factura.models import Factura
 
 class altaCliente(CreateView):
     model = Cliente
@@ -13,14 +15,37 @@ class altaCliente(CreateView):
     template_name = 'cliente/altaCliente.html'
     success_url = reverse_lazy('gestionClientes')
 
-    def form_valid(self, form):
-        messages.success(self.request, 'El cliente se ha dado de alta correctamente.')
-        return super().form_valid(form)
-
 class gestionClientes(ListView):
     model = Cliente
     template_name = 'cliente/gestionClientes.html'
     context_object_name = 'clientes'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FiltroClientesForm(self.request.GET)
+        return context
+
+    def get_queryset(self):
+        queryset = Cliente.objects.all()
+        
+        # Filtrar por estado (activo o no activo)
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activos' or not estado:
+            queryset = queryset.filter(activo=True)
+        elif estado == 'No activos':
+            queryset = queryset.filter(activo=False)
+
+        # Filtrar por tipo de persona o tipo
+        tipo_persona = self.request.GET.get('tipo_persona', '')
+        if tipo_persona:
+            queryset = queryset.filter(tipoPersona=tipo_persona)
+
+        tipo = self.request.GET.get('tipo', '')
+        if tipo:
+            queryset = queryset.filter(tipo=tipo)
+
+        return queryset
+    
 
 class updateCliente(UpdateView):
     model = Cliente
@@ -34,8 +59,18 @@ class updateCliente(UpdateView):
         return kwargs
     
     def form_valid(self, form):
-        messages.success(self.request, 'El cliente se ha modificado correctamente.')
-        return super().form_valid(form)
+        cliente = form.save(commit=False)
+        # Verificar si el cliente está asociado a servicios presupuestados, suspendidos, contratados o en curso
+        servicios_asociados = Servicio.objects.filter(cliente=cliente, estado__in=[1, 3, 4, 5])
+        facturas_asociadas = Factura.objects.filter(cliente=cliente,fechaPago=None)
+
+        
+        if form.cleaned_data['activo'] is False and len(servicios_asociados)>0 or len(facturas_asociadas)>0:
+            form.add_error('activo', 'Error, el cliente tiene Servicios presupuestados, en curso,suspendidos o Facturas impagas.')
+            return self.form_invalid(form)
+        else:
+            cliente.save()
+            return super().form_valid(form)
 def detalleCliente(request, pk):
     cliente = Cliente.objects.get(id=pk)
     return render(request, 'cliente/detalleCliente.html', {'cliente': cliente})
@@ -50,6 +85,19 @@ class gestionInsumos(ListView):
     model = Insumo
     template_name = 'insumo/gestionInsumos.html'
     context_object_name = 'insumos'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Habilitado', 'Deshabilitado', 'Todos']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Habilitado' or not estado:
+            context['insumos'] = Insumo.habilitados.all()
+        elif estado == 'Deshabilitado':
+            context['insumos'] = Insumo.deshabilitados.all()
+        elif estado == 'Todos':
+            context['insumos'] = Insumo.objects.all()
+        return context
 
 class updateInsumo(UpdateView):
     model = Insumo
@@ -64,9 +112,9 @@ class updateInsumo(UpdateView):
     def form_valid(self, form):
         # Verifica si el elemento está asociado con OtroModelo
         insumo = form.save(commit=False)
-        if form.cleaned_data['estado'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists() :
+        if form.cleaned_data['activo'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists():
             # Logica de si quiere desactivar
-            form.add_error('estado', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
+            form.add_error('activo', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
             return self.form_invalid(form)
         else:
             insumo.save()
@@ -90,7 +138,7 @@ def tipoServicioDetalles(request, pk):
     listInsumos = []
     listMaquinarias = []
     for insumo in insumos:
-        listInsumos.append(Insumo.objects.get(id=insumo.insumo_id))
+        listInsumos.append(Insumo.habilitados.get(id=insumo.insumo_id))
     for maquinaria in maquinarias:
         listMaquinarias.append(Maquinaria.objects.get(id=maquinaria.maquinaria_id))
     return render(request, 'tipoServicio/detalleTipoServicio.html', {'tipo': tipo, 'insumos': listInsumos, 'maquinarias': listMaquinarias})
@@ -130,6 +178,19 @@ class gestionMaquinaria(ListView):
     model = Maquinaria
     template_name = 'maquinaria/gestionMaquinaria.html'
     context_object_name = 'maquinarias' 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Activas', 'No activas', 'Todas']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activas' or not estado:
+            context['maquinarias'] = Maquinaria.habilitadas.all()
+        elif estado == 'No activas':
+            context['maquinarias'] = Maquinaria.deshabilitadas.all()
+        elif estado == 'Todas':
+            context['maquinarias'] = Maquinaria.objects.all()
+        return context
 
 class updateMaquinaria(UpdateView):
     model = Maquinaria
@@ -177,11 +238,47 @@ class updateEmpleado(UpdateView):
         kwargs = super(updateEmpleado, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
+    
+    def form_valid(self, form):
+        # Verifica si el elemento está asociado con OtroModelo
+        empleado = form.save(commit=False)
+        frecuencias_empleado = Frecuencia.objects.filter(empleados=empleado)
+        activo = False
+        for frecuencia in frecuencias_empleado:
+            servicio_frecuencia = Servicio.objects.get(pk=frecuencia.servicio.pk)
+            fecha_actual = timezone.now().date()
+            if servicio_frecuencia.fecha_finaliza >= fecha_actual:
+                activo = True
+                break
+            
+        if form.cleaned_data['activo'] == False and activo == True:
+            # Logica de si quiere desactivar
+            form.add_error('activo', 'No puedes dar de baja al empleado, porque esta activo en un servicio.')
+            return self.form_invalid(form)                
+        else:
+            empleado.save()
+            return super().form_valid(form)
 
 class gestionEmpleado(ListView):
     model = Empleado
     template_name = 'empleado/gestionEmpleados.html'  
     context_object_name = 'empleados'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Habilitado', 'Deshabilitado', 'Todos']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Habilitado' or not estado:
+            context['empleados'] = Empleado.habilitados.all()
+        elif estado == 'Deshabilitado':
+            context['empleados'] = Empleado.deshabilitados.all()
+        elif estado == 'Todos':
+            context['empleados'] = Empleado.objects.all()
+        return context
+def detalleEmpleado(request, pk):
+    empleado = Empleado.objects.get(id=pk)
+    return render(request, 'empleado/detalleEmpleado.html', {'empleado': empleado})
 
 class altaSancion(CreateView):
     model = Sancion

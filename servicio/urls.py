@@ -3,6 +3,7 @@ from servicio.views import *
 
 urlpatterns = [
     path('gestionServicios/', gestionServicios.as_view(), name = 'gestionServicios'),
+    path('gestionServicios/<int:pk>', detalleServicio, name='detalleServicio'),
     path('presupuestarCliente/', presupuestarCliente, name = 'presupuestarCliente'),
     path('presupuestarServicios/', presupuestarServicios, name = 'presupuestarServicios'),
     path('presupuestarFrecuencias/', presupuestarFrecuencias, name = 'presupuestarFrecuencias'),
@@ -16,11 +17,3 @@ urlpatterns = [
     path('error/', errorServicio.as_view(), name = 'errorServicio'),
 ]
  
-
-
-
-# fechaFinaliza = datetime.strptime("01-05-2024","%d-%m-%Y").date()
-#from core.models import *
-#from datetime import * 
-#Empleado.objects.disponibles
-#Empleado.objects.disponibles(datetime.now(),2,3)

@@ -44,6 +44,9 @@
 
     const buildForm = (id) => {
         const form = TEMPLATE_FORM.replace(/__prefix__/g, id);
+        const $select_2 = $('#id_form-'+id+'-tipo_servicio')
+        $select_2.select2()
+        //$('#id_form-'+id+'-tipo_servicio').select2()
         return $(form);
     }
 

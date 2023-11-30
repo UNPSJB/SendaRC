@@ -83,8 +83,52 @@ div.dataTables_length,div.dataTables_filter > label{
     color: #fff;
 }
 .bi-check-circle{
-    color: rgb(0, 158, 0);
+    color: rgb(0, 207, 145);
 }
 .bi-x-circle{
-    color: rgb(194, 0, 0);
+    color: rgb(255, 42, 42);
+}
+.contenedor-tabla-form{
+    width: auto;
+}
+.contenedor-filtrados{
+    padding-inline: 12px;
+}
+.form-select-filter{
+    width: auto !important;
+    background-color: #fff !important; 
+    color: #000 !important;
+    border: none !important;
+    font-weight: 600 !important;
+}
+.contenedor-select-btn{
+    display: flex;
+    gap: 5px;
+    align-items: end;
+}
+#div_id_estado,
+#div_id_tipo_persona,
+#div_id_tipo{
+    margin-bottom: 0 !important;
+}
+#div_id_estado label,
+#div_id_tipo_persona label,
+#div_id_tipo label{
+    color: #fff;
+    font-weight:600;
+}
+.btn-filtrar{
+    background-color: #ffffff;
+    color: #000;
+    font-size: 13px;
+    font-weight: 700;
+    padding-inline: 15px;
+    border-radius: 4px;
+    border: none;
+    transition: all .1s ease-in-out;
+    height: 29px;
+}
+.btn-filtrar:hover{
+    background-color: rgb(212, 212, 212);
+    color: #000;
 }

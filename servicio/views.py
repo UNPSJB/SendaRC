@@ -183,6 +183,10 @@ class gestionServicios(ListView):
     template_name = 'servicio/gestionServicios.html'
     context_object_name = 'servicios'
 
+def detalleServicio(request, pk):
+    servicio = Servicio.objects.get(id=pk)
+    return render(request, 'servicio/detalleServicio.html', {'servicio': servicio})
+
 def presupuestarCliente(request, pk=None):
     presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
     if (request.method == 'POST'):
@@ -248,8 +252,24 @@ def presupuestarFrecuencias(request):
         formset = formset_factory(FormBaseFrecuencia, extra=1)
         formset = formset(request.POST)
         p.session["frecuencias"] = []    
+        dias_turnos = {}
         if formset.is_valid():
             for f in formset:
+                dia = f.cleaned_data['dia']
+                turno = f.cleaned_data['turno']
+                
+                if dia in dias_turnos and len(dias_turnos[dia]) >= 3:
+                    f.add_error(None, 'No se permiten mas de 3 formularios para el mismo dia.')
+                    return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
+                
+                if dia in dias_turnos and turno in dias_turnos[dia]:
+                    f.add_error(None, 'No se permiten turnos duplicados para el mismo dia')
+                    return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
+                
+                if dia not in dias_turnos:
+                    dias_turnos[dia] = set()
+                dias_turnos[dia].add(turno)
+                
                 p.update(f.cleaned_data)
                 p.storeFrecuencia()
                 print("-------Estoy en POST Presupuestar Frecuencia")
@@ -320,7 +340,7 @@ def presupuestarConfirmar(request):
     print(servicio_pk)
     return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
 
-def presupuestarImprimir(request, pk):
+def presupuestarImprimir(request):
     return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
 
 class contratarServicio(UpdateView):

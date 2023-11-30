@@ -48,7 +48,7 @@ class FormEmpleado(forms.ModelForm):
     numDNI = ARDNIField(label='DNI', error_messages={'invalid': 'DNI no válido'})
     class Meta:
         model = Empleado
-        fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad']
+        fields = ['numDNI', 'nombre', 'apellido', 'telefono', 'email', 'sueldo', 'localidad', 'activo']
         
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -73,6 +73,7 @@ class FormEmpleado(forms.ModelForm):
                         FloatingField('email'),
                         FloatingField('sueldo'),
                         FloatingField('localidad'),
+                        Field('activo'),
                         css_class='container-inputs-form'
                     )
                 ),
@@ -124,7 +125,7 @@ class FormLocalidad(forms.ModelForm):
 class FormInsumo(forms.ModelForm):
     class Meta:
         model = Insumo
-        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad', 'estado']
+        fields = ['descripcion', 'unidad_med', 'contenido_neto', 'marca', 'cantidad', 'activo']
        
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
@@ -147,7 +148,7 @@ class FormInsumo(forms.ModelForm):
                         FloatingField('contenido_neto'),
                         FloatingField('marca'),
                         FloatingField('cantidad'),
-                        Field('estado')
+                        Field('activo')
                     )
                 ),
                 Div(
@@ -209,6 +210,29 @@ class ClienteForm(forms.ModelForm):
             )
         )
 
+class FiltroClientesForm(forms.Form):
+    ESTADOS = [('Activos', 'Activos'), ('No activos', 'No activos'), ('Todos', 'Todos')]
+    TIPOS_PERSONA = [('', '---'), ('1', 'Particular'), ('2', 'Juridico')]
+    TIPOS = [('', '---'), ('1', 'Ocasional'), ('2', 'Habitual')]
+
+    estado = forms.ChoiceField(choices=ESTADOS, required=False)
+    tipo_persona = forms.ChoiceField(choices=TIPOS_PERSONA, required=False)
+    tipo = forms.ChoiceField(choices=TIPOS, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(FiltroClientesForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.helper.layout = Layout(
+            Div(
+                Field('estado', css_class='form-select form-select-sm form-select-filter'),
+                Field('tipo_persona', css_class='form-select form-select-sm form-select-filter'),
+                Field('tipo', css_class='form-select form-select-sm form-select-filter mb-0'),
+                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
+                css_class='contenedor-select-btn'
+            )
+        )
+
 class TipoServicioForm(forms.ModelForm):
     
     class Meta:
@@ -226,7 +250,7 @@ class TipoServicioForm(forms.ModelForm):
         self.fields['insumos'].queryset = Insumo.objects.all()
         self.fields['maquinarias'].queryset = Maquinaria.objects.all()
 
-        self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.objects.all()]
+        self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.habilitados.all()]
         self.fields['maquinarias'].widget.choices = [(maquinaria.pk, maquinaria.nombre) for maquinaria in Maquinaria.objects.all()]
 
         self.helper = FormHelper()

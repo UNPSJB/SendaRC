@@ -1,0 +1,22 @@
+{% load static %}
+{% block detalle %}
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
+<div class="container wrapper-detalles">
+    <div class="container-detalles">
+        <h1 class="titulo-detalle"><i class="bi bi-person-walking"></i> Empleado: {{empleado.nombre}} {{empleado.apellido}}</h1>
+        <div class="divisor"></div>
+        <p class="detalles">Num. Legajo: #{{empleado.pk}}</p>
+        <p class="detalles">DNI: {{empleado.numDNI}}</p>
+        <p class="detalles">Telefono: {{empleado.telefono}}</p>
+        <p class="detalles">Email: {{empleado.email}}</p>
+        <p class="detalles">Sueldo: {{empleado.getSueldoFormateado}}</p>
+        <p class="detalles">Localidad: {{empleado.localidad}}</p>
+        {% if empleado.activo %}
+            <p class="detalles">Activo: Sí</p>
+        {% else %}
+            <p class="detalles">Activo: No</p>
+        {% endif %}
+        <div class="divisor"></div>
+    </div>
+</div>
+{% endblock %}

@@ -11,8 +11,7 @@
 }
 .nav-container{
     width: 60px;
-    height: 100vh;
-    border-right: 1px solid #505050;
+    border-right: 1px solid #2c2c2c;
     transition: all 0.3s ease-in-out;
 }
 .nav-container.expanded {
@@ -55,6 +54,7 @@
     justify-content: center;
     align-items: center;
     color: white;
+    transition: none;
 }
 .no-transition {
     transition: none;
