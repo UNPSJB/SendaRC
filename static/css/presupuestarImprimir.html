@@ -1,0 +1,79 @@
+{% load static %}
+{% block extracss %}
+<head>
+<link rel="stylesheet" href="{% static 'css/imprimir.css' %}">
+<h1>Presupuesto N° {{ servicio.pk }}</h1> <img src="{% static 'images/senda.png' %}" class="imagen-senda">
+<button id="print-button">Imprimir</button>
+</head>
+<script>
+    document.getElementById("print-button").addEventListener("click", function() {
+        window.print();
+    });
+</script>
+{% endblock %}
+
+
+{% block listado%}
+<body>
+    <table>
+        <thead>
+            <tr>
+            <hr>
+            <h6>Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut<h6>
+            <h6>Dante Brozzi 830 - (280)451069 - Esquel - e-mail: senda@cpsarg.com - www.sendaservicios.com.ar<h6>
+            <hr>
+            <h4>Datos del Servicio</h4>
+            <th scope="row">N° Servicio</th>
+            <th scope="row">Cliente</th>
+            <th scope="row">Metros Cuadrados</th>
+            <th scope="row">Tipo</th>
+            <th scope="row">Total</th>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+            <td scope="row">{{ servicio.pk }}</td>
+            <td scope="row">{{ servicio.cliente }}</td>
+            <td scope="row">{{ servicio.metros2 }}</td>
+            <td scope="row">{{ servicio.tipo }}</td>
+            <td scope="row"><span>$</span>{{ servicio.importe_total }}</td>
+            </tr>
+        </thead>
+    </table>
+    {% endblock %}
+    <table>
+        <thead>
+            <h4>Tipo de Servicio</h4>
+            <th scope="row">Tipo de Servicio</th>
+            <th scope="row">Cantidad</th>
+            <th scope="row">Precio</th>
+            <th scope="row">Total</th>
+            </tr>
+        </thead>
+        <thead>
+            <td scope="row">Tipo de Servicio</td>
+            <td scope="row">Cantidad</td>
+            <td scope="row">Precio</td>
+            <td scope="row">Total</td>
+            </tr>
+        </thead>
+    </table>
+    <table>
+        <thead>
+            <h4>Frecuencia</h4>
+            <th scope="row">Dia</th>
+            <th scope="row">Turno</th>
+            </tr>
+        </thead>
+        <thead>
+            <td scope="row">Jueves</td>
+            <td scope="row">Noche</td>
+            </tr>
+        </thead>
+    </table>
+    <br>
+    <p>Total $90000</p>
+    <br>
+    <p>Saludamos a uds. muy atentamente</p>
+    <p>SENDA SRL</p>
+</tbody>

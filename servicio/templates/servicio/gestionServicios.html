@@ -38,6 +38,9 @@
                         aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
                     <a href="{% url 'modificarPresupuesto' servicio.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                    <a href="{% url 'presupuestarImprimir' servicio.pk%}" class="opcion"><i class="bi bi-printer"></i></i></i></a>
+                </td>
+
                 </td>
             </tr>
         {% endfor %}
