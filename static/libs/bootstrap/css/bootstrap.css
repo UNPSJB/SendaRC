@@ -6302,7 +6302,7 @@ textarea.form-control-lg {
   --bs-offcanvas-color: #000;
   --bs-offcanvas-bg: #000;
   --bs-offcanvas-border-width: var(--bs-border-width);
-  --bs-offcanvas-border-color: #505050;
+  --bs-offcanvas-border-color: #2c2c2c;
   --bs-offcanvas-box-shadow: var(--bs-box-shadow-sm);
   --bs-offcanvas-transition: transform 0.3s ease-in-out;
   --bs-offcanvas-title-line-height: 1.5;
@@ -6770,7 +6770,7 @@ textarea.form-control-lg {
   opacity: 0;
 }
 .offcanvas-backdrop.show {
-  opacity: 0.1;
+  opacity: 0.3;
 }
 
 .offcanvas-header {
