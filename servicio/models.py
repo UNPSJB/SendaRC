@@ -60,7 +60,7 @@ class Frecuencia(models.Model):
     dia = models.PositiveIntegerField(choices=DIA)
     turno = models.PositiveIntegerField(choices=TURNO)
     servicio = models.ForeignKey(Servicio, related_name="frecuencias", on_delete=models.CASCADE)
-    empleados = models.ManyToManyField(Empleado, related_name="frecuencias")
+    empleados = models.ManyToManyField(Empleado, related_name="frecuencias", null=True)
     
     def getHoraInicio(self):
         if self.turno == 1: #Mañana

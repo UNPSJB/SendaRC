@@ -88,13 +88,14 @@ class Cliente(models.Model):
         return dict(self.TIPOPERSONA)[self.tipoPersona]
 
 class EmpleadoManager(models.Manager):
-    def disponibles(self, desde,dia, turno):
-        qdesde = models.Q(frecuencias__servicio__fecha_finaliza__lt=desde)
+    def disponibles(self, desde, hasta,dia, turno):
+        qfin = models.Q(frecuencias__servicio__fecha_finaliza__lt=desde)
+        qinicio = models.Q(frecuencias__servicio__fecha_inicio__gt=hasta)
         qdia = models.Q(frecuencias__dia=dia)
         qturno = models.Q(frecuencias__turno=turno)
-        #return self.get_queryset().exclude((qdia & qturno & qdesde) | (~qdia & ~qturno & qdesde))
-        #return self.get_queryset().exclude((qdia & qturno & qdesde) | (~qdia & ~qturno & ~qdesde))
-        return self.get_queryset().filter((qdia & qturno & qdesde) | (~qdia & ~qturno))
+        return self.get_queryset().exclude((qdia & qturno & (~qfin & ~qinicio))  | (~qdia & ~qturno & (qfin & qinicio)))
+        #return self.get_queryset().exclude((qdia & qturno & ~qdesde) | (~qdia & ~qturno & qdesde))
+        #return self.get_queryset().filter((qdia & qturno & qdesde) | (~qdia & ~qturno))
     
 class Empleado(models.Model):
     numDNI = models.CharField(unique=True,max_length=10)

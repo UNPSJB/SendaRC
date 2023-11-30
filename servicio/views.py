@@ -80,7 +80,6 @@ def saveFrecuenca(servicio, listFrecuencias, servicio_pk):
         turno_num = next((key for key, value in Frecuencia.TURNO if value == frecuencia['turno']), None)
         Frecuencia.objects.create(dia=dia_num, turno=turno_num, servicio=servicio)
         #new_frecuencia = Frecuencia.objects.create(dia=dia_num, turno=turno_num, servicio=servicio)
-
         
 def recargarSession(servicio, presupuestoSession):
     #Cargamos los datos del cliente que ya estaban
@@ -340,22 +339,35 @@ class errorServicio(TemplateView):
     template_name = 'servicio/errorServicio.html'
 
 def asignarEmpleados(request, pk):
-    servicio = Servicio.objects.get(pk=pk)
-    frecuencias = Frecuencia.objects.filter(servicio=servicio)
-    formset_inicial = formset_factory(FormAsignarEmpleados,extra=len(frecuencias))
-    print(frecuencias)
     if request.method == 'POST':
-        formset = formset(request.POST, instance=servicio)
+        formset = formset_factory(FormAsignarEmpleados)
+        formset = formset(request.POST)
+        servicio = Servicio.objects.get(pk=pk)
+        print(formset)
         if formset.is_valid():
-            formset.save()
+            for form in formset:
+                frecuencia = form.cleaned_data['frecuencia']
+                print(frecuencia)
+                empleados = form.cleaned_data['empleados']
+                frecuencia = Frecuencia.objects.get(pk=frecuencia.pk)
+                for empleado in empleados:
+                    frecuencia.empleados.add(empleado.pk)
+                    servicio.empleado.add(empleado.pk)
+                frecuencia.save()
+                servicio.save()
             return redirect('gestionServicios')
     else:
+        servicio = Servicio.objects.get(pk=pk)
+        frecuencias = Frecuencia.objects.filter(servicio=servicio)
+        formset_inicial = formset_factory(FormAsignarEmpleados,extra=len(frecuencias))
+        print(frecuencias)
         formset = formset_inicial()
         for form, frecuencia in zip(formset, frecuencias):
-            form.fields['frecuencia'].choices = [(frecuencia.pk, str(frecuencia))]
-            form.fields['empleados'].queryset = Empleado.objects.disponibles(servicio.fecha_inicio, frecuencia.dia, frecuencia.turno)
-    context = {
-        'formset': formset,
-        'servicio': servicio,
-    }
-    return render(request, 'servicio/asignarEmpleados.html', context)
+            form.fields['frecuencia'].choices = [(frecuencia.pk, frecuencia.get_dia_display() + ' - ' + frecuencia.get_turno_display())]
+            form.fields['frecuencia'].initial = frecuencia.pk
+            form.fields['empleados'].queryset = Empleado.objects.disponibles(servicio.fecha_inicio,servicio.fecha_finaliza, frecuencia.dia, frecuencia.turno)
+        context = {
+            'formset': formset,
+            'servicio': servicio,
+        }
+        return render(request, 'servicio/asignarEmpleados.html', context)
