@@ -345,6 +345,12 @@ def presupuestarImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     return render(request, 'servicio/presupuestarImprimir.html', {'servicio': servicio})
 
+def pdfImprimir(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    lista_tipos_servicios = servicio.tipoServicios.all()
+    return render(request, 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios})
+
 class contratarServicio(UpdateView):
     model = Servicio
     form_class = FormContratarServicio
