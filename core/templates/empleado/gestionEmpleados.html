@@ -26,8 +26,8 @@
         <table class="table table-striped table-dark">
             <thead>
                 <tr>
-                    <th scope="col">DNI</th>
                     <th scope="col">Num. Legajo</th>
+                    <th scope="col">DNI</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellido</th>
                     <th scope="col">Telefono</th>
@@ -38,8 +38,8 @@
             <tbody>
                 {% for empleado in empleados %}
                     <tr class="fila-tabla">
-                        <td scope="row">{{ empleado.numDNI }}</td>
                         <td scope="row">{{ empleado.pk }}</td>
+                        <td scope="row">{{ empleado.numDNI }}</td>
                         <td scope="row">{{ empleado.nombre }}</td>
                         <td scope="row">{{ empleado.apellido }}</td>
                         <td scope="row">{{ empleado.telefono }}</td>
