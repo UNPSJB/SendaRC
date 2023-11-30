@@ -14,10 +14,6 @@ class altaCliente(CreateView):
     template_name = 'cliente/altaCliente.html'
     success_url = reverse_lazy('gestionClientes')
 
-    def form_valid(self, form):
-        messages.success(self.request, 'El cliente se ha dado de alta correctamente.')
-        return super().form_valid(form)
-
 class gestionClientes(ListView):
     model = Cliente
     template_name = 'cliente/gestionClientes.html'
@@ -25,16 +21,30 @@ class gestionClientes(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['estados'] = ['Activos', 'No activos', 'Todos']
+        context['form'] = FiltroClientesForm(self.request.GET)
+        return context
+
+    def get_queryset(self):
+        queryset = Cliente.objects.all()
         
+        # Filtrar por estado (activo o no activo)
         estado = self.request.GET.get('estado', '')
         if estado == 'Activos' or not estado:
-            context['clientes'] = Cliente.habilitadas.all()
+            queryset = queryset.filter(activo=True)
         elif estado == 'No activos':
-            context['clientes'] = Cliente.deshabilitadas.all()
-        elif estado == 'Todos':
-            context['clientes'] = Cliente.objects.all()
-        return context
+            queryset = queryset.filter(activo=False)
+
+        # Filtrar por tipo de persona o tipo
+        tipo_persona = self.request.GET.get('tipo_persona', '')
+        if tipo_persona:
+            queryset = queryset.filter(tipoPersona=tipo_persona)
+
+        tipo = self.request.GET.get('tipo', '')
+        if tipo:
+            queryset = queryset.filter(tipo=tipo)
+
+        return queryset
+    
 
 class updateCliente(UpdateView):
     model = Cliente

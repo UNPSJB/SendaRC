@@ -95,27 +95,40 @@ div.dataTables_length,div.dataTables_filter > label{
     padding-inline: 12px;
 }
 .form-select-filter{
-    width: auto;
-    background-color: #fff;
-    color: #000;
-    border: none;
-    font-weight: 600;
+    width: auto !important;
+    background-color: #fff !important; 
+    color: #000 !important;
+    border: none !important;
+    font-weight: 600 !important;
 }
 .contenedor-select-btn{
     display: flex;
     gap: 5px;
+    align-items: end;
 }
-
+#div_id_estado,
+#div_id_tipo_persona,
+#div_id_tipo{
+    margin-bottom: 0 !important;
+}
+#div_id_estado label,
+#div_id_tipo_persona label,
+#div_id_tipo label{
+    color: #fff;
+    font-weight:600;
+}
 .btn-filtrar{
-    background-color: #fff;
+    background-color: #ffffff;
     color: #000;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     padding-inline: 15px;
     border-radius: 4px;
     border: none;
     transition: all .1s ease-in-out;
+    height: 29px;
 }
 .btn-filtrar:hover{
-    background-color: rgb(187, 187, 187);
+    background-color: rgb(212, 212, 212);
+    color: #000;
 }

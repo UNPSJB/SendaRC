@@ -16,20 +16,3 @@
             {% endblock %}
         </div>
 {% endblock %}
-
-{% block extrajs %}{{block.super}}
-            {% if messages %}
-                {% for m in messages %}
-                    <script>
-                        var myToast = $.toast({
-                            heading : 'Mr.Marston',
-                            text: '{{m}}',
-                            showHideTransition: 'fade',
-                            position:'bottom-right',
-                            stack: 4,
-                            loader: false, 
-                        })
-                    </script>
-                {% endfor %}
-            {% endif %}
-            {% endblock %}

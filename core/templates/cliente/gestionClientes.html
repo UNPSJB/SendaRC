@@ -1,5 +1,6 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
@@ -12,14 +13,7 @@
 <div class="container contenedor-tabla-form">
     <div class="container contenedor-filtrados">
         <form method="GET" action="{% url 'gestionClientes' %}">
-            <div class="contenedor-select-btn">
-                <select name="estado" id="estado" class="form-select form-select-sm form-select-filter">
-                    {% for option in estados %}
-                        <option value="{{ option }}" {% if option == request.GET.estado %} selected {% endif %}>{{ option }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit" class="btn-filtrar">Filtrar</button>
-            </div>
+            {% crispy form %}
         </form>
     </div>
     <div class="container contenedor-tabla">
