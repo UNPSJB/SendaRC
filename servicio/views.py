@@ -184,6 +184,10 @@ class gestionServicios(ListView):
     template_name = 'servicio/gestionServicios.html'
     context_object_name = 'servicios'
 
+def detalleServicio(request, pk):
+    servicio = Servicio.objects.get(id=pk)
+    return render(request, 'servicio/detalleServicio.html', {'servicio': servicio})
+
 def presupuestarCliente(request, pk=None):
     presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
     if (request.method == 'POST'):

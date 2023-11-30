@@ -9,52 +9,60 @@
     <a href="{% url 'altaEmpleado' %}" class="btn-agregarEntidad">Agregar Empleado</a>
 {% endblock %}
 {% block listado%}
-<form method="GET" action="{% url 'gestionEmpleado' %}">
-    <label for="estado">Filtrar por estado:</label>
-    <select name="estado" id="estado">
-        {% for option in estados %}
-            <option value="{{ option }}" {% if option == request.GET.estado %} selected {% endif %}>{{ option }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Filtrar</button>
-</form>
-<table class="table table-striped table-dark">
-    <thead>
-        <tr>
-            <th scope="col">DNI</th>
-            <th scope="col">Num. Legajo</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Apellido</th>
-            <th scope="col">Telefono</th>
-            <th scope="col">Estado</th>
-            <th scope="col">Opciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for empleado in empleados %}
-            <tr class="fila-tabla">
-                <td scope="row">{{ empleado.numDNI }}</td>
-                <td scope="row">{{ empleado.pk }}</td>
-                <td scope="row">{{ empleado.nombre }}</td>
-                <td scope="row">{{ empleado.apellido }}</td>
-                <td scope="row">{{ empleado.telefono }}</td>
-                <td scope="row">{{ empleado.getEstado }}</td>
-                <td scope="row">
-                    <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                    <a href="{% url 'modificarEmpleado' empleado.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container contenedor-tabla-form">
+    <div class="container contenedor-filtrados">
+        <form method="GET" action="{% url 'gestionEmpleado' %}">
+            <div class="contenedor-select-btn">
+                <select name="estado" id="estado" class="form-select form-select-sm form-select-filter">
+                    {% for option in estados %}
+                        <option value="{{ option }}" {% if option == request.GET.estado %} selected {% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn-filtrar">Filtrar</button>
+            </div>
+        </form>
+    </div>
+    <div class="container contenedor-tabla">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">DNI</th>
+                    <th scope="col">Num. Legajo</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">Telefono</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empleado in empleados %}
+                    <tr class="fila-tabla">
+                        <td scope="row">{{ empleado.numDNI }}</td>
+                        <td scope="row">{{ empleado.pk }}</td>
+                        <td scope="row">{{ empleado.nombre }}</td>
+                        <td scope="row">{{ empleado.apellido }}</td>
+                        <td scope="row">{{ empleado.telefono }}</td>
+                        <td scope="row">{{ empleado.getEstado }}</td>
+                        <td scope="row">
+                            <button href="{% url 'detalleEmpleado' empleado.pk %}" class="opcion" type="button" 
+                                data-url="/gestionEmpleado/{{empleado.pk}}"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasExample"
+                                aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                            <a href="{% url 'modificarEmpleado' empleado.pk%}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Empleado:{{ empleado.nombre }}</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="offcanvas-body">
-    
     </div>
 </div>
 {% endblock %}

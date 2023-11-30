@@ -14,9 +14,9 @@ class Factura(models.Model):
         (3, 'Transferencia'),
     }
     importe_total = models.IntegerField()
-    fechaemision = models.DateField(auto_now=True, auto_now_add=False)
-    formapago =  models.PositiveIntegerField(choices=FORMAPAGO)
-    fechapago = models.DateField(auto_now=False, auto_now_add=False, null=True)
+    fechaEmision = models.DateField(auto_now=True, auto_now_add=False)
+    formaPago =  models.PositiveIntegerField(choices=FORMAPAGO)
+    fechaPago = models.DateField(auto_now=False, auto_now_add=False, null=True)
     cliente = models.ForeignKey(Cliente)
     servicio = models.ForeignKey(Servicio)
     detalle_tip_servicio = models.ManyToManyField(Detalle_Factura)

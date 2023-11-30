@@ -1,10 +1,64 @@
-h2{
-    color: white;
-    font-size: 20px;
-    font-weight: 600;
+.wrapper-detalles{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 20px;
 }
-h5{
-    color: white;
-    font-size: 30px;
+.container-ancors{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.ancors-detalle{
+    color: #fff;
+    font-weight: 600;
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 7px;
+    text-decoration: none;
+}
+.ancors-detalle:hover{
+    background-color: #111111;
+}
+.container-acciones{
+    display: flex;
+    justify-content: end; 
+}
+.btn-accion-detalle{
+    color: #FFF;
+    font-size: 13px;
+    border-radius: 6px;
+    text-decoration: none;
     font-weight: 700;
+    border: 1px solid #505050;
+    padding-inline: 20px;
+    padding-block: 10px;
+    background-color: #000;
+    transition: background-color 0.1s ease-in-out;
+}
+.btn-accion-detalle:hover{
+    background-color: #111111;
+}
+.titulo-detalle{
+    font-size: 20px;
+    padding-bottom: 5px;
+    font-weight: 700;
+}
+
+.divisor{
+    height: 1px;
+    background: rgb(0,0,0);
+    background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(46,46,46,1) 10%, rgba(30,30,30,1) 90%, rgba(0,0,0,1) 100%);
+    margin-bottom: 10px;
+}
+.detalles{
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.contenedor-importe{
+    display: flex;
+    justify-content: end;
 }

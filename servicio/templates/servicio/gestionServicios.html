@@ -25,13 +25,17 @@
         {% for servicio in servicios %}
             <tr class="fila-tabla">
                 <td scope="row">{{ servicio.pk }}</td>
-                <td scope="row">{{ servicio.cliente }}</td>
-                <td scope="row">{{ servicio.metros2 }}</td>
-                <td scope="row">{{ servicio.tipo }}</td>
-                <td scope="row">{{ servicio.estado }}</td>
-                <td scope="row"><span>$</span>{{ servicio.importe_total }}</td>
+                <td scope="row">{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
+                <td scope="row">{{ servicio.metros2 }}m²</td>
+                <td scope="row">{{ servicio.getTipo }}</td>
+                <td scope="row">{{ servicio.getEstado }}</td>
+                <td scope="row">{{ servicio.getImporteTotalFormateado }}</td>
                 <td scope="row">
-                    <button href="#" class="opcion" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                    <button href="{% url 'detalleServicio' servicio.pk %}" class="opcion" type="button" 
+                        data-url="/servicio/gestionServicios/{{servicio.pk}}"
+                        data-bs-toggle="offcanvas" 
+                        data-bs-target="#offcanvasExample" 
+                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
                     <a href="{% url 'modificarPresupuesto' servicio.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
                     <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
                 </td>
@@ -39,4 +43,11 @@
         {% endfor %}
     </tbody>
 </table>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
 {% endblock %}

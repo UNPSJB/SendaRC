@@ -23,6 +23,19 @@ class gestionClientes(ListView):
     template_name = 'cliente/gestionClientes.html'
     context_object_name = 'clientes'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Activos', 'No activos', 'Todos']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activos' or not estado:
+            context['clientes'] = Cliente.habilitadas.all()
+        elif estado == 'No activos':
+            context['clientes'] = Cliente.deshabilitadas.all()
+        elif estado == 'Todos':
+            context['clientes'] = Cliente.objects.all()
+        return context
+
 class updateCliente(UpdateView):
     model = Cliente
     form_class = ClienteForm
@@ -134,6 +147,19 @@ class gestionMaquinaria(ListView):
     template_name = 'maquinaria/gestionMaquinaria.html'
     context_object_name = 'maquinarias' 
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Activas', 'No activas', 'Todas']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activas' or not estado:
+            context['maquinarias'] = Maquinaria.habilitadas.all()
+        elif estado == 'No activas':
+            context['maquinarias'] = Maquinaria.deshabilitadas.all()
+        elif estado == 'Todas':
+            context['maquinarias'] = Maquinaria.objects.all()
+        return context
+
 class updateMaquinaria(UpdateView):
     model = Maquinaria
     form_class = FormAltaMaquinaria
@@ -218,6 +244,9 @@ class gestionEmpleado(ListView):
         elif estado == 'Todos':
             context['empleados'] = Empleado.objects.all()
         return context
+def detalleEmpleado(request, pk):
+    empleado = Empleado.objects.get(id=pk)
+    return render(request, 'empleado/detalleEmpleado.html', {'empleado': empleado})
 
 class altaSancion(CreateView):
     model = Sancion

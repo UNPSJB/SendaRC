@@ -1,24 +1,26 @@
 {% load static %}
 {% block detalle %}
-<link href="{%static 'css/detalleCliente.css' %}" rel="stylesheet" />
-<div class="container">
-    <div class="container-detalles-cliente">
-        <h1 class="nombre-cliente">Tipo de Servicio: {{tipo.descripcion}}</h1>
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
+<div class="container wrapper-detalles">
+    <div class="container-detalles">
+        <h1 class="titulo-detalle"><i class="bi bi-truck"></i> Tipo de servicio: {{tipo.descripcion}}</h1>
         <div class="divisor"></div>
-        {% if tipo.unidad_medida == 1%}
-            <p class="detalles-personales">Unidad de Medida: m2</p>
+        <p class="detalles">Unidad de medida: {{tipo.getUnidadMedida}}</p>
+        <p class="detalles">Precio: {{tipo.getPrecioFormateado}}</p>
+        {% if tipo.activo %}
+            <p class="detalles">Activa: Sí</p>
         {% else %}
-            <p class="detalles-personales">Unidad de Medida: Unidad</p>
+            <p class="detalles">Activa: No</p>
         {% endif %}
-        <p class="detalles-personales"> Insumos:</p>
-        {% for insumo in insumos %}
-            <p class="detalles-personales">&emsp;&emsp;{{insumo.descripcion}} </p>
-        {% endfor %}
-        <p class="detalles-personales"> Maquinarias:</p>
-        {% for maquinaria in maquinarias %}
-            <p class="detalles-personales">&emsp;&emsp;{{maquinaria.nombre}} </p>
-        {% endfor %}
         <div class="divisor"></div>
+        <h1 class="titulo-detalle"><i class="bi bi-box2"></i> Insumos:</h1>
+        {% for insumo in insumos %}
+            <p class="detalles">&emsp;&emsp;- {{insumo.descripcion}} </p>
+        {% endfor %}
+        <h1 class="titulo-detalle"><i class="bi bi-hammer"></i> Maquinarias:</h1>
+        {% for maquinaria in maquinarias %}
+            <p class="detalles">&emsp;&emsp;- {{maquinaria.nombre}} </p>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
