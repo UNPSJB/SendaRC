@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from pathlib import Path
 from dotenv import load_dotenv
+from django.urls import reverse_lazy
 import os
 
 load_dotenv()
@@ -142,3 +143,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# VARIABLES DE REDIRECCION DE LOGIN Y LOGOUT
+LOGIN_REDIRECT_URL = reverse_lazy('home')
+#LOGOUT_REDIRECT_URL = reverse_lazy('home')

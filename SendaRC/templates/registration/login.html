@@ -12,15 +12,15 @@
             </svg>              
         </section>
         <section class="container-form">
-            <form method="POST" action="{% url 'home' %}">
+            <form method="POST" action="">
                 {% csrf_token %}
-                {{ form|crispy }}
+                {{ form | crispy }}
                 <div class="container-recuperar-contraseña">
                     <a href="#" id="recuperar-contraseña">olvido su contraseña?</a>
                 </div>
                 <div class="container-login-buttons">
-                    <button type="submit" class="login-btn btn btn-primary">iniciar sesión</button>
-                    <button type="submit" class="login-btn btn btn-primary">registrarse</button>
+                    <button type="submit" class="login-btn btn btn-primary">Iniciar sesión</button>
+                    <a href={% url 'register' %} class="login-btn btn btn-primary">Registrarse</a>
                 </div>
             </form>
         </section>

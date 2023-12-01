@@ -34,15 +34,7 @@
     width: 300px;
     height: 300px;
 }
-.container-login-buttons > button{
-    width: 100%;
-    color: white;
-    border-radius: 20px;
-    background-color: #ffff;
-    border: 1px solid #ffff;
-    color:black;
-    font-weight: 700;
-}
+
 .container-recuperar-contraseña{
     display: flex;
     justify-content: center;
@@ -68,6 +60,13 @@
     color: #000;
 }
 .login-btn{
+    width: 100%;
+    color: white;
+    border-radius: 20px;
+    background-color: #ffff;
+    border: 1px solid #ffff;
+    color:black;
+    font-weight: 700;
     transition: all 0.3s;
 }
 .login-btn:hover{

@@ -183,6 +183,15 @@ class gestionServicios(ListView):
     model = Servicio
     template_name = 'servicio/gestionServicios.html'
     context_object_name = 'servicios'
+    
+    def get(self, request, *args, **kwargs):
+        self.request.session['presupuesto'] = {}
+        self.request.session['servicios'] = []
+        self.request.session['frecuencias'] = []
+        self.request.session['servicio_pk'] = None
+
+        # Llama al método super() para ejecutar el comportamiento normal de la vista
+        return super().get(request, *args, **kwargs)
 
 def presupuestarCliente(request, pk=None):
     presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
@@ -304,6 +313,7 @@ def presupuestarConfirmar(request):
             request.session['presupuesto'] = {}
             request.session['servicios'] = []
             request.session['frecuencias'] = []
+            request.session['servicio_pk'] = None
             return redirect('gestionServicios')
         else:
             print("-------Estoy en POST Presupuestar Confirmar NOOO VALIDA FORM")
