@@ -418,10 +418,11 @@ class contratarServicio(UpdateView):
     model = Servicio
     form_class = FormContratarServicio
     template_name = 'servicio/contratarServicio.html'
-    success_url = reverse_lazy('contratarServicioCorrecto', kwargs={'pk': model.pk})
+    success_url = reverse_lazy('asignarEmpleados', kwargs={'pk': model.pk})
 
-    def get_success_url(self) -> str:
-        return reverse_lazy('contratarServicioCorrecto', kwargs={'pk': self.object.pk})    
+    def get_success_url(self):
+        return reverse_lazy('asignarEmpleados', kwargs={'pk': self.object.pk})
+
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         self.object = self.get_object()
         if self.object.estado != 1:
@@ -445,7 +446,7 @@ def asignarEmpleados(request, pk):
             for form in formset:
                 frecuencia = form.cleaned_data['frecuencia']
                 empleados = form.cleaned_data['empleados']
-                if empleados.count() >= servicio.cant_empleados:
+                if empleados.count() > servicio.cant_empleados:
                     form.add_error('empleados', 'Solo se pueden asignar ' + str(servicio.cant_empleados) + ' empleados')
                     return render(request, 'servicio/asignarEmpleados.html', {'formset': formset, 'servicio': servicio})
                 frecuencia = Frecuencia.objects.get(pk=frecuencia.pk)
@@ -454,7 +455,9 @@ def asignarEmpleados(request, pk):
                     servicio.empleado.add(empleado.pk)
                 frecuencia.save()
                 servicio.save()
-            return redirect('gestionServicios')
+            servicio.estado = 3 #Proceso finalizado, el servicio esta contratado
+            servicio.save()
+            return redirect('contratarServicioCorrecto', pk)
     else:
         servicio = Servicio.objects.get(pk=pk)
         frecuencias = Frecuencia.objects.filter(servicio=servicio)

@@ -31,6 +31,15 @@ class MaquinariaManager(models.Manager):
 class InsumoQuerySet(models.QuerySet):
     pass
 
+class TipoServicioManager(models.Manager):
+    def __init__(self, activo = None, *qargs, **kwargs):
+        super().__init__(*qargs, **kwargs)
+        self.activo = activo
+        
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(activo=self.activo) if self.activo is not None else qs
+
 # Create your models here.
 class Insumo(models.Model):
     UNIDAD = {
@@ -85,6 +94,9 @@ class TipoServicio(models.Model):
     insumos = models.ManyToManyField(Insumo, through='CantInsumoServicio')
     maquinarias = models.ManyToManyField(Maquinaria, null=True)
     activo = models.BooleanField(default=True)
+    objects = TipoServicioManager()
+    habilitados = TipoServicioManager(True)
+    deshabilitados = TipoServicioManager(False)
     
     def getUnidadMedida(self):
         return dict(self.UNIDAD)[self.unidad_medida]
