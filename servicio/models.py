@@ -1,12 +1,13 @@
 from django.db import models
 from core.models import Empleado, Cliente, TipoServicio
 from django.utils import timezone
+import locale
 
 # Create your models here.
 
 class Servicio(models.Model):
     ESTADO = {
-        (1, 'Presupuestodo'),
+        (1, 'Presupuestado'),
         (2, 'Vencido'),
         (3, 'Contratado'),
         (4, 'En Curso'),
@@ -37,6 +38,16 @@ class Servicio(models.Model):
     empleado = models.ManyToManyField(Empleado, null=True) 
     #Otros Datos Adicionales
     fecha_cancelada = models.DateField(auto_now=False, auto_now_add=False, null=True)
+    
+    def getEstado(self):
+        return dict(self.ESTADO)[self.estado]
+    
+    def getTipo(self):
+        return dict(self.TIPO)[self.tipo] 
+    
+    def getImporteTotalFormateado(self):
+        locale.setlocale(locale.LC_ALL, '')  
+        return locale.currency(self.importe_total, grouping=True)
 
 class CantServicioTipoServicio(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)

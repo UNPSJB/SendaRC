@@ -10,6 +10,7 @@ urlpatterns = [
     path('altaEmpleado/', altaEmpleado.as_view(), name = 'altaEmpleado'),
     path('modificarEmpleado/<int:pk>', updateEmpleado.as_view(), name = 'modificarEmpleado'),
     path('gestionEmpleado/', gestionEmpleado.as_view(), name = 'gestionEmpleado'),
+    path('gestionEmpleado/<int:pk>', detalleEmpleado, name='detalleEmpleado'),
     
     path('altaLocalidad/', altaLocalidad.as_view(), name = 'altaLocalidad'),
     path('modificarLocalidad/<int:pk>', updateLocalidad.as_view(), name = 'modificarLocalidad'),

@@ -18,7 +18,7 @@ class FormPresupuestoCliente(forms.ModelForm):
         super(FormPresupuestoCliente, self).__init__(*args, **kwargs)
         self.fields['cliente'].queryset = Cliente.objects.all()
         self.fields['cliente'].widget.choices = [
-            (cliente.pk, cliente.cuil+' | '+cliente.nombre+' '+cliente.apellido) for cliente in Cliente.objects.all()]
+            (cliente.pk, cliente.cuil+' | '+cliente.nombre+' '+cliente.apellido) for cliente in Cliente.habilitados.all()]
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(

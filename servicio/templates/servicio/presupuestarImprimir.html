@@ -2,17 +2,23 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
-    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+    <link href="{%static 'css/imprimirVista.css'%}" rel="stylesheet"/>
 {% endblock %}
 {% block title %}
-    <h1 class="titulo">Presupuestar Servicio</h1>
     <div class="container-info">
-        <h2 class="operacion">Agregar cliente / Datos de Presupuesto</h2>
+        
     </div>
 {% endblock %}
 {% block formulario %}
-    
-{% endblock %}
-{% block extrajs %}
-
+    <div class="container contenedor-imprimir">
+        <div class="container contenedor-info-imprimir">
+            <h1>Presupuesto generado correctamente. <i class="bi bi-check2-circle check-imprimir"></i></h1>
+        </div>
+        <div class="container contenedor-acciones-imprimir">
+            <a href="#">Imprimir</a>
+            <a href="{% url 'presupuestarCliente' %}">Generar otro Presupuesto</a>
+            <a href="{% url 'gestionServicios' %}">Ir a Gestión de Servicios</a>
+            <a href="{% url 'home' %}">Ir a Home</a>
+        </div>
+    </div>
 {% endblock %}

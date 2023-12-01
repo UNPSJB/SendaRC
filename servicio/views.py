@@ -193,6 +193,10 @@ class gestionServicios(ListView):
         # Llama al método super() para ejecutar el comportamiento normal de la vista
         return super().get(request, *args, **kwargs)
 
+def detalleServicio(request, pk):
+    servicio = Servicio.objects.get(id=pk)
+    return render(request, 'servicio/detalleServicio.html', {'servicio': servicio})
+
 def presupuestarCliente(request, pk=None):
     presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
     if (request.method == 'POST'):
@@ -348,7 +352,14 @@ def presupuestarConfirmar(request):
     return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
 
 def presupuestarImprimir(request, pk):
-    return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
+    servicio = Servicio.objects.get(pk=pk)
+    return render(request, 'servicio/presupuestarImprimir.html', {'servicio': servicio})
+
+def pdfImprimir(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    lista_tipos_servicios = servicio.tipoServicios.all()
+    return render(request, 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios})
 
 class contratarServicio(UpdateView):
     model = Servicio

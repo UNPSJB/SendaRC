@@ -1,0 +1,161 @@
+.contenedor-resumen{
+    height: 540px;
+    border-radius: 6px;
+    border: 1px solid #505050;
+    display: flex;
+    padding-inline: 20px;
+    color: #fff;
+    overflow: auto;
+    width: auto;
+}
+
+.contenedor-resumen h4{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.contenedor-resumen p{
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.contenedor-listados{
+    display: flex;
+    gap: 60px;
+    flex-grow: 1;
+}
+.seccion-frecuencias table, 
+.seccion-lista-servicios table {
+    font-size: 13px;
+}
+.tabla-presupuestar{
+    background-color: rgb(0, 0, 0);
+    justify-content: center;
+}
+
+.seccion-frecuencias,.seccion-lista-servicios{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.seccion-info-cliente{
+    display: flex;
+    justify-content: space-between;
+    padding-block: 15px;
+    line-height: 15px;
+}
+
+.contenedor-header{
+    display: flex;
+    flex-direction: column;
+}
+
+.container-acciones{
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    flex-grow: 1;
+    padding-block: 20px;
+    padding-inline: 10px;
+    gap: 10px;
+}
+.container-acciones button,
+.container-acciones a{
+    height: 2rem;
+    width: 6rem;
+    border-radius: 6px;
+    background-color: #1dadf2;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+}
+.mi-form button{
+    height: 2rem;
+    width: 6rem;
+    border-radius: 6px;
+    background-color: #1dadf2;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.container-acciones > a{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-acciones a:hover,
+.container-acciones button:hover,
+.mi-form button:hover{
+    background-color: #1085bb;
+}
+.contenedor-info-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 600px;
+    gap: 20px;
+}
+
+.container-textos{
+    font-weight: 600;
+}
+.contenedor-btn-calcular{
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 !important;
+}
+
+.mi-form > p{
+    font-weight: 700;
+}
+.container-formulario-porcentaje{
+    padding: 0;
+}
+
+.tabla-presupuestar {
+    width: 100%;
+    max-height: 250px;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.tabla-presupuestar th,
+.tabla-presupuestar td {
+    padding-block: 8px;
+    padding-inline: 15px; 
+    text-align: center; 
+    border-radius: 10px;
+}
+
+.tabla-presupuestar > thead {
+    background-color: #131313;
+    color: #fff;
+}
+
+
+.tabla-wrapper{
+    height: 400px;
+    overflow: auto;
+    width: 500px;
+    border-radius: 6px;
+    border: 1px solid #505050;
+}
+.contenedor-textos,.contenedor-observaciones{
+    width: 500px;
+}
+
+.contenedor-texto-observaciones{
+    border-radius: 6px;
+    border: 1px solid #505050;
+    word-wrap: break-word;
+    height: 250px;
+    overflow-y: auto;
+    padding-inline: 15px;
+    padding-top: 5px;
+}

@@ -6,7 +6,7 @@
 {% endblock %}
 {% block title%}
     <h1>Tipo de Servicio</h1>
-    <h2>Gestión de Tipo de Servicio</h2>
+    <h2>Gestión de Tipos de Servicios</h2>
     <a href="{% url 'altaTipoServicio' %}" class="btn-agregarEntidad">Agregar Tipo de Servicio</a>
 {% endblock %}
 {% block listado%}
@@ -26,8 +26,8 @@
             <tr class="fila-tabla" data-id="{{ tipo.pk }}">
                 <td scope="row">{{ tipo.pk }}</td>
                 <td scope="row">{{ tipo.descripcion }}</td>
-                <td scope="row">{{ tipo.unidad_medida }}</td>
-                <td scope="row">{{ tipo.precio }}</td>
+                <td scope="row">{{ tipo.getUnidadMedida }}</td>
+                <td scope="row">{{ tipo.getPrecioFormateado }}</td>
                 {% if tipo.activo %}
                     <td scope="row"><i class="bi bi-check-circle"></i></td>
                 {% else %}
@@ -49,7 +49,7 @@
 </table>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="offcanvas-body">
     </div>

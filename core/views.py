@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from factura.models import Factura
 
 class altaCliente(CreateView):
     model = Cliente
@@ -26,6 +27,33 @@ class gestionClientes(ListView):
     template_name = 'cliente/gestionClientes.html'
     context_object_name = 'clientes'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FiltroClientesForm(self.request.GET)
+        return context
+
+    def get_queryset(self):
+        queryset = Cliente.objects.all()
+        
+        # Filtrar por estado (activo o no activo)
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activos' or not estado:
+            queryset = queryset.filter(activo=True)
+        elif estado == 'No activos':
+            queryset = queryset.filter(activo=False)
+
+        # Filtrar por tipo de persona o tipo
+        tipo_persona = self.request.GET.get('tipo_persona', '')
+        if tipo_persona:
+            queryset = queryset.filter(tipoPersona=tipo_persona)
+
+        tipo = self.request.GET.get('tipo', '')
+        if tipo:
+            queryset = queryset.filter(tipo=tipo)
+
+        return queryset
+    
+
 class updateCliente(UpdateView):
     model = Cliente
     form_class = ClienteForm
@@ -38,8 +66,18 @@ class updateCliente(UpdateView):
         return kwargs
     
     def form_valid(self, form):
-        messages.success(self.request, 'El cliente se ha modificado correctamente.')
-        return super().form_valid(form)
+        cliente = form.save(commit=False)
+        # Verificar si el cliente está asociado a servicios presupuestados, suspendidos, contratados o en curso
+        servicios_asociados = Servicio.objects.filter(cliente=cliente, estado__in=[1, 3, 4, 5])
+        facturas_asociadas = Factura.objects.filter(cliente=cliente,fechaPago=None)
+
+        
+        if form.cleaned_data['activo'] is False and len(servicios_asociados)>0 or len(facturas_asociadas)>0:
+            form.add_error('activo', 'Error, el cliente tiene Servicios presupuestados, en curso,suspendidos o Facturas impagas.')
+            return self.form_invalid(form)
+        else:
+            cliente.save()
+            return super().form_valid(form)
 def detalleCliente(request, pk):
     cliente = Cliente.objects.get(id=pk)
     return render(request, 'cliente/detalleCliente.html', {'cliente': cliente})
@@ -137,6 +175,19 @@ class gestionMaquinaria(ListView):
     template_name = 'maquinaria/gestionMaquinaria.html'
     context_object_name = 'maquinarias' 
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = ['Activas', 'No activas', 'Todas']
+        
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activas' or not estado:
+            context['maquinarias'] = Maquinaria.habilitadas.all()
+        elif estado == 'No activas':
+            context['maquinarias'] = Maquinaria.deshabilitadas.all()
+        elif estado == 'Todas':
+            context['maquinarias'] = Maquinaria.objects.all()
+        return context
+
 class updateMaquinaria(UpdateView):
     model = Maquinaria
     form_class = FormAltaMaquinaria
@@ -221,6 +272,9 @@ class gestionEmpleado(ListView):
         elif estado == 'Todos':
             context['empleados'] = Empleado.objects.all()
         return context
+def detalleEmpleado(request, pk):
+    empleado = Empleado.objects.get(id=pk)
+    return render(request, 'empleado/detalleEmpleado.html', {'empleado': empleado})
 
 class altaSancion(CreateView):
     model = Sancion
