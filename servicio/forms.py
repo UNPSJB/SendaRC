@@ -90,16 +90,12 @@ class FormContratarServicio(forms.ModelForm):
 
         if fecha_inicio and fecha_finaliza:
             if fecha_inicio > fecha_finaliza:
-                raise ValidationError(('La fecha de finalización no puede ser anterior a la de inicio'))
+                self.add_error('fecha_finaliza', 'La fecha de finalización no puede ser anterior a la de inicio')
             if fecha_inicio < self.instance.fecha_emision:
-                raise ValidationError(('La fecha de inicio no puede ser anterior a la fecha de emisión'))
+                self.add_error('fecha_inicio', 'La fecha de inicio no puede ser anterior a la fecha de emisión')
             if self.instance.tipo == 1 and fecha_inicio != fecha_finaliza:
-                raise ValidationError('Este servicio es eventual, la fecha de inicio debe ser igual al final')
+                self.add_error('fecha_finaliza', 'Este servicio es eventual, la fecha de finalización debe ser igual al inicio')
         return cleaned_data
-    
-    def save(self, commit: bool = ...) -> Any:
-        self.instance.estado = 3
-        return super().save(commit)
    
 class FormAsignarEmpleados(forms.Form):
     frecuencia = forms.ModelChoiceField(label='Frecuencia', queryset=Frecuencia.objects.all(), widget=forms.Select(attrs={'class': 'input'}))
