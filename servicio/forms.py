@@ -103,13 +103,14 @@ class FormContratarServicio(forms.ModelForm):
         return cleaned_data
     
     def save(self, commit: bool = ...) -> Any:
-        self.instance.estado = 2
+        self.instance.estado = 3
         return super().save(commit)
    
 class FormAsignarEmpleados(forms.Form):
+    frecuencia = forms.ModelChoiceField(label='Frecuencia', queryset=Frecuencia.objects.all(), widget=forms.Select(attrs={'class': 'input'}))
     empleados = forms.ModelMultipleChoiceField(
-        queryset=None,
+        queryset=Empleado.objects.all(),
         widget=forms.SelectMultiple(attrs={'class': 'input'}),
         label='Empleados'
     )
-    frecuencia = forms.ChoiceField(label='Frecuencia', choices=[], widget=forms.Select(attrs={'class': 'input'}))
+    

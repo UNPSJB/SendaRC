@@ -163,6 +163,17 @@ class updateTipoServicio(UpdateView):
         kwargs = super(updateTipoServicio, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
+    
+    def form_valid(self, form):
+        # Verifica si el elemento está asociado con OtroModelo
+        tiposervicio = form.save(commit=False)
+        if form.cleaned_data['activo'] == False and CantServicioTipoServicio.objects.filter(tipoServicio=tiposervicio, servicio=Servicio.estado.en_curso).exists():
+            # Logica de si quiere desactivar
+            form.add_error('activo', 'No puedes desactivar el tipo de servicio, porque un servicio en curso lo esta utilizando.')
+            return self.form_invalid(form)
+        else:
+            insumo.save()
+            return super().form_valid(form)
 
 class altaMaquinaria(CreateView):
     model = Maquinaria

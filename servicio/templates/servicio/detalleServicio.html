@@ -21,7 +21,7 @@
             <p class="detalles">Total: {{servicio.getImporteTotalFormateado}}</p>
         </div>
         <div class="container-ancors">
-            <a href="#" class="ancors-detalle"><i class="bi bi-check-lg"></i> Contratar</a>
+            <a href="{% url 'contratarServicio' servicio.pk %}" class="ancors-detalle"><i class="bi bi-check-lg"></i> Contratar</a>
             <a href="#" class="ancors-detalle"><i class="bi bi-clipboard2-x"></i> Finalizar</a>
             <a href="#" class="ancors-detalle"><i class="bi bi-ban"></i> Cancelar</a>
             <a href="#" class="ancors-detalle"><i class="bi bi-pause"></i> Suspender</a>
