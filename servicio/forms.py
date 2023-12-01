@@ -47,7 +47,7 @@ class FormPresupuestoCliente(forms.ModelForm):
 
 class FormBaseTipoServicio(forms.Form):
     tipo_servicio = forms.ModelChoiceField(
-        queryset=TipoServicio.objects.all(),
+        queryset=TipoServicio.habilitados.all(),
         widget=forms.Select(attrs={'class': 'input'}),
         label='Tipo de Servicio'
     )
@@ -55,7 +55,7 @@ class FormBaseTipoServicio(forms.Form):
     
     def __init__(self, *args, **kwargs):
         super(FormBaseTipoServicio, self).__init__(*args, **kwargs)
-        self.fields['tipo_servicio'].choices = [(tipo.id, f'{tipo.descripcion} - {tipo.getUnidadMedida()}') for tipo in TipoServicio.objects.all()]
+        self.fields['tipo_servicio'].choices = [(tipo.id, f'{tipo.descripcion} - {tipo.getUnidadMedida()}') for tipo in TipoServicio.habilitados.all()]
         
 
 class FormBaseFrecuencia(forms.Form):
