@@ -247,7 +247,7 @@ class TipoServicioForm(forms.ModelForm):
         else:
             mensaje = 'Agrega los datos de un nuevo tipo de servicio. Dale click en guardar al terminar'
 
-        self.fields['insumos'].queryset = Insumo.objects.all()
+        self.fields['insumos'].queryset = Insumo.habilitados.all()
         self.fields['maquinarias'].queryset = Maquinaria.objects.all()
 
         self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.habilitados.all()]

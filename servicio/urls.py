@@ -8,7 +8,8 @@ urlpatterns = [
     path('presupuestarServicios/', presupuestarServicios, name = 'presupuestarServicios'),
     path('presupuestarFrecuencias/', presupuestarFrecuencias, name = 'presupuestarFrecuencias'),
     path('presupuestarConfirmar/', presupuestarConfirmar, name = 'presupuestarConfirmar'),
-    path('presupuestarImprimir/', presupuestarImprimir, name = 'presupuestarImprimir'),
+    path('presupuestarImprimir/<int:pk>/', presupuestarImprimir, name = 'presupuestarImprimir'),
+    path('pdfImprimir/<int:pk>/', pdfImprimir, name = 'pdfImprimir'),
     #Modificar Presupuestos
     path('modificarPresupuesto/<int:pk>/', presupuestarCliente, name = 'modificarPresupuesto'),
     #Contratar Servicio

@@ -182,6 +182,19 @@ class gestionServicios(ListView):
     model = Servicio
     template_name = 'servicio/gestionServicios.html'
     context_object_name = 'servicios'
+    
+    def get(self, request, *args, **kwargs):
+        self.request.session['presupuesto'] = {}
+        self.request.session['servicios'] = []
+        self.request.session['frecuencias'] = []
+        self.request.session['servicio_pk'] = None
+
+        # Llama al método super() para ejecutar el comportamiento normal de la vista
+        return super().get(request, *args, **kwargs)
+
+def detalleServicio(request, pk):
+    servicio = Servicio.objects.get(id=pk)
+    return render(request, 'servicio/detalleServicio.html', {'servicio': servicio})
 
 def detalleServicio(request, pk):
     servicio = Servicio.objects.get(id=pk)
@@ -307,6 +320,7 @@ def presupuestarConfirmar(request):
             request.session['presupuesto'] = {}
             request.session['servicios'] = []
             request.session['frecuencias'] = []
+            request.session['servicio_pk'] = None
             return redirect('gestionServicios')
         else:
             print("-------Estoy en POST Presupuestar Confirmar NOOO VALIDA FORM")
@@ -340,8 +354,15 @@ def presupuestarConfirmar(request):
     print(servicio_pk)
     return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
 
-def presupuestarImprimir(request):
-    return render(request, 'servicio/presupuestarImprimir.html', {'form': FormPresupuestoCliente})
+def presupuestarImprimir(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    return render(request, 'servicio/presupuestarImprimir.html', {'servicio': servicio})
+
+def pdfImprimir(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    lista_tipos_servicios = servicio.tipoServicios.all()
+    return render(request, 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios})
 
 class contratarServicio(UpdateView):
     model = Servicio

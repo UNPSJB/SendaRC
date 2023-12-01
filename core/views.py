@@ -3,10 +3,12 @@ from .models import *
 from .forms import *
 from servicio.models import *
 from django.http import JsonResponse
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, View
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from factura.models import Factura
 
 class altaCliente(CreateView):
@@ -15,6 +17,11 @@ class altaCliente(CreateView):
     template_name = 'cliente/altaCliente.html'
     success_url = reverse_lazy('gestionClientes')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'El cliente se ha dado de alta correctamente.')
+        return super().form_valid(form)
+
+@method_decorator(login_required, name='dispatch')
 class gestionClientes(ListView):
     model = Cliente
     template_name = 'cliente/gestionClientes.html'
@@ -300,3 +307,4 @@ class gestionSancion(ListView):
     model = Sancion
     template_name = 'sancion/gestionSanciones.html'
     context_object_name = 'sanciones'
+    

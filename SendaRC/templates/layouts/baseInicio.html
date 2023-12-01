@@ -117,11 +117,16 @@
                     <span class="spanSideBarExpand">Facturas</span>
                 </li>
             </ul>
-            <div class="container-btn-cerrar-sesion">
-                <button class="cerrar-sesion-btn btn btn-primary d-inline-flex align-items-center" type="button">
-                    <i class="bi bi-arrow-bar-left"></i>
-                </button>
-            </div>
+            {% if user.is_authenticated %}
+                <div class="container-btn-cerrar-sesion">
+                    <a class="cerrar-sesion-btn btn btn-primary d-inline-flex align-items-center" href={% url 'logout' %}>
+                            <i class="bi bi-arrow-bar-left"></i>Salir</a>
+                </div>
+            {% else %}
+                <a class="nav-link fw-bold py-1 px-0" href={% url 'login' %}>Ingresar</a>
+                <a class="nav-link" href={% url 'register' %}>Registrarse</a>
+            {% endif %}
+            
         </nav>
     </aside>
     <section class="container-seccion-main">
