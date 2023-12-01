@@ -38,21 +38,18 @@ def logout(request):
 
 def register(request):
     # Form por defecto de Django para poder crear un registro 
-    data = {
-        'form': CustomUserCreationForm()
-    }
+    form = RegisterForm()
 
     if request.method == 'POST':
-        user_creation_form = CustomUserCreationForm(data=request.POST)
+        form = RegisterForm(request.POST)
 
-        if user_creation_form.is_valid():
-            user_creation_form.save()
-            
+        if form.is_valid():
+            form.save()
             # Autenticamos el usuario
-            user = authenticate(username=user_creation_form.cleaned_data['username'], password=user_creation_form.cleaned_data['password1'])
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             if user is not None:
                 # Logeamos el usuario 
-                username = user_creation_form.cleaned_data['username']
+                username = form.cleaned_data['username']
                 messages.success(request, f'Usuario {username} creado')
                 django_login(request, user)
             else:
@@ -60,6 +57,6 @@ def register(request):
             
             return redirect('home')
         else:
-            data['form'] = user_creation_form
+            print(form.errors)
 
-    return render(request, 'registration/register.html', data)
+    return render(request, 'registration/register.html', {'form': form})

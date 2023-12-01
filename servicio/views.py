@@ -206,7 +206,8 @@ def detalleServicio(request, pk):
     return render(request, 'servicio/detalleServicio.html', {'servicio': servicio})
 
 def presupuestarCliente(request, pk=None):
-    presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
+    presupuesto_session = PresupuestoSession.getOrCreate(request.session)
+    cliente = None    
     if (request.method == 'POST'):
         form = FormPresupuestoCliente(request.POST)
         if form.is_valid():
@@ -235,7 +236,7 @@ def presupuestarCliente(request, pk=None):
             form.fields['cliente'].widget = forms.HiddenInput(attrs={'hidden': True, 'required': False})
         print("-------Estoy en GET Presupuestar Cliente", )
         
-    return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'cliente': presupuesto_session['cliente']})
+    return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'cliente': cliente})
 
 def presupuestarIdCliente(request, pk):
     presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
@@ -339,6 +340,7 @@ def presupuestarConfirmar(request):
     servicio_pk = request.session.get("servicio_pk")
     importe_total = 0
     importe_sugerido = 0
+    importe = {}
     if (request.method == 'POST'):
         form = FormConfirmar(request.POST)  
         if form.is_valid():
@@ -354,7 +356,10 @@ def presupuestarConfirmar(request):
             request.session['servicios'] = []
             request.session['frecuencias'] = []
             request.session['servicio_pk'] = None
-            return redirect('gestionServicios')
+            if servicio_pk == None:
+                return redirect('presupuestarImprimir', servicio_pk)
+            else:    
+                return redirect('presupuestarModificarImprimir', servicio_pk)
         else:
             print("-------Estoy en POST Presupuestar Confirmar NOOO VALIDA FORM")
             print(form.errors)
@@ -367,8 +372,8 @@ def presupuestarConfirmar(request):
             importe_total = calcularPorcentaje(importe['importe_sugerido'], servicio.porcentaje)
         else:
             form = FormConfirmar()    
-            print("-------Estoy en GET Presupuestar Confirmar DA DE ALTA UNO NUEVO")
             if len(request.GET) > 0:
+                
                 form = FormConfirmar(request.GET)
                 if int(request.GET['cantidad_empleados']) >= 1:
                     cant_empleados = int(request.GET['cantidad_empleados'])
@@ -379,8 +384,11 @@ def presupuestarConfirmar(request):
                     else:
                         importe_total = importe['importe_sugerido']
                 else:
+                    print("-------Estoy en GET Presupuestar Confirmar DA DE ALTA UNO NUEVO GET > 0")
                     form.add_error('cantidad_empleados', 'No se puede calcular con 0 o menos valores')
+                    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': 0, 'importe_total': 0, 'total_servicios': 0, 'mano_obra': 0})
             else:
+                print("-------Estoy en GET Presupuestar Confirmar DA DE ALTA UNO NUEVO NOT (GET > 0)")
                 importe = calcularImportePresupuesto(tipos_servicios, form.fields['cantidad_empleados'].initial, len(frecuencias), datos_cliente['tipo'])
                 importe_total = importe['importe_sugerido']
                 

@@ -12,10 +12,14 @@
 {% block formulario %}
     <div class="container contenedor-imprimir">
         <div class="container contenedor-info-imprimir">
-            <h1>Presupuesto generado correctamente. <i class="bi bi-check2-circle check-imprimir"></i></h1>
+            {% if '/presupuestarImprimir/' in request.path %}
+                <h1>Presupuesto generado correctamente. <i class="bi bi-check2-circle check-imprimir"></i></h1>
+            {% else %}
+                <h1>Presupuesto modificado correctamente. <i class="bi bi-check2-circle check-imprimir"></i></h1>
+            {% endif %}
         </div>
         <div class="container contenedor-acciones-imprimir">
-            <a href="#">Imprimir</a>
+            <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}">Imprimir</a>
             <a href="{% url 'presupuestarCliente' %}">Generar otro Presupuesto</a>
             <a href="{% url 'gestionServicios' %}">Ir a Gestión de Servicios</a>
             <a href="{% url 'home' %}">Ir a Home</a>

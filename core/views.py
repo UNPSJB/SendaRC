@@ -208,6 +208,18 @@ class updateMaquinaria(UpdateView):
         kwargs = super(updateMaquinaria, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
+    
+    def form_valid(self, form):
+        # Verifica si el elemento está asociado con OtroModelo
+        maquinaria = form.save(commit=False)
+        tipos_servicio_asociados = TipoServicio.habilitados.filter(maquinaria=maquinaria)
+        if form.cleaned_data['activo'] == False and len(tipos_servicio_asociados) > 0:
+            # Logica de si quiere desactivar
+            form.add_error('activo', 'No puedes desactivar maquinaria, porque esta activa en un Tipo de Servicio.')
+            return self.form_invalid(form)
+        else:
+            maquinaria.save()
+            return super().form_valid(form)
 
 class altaLocalidad(CreateView):
     model = Localidad
