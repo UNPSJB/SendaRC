@@ -100,7 +100,7 @@ class Frecuencia(models.Model):
 class Reclamo(models.Model):
     descripcion = models.CharField(max_length=400)
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
-    
+
 class Asistencia(models.Model):
     fecha = models.DateField()
     hora_entrada = models.TimeField()
