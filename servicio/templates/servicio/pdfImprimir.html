@@ -33,7 +33,7 @@
         <thead>
             <tr>
             <td scope="row">{{ servicio.pk }}</td>
-            <td scope="row">{{ servicio.cliente }}</td>
+            <td scope="row">{{ servicio.cliente.nombre}} {{servicio.cliente.apellido}}</td>
             <td scope="row">{{ servicio.metros2 }}</td>
             <td scope="row">{{ servicio.tipo }}</td>
             <td scope="row"><span>$</span>{{ servicio.importe_total }}</td>
@@ -51,7 +51,7 @@
             </tr>
         </thead>
         <thead>
-            <td scope="row">Tipo de Servicio</td>
+            <td scope="row">Tipo</td>
             <td scope="row">Cantidad</td>
             <td scope="row">Precio</td>
             <td scope="row">Total</td>
@@ -66,9 +66,11 @@
             </tr>
         </thead>
         <thead>
-            <td scope="row">Jueves</td>
-            <td scope="row">Noche</td>
+            {% for frecuencia in frecuencias %}
+            <td scope="row">{{frecuencia.dia}}</td>
+            <td scope="row">{{frecuencia.turno}}</td>
             </tr>
+            {% endfor %}
         </thead>
     </table>
     <br>

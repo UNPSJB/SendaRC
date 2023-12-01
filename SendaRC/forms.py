@@ -1,20 +1,36 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Div, Field, HTML, Submit
 from crispy_bootstrap5.bootstrap5 import FloatingField
+
 # Login
-class CustomAuthenticationForm(AuthenticationForm):
-    #username = forms.CharField(
-    #    widget=forms.TextInput(attrs={'class': 'input-login'}),
-    #)
-    #password = forms.CharField(
-    #    widget=forms.PasswordInput(attrs={'class': 'input-login'}),
-    #)
-    def __init__(self, *args, **kwargs):
-        super(CustomAuthenticationForm, self).__init__(*args, **kwargs)
+
+class LoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-login'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-login'}))
     
-    #class Meta:
-     #   widgets={'username': }
+
+"""
+class LoginForm(forms.Form):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                Div(
+                    FloatingField('username'),
+                    FloatingField('password'),
+                    css_class='input-login'
+                )
+            )
+        )
+"""
 
 class CustomUserCreationForm(UserCreationForm):
 	email = forms.EmailField(required=True)
@@ -28,3 +44,23 @@ class CustomUserCreationForm(UserCreationForm):
 		if User.objects.filter(email=email).exists():
 			raise forms.ValidationError('Este correo electrónico ya está registrado')
 		return email
+
+"""
+class RegisterForm(forms.Form):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                Div(
+                    FloatingField('username'),
+                    FloatingField('password'),
+                    css_class='input-login'
+                )
+            )
+        )
+"""

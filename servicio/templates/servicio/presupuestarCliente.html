@@ -7,7 +7,13 @@
 {% block title %}
     <h1 class="titulo">Presupuestar Servicio</h1>
     <div class="container-info">
-        <h2 class="operacion">Agregar cliente / Datos de Presupuesto</h2>
+        {% if cliente %}
+            <h2 class="operacion">Cliente: {{ cliente.apellido }} {{ cliente.nombre }}</h2>
+            <br>
+            <h2 class="operacion">Cuil: {{ cliente.cuil }}</h2>
+        {% else %}
+            <h2 class="operacion">Agregar cliente / Datos de Presupuesto</h2>
+        {% endif %}
     </div>
 {% endblock %}
 {% block formulario %}
@@ -17,9 +23,19 @@
 {% endblock %}
 {% block extrajs %}
 <script>
-    $("#id_cliente").select2({
-        allowClear: true,
-        placeholder: "Seleccione cliente",
-    })
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Verifica si el campo cliente no está oculto
+        var clienteField = document.getElementById('id_cliente');
+        console.log(clienteField)
+        console.log(clienteField.closest('div').classList.contains('hidden'))
+        if (clienteField && clienteField.closest('div').classList.contains('hidden')) {
+            console.log("Entre a colocar selct2")
+            $("#id_cliente").select2({
+                allowClear: true,
+                placeholder: "Seleccione cliente",
+            });
+        }
+    });
 </script>
 {% endblock %}

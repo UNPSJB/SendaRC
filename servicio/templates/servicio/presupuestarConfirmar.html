@@ -84,6 +84,9 @@
                     {% csrf_token %}
                     {{ form.cantidad_empleados | as_crispy_field }}
                     <input type="hidden" name="{{ form.importe_sugerido.name }}" value="{{ importe_sugerido }}">
+                    <p class="operacion" id="importe-sugerido">Importe de Tipos de Servicios por Frecuencia: {{ total_servicios }}</p>
+                    <p class="operacion" id="importe-sugerido">Importe mano de obra de empleados en el servicio: {{ mano_obra }}</p>
+                    <p class="operacion" id="importe-sugerido">Importe ganancias: 1.15</p>
                     <p class="operacion" id="importe-sugerido">Importe sugerido: {{ importe_sugerido }}</p>
                     {{ form.porcentaje | as_crispy_field }}
                     <input type="hidden" name="{{ form.importe_total.name }}" value="{{ importe_total }}">
