@@ -252,7 +252,7 @@ class TipoServicioForm(forms.ModelForm):
 
         self.fields['insumos'].widget.choices = [(insumo.pk, insumo.descripcion) for insumo in Insumo.habilitados.all()]
         self.fields['maquinarias'].widget.choices = [(maquinaria.pk, maquinaria.nombre) for maquinaria in Maquinaria.objects.all()]
-
+        self.fields['maquinarias'].required = False
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(

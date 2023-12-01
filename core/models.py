@@ -83,7 +83,7 @@ class TipoServicio(models.Model):
     unidad_medida = models.PositiveIntegerField(choices=UNIDAD)
     precio = models.IntegerField()
     insumos = models.ManyToManyField(Insumo, through='CantInsumoServicio')
-    maquinarias = models.ManyToManyField(Maquinaria)
+    maquinarias = models.ManyToManyField(Maquinaria, null=True)
     activo = models.BooleanField(default=True)
     
     def getUnidadMedida(self):
@@ -145,9 +145,6 @@ class EmpleadoManager(models.Manager):
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(activo=self.habilitado) if self.habilitado is not None else qs
-
-class EmpleadoQuerySet(models.QuerySet):
-    pass
 
     def disponibles(self, desde, hasta,dia, turno):
         qfin = models.Q(frecuencias__servicio__fecha_finaliza__lt=desde)

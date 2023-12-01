@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
-    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+    <link href="{%static 'css/confirServicio.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
     <h1 class="titulo">Contratar Servicio</h1>
@@ -11,24 +11,28 @@
     </div>
 {% endblock %}
 {% block formulario %}
-    <div class="detalles-servicio">
-        <script>
-            console.log("{{servicio.fecha_emision}}")
-        </script>
-        <h2>Cliente:{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</h2>
-        <p>Direccion:{{servicio.cliente.direccion}}</p>
-        <p>Telefono:{{servicio.cliente.telefono}}</p>
-        <h1>Numero de servicio: {{servicio.id}}</h1>
-        <p>Fecha de emision: {{servicio.fecha_emision}}</p>
-        <p>Costo: ${{servicio.importe_total}}</p>
-        <p>Observaciones: {{servicio.observaciones}}</p>
-    </div>
-    <div class="container container-form">
-        <form method="POST" class="mi-form">
-            {%csrf_token %}
-            {{form | crispy}}
-            <button type="submit" class="btn-siguiente-vista">Siguiente</button>
-        </form>
+    <div class="container"> 
+        <div class="detalles-servicio">
+            <div class="detalles-cliente"> 
+                <h1>Cliente:{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</h1>
+                <p>Cuil:{{servicio.cliente.cuil}}</p>
+                <p>Telefono:{{servicio.cliente.telefono}}</p>
+            </div>
+            <div class="detalles-servicio-completo">
+                <h1>Numero de servicio: {{servicio.id}}</h1>
+                <p>Fecha de emision: {{servicio.fecha_emision}}</p>
+                <p>Direccion: {{servicio.direccion}}
+                <p>Costo: ${{servicio.importe_total}}</p>
+                <p>Observaciones: {{servicio.observaciones}}</p>
+            </div>
+        </div>
+        <div class="container container-form">
+            <form method="POST" class="mi-form">
+                {%csrf_token %}
+                {{form | crispy}}
+                <button type="submit" class="btn-siguiente-vista">Siguiente</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
 {% block extrajs %}

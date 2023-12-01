@@ -7,7 +7,7 @@
 {% block title %}
     <h1 class="titulo">Contratar Servicio</h1>
     <div class="container-info">
-        <h2 class="operacion">Asignacion de Empleados | Servicio {{form.pk}}</h2>
+        <h2 class="operacion">Asignacion de Empleados | Servicio {{servicio.pk}} | Cliente {{servicio.cliente.nombre}} {{servicio.cliente.apellido}} | Fechas {{servicio.fecha_inicio}} - {{servicio.fecha_finaliza}}</h2>
     </div>
 {% endblock %}
 {% block formulario %}
@@ -16,7 +16,7 @@
             <form method="POST" class="mi-formset">
                 {% csrf_token %}
                 {{ formset.management_form }}
-                <div id="form-frecuenciasempleados" class="form-group form-set mb-3">
+                <div id="form-frecuenciasempleados" class="form-set-large">
                 {% for f in formset %}
                         <div class="form-empleado-frecuencia">
                             {{ f | crispy}}
@@ -26,7 +26,7 @@
             </form>
         </div>
             <div class="container-acciones">
-                <a href="{% url 'presupuestarServicios' %}" class="accion">Volver</a>
+                <a href="{% url 'gestionServicios' %}" class="accion">Volver</a>
                 <button type="submit" class="accion btn-siguiente-vista">Siguiente</button>
             </div>
     </div>
