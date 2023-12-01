@@ -51,11 +51,13 @@
             </tr>
         </thead>
         <thead>
-            <td scope="row">Tipo</td>
-            <td scope="row">Cantidad</td>
-            <td scope="row">Precio</td>
-            <td scope="row">Total</td>
-            </tr>
+            {% for tipoServicio in tipoServicios %}
+                <td scope="row">{{tipoServicio.descripcion}}</td>
+                <td scope="row">{{tipoServicio.get}}</td>
+                <td scope="row">{{tipoServicio.precio}}</td>
+                <td scope="row">{{tipoServicio.unidad_medida}} * {{tipoServicio.precio}} </td>
+                </tr>
+            {% endfor %}
         </thead>
     </table>
     <table>
@@ -67,14 +69,14 @@
         </thead>
         <thead>
             {% for frecuencia in frecuencias %}
-            <td scope="row">{{frecuencia.dia}}</td>
-            <td scope="row">{{frecuencia.turno}}</td>
+                <td scope="row">{{frecuencia.dia}}</td>
+                <td scope="row">{{frecuencia.turno}}</td>
             </tr>
             {% endfor %}
         </thead>
     </table>
     <br>
-    <p>Total $90000</p>
+    <p>Total $<td scope="row">{{ servicio.importe_total }}</td></p>
     <br>
     <p>Saludamos a uds. muy atentamente</p>
     <p>SENDA SRL</p>
