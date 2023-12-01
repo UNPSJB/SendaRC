@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.contrib.auth import logout as django_logout, login as django_login, authenticate
 from django.contrib.auth.views import LoginView
+from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from .forms import *
 
@@ -13,8 +14,8 @@ def home(request):
     request.session['frecuencias'] = []
     return render(request, 'home.html')
 
-class Login(LoginView):
-    form_class = CustomAuthenticationForm
+class LoginView(FormView):
+    form_class = LoginForm
     template_name = 'registration/login.html'
     success_url = reverse_lazy('home')
     

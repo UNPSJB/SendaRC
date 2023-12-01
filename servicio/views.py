@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, UpdateView, TemplateView, FormView
 from django.urls import reverse_lazy
 from django.forms import formset_factory
+from django import forms
 from core.models import *
 from .forms import *
 from .models import *
@@ -16,12 +17,14 @@ def calcularPorcentaje(total_importe, porcentaje):
     return total_importe
 
 def calcularImportePresupuesto(listaTipoServicio, cantEmpleados, cantFrecuencias, tipo):
-    total_importe = 0
+    importe_sugerido = 0
+    dicc_total_importe = {}
     tipos_servicios_precios = 0
     for tipo in listaTipoServicio:
         tipos_servicios_precios += tipo['tipo_servicio'].getPrecio(tipo['cantidad']) #Su suma el precio de cada tipoServicio por su cantidad
     #El total de los servicios que se hacen todos los turnos
     total_servicios = tipos_servicios_precios * cantFrecuencias
+    dicc_total_importe['total_servicios'] = total_servicios = tipos_servicios_precios * cantFrecuencias
     #Calculamos la cantidad de empleados real que vamos a necesitar para todo el servicio 
     if tipo == 'Determinado':
         cant_empleados = cantFrecuencias * cantEmpleados *  4      #El 4 es por el mes tiene cuatro semanas
@@ -29,8 +32,10 @@ def calcularImportePresupuesto(listaTipoServicio, cantEmpleados, cantFrecuencias
         cant_empleados = cantFrecuencias * cantEmpleados    #El Eventual puede tener min=1 y max=3, 3 siempre y cuando sean el mismo dia
     mano_obra = Empleado.getSueldoBasico() / 24     #Empleados trabajan solo un turno por dia, por lo tanto los posibles dias de trabajo son 24
     #La cantidad de empleados damos a entender que es la estimativa por turno
-    total_importe = 1.15 * total_servicios + (mano_obra * cant_empleados)   #El 1.15 representa el costo mas el 15% de ganancias 
-    return total_importe
+    importe_sugerido = 1.15 * total_servicios + (mano_obra * cant_empleados)   #El 1.15 representa el costo mas el 15% de ganancias 
+    dicc_total_importe['mano_obra_servicio'] = mano_obra * cant_empleados
+    dicc_total_importe['importe_sugerido'] = importe_sugerido
+    return dicc_total_importe
 
 def saveServicio(datos_cliente, form_data, total, servicio_pk):
     new_servicio = None
@@ -210,16 +215,15 @@ def presupuestarCliente(request, pk=None):
             p.update(form.cleaned_data)     # Se guarda todos  los campos y sus valores 
             p.store()
             return redirect('presupuestarServicios')
+        else:
+            print(form.errors)
     else:
+        form = FormPresupuestoCliente()
         if pk:
             print("TRAIGO PK A PRESUPUESTAR CLIENTE")
             servicio = Servicio.objects.get(pk=pk)
             recargarSession(servicio, presupuesto_session)
             request.session['servicio_pk'] = pk
-            print("----------------------SESSIOS---------")
-            print(request.session.get("presupuesto", {}))
-            print(request.session.get("servicios", []))
-            print(request.session.get("frecuencias", []))
         else:
             print("NO TRAIGO PK A PRESUPUESTAR CLIENTE")
             request.session['servicio_pk'] = None
@@ -227,10 +231,35 @@ def presupuestarCliente(request, pk=None):
         if len(dicc) == 0:
             form = FormPresupuestoCliente()
         else:
+            cliente = Cliente.habilitados.get(pk=dicc['cliente_pk'])
+            form = FormPresupuestoCliente(initial={'cliente': cliente, 'tipo': dicc['tipo'], 'direccion': dicc['direccion'], 'metros2': dicc['metros2'], 'observaciones': dicc['observaciones']})
+            form.fields['cliente'].widget = forms.HiddenInput(attrs={'hidden': True, 'required': False})
+        print("-------Estoy en GET Presupuestar Cliente", )
+        
+    return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'cliente': presupuesto_session['cliente']})
+
+def presupuestarIdCliente(request, pk):
+    presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
+    cliente = Cliente.habilitados.get(pk=pk)
+    if (request.method == 'POST'):
+        form = FormPresupuestoCliente(request.POST)
+        if form.is_valid():
+            p = PresupuestoSession.getOrCreate(request.session)
+            p.update(form.cleaned_data)     # Se guarda todos  los campos y sus valores 
+            p.store()
+            return redirect('presupuestarServicios')
+        else:
+            print(form.errors)
+    else:
+        dicc = request.session.get("presupuesto", {})
+        if len(dicc) == 0:
+            form = FormPresupuestoCliente(initial={'cliente': cliente.pk})
+            form.fields['cliente'].widget = forms.HiddenInput(attrs={'hidden': True, 'required': False})
+        else:
             form = FormPresupuestoCliente(initial=presupuesto_session.session["presupuesto"])
-        print("-------Estoy en GET Presupuestar Cliente-- Valido session vacia")
-        print(presupuesto_session.session["presupuesto"])
-    return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'presupuesto': presupuesto_session})
+            form.fields['cliente'].widget = forms.HiddenInput(attrs={'hidden': True, 'required': False})
+        print("-------Estoy en GET Presupuestar ID Cliente", presupuesto_session.session["presupuesto"])
+    return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'cliente': cliente})
 
 def presupuestarServicios(request):
     p = PresupuestoSession.getOrCreate(request.session)
@@ -314,6 +343,10 @@ def presupuestarConfirmar(request):
     if (request.method == 'POST'):
         form = FormConfirmar(request.POST)  
         if form.is_valid():
+            if form.cleaned_data['cantidad_empleados'] <= 0:
+                form.add_error('cantidad_empleados', 'No se puede calcular con 0 o menos valores')
+                return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
+                
             print("-------Estoy en POST Presupuestar Confirmar VALIDA FORM")
             new_servicio = saveServicio(datos_cliente, form.cleaned_data, form.cleaned_data['importe_total'], servicio_pk)
             saveTipoServicios(new_servicio, tipos_servicios, servicio_pk)
@@ -331,29 +364,38 @@ def presupuestarConfirmar(request):
             print("-------GET PRESUPUESTAR CONFIRMAR ENTRA CON PK PARA MODIFICAR")    
             servicio = Servicio.objects.get(pk=servicio_pk)
             form = FormConfirmar(initial={'porcentaje': servicio.porcentaje, 'cantidad_empleados': servicio.cant_empleados})    
-            importe_sugerido = calcularImportePresupuesto(tipos_servicios, servicio.cant_empleados, len(frecuencias), datos_cliente['tipo'])
-            importe_total = calcularPorcentaje(importe_sugerido, servicio.porcentaje)
-            importe_sugerido = "{:.2f}".format(importe_sugerido)
-            importe_total = "{:.2f}".format(importe_total)
+            importe = calcularImportePresupuesto(tipos_servicios, servicio.cant_empleados, len(frecuencias), datos_cliente['tipo'])
+            importe_total = calcularPorcentaje(importe['importe_sugerido'], servicio.porcentaje)
         else:
-            form = FormConfirmar(request.GET)    
+            form = FormConfirmar()    
             print("-------Estoy en GET Presupuestar Confirmar DA DE ALTA UNO NUEVO")
             if len(request.GET) > 0:
+                form = FormConfirmar(request.GET)
                 if int(request.GET['cantidad_empleados']) >= 1:
                     cant_empleados = int(request.GET['cantidad_empleados'])
-                    importe_sugerido = calcularImportePresupuesto(tipos_servicios, cant_empleados, len(frecuencias), datos_cliente['tipo'])
+                    importe = calcularImportePresupuesto(tipos_servicios, cant_empleados, len(frecuencias), datos_cliente['tipo'])
                     if int(request.GET['porcentaje']) != 0:
                         porcentaje = int(request.GET['porcentaje'])
-                        importe_total = calcularPorcentaje(importe_sugerido, int(request.GET['porcentaje']))
+                        importe_total = calcularPorcentaje(importe['importe_sugerido'], int(request.GET['porcentaje']))
                     else:
-                        importe_total = importe_sugerido
-                importe_sugerido = "{:.2f}".format(importe_sugerido)
-                importe_total = "{:.2f}".format(importe_total)
+                        importe_total = importe['importe_sugerido']
+                else:
+                    form.add_error('cantidad_empleados', 'No se puede calcular con 0 o menos valores')
+            else:
+                importe = calcularImportePresupuesto(tipos_servicios, form.fields['cantidad_empleados'].initial, len(frecuencias), datos_cliente['tipo'])
+                importe_total = importe['importe_sugerido']
+                
+        importe_sugerido = "{:.2f}".format(importe['importe_sugerido'])
+        total_servicios = "{:.2f}".format(importe['total_servicios'])
+        mano_obra = "{:.2f}".format(importe['mano_obra_servicio'])
+        importe_sugerido = "{:.2f}".format(importe['importe_sugerido'])
+        importe_total = "{:.2f}".format(importe_total)
+            
     print(datos_cliente)
     print(tipos_servicios)
     print(frecuencias)
     print(servicio_pk)
-    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total})
+    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total, 'total_servicios': total_servicios, 'mano_obra': mano_obra})
 
 def presupuestarImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)

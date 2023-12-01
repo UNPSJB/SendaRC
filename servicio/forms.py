@@ -16,7 +16,7 @@ class FormPresupuestoCliente(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FormPresupuestoCliente, self).__init__(*args, **kwargs)
-        self.fields['cliente'].queryset = Cliente.objects.all()
+        self.fields['cliente'].queryset = Cliente.habilitados.all()
         self.fields['cliente'].widget.choices = [
             (cliente.pk, cliente.cuil+' | '+cliente.nombre+' '+cliente.apellido) for cliente in Cliente.habilitados.all()]
         self.helper = FormHelper()
@@ -55,7 +55,7 @@ class FormBaseTipoServicio(forms.Form):
     
     def __init__(self, *args, **kwargs):
         super(FormBaseTipoServicio, self).__init__(*args, **kwargs)
-        self.fields['tipo_servicio'].choices = [(tipo.id, tipo.descripcion) for tipo in TipoServicio.objects.all()]
+        self.fields['tipo_servicio'].choices = [(tipo.id, f'{tipo.descripcion} - {tipo.getUnidadMedida()}') for tipo in TipoServicio.objects.all()]
         
 
 class FormBaseFrecuencia(forms.Form):
@@ -71,10 +71,15 @@ class FormBaseFrecuencia(forms.Form):
     )
     
 class FormConfirmar(forms.Form):
-    porcentaje = forms.IntegerField(label='Porcentaje declarado (opcional)')
+    porcentaje = forms.IntegerField(label='Porcentaje declarado (opcional)', required=False)
     cantidad_empleados = forms.IntegerField(label='Cantidad de Empleados por Turno')
     importe_sugerido = forms.FloatField(widget=forms.HiddenInput())
     importe_total = forms.FloatField(widget=forms.HiddenInput())
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['porcentaje'].initial = 0
+        self.fields['cantidad_empleados'].initial = 1
     
 class FormContratarServicio(forms.ModelForm):
     fecha_inicio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))

@@ -5,6 +5,7 @@ urlpatterns = [
     path('gestionServicios/', gestionServicios.as_view(), name = 'gestionServicios'),
     path('gestionServicios/<int:pk>', detalleServicio, name='detalleServicio'),
     path('presupuestarCliente/', presupuestarCliente, name = 'presupuestarCliente'),
+    path('presupuestarIdCliente/<int:pk>/', presupuestarIdCliente, name = 'presupuestarIdCliente'),
     path('presupuestarServicios/', presupuestarServicios, name = 'presupuestarServicios'),
     path('presupuestarFrecuencias/', presupuestarFrecuencias, name = 'presupuestarFrecuencias'),
     path('presupuestarConfirmar/', presupuestarConfirmar, name = 'presupuestarConfirmar'),

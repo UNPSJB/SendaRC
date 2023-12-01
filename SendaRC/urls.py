@@ -3,6 +3,7 @@ from django.urls import path, include
 from core.urls import * 
 from .views import *
 from servicio.urls import *
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,8 +13,10 @@ urlpatterns = [
     path('servicio/', include('servicio.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     
-    path('accounts/login/', Login.as_view(), name='login'),
-    path('', Login.as_view(), name='login'),
+    #path('', login_required(Home.as_view()), name = 'home'),
+    path('accounts/login/', LoginView.as_view(), name='login'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('', LoginView.as_view(), name='login'),
     path('logout/', logout, name='logout'),
     path('register/', register, name='register'),
 ]
