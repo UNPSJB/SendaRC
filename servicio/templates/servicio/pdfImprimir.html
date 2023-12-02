@@ -15,49 +15,69 @@
 
 {% block listado%}
 <body>
+    <hr>
+        <h6>Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut<h6>
+        <h6>Dante Brozzi 830 - (280)451069 - Esquel - e-mail: senda@cpsarg.com - www.sendaservicios.com.ar<h6>
+    <hr>
+    <h4>Datos del Cliente</h4>
     <table>
         <thead>
             <tr>
-            <hr>
-            <h6>Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut<h6>
-            <h6>Dante Brozzi 830 - (280)451069 - Esquel - e-mail: senda@cpsarg.com - www.sendaservicios.com.ar<h6>
-            <hr>
-            <h4>Datos del Servicio</h4>
-            <th scope="row">N° Servicio</th>
             <th scope="row">Cliente</th>
-            <th scope="row">Metros Cuadrados</th>
+            <th scope="row">Cuil/Cuit</th>
+            <th scope="row">Telefono</th>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+            <td scope="row">{{ servicio.cliente.nombre}} {{servicio.cliente.apellido}}</td>
+            <td scope="row">{{ servicio.cliente.cuil}}</td>
+            <td scope="row">{{ servicio.cliente.telefono}}</td>
+            </tr>
+        </thead>
+    </table>
+    <hr>
+    <h4>Datos del Servicio</h4>
+    <table>
+        <thead>
+            <tr>
+            <th scope="row">N° Servicio</th>
+            <th scope="row">Fecha Emision</th>
+            <th scope="row">Fecha de Vencimiento</th>
             <th scope="row">Tipo</th>
-            <th scope="row">Total</th>
             </tr>
         </thead>
         <thead>
             <tr>
             <td scope="row">{{ servicio.pk }}</td>
-            <td scope="row">{{ servicio.cliente.nombre}} {{servicio.cliente.apellido}}</td>
-            <td scope="row">{{ servicio.metros2 }}</td>
-            <td scope="row">{{ servicio.tipo }}</td>
-            <td scope="row"><span>$</span>{{ servicio.importe_total }}</td>
+            <td scope="row">{{ servicio.fecha_emision}}</td>
+            <td scope="row">{{ servicio.plazo_vigencia }}</td>
+            <td scope="row">{{ servicio.getTipo }}</td>
             </tr>
         </thead>
     </table>
+    <hr>
     {% endblock %}
     <table>
         <thead>
             <h4>Tipo de Servicio</h4>
             <th scope="row">Tipo de Servicio</th>
             <th scope="row">Cantidad</th>
+            <th scope="row">Unidad de Medida</th>
             <th scope="row">Precio</th>
             <th scope="row">Total</th>
             </tr>
         </thead>
         <thead>
             {% for tipoServicio in tipoServicios %}
-                <td scope="row">{{tipoServicio.descripcion}}</td>
-                <td scope="row">{{tipoServicio.get}}</td>
-                <td scope="row">{{tipoServicio.precio}}</td>
-                <td scope="row">{{tipoServicio.unidad_medida}} * {{tipoServicio.precio}} </td>
+                <td scope="row">{{tipoServicio.tipoServicio.descripcion}}</td>
+                <td scope="row">{{tipoServicio.cantidad}}</td>
+                <td scope="row">{{tipoServicio.tipoServicio.getUnidadMedida}}</td>
+                <td scope="row">{{tipoServicio.tipoServicio.getPrecioFormateado}}</td>
+                <td scope="row"></td>
                 </tr>
             {% endfor %}
+            <tr scope="row">Total de Tipos de Servicios</tr>
         </thead>
     </table>
     <table>
@@ -69,14 +89,14 @@
         </thead>
         <thead>
             {% for frecuencia in frecuencias %}
-                <td scope="row">{{frecuencia.dia}}</td>
-                <td scope="row">{{frecuencia.turno}}</td>
+                <td scope="row">{{frecuencia.getDia}}</td>
+                <td scope="row">{{frecuencia.getTurno}}</td>
             </tr>
             {% endfor %}
         </thead>
     </table>
     <br>
-    <p>Total $<td scope="row">{{ servicio.importe_total }}</td></p>
+    <h4>Importe Total: {{ servicio.getImporteTotalFormateado }}</h4>
     <br>
     <p>Saludamos a uds. muy atentamente</p>
     <p>SENDA SRL</p>

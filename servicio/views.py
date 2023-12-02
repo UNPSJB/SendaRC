@@ -309,6 +309,10 @@ def presupuestarFrecuencias(request):
                     f.add_error(None, 'No se permiten turnos duplicados para el mismo dia')
                     return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
                 
+                #dicc = p.session['servicios']
+                #if dicc['tipo'] == 1 and dia in dias_turnos and len(dias_turnos[dia]) >= 3:
+                #    print("FALTA")
+                
                 if dia not in dias_turnos:
                     dias_turnos[dia] = set()
                 dias_turnos[dia].add(turno)
@@ -357,7 +361,7 @@ def presupuestarConfirmar(request):
             request.session['frecuencias'] = []
             request.session['servicio_pk'] = None
             if servicio_pk == None:
-                return redirect('presupuestarImprimir', servicio_pk)
+                return redirect('presupuestarImprimir', new_servicio.pk)
             else:    
                 return redirect('presupuestarModificarImprimir', servicio_pk)
         else:
@@ -411,7 +415,7 @@ def presupuestarImprimir(request, pk):
 def pdfImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
-    lista_tipos_servicios = servicio.tipoServicios.all()
+    lista_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
     return render(request, 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios})
 
 class contratarServicio(UpdateView):

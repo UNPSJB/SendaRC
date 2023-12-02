@@ -73,6 +73,12 @@ class Frecuencia(models.Model):
     servicio = models.ForeignKey(Servicio, related_name="frecuencias", on_delete=models.CASCADE)
     empleados = models.ManyToManyField(Empleado, related_name="frecuencias", null=True)
     
+    def getDia(self):
+        return dict(self.DIA)[self.dia]
+    
+    def getTurno(self):
+        return dict(self.TURNO)[self.turno]
+    
     def getHoraInicio(self):
         if self.turno == 1: #Mañana
             return timezone.now().replace(hour=8, minute=0, second=0, microsecond=0)
