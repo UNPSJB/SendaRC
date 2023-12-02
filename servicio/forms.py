@@ -87,21 +87,35 @@ class FormContratarServicio(forms.ModelForm):
     class Meta:
         model = Servicio
         fields = ['fecha_inicio', 'fecha_finaliza']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.tipo == 1:
+            self.fields['fecha_finaliza'].required = False
+            self.fields['fecha_finaliza'].widget.attrs['hidden'] = True
+            self.fields['fecha_finaliza'].label = False
 
     def clean(self):
         cleaned_data = super().clean()
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_finaliza = cleaned_data.get('fecha_finaliza')
-
-        if fecha_inicio and fecha_finaliza:
-            if fecha_inicio > fecha_finaliza:
-                self.add_error('fecha_finaliza', 'La fecha de finalización no puede ser anterior a la de inicio')
-            if fecha_inicio < self.instance.fecha_emision:
-                self.add_error('fecha_inicio', 'La fecha de inicio no puede ser anterior a la fecha de emisión')
-            if self.instance.tipo == 1 and fecha_inicio != fecha_finaliza:
-                self.add_error('fecha_finaliza', 'Este servicio es eventual, la fecha de finalización debe ser igual al inicio')
+        if self.instance.tipo == 1:
+            fecha_finaliza = fecha_inicio
+        else:
+            if fecha_inicio and fecha_finaliza:
+                if fecha_inicio >= fecha_finaliza:
+                    self.add_error('fecha_finaliza', 'La fecha de finalización no puede ser anterior o igual a la de fecha de inicio')
+        if fecha_inicio < self.instance.fecha_emision:
+            self.add_error('fecha_inicio', 'La fecha de inicio no puede ser anterior a la fecha de emisión')
         return cleaned_data
-   
+    def save(self, commit=True):
+        servicio = super().save(commit=False)
+        if self.instance.tipo == 1:
+            servicio.fecha_finaliza = servicio.fecha_inicio
+        if commit:
+            servicio.save()
+        return servicio
+
 class FormAsignarEmpleados(forms.Form):
     frecuencia = forms.ModelChoiceField(label='Frecuencia', queryset=Frecuencia.objects.all(), widget=forms.Select(attrs={'class': 'input'}))
     empleados = forms.ModelMultipleChoiceField(

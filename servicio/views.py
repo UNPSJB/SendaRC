@@ -450,8 +450,9 @@ def asignarEmpleados(request, pk):
             for form in formset:
                 frecuencia = form.cleaned_data['frecuencia']
                 empleados = form.cleaned_data['empleados']
-                if empleados.count() > servicio.cant_empleados:
+                if empleados.count() != servicio.cant_empleados:
                     form.add_error('empleados', 'Solo se pueden asignar ' + str(servicio.cant_empleados) + ' empleados')
+                    form.fields['empleados'].choices = [(empleado.pk, empleado.nombre +' '+empleado.apellido) for empleado in form.fields['empleados'].queryset]
                     return render(request, 'servicio/asignarEmpleados.html', {'formset': formset, 'servicio': servicio})
                 frecuencia = Frecuencia.objects.get(pk=frecuencia.pk)
                 for empleado in empleados:
