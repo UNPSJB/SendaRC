@@ -187,7 +187,33 @@ class gestionServicios(ListView):
     model = Servicio
     template_name = 'servicio/gestionServicios.html'
     context_object_name = 'servicios'
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FiltrosServiciosForm(self.request.GET)
+        return context
+    def get_queryset(self):
+        queryset = Servicio.objects.all()
+        
+        # Filtrar por estado
+        estado_servicio = self.request.GET.get('estado', '')
+        tipo_servicio = self.request.GET.get('tipo', '')
+        
+        if tipo_servicio:
+            queryset = queryset.filter(tipo=tipo_servicio)
+        if estado_servicio:
+            queryset = queryset.filter(estado=estado_servicio)
+
+        # Filtrar por fecha de inicio
+        fecha_inicio = self.request.GET.get('fecha_inicio', '')
+        if fecha_inicio:
+            queryset = queryset.filter(fecha_inicio__gte=fecha_inicio)
+        
+        # Filtrar por fecha de finalización
+        fecha_finaliza = self.request.GET.get('fecha_finaliza', '')
+        if fecha_finaliza:
+            queryset = queryset.filter(fecha_finaliza__lte=fecha_finaliza)
+
+        return queryset
     def get(self, request, *args, **kwargs):
         self.request.session['presupuesto'] = {}
         self.request.session['servicios'] = []
@@ -411,6 +437,14 @@ def presupuestarConfirmar(request):
 def presupuestarImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     return render(request, 'servicio/presupuestarImprimir.html', {'servicio': servicio})
+
+def detallePresupuesto(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+    frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    empleados_frecuencias = Empleado.objects.filter(frecuencias__in=frecuencias)
+    print(empleados_frecuencias)
+    return render(request, 'servicio/detallePresupuesto.html', {'servicio': servicio, 'tipoServicios': tipos_servicios, 'frecuencias': frecuencias,'empleados':empleados_frecuencias})
 
 def pdfImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)

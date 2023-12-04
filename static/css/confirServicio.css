@@ -1,19 +1,55 @@
-.container{
-    height: 80%;
+.contenedor-textos-contrato{
     display: flex;
-    flex-direction: column;
+    color: #fff;
     justify-content: space-between;
-    color: white;
-}
-.detalles-servicio{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    padding-block: 15px;
+    padding-inline: 30px;
+    border: 1px solid #505050;
+    border-radius: 6px;
     gap: 10px;
 }
-.detalles-cliente > p {
-    margin-bottom: 0px;
+.contenedor-primerVista-contrato{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
-.detalles-servicio-completo > p{
-    margin-bottom: 0px;
+.contenedor-cliente-contratato > h1,
+.contenedor-detalles-contrato > h1,
+.contenedor-observaciones > h1{
+    font-size: 20px;
+    font-weight: 700;
+}
+.contenedor-cliente-contratato,
+.contenedor-detalles-contrato,
+.contenedor-observaciones{
+    border-left: 1px solid #505050;
+}
+.contenedor-observaciones{
+    border-right: 1px solid #505050;
+}
+.contenedor-cliente-contratato > p,
+.contenedor-detalles-contrato > p,
+.contenedor-observaciones > p{
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.btn-contratar{
+    height: 2rem;
+    width: 6rem;
+    border-radius: 6px;
+    background-color: #1dadf2;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.btn-contratar:hover{
+    background-color: #1085bb;
+}
+
+.contenedor-operaciones-form-contratar{
+    display: flex;
+    justify-content: end;
 }

@@ -11,26 +11,32 @@
     </div>
 {% endblock %}
 {% block formulario %}
-    <div class="container"> 
-        <div class="detalles-servicio">
-            <div class="detalles-cliente"> 
-                <h1>Cliente:{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</h1>
-                <p>Cuil:{{servicio.cliente.cuil}}</p>
-                <p>Telefono:{{servicio.cliente.telefono}}</p>
+    <div class="container contenedor-primerVista-contrato">
+        <div class="contenedor-textos-contrato">
+            <div class="container contenedor-cliente-contratato">
+                <h1>Cliente: {{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</h1>
+                <p>CUIT/CUIL: {{servicio.cliente.cuil}}</p>
+                <p>Telefono: {{servicio.cliente.telefono}}</p>
             </div>
-            <div class="detalles-servicio-completo">
+            <div class="container contenedor-detalles-contrato">
                 <h1>Numero de servicio: {{servicio.id}}</h1>
-                <p>Fecha de emision: {{servicio.fecha_emision}}</p>
-                <p>Direccion: {{servicio.direccion}}
-                <p>Costo: ${{servicio.importe_total}}</p>
-                <p>Observaciones: {{servicio.observaciones}}</p>
+                <p>Tipo de servicio: {{servicio.getTipo}}</p>
+                <p>Fecha de emisión: {{servicio.fecha_emisión}}</p>
+                <p>Dirección: {{servicio.dirección}}
+                <p>Costo: {{servicio.getImporteTotalFormateado}}</p>
+            </div>
+            <div class="container contenedor-observaciones">
+                <h1>Observaciones:</h1>
+                <p>{{servicio.observaciones}}</p>
             </div>
         </div>
         <div class="container container-form">
             <form method="POST" class="mi-form">
                 {%csrf_token %}
                 {{form | crispy}}
-                <button type="submit" class="btn-siguiente-vista">Siguiente</button>
+                <div class="contenedor-operaciones-form-contratar">
+                    <button type="submit" class="btn-contratar">Siguiente</button>
+                </div>
             </form>
         </div>
     </div>

@@ -2,36 +2,36 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
-    <link href="{%static 'css/formset.css'%}" rel="stylesheet" />
+<link href="{%static 'css/formset.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
-    <h1 class="titulo">Presupuestar Servicio</h1>
-    <div class="container-info">
-        <h2 class="operacion">Agregar Frecuencia / {{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</h2>
-    </div>
+<h1 class="titulo">Presupuestar Servicio</h1>
+<div class="container-info">
+    <h2 class="operacion">Agregar Frecuencia / {{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</h2>
+</div>
 {% endblock %}
 {% block formulario %}
-    <div class="container">
-        <div class="container-formSets">
-            <form method="POST" class="mi-formset">
-                {% csrf_token %}
-                {{ formset.management_form }}
-                <div id="form-frecuencias" class="form-group form-set mb-3">
+<div class="container">
+    <div class="container-formSets">
+        <form method="POST" class="mi-formset">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div id="form-frecuencias" class="form-group form-set mb-3">
                 {% for f in formset %}
-                        <div class="form-frecuencia">
-                            <button type="button" class="quitar-frecuencia quitar-form"><i class="bi bi-trash3"></i></button>
-                            {{ f | crispy }}
-                        </div>
-                {% endfor %}
+                <div class="form-frecuencia">
+                    <button type="button" class="quitar-frecuencia quitar-form"><i class="bi bi-trash3"></i></button>
+                    {{ f | crispy }}
                 </div>
-            </form>
-            <div class="container-acciones">
-                <button type="button" class="accion agregar-frecuencia">Añadir Frecuencia</button>
-                <a href="{% url 'presupuestarServicios' %}" class="accion">Volver</a>
-                <button type="submit"  class="accion btn-siguiente-vista">Siguiente</button>
+                {% endfor %}
             </div>
+        </form>
+        <div class="container-acciones">
+            <button type="button" class="accion agregar-frecuencia">Añadir Frecuencia</button>
+            <a href="{% url 'presupuestarServicios' %}" class="accion">Volver</a>
+            <button type="submit" class="accion btn-siguiente-vista">Siguiente</button>
         </div>
     </div>
+</div>
 {% endblock %}
 {% block extrajs %}
 <script>
@@ -52,13 +52,13 @@
         const $total_forms = $('#id_form-TOTAL_FORMS')
         const $forms_container = $('#form-frecuencias')
 
-        $('.btn-siguiente-vista').on("click", function() {
+        $('.btn-siguiente-vista').on("click", function () {
             $(".mi-formset").submit();
         })
 
         const getValues = () => {
             let inputs = $forms_container.find("input, select, textarea");
-                return inputs.toArray().map(i => $(i).val());
+            return inputs.toArray().map(i => $(i).val());
         }
 
         const setValues = (values) => {
@@ -89,18 +89,18 @@
                 $(this).siblings(".texto,.container-hora").remove();
                 let textContent = (seleccion == 1) ? '8:00 a 12:00' :
                     (seleccion == 2) ? '14:00 a 18:00' :
-                    (seleccion == 3) ? '19:00 a 23:00' : 'none';
+                        (seleccion == 3) ? '19:00 a 23:00' : 'none';
                 $(`<div class="container-hora"> <h6 class="texto">${textContent}<i class="bi bi-clock"></i></h6></div>`).insertAfter(this);
             })
         }
-        
+
         $('.form-group').each(e => bindAcciones(e))
-        $('.agregar-frecuencia').on("click", function() {
-                const total = parseInt($total_forms.val());
-                $form = buildForm(total);
-                bindAcciones($form);
-                $forms_container.append($form)
-                $total_forms.val(total + 1)               
+        $('.agregar-frecuencia').on("click", function () {
+            const total = parseInt($total_forms.val());
+            $form = buildForm(total);
+            bindAcciones($form);
+            $forms_container.append($form)
+            $total_forms.val(total + 1)
         });
     })
 </script>

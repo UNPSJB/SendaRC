@@ -12,6 +12,7 @@ urlpatterns = [
     path('presupuestarImprimir/<int:pk>/', presupuestarImprimir, name = 'presupuestarImprimir'),
     path('presupuestarModificarImprimir/<int:pk>/', presupuestarImprimir, name = 'presupuestarModificarImprimir'),
     path('pdfImprimir/<int:pk>/', pdfImprimir, name = 'pdfImprimir'),
+    path('detallePresupuesto/<int:pk>/', detallePresupuesto, name = 'detallePresupuesto'),
     #Modificar Presupuestos
     path('modificarPresupuesto/<int:pk>/', presupuestarCliente, name = 'modificarPresupuesto'),
     #Contratar Servicio
