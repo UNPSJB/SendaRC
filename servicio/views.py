@@ -40,8 +40,7 @@ def calcularImportePresupuesto(listaTipoServicio, cantEmpleados, cantFrecuencias
 def saveServicio(datos_cliente, form_data, total, servicio_pk):
     new_servicio = None
     if servicio_pk == None:
-        new_servicio = Servicio(fecha_emision=timezone.now(),
-                                plazo_vigencia=timezone.now() + timedelta(days=10),
+        new_servicio = Servicio(plazo_vigencia=timezone.now() + timedelta(days=10),
                                 cliente=Cliente.objects.get(pk=datos_cliente['cliente_pk']),
                                 direccion=datos_cliente['direccion'],
                                 metros2=datos_cliente['metros2'],
@@ -187,7 +186,33 @@ class gestionServicios(ListView):
     model = Servicio
     template_name = 'servicio/gestionServicios.html'
     context_object_name = 'servicios'
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FiltrosServiciosForm(self.request.GET)
+        return context
+    def get_queryset(self):
+        queryset = Servicio.objects.all()
+        
+        # Filtrar por estado
+        estado_servicio = self.request.GET.get('estado', '')
+        tipo_servicio = self.request.GET.get('tipo', '')
+        
+        if tipo_servicio:
+            queryset = queryset.filter(tipo=tipo_servicio)
+        if estado_servicio:
+            queryset = queryset.filter(estado=estado_servicio)
+
+        # Filtrar por fecha de inicio
+        fecha_inicio = self.request.GET.get('fecha_inicio', '')
+        if fecha_inicio:
+            queryset = queryset.filter(fecha_inicio__gte=fecha_inicio)
+        
+        # Filtrar por fecha de finalización
+        fecha_finaliza = self.request.GET.get('fecha_finaliza', '')
+        if fecha_finaliza:
+            queryset = queryset.filter(fecha_finaliza__lte=fecha_finaliza)
+
+        return queryset
     def get(self, request, *args, **kwargs):
         self.request.session['presupuesto'] = {}
         self.request.session['servicios'] = []
@@ -269,6 +294,12 @@ def presupuestarServicios(request):
         p.session["servicios"] = []
         if formset.is_valid():
             for f in formset:
+                cantidad = f.cleaned_data['cantidad'] 
+                
+                if cantidad <= 0 or cantidad >= 300:
+                    f.add_error('cantidad', 'Los valores ingresados no son validos.')
+                    return render(request, 'servicio/presupuestarServicios.html', {'formset': formset, 'presupuesto': p})
+                
                 p.update(f.cleaned_data)
                 p.storeServicio()
                 print("-------Estoy en POST Presupuestar Servicio")
@@ -301,20 +332,26 @@ def presupuestarFrecuencias(request):
                 dia = f.cleaned_data['dia']
                 turno = f.cleaned_data['turno']
                 
+                if dia not in dias_turnos:
+                    dias_turnos[dia] = set()
+                
                 if dia in dias_turnos and len(dias_turnos[dia]) >= 3:
-                    f.add_error(None, 'No se permiten mas de 3 formularios para el mismo dia.')
+                    f.add_error('turno', 'Un dia solo puede tener 3 turnos distintos.')
                     return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
                 
                 if dia in dias_turnos and turno in dias_turnos[dia]:
-                    f.add_error(None, 'No se permiten turnos duplicados para el mismo dia')
+                    f.add_error('turno', 'No se permiten turnos duplicados para el mismo dia')
                     return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
                 
-                #dicc = p.session['servicios']
-                #if dicc['tipo'] == 1 and dia in dias_turnos and len(dias_turnos[dia]) >= 3:
-                #    print("FALTA")
+                dicc = p.session['presupuesto']
+                print("--------------QUE TIENE DIA, Y QUE TIENE DIAS_TURNOS Y QUE TIENE LEN(DIAS_TURNOS)", dia, dias_turnos, len(dias_turnos), len(dias_turnos[dia]))
+                if dicc['tipo'] == 1 and dia in dias_turnos and len(dias_turnos) > 1:
+                    print("--------------QUE TIENE P.SESSION Y QUE TIENE DICC", dicc)
+                    f.add_error('turno', 'Servicio eventual, solo 3 frecuencia, mismo dia, y distintos turnos')
+                    f.add_error('dia', 'Servicio eventual, solo 3 frecuencia, mismo dia, y distintos turnos')
+                    return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
                 
-                if dia not in dias_turnos:
-                    dias_turnos[dia] = set()
+                
                 dias_turnos[dia].add(turno)
                 
                 p.update(f.cleaned_data)
@@ -377,7 +414,6 @@ def presupuestarConfirmar(request):
         else:
             form = FormConfirmar()    
             if len(request.GET) > 0:
-                
                 form = FormConfirmar(request.GET)
                 if int(request.GET['cantidad_empleados']) >= 1:
                     cant_empleados = int(request.GET['cantidad_empleados'])
@@ -406,11 +442,19 @@ def presupuestarConfirmar(request):
     print(tipos_servicios)
     print(frecuencias)
     print(servicio_pk)
-    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total, 'total_servicios': total_servicios, 'mano_obra': mano_obra})
+    return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total, 'total_servicios': total_servicios, 'mano_obra': mano_obra, 'fecha_actual': timezone.now().date()})
 
 def presupuestarImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     return render(request, 'servicio/presupuestarImprimir.html', {'servicio': servicio})
+
+def detallePresupuesto(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+    frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    empleados_frecuencias = Empleado.objects.filter(frecuencias__in=frecuencias)
+    print(empleados_frecuencias)
+    return render(request, 'servicio/detallePresupuesto.html', {'servicio': servicio, 'tipoServicios': tipos_servicios, 'frecuencias': frecuencias,'empleados':empleados_frecuencias})
 
 def pdfImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
@@ -453,8 +497,9 @@ def asignarEmpleados(request, pk):
             for form in formset:
                 frecuencia = form.cleaned_data['frecuencia']
                 empleados = form.cleaned_data['empleados']
-                if empleados.count() > servicio.cant_empleados:
+                if empleados.count() != servicio.cant_empleados:
                     form.add_error('empleados', 'Solo se pueden asignar ' + str(servicio.cant_empleados) + ' empleados')
+                    form.fields['empleados'].choices = [(empleado.pk, empleado.nombre +' '+empleado.apellido) for empleado in form.fields['empleados'].queryset]
                     return render(request, 'servicio/asignarEmpleados.html', {'formset': formset, 'servicio': servicio})
                 frecuencia = Frecuencia.objects.get(pk=frecuencia.pk)
                 for empleado in empleados:
@@ -462,9 +507,11 @@ def asignarEmpleados(request, pk):
                     servicio.empleado.add(empleado.pk)
                 frecuencia.save()
                 servicio.save()
-            servicio.estado = 3 #Proceso finalizado, el servicio esta contratado
-            servicio.save()
-            return redirect('contratarServicioCorrecto', pk)
+            if servicio.cliente.tipo == 2:
+                servicio.estado = 3
+                servicio.save()
+                return redirect('contratarServicioCorrecto', pk)
+            return redirect('crearFacturaSeña', pk)
     else:
         servicio = Servicio.objects.get(pk=pk)
         frecuencias = Frecuencia.objects.filter(servicio=servicio)

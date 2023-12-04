@@ -1,0 +1,25 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{%static 'css/imprimirVista.css'%}" rel="stylesheet"/>
+{% endblock %}
+{% block title %}
+    <div class="container-info">
+        
+    </div>
+{% endblock %}
+{% block formulario %}
+    <div class="container contenedor-imprimir">
+        <div class="container contenedor-info-imprimir">
+            <h1>Factura generada correctamente. <i class="bi bi-check2-circle check-imprimir"></i></h1>
+        </div>
+        <p style="text-align: right;">Tipo de factura generada: {{ factura.getTipo }}</p>
+        <div class="container contenedor-acciones-imprimir">
+            <a target="_blank" href="#">Imprimir</a>
+            <a href="{% url 'serviciosFacturar' %}">Generar otra Factura</a>
+            <a href="{% url 'formaPago' factura.pk %}">Pagar Factura</a>
+            <a href="{% url 'home' %}">Ir a Home</a>
+        </div>
+    </div>
+{% endblock %}

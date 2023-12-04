@@ -13,18 +13,25 @@
         <p class="detalles"><i class="bi bi-calendar-date"></i> Fecha de emisión: {{servicio.fecha_emision}}</p>
         <p class="detalles"><i class="bi bi-calendar2-x"></i> Fecha de inicio: {{servicio.fecha_inicio}}</p>
         <p class="detalles"><i class="bi bi-calendar-day"></i> Plazo de vigencia: {{servicio.plazo_vigencia}}</p>
-        <p class="detalles"><i class="bi bi-calendar2-x"></i> Fecha de finalización: {{servicio.fecha_finaliza}}</p>
-        <p class="detalles"><i class="bi bi-calendar-x"></i> Fecha de cancelación: {{servicio.fecha_cancelada}}</p>
+        {% if servicio.getEstado == "Finalizado" %}
+            <p class="detalles"><i class="bi bi-calendar2-x"></i> Fecha de finalización: {{servicio.fecha_finaliza}}</p>
+        {% endif %}
+        {% if servicio.getEstado == "Cancelado" %}
+         <p class="detalles"><i class="bi bi-calendar-x"></i> Fecha de cancelación: {{servicio.fecha_cancelada}}</p>
+        {% endif %}
         <p class="detalles"><i class="bi bi-person-walking"></i> Cantidad de empleados: {{servicio.cant_empleados}}</p>
         <div class="divisor"></div>
-        <div class="contenedor-importe">
+        <div class="contenedor-importe-ver-detalle">
+            <a href="{% url 'detallePresupuesto' servicio.pk %}" class="ancor-ver-servicio-detalle"><i class="bi bi-eye"></i> Ver completo</a>
             <p class="detalles">Total: {{servicio.getImporteTotalFormateado}}</p>
         </div>
         <div class="container-ancors">
+            {% if servicio.getEstado == "Presupuestado" %}
             <a href="{% url 'contratarServicio' servicio.pk %}" class="ancors-detalle"><i class="bi bi-check-lg"></i> Contratar</a>
-            <a href="#" class="ancors-detalle"><i class="bi bi-clipboard2-x"></i> Finalizar</a>
-            <a href="#" class="ancors-detalle"><i class="bi bi-ban"></i> Cancelar</a>
-            <a href="#" class="ancors-detalle"><i class="bi bi-pause"></i> Suspender</a>
+            {% endif %}
+            {% if servicio.getEstado != "Vencido" %}
+                <a href="#" class="ancors-detalle"><i class="bi bi-ban"></i> Cancelar</a>
+            {% endif %}
             <a href="#" class="ancors-detalle"><i class="bi bi-printer"></i> Imprimir</a>
         </div>
     </div>

@@ -108,8 +108,8 @@
                     </a>
                     <span class="spanSideBarExpand">Servicios</span>
                 </li>
-                <li class="nav-item {% if request.path == '/factura/gestionFacturas/' %}active{% endif %}">
-                    <a href="#" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
+                <li class="nav-item {% if '/factura/' in request.path %}active{% endif %}">
+                    <a href="{% url 'facturas' %}" class="nav-link py-3 rounded-2" aria-current="page" data-bs-toggle="tooltip"
                         data-bs-placement="right" aria-label="Facturas" data-bs-original-title="Facturas">
                         <i class="bi bi-newspaper"></i>
                         <span class="nav-item-span">Facturas</span>
@@ -127,6 +127,11 @@
         </nav>
     </aside>
     <section class="container-seccion-main">
+        <div class="user-info">
+            {% if user.is_authenticated %}
+                <h5>Usuario: {{ user.first_name }} {{ user.last_name }}</h5>
+            {% endif %}
+        </div>
         {% block seccion-main %}
         {% endblock %}
     </section>

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from servicio.views import *
 
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     path('presupuestarImprimir/<int:pk>/', presupuestarImprimir, name = 'presupuestarImprimir'),
     path('presupuestarModificarImprimir/<int:pk>/', presupuestarImprimir, name = 'presupuestarModificarImprimir'),
     path('pdfImprimir/<int:pk>/', pdfImprimir, name = 'pdfImprimir'),
+    path('detallePresupuesto/<int:pk>/', detallePresupuesto, name = 'detallePresupuesto'),
     #Modificar Presupuestos
     path('modificarPresupuesto/<int:pk>/', presupuestarCliente, name = 'modificarPresupuesto'),
     #Contratar Servicio
@@ -19,5 +20,7 @@ urlpatterns = [
     path('contratarServicio/<int:pk>/success', contratarServicioCorrecto, name= 'contratarServicioCorrecto'),
     path('asignarEmpleados/<int:pk>/', asignarEmpleados, name = 'asignarEmpleados'),
     path('error/', errorServicio.as_view(), name = 'errorServicio'),
+    #Facturas
+    path('factura/', include('factura.urls')),
 ]
  

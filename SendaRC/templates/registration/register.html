@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}} 
-    <link href="{% static 'css/login.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/register.css' %}" rel="stylesheet"/>
 {% endblock %} 
 {% block container %}
     <main class="container-main">
@@ -16,12 +16,8 @@
             <form method="post" action="">
                 {% csrf_token %}
                 {{ form | crispy }}
-                <div class="container-recuperar-contraseña">
-                    <h5 class="card-title">Complete todos los campos</h5>
-                </div>
                 <div class="container-login-buttons">
-                    <a href={% url 'login' %} class="login-btn btn btn-primary">Iniciar sesion</a>
-                    <button class="login-btn btn btn-primary" type="submit">Registrarse</button>
+                    <button class="login-btn btn btn-primary" type="submit">Registrar</button>
                 </div>
             </form>
         </section>
