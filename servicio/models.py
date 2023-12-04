@@ -53,7 +53,16 @@ class CantServicioTipoServicio(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
     tipoServicio = models.ForeignKey(TipoServicio, on_delete=models.DO_NOTHING)
     cantidad = models.IntegerField()
+
+    def getPrecio(self):
+        return self.tipoServicio.precio * self.cantidad
     
+    def subTotalPrecio(self):
+        sumatoria = int
+        sumatoria = sumatoria + self.getPrecio 
+        return sumatoria
+    
+
 class Frecuencia(models.Model):
     DIA={
         (1, 'Lunes'),
@@ -113,5 +122,3 @@ class Asistencia(models.Model):
     hora_salida = models.TimeField()
     empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
     frecuencia = models.ForeignKey(Frecuencia, on_delete=models.DO_NOTHING)
-    
-

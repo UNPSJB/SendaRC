@@ -416,7 +416,10 @@ def pdfImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
     lista_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
-    return render(request, 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios})
+    for tipo in lista_tipos_servicios: 
+        tipo_Servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
+        subtotal = tipo.getPrecio()
+    return render(request   , 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios, 'subtotal' : subtotal})
 
 class contratarServicio(UpdateView):
     model = Servicio
