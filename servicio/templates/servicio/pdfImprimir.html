@@ -26,6 +26,7 @@
             <th scope="row">Cliente</th>
             <th scope="row">Cuil/Cuit</th>
             <th scope="row">Telefono</th>
+            <th scope="row">E-mail</th>
             </tr>
         </thead>
         <thead>
@@ -33,6 +34,7 @@
             <td scope="row">{{ servicio.cliente.nombre}} {{servicio.cliente.apellido}}</td>
             <td scope="row">{{ servicio.cliente.cuil}}</td>
             <td scope="row">{{ servicio.cliente.telefono}}</td>
+            <td scope="row">{{ servicio.cliente.email}}</td>
             </tr>
         </thead>
     </table>
@@ -74,10 +76,9 @@
                 <td scope="row">{{tipoServicio.cantidad}}</td>
                 <td scope="row">{{tipoServicio.tipoServicio.getUnidadMedida}}</td>
                 <td scope="row">{{tipoServicio.tipoServicio.getPrecioFormateado}}</td>
-                <td scope="row"></td>
+                <td scope="row">$ {{tipoServicio.getPrecio}}</td>
                 </tr>
             {% endfor %}
-            <tr scope="row">Total de Tipos de Servicios</tr>
         </thead>
     </table>
     <table>
@@ -96,7 +97,18 @@
         </thead>
     </table>
     <br>
-    <h4>Importe Total: {{ servicio.getImporteTotalFormateado }}</h4>
+    <h4>Subtotal Tipo Servicio $ {{ subtotal }}.</h4>
+    <h4>Importe Total <a id="periodo"></a> {{ servicio.getImporteTotalFormateado }}</h4>
+    <script>
+        var tipo = "{{ servicio.tipo }}"; 
+        var periodo;
+        if (tipo == "2") {
+          periodo = "Servicio Mensual :";
+        } else if (tipo == "1") {
+            periodo = "Servicio Completo :";
+        } 
+        document.getElementById("periodo").innerHTML = periodo;
+    </script>
     <br>
     <p>Saludamos a uds. muy atentamente</p>
     <p>SENDA SRL</p>
