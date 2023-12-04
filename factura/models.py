@@ -22,7 +22,7 @@ class Factura(models.Model):
     importe = models.IntegerField()
     fechaEmision = models.DateField(auto_now=True, auto_now_add=False)
     fecha_vencimiento = models.DateField(auto_now=False, auto_now_add=False)
-    periodoServicio = models.IntegerField()
+    periodoServicio = models.IntegerField(null=True)
     cliente = models.ForeignKey(Cliente,on_delete=models.DO_NOTHING)
     servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)
     # Atributos para el pago
@@ -65,17 +65,5 @@ class Detalle_Empleados(models.Model):
     cantidad_empleados = models.IntegerField()
     #Importe que crabamos por mano de obra por la todos los empleados que trabajan en el servicio, eventual=un dia, determinado=un mes
     importe_mano_obra = models.IntegerField()
-    
-    
-class FacturaSeña(models.Model):
-    FORMAPAGO = {
-        (1, 'Efectivo'),
-        (3, 'Transferencia'),
-    }
-    importe = models.IntegerField()
-    fechaEmision = models.DateField(auto_now=True, auto_now_add=False)
-    formaPago =  models.PositiveIntegerField(choices=FORMAPAGO)
-    fechaPago = models.DateField(auto_now=False, auto_now_add=False, null=True)
-    cliente = models.ForeignKey(Cliente,on_delete=models.DO_NOTHING)
-    servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)
+
     

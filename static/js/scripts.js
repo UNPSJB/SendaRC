@@ -14,6 +14,7 @@ function initializeDataTable() {
           "next": "Siguiente",
         }
       },
+      "order": [[0, "desc"]],
     });
   }
 }

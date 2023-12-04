@@ -186,7 +186,33 @@ class gestionServicios(ListView):
     model = Servicio
     template_name = 'servicio/gestionServicios.html'
     context_object_name = 'servicios'
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FiltrosServiciosForm(self.request.GET)
+        return context
+    def get_queryset(self):
+        queryset = Servicio.objects.all()
+        
+        # Filtrar por estado
+        estado_servicio = self.request.GET.get('estado', '')
+        tipo_servicio = self.request.GET.get('tipo', '')
+        
+        if tipo_servicio:
+            queryset = queryset.filter(tipo=tipo_servicio)
+        if estado_servicio:
+            queryset = queryset.filter(estado=estado_servicio)
+
+        # Filtrar por fecha de inicio
+        fecha_inicio = self.request.GET.get('fecha_inicio', '')
+        if fecha_inicio:
+            queryset = queryset.filter(fecha_inicio__gte=fecha_inicio)
+        
+        # Filtrar por fecha de finalización
+        fecha_finaliza = self.request.GET.get('fecha_finaliza', '')
+        if fecha_finaliza:
+            queryset = queryset.filter(fecha_finaliza__lte=fecha_finaliza)
+
+        return queryset
     def get(self, request, *args, **kwargs):
         self.request.session['presupuesto'] = {}
         self.request.session['servicios'] = []
@@ -422,6 +448,14 @@ def presupuestarImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     return render(request, 'servicio/presupuestarImprimir.html', {'servicio': servicio})
 
+def detallePresupuesto(request, pk):
+    servicio = Servicio.objects.get(pk=pk)
+    tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+    frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    empleados_frecuencias = Empleado.objects.filter(frecuencias__in=frecuencias)
+    print(empleados_frecuencias)
+    return render(request, 'servicio/detallePresupuesto.html', {'servicio': servicio, 'tipoServicios': tipos_servicios, 'frecuencias': frecuencias,'empleados':empleados_frecuencias})
+
 def pdfImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
@@ -460,8 +494,9 @@ def asignarEmpleados(request, pk):
             for form in formset:
                 frecuencia = form.cleaned_data['frecuencia']
                 empleados = form.cleaned_data['empleados']
-                if empleados.count() > servicio.cant_empleados:
+                if empleados.count() != servicio.cant_empleados:
                     form.add_error('empleados', 'Solo se pueden asignar ' + str(servicio.cant_empleados) + ' empleados')
+                    form.fields['empleados'].choices = [(empleado.pk, empleado.nombre +' '+empleado.apellido) for empleado in form.fields['empleados'].queryset]
                     return render(request, 'servicio/asignarEmpleados.html', {'formset': formset, 'servicio': servicio})
                 frecuencia = Frecuencia.objects.get(pk=frecuencia.pk)
                 for empleado in empleados:
@@ -469,9 +504,11 @@ def asignarEmpleados(request, pk):
                     servicio.empleado.add(empleado.pk)
                 frecuencia.save()
                 servicio.save()
-            servicio.estado = 3 #Proceso finalizado, el servicio esta contratado
-            servicio.save()
-            return redirect('contratarServicioCorrecto', pk)
+            if servicio.cliente.tipo == 2:
+                servicio.estado = 3
+                servicio.save()
+                return redirect('contratarServicioCorrecto', pk)
+            return redirect('crearFacturaSeña', pk)
     else:
         servicio = Servicio.objects.get(pk=pk)
         frecuencias = Frecuencia.objects.filter(servicio=servicio)

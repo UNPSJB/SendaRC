@@ -1,6 +1,7 @@
 from django.db import models
 import locale
 
+locale.setlocale(locale.LC_ALL, '') 
 class InsumoManager(models.Manager):
     def __init__(self, habilitado = None, *qargs, **kwargs):
         super().__init__(*qargs, **kwargs)
@@ -196,7 +197,7 @@ class Empleado(models.Model):
             return "Deshabilitado"
         
     def getSueldoFormateado(self):
-        return "${:,.2f}".format(self.sueldo)
+        return locale.currency(self.sueldo, grouping=True)
     
     
 class Sancion(models.Model):

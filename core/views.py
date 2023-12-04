@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from factura.models import Factura
+import re
 
 class altaCliente(CreateView):
     model = Cliente
@@ -19,8 +20,16 @@ class altaCliente(CreateView):
     success_url = reverse_lazy('gestionClientes')
 
     def form_valid(self, form):
-        messages.success(self.request, 'El cliente se ha dado de alta correctamente.')
-        return super().form_valid(form)
+        cliente = form.save(commit=False)
+        if not re.match("^[A-Za-z]+$", form.cleaned_data['nombre']):
+            form.add_error('nombre', 'Solo se permite letras para el nombre.')
+            return self.form_invalid(form)
+        elif not re.match("^[A-Za-z]+$", form.cleaned_data['apellido']):
+            form.add_error('apellido', 'Solo se permite letras para el apellido.')
+            return self.form_invalid(form)
+        else:
+            cliente.save()
+            return super().form_valid(form)
 
 @method_decorator(login_required, name='dispatch')
 class gestionClientes(ListView):
@@ -75,6 +84,12 @@ class updateCliente(UpdateView):
         
         if form.cleaned_data['activo'] is False and len(servicios_asociados)>0 or len(facturas_asociadas)>0:
             form.add_error('activo', 'Error, el cliente tiene Servicios presupuestados, en curso,suspendidos o Facturas impagas.')
+            return self.form_invalid(form)
+        elif not re.match("^[A-Za-z]+$", form.cleaned_data['nombre']):
+            form.add_error('nombre', 'Solo se permite letras para el nombre.')
+            return self.form_invalid(form)
+        elif not re.match("^[A-Za-z]+$", form.cleaned_data['apellido']):
+            form.add_error('apellido', 'Solo se permite letras para el apellido.')
             return self.form_invalid(form)
         else:
             cliente.save()

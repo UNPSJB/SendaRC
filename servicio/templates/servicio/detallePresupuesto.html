@@ -1,0 +1,132 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Presupuestar Servicio</h1>
+<div class="container-info">
+    <h2 class="operacion">Resumen de presupuesto / {{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</h2>
+</div>
+{% endblock %}
+{% block formulario %}
+<div class="container">
+    <div class="container contenedor-resumen">
+        <div class="contenedor-info-form">
+            <div class="contenedor-header">
+                <div class="seccion-info-cliente">
+                    <div class="contenedor-textos">
+                        <h4>Servicio: #{{servicio.pk}}</h4>
+                        <p class="operacion">Cliente: {{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</p>
+                        <p class="operacion">Cuit/Cuil: {{servicio.cliente.cuil}}</p>
+                        <p class="operacion">Direccion de inmueble: {{servicio.direccion}}</p>
+                        <p class="operacion">Metros cuadrados de inmueble: {{servicio.metros2}}m² </p>
+                        <p class="operacion">Fecha Emision: {{servicio.fecha_emision}}</p>
+                        <p class="operacion">Plazo Vigencia: {{servicio.plazo_vigencia}}</p>
+                        <p class="operacion">Tipo de servicio: {{servicio.getTipo}} </p>
+                    </div>
+                    <div class="contenedor-observaciones">
+                        <h4>Observaciones:</h4>
+                        <div class="contenedor-texto-observaciones">
+                            <p class="operacion">{{ servicio.observaciones }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="contenedor-listados">
+                <div class="seccion-lista-servicios">
+                    <h4>Servicios:</h4>
+                    <div class="tabla-wrapper">
+                        <table class="tabla-presupuestar" id="tabla-servicios">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tipo de Servicio</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in tipoServicios %}
+                                <tr class="fila-tabla">
+                                    <td scope="row">{{ t.tipoServicio.descripcion }}</td>
+                                    <td scope="row">{{ t.tipoServicio.getPrecioFormateado }}</td>
+                                    <td scope="row">{{ t.cantidad }}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr class="fila-tabla">
+                                    <td colspan="2" style="text-align: end; font-weight: bold;">Total:</td>
+                                    <td>{{ servicio.getImporteTotalServicios | default:"N/A" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="seccion-frecuencias">
+                    <h4>Frecuencias:</h4>
+                    <div class="tabla-wrapper">
+                        <table class="tabla-presupuestar" id="tabla-frecuencias">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Dia</th>
+                                    <th scope="col">Turno</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for frecu in frecuencias %}
+                                <tr class="fila-tabla">
+                                    <td scope="row">{{ frecu.getDia }}</td>
+                                    <td scope="row">{{ frecu.getTurno }}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr class="fila-tabla">
+                                    <td colspan="1" style="text-align: end; font-weight: bold;">Total:</td>
+                                    <td>{{ servicio.getSubtotalServiciosFrecuencias }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if servicio.getEstado != "Presupuestado" %}
+                <div class="seccion-empleados">
+                    <h4>Empleados:</h4>
+                    <div class="tabla-wrapper">
+                        <table class="tabla-presupuestar" id="tabla-empleados">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Sueldo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for empleado in empleados %}
+                                <tr class="fila-tabla">
+                                    <td scope="row">{{ empleado.nombre }}</td>
+                                    <td scope="row">{{ empleado.apellido }}</td>
+                                    <td scope="row">{{ empleado.getSueldoFormateado }}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr class="fila-tabla">
+                                    <td colspan="2" style="text-align: end; font-weight: bold;">Total:</td>
+                                    <td>{{ servicio.getSubtotalEmpleados}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <h4>Importe:</h4>
+            <p>Total importe de los tipos de servicios en cada frecuencia: {{ servicio.getSubtotalServiciosFrecuencias }}</p>
+            <p>Total importe de mano de obra de los empleados en el servicio: {{ servicio.getSubtotalEmpleados }}</p>
+            <p>Ganancia: 15%</p>
+            {% if servicio.tipo == 1 %}
+                <p class="operacion">Importe Servicio Completo: {{ servicio.getImporteTotalFormateado }}</p>
+            {% else %}
+                <p class="operacion">Importe Servicio Mensual: {{servicio.getImporteTotalFormateado}}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
