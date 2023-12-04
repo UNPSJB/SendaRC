@@ -460,9 +460,11 @@ def asignarEmpleados(request, pk):
                     servicio.empleado.add(empleado.pk)
                 frecuencia.save()
                 servicio.save()
-            servicio.estado = 3 #Proceso finalizado, el servicio esta contratado
-            servicio.save()
-            return redirect('contratarServicioCorrecto', pk)
+            if servicio.cliente.tipo == 2:
+                servicio.estado = 3
+                servicio.save()
+                return redirect('contratarServicioCorrecto', pk)
+            return redirect('crearFacturaSeña', pk)
     else:
         servicio = Servicio.objects.get(pk=pk)
         frecuencias = Frecuencia.objects.filter(servicio=servicio)

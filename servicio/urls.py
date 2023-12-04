@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from servicio.views import *
 
 urlpatterns = [
@@ -19,5 +19,7 @@ urlpatterns = [
     path('contratarServicio/<int:pk>/success', contratarServicioCorrecto, name= 'contratarServicioCorrecto'),
     path('asignarEmpleados/<int:pk>/', asignarEmpleados, name = 'asignarEmpleados'),
     path('error/', errorServicio.as_view(), name = 'errorServicio'),
+    #Facturas
+    path('factura/', include('factura.urls')),
 ]
  

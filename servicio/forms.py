@@ -100,17 +100,20 @@ class FormContratarServicio(forms.ModelForm):
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_finaliza = cleaned_data.get('fecha_finaliza')
         if self.instance.tipo == 1:
+            #Si servicio es eventual, fecha finaliza sera igual al inicio
             fecha_finaliza = fecha_inicio
         else:
             if fecha_inicio and fecha_finaliza:
                 if fecha_inicio >= fecha_finaliza:
                     self.add_error('fecha_finaliza', 'La fecha de finalización no puede ser anterior o igual a la de fecha de inicio')
         if fecha_inicio < self.instance.fecha_emision:
+            #Verificacion entre fecha de inicio y fecha de emision
             self.add_error('fecha_inicio', 'La fecha de inicio no puede ser anterior a la fecha de emisión')
         return cleaned_data
     def save(self, commit=True):
         servicio = super().save(commit=False)
         if self.instance.tipo == 1:
+            #Si servicio es eventual, se guarda la fecha de inicio en finalizacion
             servicio.fecha_finaliza = servicio.fecha_inicio
         if commit:
             servicio.save()
