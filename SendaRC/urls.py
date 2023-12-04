@@ -19,6 +19,7 @@ urlpatterns = [
     #path('login/', LoginView.as_view(), name='login'),
     #path('', LoginView.as_view(), name='login'),
     path('login/', login, name='login'),
+    path('/accounts/login/', login, name='login'),
     path('', login, name='login'),
     path('logout/', logout, name='logout'),
     path('register/', register, name='register'),

@@ -13,6 +13,7 @@ from django.utils.decorators import method_decorator
 from factura.models import Factura
 import re
 
+@method_decorator(login_required, name='dispatch')
 class altaCliente(CreateView):
     model = Cliente
     form_class = ClienteForm
@@ -63,7 +64,7 @@ class gestionClientes(ListView):
 
         return queryset
     
-
+@method_decorator(login_required, name='dispatch')
 class updateCliente(UpdateView):
     model = Cliente
     form_class = ClienteForm
@@ -98,6 +99,7 @@ def detalleCliente(request, pk):
     cliente = Cliente.objects.get(id=pk)
     return render(request, 'cliente/detalleCliente.html', {'cliente': cliente})
 
+@method_decorator(login_required, name='dispatch')
 class altaInsumo(CreateView):
     model = Insumo
     form_class = FormInsumo
@@ -116,6 +118,7 @@ class altaInsumo(CreateView):
             insumo.save()
             return super().form_valid(form)
 
+@method_decorator(login_required, name='dispatch')
 class gestionInsumos(ListView):
     model = Insumo
     template_name = 'insumo/gestionInsumos.html'
@@ -134,6 +137,7 @@ class gestionInsumos(ListView):
             context['insumos'] = Insumo.objects.all()
         return context
 
+@method_decorator(login_required, name='dispatch')
 class updateInsumo(UpdateView):
     model = Insumo
     form_class = FormInsumo
@@ -161,17 +165,20 @@ class updateInsumo(UpdateView):
             insumo.save()
             return super().form_valid(form)
 
+@method_decorator(login_required, name='dispatch')
 class altaTipoServicio(CreateView):
     model = TipoServicio
     form_class = TipoServicioForm
     template_name = 'tipoServicio/altaTipoServicio.html'
     success_url = reverse_lazy('gestionTipoServicio')
 
+@method_decorator(login_required, name='dispatch')
 class gestionTipoServicio(ListView):
     model = TipoServicio
     template_name = 'tipoServicio/gestionTipoServicio.html'
     context_object_name = 'tipoServicios'
 
+@login_required
 def tipoServicioDetalles(request, pk):
     tipo = TipoServicio.objects.get(id=pk)
     insumos = CantInsumoServicio.objects.filter(tipoServicio=pk)
@@ -184,10 +191,12 @@ def tipoServicioDetalles(request, pk):
         listMaquinarias.append(Maquinaria.objects.get(id=maquinaria.maquinaria_id))
     return render(request, 'tipoServicio/detalleTipoServicio.html', {'tipo': tipo, 'insumos': listInsumos, 'maquinarias': listMaquinarias})
 
+@login_required
 def maquinariaDetalles(request, pk):
     maquinaria = Maquinaria.objects.get(id=pk)
     return render(request, 'maquinaria/detalleMaquinaria.html', {'maquinaria': maquinaria})
 
+@method_decorator(login_required, name='dispatch')
 class updateTipoServicio(UpdateView):
     model = TipoServicio
     form_class = TipoServicioForm
@@ -209,12 +218,14 @@ class updateTipoServicio(UpdateView):
             insumo.save()
             return super().form_valid(form)
 
+@method_decorator(login_required, name='dispatch')
 class altaMaquinaria(CreateView):
     model = Maquinaria
     form_class = FormAltaMaquinaria
     template_name = 'maquinaria/altaMaquinaria.html'
     success_url = reverse_lazy('gestionMaquinaria')
 
+@method_decorator(login_required, name='dispatch')
 class gestionMaquinaria(ListView):
     model = Maquinaria
     template_name = 'maquinaria/gestionMaquinaria.html'
@@ -233,6 +244,7 @@ class gestionMaquinaria(ListView):
             context['maquinarias'] = Maquinaria.objects.all()
         return context
 
+@method_decorator(login_required, name='dispatch')
 class updateMaquinaria(UpdateView):
     model = Maquinaria
     form_class = FormAltaMaquinaria
@@ -255,12 +267,14 @@ class updateMaquinaria(UpdateView):
             maquinaria.save()
             return super().form_valid(form)
 
+@method_decorator(login_required, name='dispatch')
 class altaLocalidad(CreateView):
     model = Localidad
     form_class = FormLocalidad
     template_name = 'localidad/altaLocalidad.html'
     success_url = reverse_lazy('gestionLocalidad')
-    
+
+@method_decorator(login_required, name='dispatch')    
 class updateLocalidad(UpdateView):
     model = Localidad
     form_class = FormLocalidad
@@ -270,12 +284,14 @@ class updateLocalidad(UpdateView):
         kwargs = super(updateLocalidad, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
-    
+
+@method_decorator(login_required, name='dispatch')    
 class gestionLocalidad(ListView):
     model = Localidad
     template_name = 'localidad/gestionLocalidad.html'
     context_object_name = 'localidades'
-    
+
+@method_decorator(login_required, name='dispatch')    
 class altaEmpleado(CreateView):
     model = Empleado
     form_class = FormEmpleado
@@ -297,7 +313,7 @@ class altaEmpleado(CreateView):
             empleado.save()
             return super().form_valid(form)
     
-    
+@method_decorator(login_required, name='dispatch')
 class updateEmpleado(UpdateView):
     model = Empleado
     form_class = FormEmpleado
@@ -337,6 +353,7 @@ class updateEmpleado(UpdateView):
             empleado.save()
             return super().form_valid(form)
 
+@method_decorator(login_required, name='dispatch')
 class gestionEmpleado(ListView):
     model = Empleado
     template_name = 'empleado/gestionEmpleados.html'  
@@ -354,16 +371,20 @@ class gestionEmpleado(ListView):
         elif estado == 'Todos':
             context['empleados'] = Empleado.objects.all()
         return context
+
+@login_required
 def detalleEmpleado(request, pk):
     empleado = Empleado.objects.get(id=pk)
     return render(request, 'empleado/detalleEmpleado.html', {'empleado': empleado})
 
+@method_decorator(login_required, name='dispatch')
 class altaSancion(CreateView):
     model = Sancion
     form_class = FormSancion
     template_name = 'sancion/altaSancion.html'
     success_url = reverse_lazy('gestionSanciones')
-    
+
+@method_decorator(login_required, name='dispatch')
 class updateSancion(UpdateView):
     model = Sancion
     form_class = FormSancion
@@ -373,7 +394,8 @@ class updateSancion(UpdateView):
         kwargs = super(updateSancion, self).get_form_kwargs()
         kwargs['is_modificar'] = True  
         return kwargs
-    
+
+@method_decorator(login_required, name='dispatch')
 class gestionSancion(ListView):
     model = Sancion
     template_name = 'sancion/gestionSanciones.html'

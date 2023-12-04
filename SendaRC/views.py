@@ -6,8 +6,11 @@ from django.contrib.auth.views import LoginView
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from .forms import *
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here
+@login_required
 def home(request):
     request.session['presupuesto'] = {}
     request.session['servicios'] = []
@@ -30,6 +33,7 @@ def login(request):
 
     return render(request, 'registration/login.html', data)
         
+@login_required
 def logout(request):
     django_logout(request)
     return redirect('login')

@@ -6,13 +6,17 @@ from .forms import *
 from django.views.generic import ListView
 from django.utils import timezone
 from datetime import timedelta, datetime
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
 #10 Dias antes de finde mes y vence 10 Dias despues que comienza el mes siguiente
+@login_required
 def facturas(request):
     return render(request, 'factura/facturas.html')
 
+@login_required
 def serviciosFacturar(request):
     fecha_actual = timezone.now().date()
     ultimo_dia_mes = timezone.now().date() + timedelta(days=(32 - timezone.now().date().day))
@@ -49,7 +53,8 @@ def serviciosFacturar(request):
             form = SelectClienteForm()    
                     
     return render(request, 'factura/serviciosFacturar.html', {'form': form, 'servicios': servicios})
-    
+
+@login_required
 def generarFactura(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     fecha_actual = timezone.now().date()
@@ -104,10 +109,12 @@ def generarFactura(request, pk):
     
     return redirect('facturaRegistrada', factura.pk)
 
+@login_required
 def facturaRegistrada(request, pk):
     factura = Factura.objects.get(pk=pk)
     return render(request, 'factura/facturaRegistrada.html', {'factura': factura})
-    
+
+@method_decorator(login_required, name='dispatch')   
 class serviciosCobrar(ListView):
     model = Servicio
     template_name = 'factura/serviciosCobrar.html'
@@ -130,24 +137,26 @@ class serviciosCobrar(ListView):
             queryset = None
         return queryset
 
+@login_required
 def detalleServicioFactura(request, pk):
     servicio = Servicio.objects.get(id=pk)
     return render(request, 'factura/detalleServicioFactura.html', {'servicio': servicio})
 
-#Cada targetita corresponde a una factura, y tenga un boton que sea pagar, este cuando se hace click
-# se ve el modal y ahi se selecciona la forma de pago, y un boton confirmar
+@login_required
 def facturasServicio(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     facturas = Factura.objects.filter(servicio=servicio)
     
     return render(request, 'factura/facturasServicio.html', {'facturas': facturas})
 
+@login_required
 def detalleFactura(request, pk):
     factura = Factura.objects.get(pk=pk)
     detalles_servicios = Detalle_Servicios.objects.filter(factura=factura)
     detalle_empleado = Detalle_Empleados.objects.get(factura=factura)
     return render(request, 'factura/detalleFactura.html', {'factura': factura, 'detalles_servicios': detalles_servicios, 'detalle_empleado': detalle_empleado})
 
+@login_required
 def formaPago(request, pk):
     factura = Factura.objects.get(pk=pk)
     form = FormaPagoForm()
@@ -171,6 +180,7 @@ def formaPago(request, pk):
         
     return render(request, 'factura/formaPago.html', {'form': form, 'factura': factura, 'servicio': factura.servicio})
 
+@login_required
 def crearFacturaSeña(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     cliente = servicio.cliente
@@ -182,10 +192,12 @@ def crearFacturaSeña(request, pk):
     factura_seña.save()
     return redirect(to='detallesFacturaSeña', pk=factura_seña.pk)
 
+@login_required
 def detallesFacturaSeña(request, pk):
     factura_seña = Factura.objects.get(pk=pk)
     return render(request, 'factura/detallesFacturaSeña.html', {'factura_seña':factura_seña})
 
+@login_required
 def realizarCobroFacturaSeña(request, pk):
     if request.method == 'POST':
         factura_seña = Factura.objects.get(pk=pk)
@@ -211,6 +223,7 @@ def realizarCobroFacturaSeña(request, pk):
     }
     return render(request, 'factura/CobroFacturaSeña.html', context)
 
+@login_required
 def facturaPagada(request, pk):
     factura_seña = Factura.objects.get(pk=pk)
     context = {

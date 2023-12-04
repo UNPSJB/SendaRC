@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('servicio', '0018_alter_frecuencia_dia_alter_frecuencia_empleados_and_more'),
+
     ]
 
     operations = [

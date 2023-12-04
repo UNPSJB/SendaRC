@@ -10,6 +10,9 @@ from .forms import *
 from .models import *
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 
 def calcularPorcentaje(total_importe, porcentaje):
     cambio = (porcentaje / 100) * total_importe
@@ -111,6 +114,7 @@ def recargarSession(servicio, presupuestoSession):
     #Debemos devolver el presupuestoSession ? creo que no
     #return presupuestoSession
 
+
 class PresupuestoSession(dict):
     FIELDS = ["direccion", "metros2", "observaciones", "tipo"]
     # Create init for PresupuestoSession
@@ -180,8 +184,7 @@ class PresupuestoSession(dict):
             self["cliente"] = Cliente.objects.get(pk=self["cliente_pk"])
         return self["cliente"]
     
-    
-# Create your views here.
+@method_decorator(login_required, name='dispatch')
 class gestionServicios(ListView):
     model = Servicio
     template_name = 'servicio/gestionServicios.html'
@@ -222,14 +225,17 @@ class gestionServicios(ListView):
         # Llama al método super() para ejecutar el comportamiento normal de la vista
         return super().get(request, *args, **kwargs)
 
+@login_required
 def detalleServicio(request, pk):
     servicio = Servicio.objects.get(id=pk)
     return render(request, 'servicio/detalleServicio.html', {'servicio': servicio})
 
+@login_required
 def detalleServicio(request, pk):
     servicio = Servicio.objects.get(id=pk)
     return render(request, 'servicio/detalleServicio.html', {'servicio': servicio})
 
+@login_required
 def presupuestarCliente(request, pk=None):
     presupuesto_session = PresupuestoSession.getOrCreate(request.session)
     cliente = None    
@@ -263,6 +269,7 @@ def presupuestarCliente(request, pk=None):
         
     return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'cliente': cliente})
 
+@login_required
 def presupuestarIdCliente(request, pk):
     presupuesto_session = PresupuestoSession.getOrCreate(request.session)    
     cliente = Cliente.habilitados.get(pk=pk)
@@ -286,6 +293,7 @@ def presupuestarIdCliente(request, pk):
         print("-------Estoy en GET Presupuestar ID Cliente", presupuesto_session.session["presupuesto"])
     return render(request, 'servicio/presupuestarCliente.html', {'form': form, 'cliente': cliente})
 
+@login_required
 def presupuestarServicios(request):
     p = PresupuestoSession.getOrCreate(request.session)
     if (request.method == 'POST'):
@@ -320,6 +328,7 @@ def presupuestarServicios(request):
         print(p.session["presupuesto"])
     return render(request, 'servicio/presupuestarServicios.html', {'formset': formset, 'presupuesto': p})
 
+@login_required
 def presupuestarFrecuencias(request):
     p = PresupuestoSession.getOrCreate(request.session)
     if (request.method == 'POST'):
@@ -374,6 +383,7 @@ def presupuestarFrecuencias(request):
         print(p.session["frecuencias"])
     return render(request, 'servicio/presupuestarFrecuencia.html', {'formset': formset, 'presupuesto': p})
 
+@login_required
 def presupuestarConfirmar(request):
     datos_cliente = PresupuestoSession.getOrCreate(request.session)
     tipos_servicios = PresupuestoSession.getTipoServicio(request.session)
@@ -444,10 +454,12 @@ def presupuestarConfirmar(request):
     print(servicio_pk)
     return render(request, 'servicio/presupuestarConfirmar.html', {'form': form, 'presupuesto': datos_cliente, 'tipo_Servicios': tipos_servicios, 'frecuencias': frecuencias, 'importe_sugerido': importe_sugerido, 'importe_total': importe_total, 'total_servicios': total_servicios, 'mano_obra': mano_obra, 'fecha_actual': timezone.now().date()})
 
+@login_required
 def presupuestarImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     return render(request, 'servicio/presupuestarImprimir.html', {'servicio': servicio})
 
+@login_required
 def detallePresupuesto(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
@@ -456,12 +468,14 @@ def detallePresupuesto(request, pk):
     print(empleados_frecuencias)
     return render(request, 'servicio/detallePresupuesto.html', {'servicio': servicio, 'tipoServicios': tipos_servicios, 'frecuencias': frecuencias,'empleados':empleados_frecuencias})
 
+@login_required
 def pdfImprimir(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
     lista_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
     return render(request, 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios})
 
+@method_decorator(login_required, name='dispatch')
 class contratarServicio(UpdateView):
     model = Servicio
     form_class = FormContratarServicio
@@ -477,13 +491,16 @@ class contratarServicio(UpdateView):
             return redirect('errorServicio')
         return super().get(request, *args, **kwargs)
 
+@login_required
 def contratarServicioCorrecto(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     return render(request, 'servicio/contratarOpciones.html', {'servicio': servicio})
 
+@method_decorator(login_required, name='dispatch')
 class errorServicio(TemplateView):
     template_name = 'servicio/errorServicio.html'
 
+@login_required
 def asignarEmpleados(request, pk):
     if request.method == 'POST':
         formset = formset_factory(FormAsignarEmpleados)
