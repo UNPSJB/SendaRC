@@ -58,7 +58,22 @@
     font-size: 13px;
 }
 
-.contenedor-importe{
+.contenedor-importe-ver-detalle{
     display: flex;
-    justify-content: end;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ancor-ver-servicio-detalle{
+    color: #000;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 5px;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+.ancor-ver-servicio-detalle:hover{
+    background-color: #c9c9c9;
 }

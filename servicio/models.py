@@ -4,6 +4,7 @@ from django.utils import timezone
 import locale
 
 # Create your models here.
+locale.setlocale(locale.LC_ALL, '') 
 
 class Servicio(models.Model):
     ESTADO = {
@@ -45,8 +46,29 @@ class Servicio(models.Model):
     def getTipo(self):
         return dict(self.TIPO)[self.tipo] 
     
+    def getImporteTotalServicios(self):
+        servicios_asociados = CantServicioTipoServicio.objects.filter(servicio=self)
+        total_importe = sum(servicio.tipoServicio.precio * servicio.cantidad for servicio in servicios_asociados)
+
+        return locale.currency(total_importe, grouping=True)
+
+    def getSubtotalServiciosFrecuencias(self):
+        servicios_asociados = CantServicioTipoServicio.objects.filter(servicio=self)
+        total_servicios = sum(servicio.tipoServicio.precio * servicio.cantidad for servicio in servicios_asociados)
+        subtotal_servicios =  total_servicios * len(Frecuencia.objects.filter(servicio=self))
+        return locale.currency(subtotal_servicios, grouping=True)
+    
+    def getSubtotalEmpleados(self):
+        mano_obra = Empleado.getSueldoBasico() / 24
+        if self.tipo == 'Determinado':
+            cant_empleados = len(Frecuencia.objects.filter(servicio=self)) * self.cant_empleados *  4      #El 4 es por el mes tiene cuatro semanas
+        else:
+            cant_empleados = len(Frecuencia.objects.filter(servicio=self)) * self.cant_empleados 
+        
+        subtotal = mano_obra * cant_empleados
+        return locale.currency(subtotal, grouping=True)
+
     def getImporteTotalFormateado(self):
-        locale.setlocale(locale.LC_ALL, '')  
         return locale.currency(self.importe_total, grouping=True)
 
 class CantServicioTipoServicio(models.Model):

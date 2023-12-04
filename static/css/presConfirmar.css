@@ -21,11 +21,14 @@
 
 .contenedor-listados{
     display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
     gap: 60px;
     flex-grow: 1;
 }
 .seccion-frecuencias table, 
-.seccion-lista-servicios table {
+.seccion-lista-servicios table,
+.seccion-empleados table {
     font-size: 13px;
 }
 .tabla-presupuestar{
@@ -33,7 +36,7 @@
     justify-content: center;
 }
 
-.seccion-frecuencias,.seccion-lista-servicios{
+.seccion-frecuencias,.seccion-lista-servicios,.seccion-empleados{
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -140,9 +143,9 @@
 
 
 .tabla-wrapper{
-    height: 400px;
+    height: 250px;
     overflow: auto;
-    width: 500px;
+    width: 490px;
     border-radius: 6px;
     border: 1px solid #505050;
 }
@@ -159,3 +162,16 @@
     padding-inline: 15px;
     padding-top: 5px;
 }
+
+/*.ancor-volver-basic{
+    top: 20px;
+    right: 30px;
+    position: absolute;
+    color: #fff;
+    font-weight: 600; 
+    text-decoration: none;
+    transition: all .2s ease-in-out;
+}
+.ancor-volver-basic:hover{
+    color: #1DA1F2;
+}*/

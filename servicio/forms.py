@@ -2,13 +2,43 @@ from typing import Any
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Field, HTML, Submit
-from crispy_bootstrap5.bootstrap5 import FloatingField
+from crispy_bootstrap5.bootstrap5 import FloatingField 
 from django.forms import ValidationError, formset_factory, modelformset_factory, ModelMultipleChoiceField, CheckboxSelectMultiple
 from datetime import datetime
 from core.models import *
 from .models import *
 
+class FiltrosServiciosForm(forms.Form):
+    ESTADOS = [('', 'Todos'), *Servicio.ESTADO]
+    TIPO = [('', '---'), *Servicio.TIPO]
 
+    estado = forms.ChoiceField(choices=ESTADOS, required=False)
+    tipo = forms.ChoiceField(choices=TIPO, required=False)
+    """"
+    fecha_inicio = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    fecha_finaliza = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.helper.layout = Layout(
+            Div(
+                Field('estado', css_class='form-select form-select-sm form-select-filter'),
+                Field('tipo', css_class='form-select form-select-sm form-select-filter mb-0'),
+                #Field('fecha_inicio', css_class='form-control form-control-sm form-select-filter'),
+                #Field('fecha_finaliza', css_class='form-control form-control-sm form-select-filter'),
+                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
+                css_class='contenedor-select-btn'
+            )
+        )
 class FormPresupuestoCliente(forms.ModelForm):
     class Meta:
         model = Servicio
