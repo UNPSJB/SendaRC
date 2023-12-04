@@ -7,7 +7,7 @@
 {% block title %}
     <h1 class="titulo"Factura Seña de Servicio</h1>
     <div class="container-info">
-        <p>Factura Pagada</p>
+        <h2 class="operacion">Factura Pagada</h2>
     </div>
 {% endblock %}
 {% block formulario %}
@@ -17,8 +17,8 @@
         <p>Fecha de Emision: {{factura_seña.fechaEmision}}
         <p>Cliente: {{factura_seña.cliente.apellido}} {{factura_seña.cliente.nombre}}
         <p>Cuil: {{factura_seña.cliente.cuil}}
-        <p>Importe total del servicio: {{factura_seña.servicio.importe_total}}
-        <h1>Importe Seña pagada: {{factura_seña.importe}}</h1>
+        <p>Importe total del servicio: ${{factura_seña.servicio.importe_total}}
+        <h1>Importe Seña pagada: ${{factura_seña.importe}}</h1>
         <p>Forma de Pago: {{factura_seña.tipo}}</p>
         <p>Fecha de Pago: {{factura_seña.fechaPago}}</p>
     </div>
