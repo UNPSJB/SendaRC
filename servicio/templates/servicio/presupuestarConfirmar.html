@@ -19,11 +19,15 @@
                     <h4>Datos personales Presupuesto:</h4>
                     <p class="operacion">Cliente: {{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</p>
                     <p class="operacion">Cuit/Cuil: {{presupuesto.cliente.cuil}}</p>
-                    <p class="operacion">Direccion: {{presupuesto.direccion}}</p>
-                    <p class="operacion">Metros cuadrados: {{presupuesto.metros2}} </p>
-                    <p class="operacion">Fecha Emision: {{presupuesto.fecha_emision}}</p>
-                    <p class="operacion">Plazo Vigencia: {{presupuesto.plazo_vigencia}}</p>
-                    <p class="operacion">Tipo de Presupuesto: {{presupuesto.tipo}} </p>
+                    <p class="operacion">Direccion del Inmueble: {{presupuesto.direccion}}</p>
+                    <p class="operacion">Metros cuadrados del Inmueble: {{presupuesto.metros2}} </p>
+                    <p class="operacion">Fecha Emision: {{fecha_actual}}</p>
+                    <p class="operacion">Plazo Vigencia: Son 10 dias desde la fecha de emision </p>
+                    {% if presupuesto.tipo == 1 %}
+                        <p class="operacion">Tipo de Presupuesto: Eventual </p>
+                    {% else %}
+                        <p class="operacion">Tipo de Presupuesto: Determinado </p>
+                    {% endif %}
                 </div>
                 <div class="contenedor-observaciones">
                     <h4>Observaciones:</h4>
@@ -84,13 +88,13 @@
                     {% csrf_token %}
                     {{ form.cantidad_empleados | as_crispy_field }}
                     <input type="hidden" name="{{ form.importe_sugerido.name }}" value="{{ importe_sugerido }}">
-                    <p class="operacion" id="importe-sugerido">Importe de Tipos de Servicios por Frecuencia: {{ total_servicios }}</p>
-                    <p class="operacion" id="importe-sugerido">Importe mano de obra de empleados en el servicio: {{ mano_obra }}</p>
-                    <p class="operacion" id="importe-sugerido">Importe ganancias: 1.15</p>
-                    <p class="operacion" id="importe-sugerido">Importe sugerido: {{ importe_sugerido }}</p>
+                    <p class="operacion" id="importe-sugerido">Importe de Tipos de Servicios por Frecuencia: $ {{ total_servicios }}</p>
+                    <p class="operacion" id="importe-sugerido">Importe mano de obra de empleados en el servicio: $ {{ mano_obra }}</p>
+                    <p class="operacion" id="importe-sugerido">Importe ganancias: %15</p>
+                    <p class="operacion" id="importe-sugerido">Importe sugerido: % {{ importe_sugerido }}</p>
                     {{ form.porcentaje | as_crispy_field }}
                     <input type="hidden" name="{{ form.importe_total.name }}" value="{{ importe_total }}">
-                    <p class="operacion" id="importe-total">Importe total: {{ importe_total }}</p>
+                    <p class="operacion" id="importe-total">Importe total: $ {{ importe_total }}</p>
                     <div class="container contenedor-btn-calcular">
                         <button type="submit" class="calcular btn-calcular">Calcular</button>
                     </div>

@@ -1,0 +1,38 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Facturas</h1>
+    <div class="container-info">
+        <h2 class="operacion">Pagar una Factura</h2>
+    </div>
+    <h4>Nro Factura: {{ factura.pk }}</h4>
+{% endblock %}
+{% block formulario %}
+    <div class="contenedor-info-form">
+        <form method='POST' class="container container-form" id="mi-form">
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+        <div class="container-acciones">
+            <a href="{% url 'facturasServicio' servicio.pk %}" class="btn-volver">Volver</a>
+            <button type="submit" class="confirmar-pago">Confirmar</button>
+        </div>    
+    </div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    $(function () {
+        $('.confirmar-pago').click(function () {
+            //$("#mi-form").attr('method', 'POST').submit()
+            $("#mi-form").submit()
+
+            console.log($(this))
+            console.log($("#mi-form"))
+        })
+    })
+</script>
+{% endblock %}

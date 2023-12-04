@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
@@ -87,6 +88,18 @@ class altaInsumo(CreateView):
     form_class = FormInsumo
     template_name = 'insumo/altaInsumo.html'
     success_url = reverse_lazy('gestionInsumos')
+    
+    def form_valid(self, form):
+        insumo = form.save(commit=False)
+        if form.cleaned_data['contenido_neto'] <= 0:
+            form.add_error('contenido_neto', 'El contenido neto ingresado es incorrecto.')
+            return self.form_invalid(form)
+        elif form.cleaned_data['cantidad'] <= 0:
+            form.add_error('cantidad', 'La cantidad ingresada es incorrecta.')
+            return self.form_invalid(form)
+        else:
+            insumo.save()
+            return super().form_valid(form)
 
 class gestionInsumos(ListView):
     model = Insumo
@@ -122,6 +135,12 @@ class updateInsumo(UpdateView):
         if form.cleaned_data['activo'] == False and CantInsumoServicio.objects.filter(insumo=insumo).exists():
             # Logica de si quiere desactivar
             form.add_error('activo', 'No puedes desactivar insumo, porque esta activo en un Tipo de Servicio.')
+            return self.form_invalid(form)
+        elif form.cleaned_data['contenido_neto'] <= 0:
+            form.add_error('contenido_neto', 'El contenido neto ingresado es incorrecto.')
+            return self.form_invalid(form)
+        elif form.cleaned_data['cantidad'] <= 0:
+            form.add_error('cantidad', 'La cantidad ingresada es incorrecta.')
             return self.form_invalid(form)
         else:
             insumo.save()
@@ -248,6 +267,22 @@ class altaEmpleado(CreateView):
     template_name = 'empleado/altaEmpleado.html'
     success_url = reverse_lazy('gestionEmpleado')
     
+    def form_valid(self, form):
+        empleado = form.save(commit=False)
+        if form.cleaned_data['sueldo'] <= 0:
+            form.add_error('sueldo', 'El sueldo ingresado es incorrecto.')
+            return self.form_invalid(form)
+        elif not re.match("^[A-Za-z]+$", form.cleaned_data['nombre']):
+            form.add_error('nombre', 'Solo se permite letras para el nombre.')
+            return self.form_invalid(form)
+        elif not re.match("^[A-Za-z]+$", form.cleaned_data['apellido']):
+            form.add_error('apellido', 'Solo se permite letras para el apellido.')
+            return self.form_invalid(form)
+        else:
+            empleado.save()
+            return super().form_valid(form)
+    
+    
 class updateEmpleado(UpdateView):
     model = Empleado
     form_class = FormEmpleado
@@ -273,7 +308,16 @@ class updateEmpleado(UpdateView):
         if form.cleaned_data['activo'] == False and activo == True:
             # Logica de si quiere desactivar
             form.add_error('activo', 'No puedes dar de baja al empleado, porque esta activo en un servicio.')
-            return self.form_invalid(form)                
+            return self.form_invalid(form)
+        elif form.cleaned_data['sueldo'] <= 0:
+            form.add_error('sueldo', 'El sueldo ingresado es incorrecto.')
+            return self.form_invalid(form)
+        elif not re.match("^[A-Za-z]+$", form.cleaned_data['nombre']):
+            form.add_error('nombre', 'Solo se permite letras para el nombre.')
+            return self.form_invalid(form)
+        elif not re.match("^[A-Za-z]+$", form.cleaned_data['apellido']):
+            form.add_error('apellido', 'Solo se permite letras para el apellido.')
+            return self.form_invalid(form)
         else:
             empleado.save()
             return super().form_valid(form)

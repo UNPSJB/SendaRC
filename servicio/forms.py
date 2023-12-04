@@ -70,6 +70,15 @@ class FormBaseFrecuencia(forms.Form):
         label='Turno'
     )
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        sorted_dias = sorted(Frecuencia.DIA, key=lambda x: x[0])
+        sorted_turnos = sorted(Frecuencia.TURNO, key=lambda x: x[0])
+        
+        self.fields['dia'].choices = sorted_dias
+        self.fields['turno'].choices = sorted_turnos
+    
+    
 class FormConfirmar(forms.Form):
     porcentaje = forms.IntegerField(label='Porcentaje declarado (opcional)', required=False)
     cantidad_empleados = forms.IntegerField(label='Cantidad de Empleados por Turno')

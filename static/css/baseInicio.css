@@ -138,3 +138,8 @@
 .bi-list{
     color: #fff !important;
 }
+
+.user-info, h5{
+    text-align: right;
+    color: #fff;
+}
