@@ -26,7 +26,7 @@ class RegisterForm(forms.Form):
     #first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-login'}))
     #last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-login'}))
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-login'}))
-    password1 = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-login'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-login'}))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-login'}))
 
     def __init__(self, *args, **kwargs):

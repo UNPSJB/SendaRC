@@ -470,12 +470,13 @@ def detallePresupuesto(request, pk):
 
 @login_required
 def pdfImprimir(request, pk):
+    subtotal = 0
     servicio = Servicio.objects.get(pk=pk)
     lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
     lista_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
     for tipo in lista_tipos_servicios: 
         tipo_Servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
-        subtotal = tipo.getPrecio()
+        subtotal = subtotal + tipo_Servicio.getPrecio(tipo.cantidad)
     return render(request   , 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios, 'subtotal' : subtotal})
 
 @method_decorator(login_required, name='dispatch')

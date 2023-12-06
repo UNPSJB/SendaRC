@@ -24,10 +24,15 @@ def login(request):
     if request.method == 'POST':
         user_creation_form = LoginForm(data=request.POST)
         if user_creation_form.is_valid():
-
-            user = authenticate(username=user_creation_form.cleaned_data['username'], password=user_creation_form.cleaned_data['password'])
-            django_login(request, user)
-            return redirect('home')
+            username = user_creation_form.cleaned_data['username']
+            password = user_creation_form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                #user = authenticate(username=user_creation_form.cleaned_data['username'], password=user_creation_form.cleaned_data['password'])
+                django_login(request, user)
+                return redirect('home')
+            else:
+                print("Login Invalido")            
         else:
             data['form'] = user_creation_form
 
@@ -40,16 +45,18 @@ def logout(request):
 
 def register(request):
     # Form por defecto de Django para poder crear un registro 
-    form = RegisterForm()
-
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            usuario_new = User.objects.create(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+                # Logeamos el usuario 
+            usuario_new.save()
             # Autenticamos el usuario
+            print("-----------MOSTRAMOS SI ENTRA A POST", form.cleaned_data)
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             if user is not None:
-                # Logeamos el usuario 
+                print("-----------MOSTRAMOS SI AUTENTICA", form.cleaned_data)
+                
                 username = form.cleaned_data['username']
                 messages.success(request, f'Usuario {username} creado')
                 django_login(request, user)
@@ -59,6 +66,8 @@ def register(request):
             return redirect('home')
         else:
             print(form.errors)
+
+    form = RegisterForm()
     return render(request, 'registration/register.html', {'form': form})
 
 """

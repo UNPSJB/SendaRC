@@ -152,8 +152,12 @@ def facturasServicio(request, pk):
 @login_required
 def detalleFactura(request, pk):
     factura = Factura.objects.get(pk=pk)
-    detalles_servicios = Detalle_Servicios.objects.filter(factura=factura)
-    detalle_empleado = Detalle_Empleados.objects.get(factura=factura)
+    detalles_servicios = []
+    detalle_empleado = []
+    if factura.tipo != 1:
+        detalles_servicios = Detalle_Servicios.objects.filter(factura=factura)
+        detalle_empleado = Detalle_Empleados.objects.get(factura=factura)
+
     return render(request, 'factura/detalleFactura.html', {'factura': factura, 'detalles_servicios': detalles_servicios, 'detalle_empleado': detalle_empleado})
 
 @login_required

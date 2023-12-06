@@ -8,44 +8,4 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-
-    ]
-
-    operations = [
-        migrations.CreateModel(
-            name='Factura',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tipo', models.PositiveIntegerField(choices=[(1, 'Seña'), (2, 'Unica'), (3, 'Mensual')])),
-                ('importe', models.IntegerField()),
-                ('fechaEmision', models.DateField(auto_now=True)),
-                ('fecha_vencimiento', models.DateField()),
-                ('periodoServicio', models.IntegerField(null=True)),
-                ('formaPago', models.PositiveIntegerField(choices=[(2, 'Cheque'), (1, 'Efectivo'), (3, 'Transferencia')], null=True)),
-                ('fechaPago', models.DateField(null=True)),
-                ('cliente', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='core.cliente')),
-                ('servicio', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='servicio.servicio')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Detalle_Servicios',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tipo_servicio', models.CharField(max_length=50)),
-                ('tipo_servicio_Unit', models.CharField(max_length=50)),
-                ('precio_tipo_servicio', models.IntegerField()),
-                ('cantidad', models.IntegerField()),
-                ('factura', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='factura.factura')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Detalle_Empleados',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cantidad_empleados', models.IntegerField()),
-                ('importe_mano_obra', models.IntegerField()),
-                ('factura', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='factura.factura')),
-            ],
-        ),
-    ]
+    

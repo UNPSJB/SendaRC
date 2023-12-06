@@ -11,21 +11,15 @@
 </div>
 {% endblock %}
 {% block formulario %}
-    <div class="container">
-        <div class="container-formSets">
-            <div class="container-info">
-                {% if presupuesto.tipo == 1 %}
-                    <p class="operacion" style="color: white;">Tipo de Servicio: Eventual </p>
-                {% else %}
-                    <p class="operacion" style="color: white;">Tipo de Servicio: Determinado </p>
-                {% endif %}
-            </div>
-            <form method="POST" class="mi-formset">
-                {% csrf_token %}
-                {{ formset.management_form }}
-                <div id="form-frecuencias" class="form-group form-set mb-3">
 <div class="container">
     <div class="container-formSets">
+        <div class="container-info">
+            {% if presupuesto.tipo == 1 %}
+            <p class="operacion" style="color: white;">Tipo de Servicio: Eventual </p>
+            {% else %}
+            <p class="operacion" style="color: white;">Tipo de Servicio: Determinado </p>
+            {% endif %}
+        </div>
         <form method="POST" class="mi-formset">
             {% csrf_token %}
             {{ formset.management_form }}

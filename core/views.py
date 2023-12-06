@@ -80,7 +80,7 @@ class updateCliente(UpdateView):
         cliente = form.save(commit=False)
         # Verificar si el cliente está asociado a servicios presupuestados, suspendidos, contratados o en curso
         servicios_asociados = Servicio.objects.filter(cliente=cliente, estado__in=[1, 3, 4, 5])
-        facturas_asociadas = Factura.objects.filter(cliente=cliente,fechaPago=None)
+        facturas_asociadas = Factura.objects.filter(cliente=cliente,fechaPago= None)
 
         
         if form.cleaned_data['activo'] is False and len(servicios_asociados)>0 or len(facturas_asociadas)>0:

@@ -1,11 +1,9 @@
 from django.db import models
-from django.db import *
 from core.models import *
 from servicio.models import *
 
 # Create your models here.  
 
-# class Detalle_Factura(models.Model):
     
 class Factura(models.Model):
     FORMAPAGO = {
@@ -21,7 +19,7 @@ class Factura(models.Model):
     tipo = models.PositiveIntegerField(choices=TIPOFACTURA)
     importe = models.IntegerField()
     fechaEmision = models.DateField(auto_now=True, auto_now_add=False)
-    fecha_vencimiento = models.DateField(auto_now=False, auto_now_add=False)
+    fecha_vencimiento = models.DateField(auto_now=False, auto_now_add=False, null=True)
     periodoServicio = models.IntegerField(null=True)
     cliente = models.ForeignKey(Cliente,on_delete=models.DO_NOTHING)
     servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)

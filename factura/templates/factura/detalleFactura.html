@@ -5,9 +5,9 @@
 <link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
-<h1 class="titulo">Presupuestar Servicio</h1>
+<h1 class="titulo">Detalle de Factura</h1>
 <div class="container-info">
-    <h2 class="operacion">Resumen de presupuesto / {{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</h2>
+    <h2 class="operacion"></h2>
 </div>
 {% endblock %}
 {% block formulario %}
@@ -73,37 +73,41 @@
         </div>
         <div class="contenedor-listados">
             <div class="seccion-lista-servicios">
-                <h4>Tipos de Servicios:</h4>
-                <div class="tabla-wrapper">
-                    <table class="tabla-presupuestar" id="tabla-servicios">
-                        <thead>
-                            <tr>
-                                <th scope="col">Tipo de Servicio</th>
-                                <th scope="col">Unidad de Medida</th>
-                                <th scope="col">Precio por Unidad de Medida</th>
-                                <th scope="col">Cantidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for detalle_servicio in detalles_servicios %}
-                            <tr class="fila-tabla">
-                                <td scope="row">{{ detalle_servicio.tipo_servicio }}</td>
-                                <td scope="row">{{ detalle_servicio.tipo_servicio_Unit }}</td>
-                                <td scope="row">{{ detalle_servicio.precio_tipo_servicio }}</td>
-                                <td scope="row">{{ detalle_servicio.cantidad }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {% if factura.tipo == 2 or factura.servicio.tipo == 3 %}
+                    <h4>Tipos de Servicios:</h4>
+                    <div class="tabla-wrapper">
+                        <table class="tabla-presupuestar" id="tabla-servicios">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tipo de Servicio</th>
+                                    <th scope="col">Unidad de Medida</th>
+                                    <th scope="col">Precio por Unidad de Medida</th>
+                                    <th scope="col">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detalle_servicio in detalles_servicios %}
+                                    <tr class="fila-tabla">
+                                        <td scope="row">{{ detalle_servicio.tipo_servicio }}</td>
+                                        <td scope="row">{{ detalle_servicio.tipo_servicio_Unit }}</td>
+                                        <td scope="row">{{ detalle_servicio.precio_tipo_servicio }}</td>
+                                        <td scope="row">{{ detalle_servicio.cantidad }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
             </div>
         <div class="contenedor-header">
             <div class="seccion-info-cliente">
                 <div class="contenedor-textos">
-                    <h4>Datos de Empleados en Servicio:</h4>
-                    <p class="operacion">Cantidad de empleados: {{detalle_empleado.cantidad_empleados}}</p>
-                    <p class="operacion">Importe mano de obra: {{detalle_empleado.importe_mano_obra}}</p>
-                    <p class="operacion">*Esto es total si el servicio es eventual y mensual si el servicio es determinado</p>
+                    {% if factura.tipo == 2 or factura.servicio.tipo == 3 %}
+                        <h4>Datos de Empleados en Servicio:</h4>
+                        <p class="operacion">Cantidad de empleados: {{detalle_empleado.cantidad_empleados}}</p>
+                        <p class="operacion">Importe mano de obra: {{detalle_empleado.importe_mano_obra}}</p>
+                        <p class="operacion">*Esto es total si el servicio es eventual y mensual si el servicio es determinado</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
