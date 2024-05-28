@@ -12,3 +12,10 @@ pip install -r requirements.txt<br>
 # Ejecutar el proyecto 🏃
 aca falta agregar que haga las migraciones y eso<br>
 python manage.py runserver<br>
+
+# Stack 🛠️ 
+
+# Desarrollado por:
+Fernando Benitez<br>
+Gaston Llampa<br>
+Agustin Bowen<br> 
