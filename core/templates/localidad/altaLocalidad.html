@@ -1,0 +1,14 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Localidad <span class="operacion">> Alta Localidad</span></h1>
+{% endblock %}
+{% block formulario %}
+<div class="container container-form">
+    {% crispy form %}
+</div>
+{% endblock %}

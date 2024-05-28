@@ -1,0 +1,77 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title%}
+    <h1>Facturas</h1>
+    <h2>Gestión de Servicios a Facturar</h2>
+{% endblock %}
+{% block listado%}
+<div class="container contenedor-tabla-form">
+    <div class="container contenedor-filtrados">
+        <form method="GET" action="{% url 'serviciosFacturar' %}">
+            {% crispy form %}
+        </form>
+    </div>
+    <div class="container contenedor-tabla">
+        <table class="table table-striped table-dark" id="tabla-servicios-facturar">
+            <thead>
+                <tr>
+                    <th scope="col">N.Servicio</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Metros cuadrados</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if servicios %}
+                    {% for servicio in servicios %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ servicio.pk }}</td>
+                            <td scope="row">{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
+                            <td scope="row">{{ servicio.metros2 }}m²</td>
+                            <td scope="row">{{ servicio.getTipo }}</td>
+                            <td scope="row">{{ servicio.getEstado }}</td>
+                            <td scope="row">{{ servicio.getImporteTotalFormateado }}</td>
+                            <td scope="row">
+                                <button href="{% url 'detalleServicioFactura' servicio.pk %}" class="opcion" type="button" 
+                                    data-url="/factura/serviciosCobrar/{{servicio.pk}}"
+                                    data-bs-toggle="offcanvas" 
+                                    data-bs-target="#offcanvasExample" 
+                                    aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                                <a href="{% url 'generarFactura' servicio.pk %}" class="opcion">Facturar</a>
+                            </td>
+        
+                            </td>
+                        </tr>
+                    {% endfor %}    
+                {% else %}
+                    <h5>No hay servicios para Facturar</h5>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    $(document).ready(function() {
+        const $tabla = $('#tabla-servicios-facturar').DataTable();
+
+        // Modificar el mensaje de tabla vacía
+        $tabla.language.emptyTable = "No hay servicios para Facturar"
+    });
+</script>
+{% endblock %}

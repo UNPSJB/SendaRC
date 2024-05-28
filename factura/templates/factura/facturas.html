@@ -1,0 +1,33 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/facturas.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+<div class="containerTarjetasFacturas">
+    <a href="{% url 'serviciosFacturar' %}" class="containerTarjetaFactura">
+        <div class="card tarjetaFactura">
+            <div class="card-body bodyTarjetaFactura">
+                <h3>Generar Facturas</h3>
+                <p>¡Haz click para generar facturas de un servicio eventual o determinado!</p>
+            </div>
+        </div>
+    </a>
+    <a href="{% url 'serviciosCobrar' %}" class="containerTarjetaFactura">
+        <div class="card tarjetaFactura">
+            <div class="card-body bodyTarjetaFactura">
+                <h3>Cobrar Facturas</h3>
+                <p>¡Haz clic para proceder con la facturación de un servicio eventual o determinado!</p>
+            </div>
+        </div>
+    </a>
+    <a href="{% url 'serviciosFacturar' %}" class="containerTarjetaFactura">
+        <div class="card tarjetaFactura">
+            <div class="card-body bodyTarjetaFactura">
+                <h3>Ver Facturas</h3>
+                <p>¡Haz clic para poder ver las diferentes facturas de un servicio eventual o determinado!</p>
+            </div>
+        </div>
+    </a>
+</div>
+{% endblock %}

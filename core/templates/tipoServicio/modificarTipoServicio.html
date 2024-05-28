@@ -1,0 +1,21 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Tipo de Servicio <span class="operacion">> Modificar Tipo de Servicio</span></h1>
+{% endblock %}
+{% block formulario %}
+    <div class="container container-form">
+        {% crispy form %}
+    </div>    
+{% endblock %}
+{% block extrajs %}
+<script>
+    $("#id_insumos").select2()
+    $("#id_maquinarias").select2()
+</script>
+{% endblock %}
+

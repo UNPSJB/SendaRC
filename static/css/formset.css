@@ -1,0 +1,217 @@
+.container {
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.quitar-form {
+  margin-top: 1rem;
+  position: relative;
+  width: 135px;
+  height: 45px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: red;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+  background: #e62222;
+}
+
+.quitar-form,
+.quitar-form span {
+  transition: 200ms;
+}
+
+.quitar-form .text {
+  transform: translateX(35px);
+  color: white;
+  font-weight: bold;
+}
+
+.quitar-form .icon {
+  position: absolute;
+  border-left: 1px solid #c41b1b;
+  transform: translateX(105px);
+  height: 20px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quitar-form svg {
+  width: 12px;
+  fill: #eee;
+}
+
+.quitar-form:hover {
+  background: #ff3636;
+}
+
+.quitar-form:hover .text {
+  color: transparent;
+}
+
+.quitar-form:hover .icon {
+  width: 150px;
+  border-left: none;
+  transform: translateX(0);
+}
+
+.quitar-form:focus {
+  outline: none;
+}
+
+.quitar-form:active .icon svg {
+  transform: scale(0.8);
+}
+
+.mi-formset {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  margin-top: 5px;
+  padding-inline: 0;
+}
+#form-servicios,
+#form-frecuencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  overflow-y: auto;
+  width: 100%;
+}
+.form-servicio,
+.form-frecuencia {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 15px;
+  border-radius: 4px;
+  height: auto;
+  border: 1px solid #333333;
+}
+
+.accion {
+  height: 35px;
+  background-color: #1da1f2;
+  color: #fff;
+  border-radius: 6px !important;
+  padding-inline: 15px;
+  border: none !important;
+  font-size: 13px;
+  display: inline-block;
+  transition: all 0.1s ease-in-out;
+}
+.container-acciones {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 10px;
+}
+.container-acciones > a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.accion:hover {
+  background-color: #187cb9;
+}
+.texto {
+  color: #ffffff;
+  margin-top: 15px;
+  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 0;
+}
+.container-hora {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bi-clock {
+  color: #1da1f2;
+}
+.form-set-large {
+  display: flex;
+  padding: 10px;
+  width: auto;
+  height: 450px;
+  border-radius: 4px;
+  border: 1px solid #505050;
+}
+
+.form-empleado-frecuencia {
+  height: 300px;
+  width: 400px;
+  border: 1px solid #505050;
+  border-radius: 6px;
+  padding: 10px;
+}
+.form-empleado-frecuencia > div {
+  display: flex;
+  flex-direction: column;
+}
+.select2-selection {
+  height: 100px !important;
+}
+.form-set-empleados {
+  gap: 10px;
+}
+.titulo-formset {
+  color: #fff;
+  font-size: 20px;
+}
+.contenedor-header-form-set {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #333333;
+  margin-bottom: 6px;
+  align-items: center;
+  padding-inline: 0;
+}
+.contenedor-form-sets {
+  padding-inline: 50px;
+  padding-block: 10px;
+}
+.contenedor-inputs-form-set {
+  display: flex;
+  gap: 30px;
+}
+.contenedor-inputs-form-set select {
+  width: 350px;
+}
+
+strong {
+  font-weight: 500;
+  font-size: 11px;
+}
+
+@keyframes destello {
+  0% {
+    background-color: rgb(26, 26, 26);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.destello {
+  animation: destello 1s ease;
+}
+
+.texto-TipoPresupuesto {
+  color: #fff;
+  font-size: 15px;
+}

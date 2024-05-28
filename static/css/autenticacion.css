@@ -1,0 +1,130 @@
+.container-autenticacion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 700px;
+    background: #050505;
+}
+.container-AutenticacionHeader{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 950px;
+    background: #050505;
+}
+
+.heroAutenticacion{
+    display: flex;
+    flex-direction: column;
+    border-radius: 6px;
+    padding: 50px 100px;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+.heroAutenticacion > form{
+    width: 30rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.container-login-buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+#recuperar-contraseña{
+    color: #006eff;
+}
+
+.container-recuperar-contraseña{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 13px;
+}
+
+.container-makers{
+    display: flex;
+    justify-content: center;
+    color: #ffff;
+    margin-top: 3rem;
+}
+.input-login{
+    border-radius: 4px; 
+    color: #fff;
+    font-size: 13px;
+    background-color: #0c0c0c;
+    border: 1px solid #252527;
+    height: 50px;
+}
+.input-login::placeholder{
+    color: #929292;
+}
+.input-login:focus::placeholder{
+    color: #1887cc;
+}
+.input-login:focus{
+    outline: 4px solid #1887cc;
+    color: #fff;
+}
+.input-login:active{
+    background-color: #0c0c0c; 
+}
+.login-btn{
+    width: 100%;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color:#000;
+    border: none;
+}
+.login-btn:hover{
+    background-color: #cfcfcf;
+    color: #000;
+}
+.login-btn:active{
+    background-color: #cfcfcf !important; 
+}
+#recuperar-contraseña:hover{
+    filter: brightness(80%);
+}
+#makers-brand{
+    color: #fff;
+    transition: all .3s;
+}
+
+#makers-brand:hover{
+    color: #1887cc;
+}
+
+.header-autenticacion{
+    width: 100%;
+    position: relative;
+    height: 55px;
+    border-bottom: 1px solid #212125;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #05050573;
+    padding: 35px;
+}
+.header-autenticacion > h1{
+    font-size: 1.5rem;
+}
+.header-autenticacion > a{
+    background-color: #09090b86;
+    padding: 6px 20px;
+    font-size: 13px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid #3e3e46;
+}
+.header-autenticacion > a:hover{
+    background-color: #111114;
+}
+
+.logo{
+    width: auto;
+    height: 48px;
+}

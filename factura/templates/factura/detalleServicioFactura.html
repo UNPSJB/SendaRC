@@ -1,0 +1,31 @@
+{% load static %}
+{% block detalle %}
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
+<div class="container">
+    <div class="container-detalles">
+        <h1 class="titulo-detalle"><i class="bi bi-clipboard"></i> Servicio: #{{servicio.pk}}</h1>
+        <div class="divisor"></div>
+        <p class="detalles"><i class="bi bi-person"></i> Cliente: {{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</p>
+        <p class="detalles"><i class="bi bi-person"></i> Cuil/Cuit: {{servicio.cliente.cuil}}</p>
+        <p>Datos del Inmueble:</p>
+        <p class="detalles"><i class="bi bi-houses"></i> Dirección Inmueble: {{servicio.direccion}}</p>
+        <p class="detalles"><i class="bi bi-border-all"></i> Metros cuadrados de Inmueble: {{servicio.metros2}}m²</p>
+        <p class="detalles"><i class="bi bi-truck"></i> Tipo de servicio: {{servicio.getTipo}}</p>
+        <p class="detalles"><i class="bi bi-exclamation-circle"></i> Estado de servicio: {{servicio.getEstado}}</p>
+        <p class="detalles"><i class="bi bi-calendar-date"></i> Fecha de emisión: {{servicio.fecha_emision}}</p>
+        <p class="detalles"><i class="bi bi-calendar2-x"></i> Fecha de inicio: {{servicio.fecha_inicio}}</p>
+        <p class="detalles"><i class="bi bi-calendar-day"></i> Plazo de vigencia: {{servicio.plazo_vigencia}}</p>
+        <p class="detalles"><i class="bi bi-calendar2-x"></i> Fecha de finalización: {{servicio.fecha_finaliza}}</p>
+        <p class="detalles"><i class="bi bi-calendar-x"></i> Fecha de cancelación: {{servicio.fecha_cancelada}}</p>
+        <p class="detalles"><i class="bi bi-person-walking"></i> Cantidad de empleados: {{servicio.cant_empleados}}</p>
+        <div class="divisor"></div>
+        <div class="contenedor-importe">
+            {% if servicio.tipo == 1%}
+                <p class="detalles">Total importe servicio completo: {{servicio.getImporteTotalFormateado}}</p>
+            {% else %}
+                <p class="detalles">Total importe servicio mensual: {{servicio.getImporteTotalFormateado}}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

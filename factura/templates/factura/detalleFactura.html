@@ -1,0 +1,130 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Detalle de Factura</h1>
+<div class="container-info">
+    <h2 class="operacion"></h2>
+</div>
+{% endblock %}
+{% block formulario %}
+<div class="container contenedor-resumen">
+    <div class="contenedor-info-form">
+        <div class="contenedor-header">
+            <div class="seccion-info-cliente">
+                <div class="contenedor-textos">
+                    <h4>Datos de Factura:</h4>
+                    <p class="operacion">Numero de Factura: {{factura.pk}} {{factura.cliente.apellido}}</p>
+                    <p class="operacion">Tipo de Factura: {{factura.getTipo}}</p>
+                    <p class="operacion">Fecha de emision: {{factura.fechaEmision}}</p>
+                    <p class="operacion">Fecha de vencimiento: {{factura.fecha_vencimiento}}</p>
+                    <p class="operacion">Periodo de Servicio: {{factura.getPeriodoServicio}} </p>
+                    {% if factura.fechaPago %}
+                        <p class="operacion">Fecha de pago: {{factura.fechaPago}} </p>
+                        <p class="operacion">Forma de pago: {{factura.getFormaPago}} </p>
+                    {% else %}
+                        <p class="operacion">Fecha de pago: - </p>
+                        <p class="operacion">Forma de pago: - </p>
+                    {% endif %}
+                </div>
+                <div class="contenedor-observaciones">
+                    <h4>Importe:</h4>
+                    <div class="contenedor-texto-observaciones">
+                        {% if factura.servicio.tipo == 1 and factura.cliente.tipo == 1 and factura.tipo == 1 %}
+                            <p class="operacion">$ {{ factura.importe }}</p>
+                            <p class="operacion">*Importe seña del servicio</p>
+                        {% elif factura.servicio.tipo == 1 and factura.cliente.tipo == 1 and factura.tipo == 2 %}
+                            <p class="operacion">$ {{factura.importe}}</p>
+                            <p class="operacion">*50% faltante del importe del servicio</p>
+                        {% elif factura.servicio.tipo == 1 and factura.cliente.tipo == 2 %}
+                            <p class="operacion">$ {{factura.importe}}</p>
+                            <p class="operacion">*Total importe servicio completo</p>
+                        {% elif factura.servicio.tipo == 2 and factura.cliente.tipo == 1 and factura.tipo == 1 %}
+                            <p class="operacion">$ {{factura.importe}}</p>
+                            <p class="operacion">*Importe seña del servicio</p>
+                        {% elif factura.servicio.tipo == 2 and factura.cliente.tipo == 2%}
+                            <p class="operacion">$ {{factura.importe}}</p>
+                            <p class="operacion">*Total importe mensual</p>
+                        {% endif %}
+                        <p class="operacion">*Recordar que hay un 15% de ganancia para SendaRC</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contenedor-header">
+            <div class="seccion-info-cliente">
+                <div class="contenedor-textos">
+                    <h4>Datos del Cliente:</h4>
+                    <p class="operacion">Cliente: {{factura.cliente.nombre}} {{factura.cliente.apellido}}</p>
+                    <p class="operacion">Cuit/Cuil: {{factura.cliente.cuil}}</p>
+                    <h4>Datos del Servicio:</h4>
+                    <p class="operacion">Numero de Servicio: {{factura.servicio.pk}}</p>
+                    <p class="operacion">Tipo de Servicio: {{factura.servicio.getTipo}} </p>
+                    {% if factura.servicio.tipo == 2 %}
+                        <p class="operacion">Fecha de Servicio: {{factura.servicio.fecha_inicio}} a {{factura.servicio.fecha_finaliza}}</p>
+                    {% else %}
+                        <p class="operacion">Fecha de Servicio: {{factura.servicio.fecha_inicio}}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="contenedor-listados">
+            <div class="seccion-lista-servicios">
+                {% if factura.tipo == 2 or factura.servicio.tipo == 3 %}
+                    <h4>Tipos de Servicios:</h4>
+                    <div class="tabla-wrapper">
+                        <table class="tabla-presupuestar" id="tabla-servicios">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tipo de Servicio</th>
+                                    <th scope="col">Unidad de Medida</th>
+                                    <th scope="col">Precio por Unidad de Medida</th>
+                                    <th scope="col">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detalle_servicio in detalles_servicios %}
+                                    <tr class="fila-tabla">
+                                        <td scope="row">{{ detalle_servicio.tipo_servicio }}</td>
+                                        <td scope="row">{{ detalle_servicio.tipo_servicio_Unit }}</td>
+                                        <td scope="row">{{ detalle_servicio.precio_tipo_servicio }}</td>
+                                        <td scope="row">{{ detalle_servicio.cantidad }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        <div class="contenedor-header">
+            <div class="seccion-info-cliente">
+                <div class="contenedor-textos">
+                    {% if factura.tipo == 2 or factura.servicio.tipo == 3 %}
+                        <h4>Datos de Empleados en Servicio:</h4>
+                        <p class="operacion">Cantidad de empleados: {{detalle_empleado.cantidad_empleados}}</p>
+                        <p class="operacion">Importe mano de obra: {{detalle_empleado.importe_mano_obra}}</p>
+                        <p class="operacion">*Esto es total si el servicio es eventual y mensual si el servicio es determinado</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="container-acciones">
+            <a href="{% url 'facturasServicio' factura.servicio.pk %}" class="btn-volver">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    $(function () {
+        $('.confirmar-presupuesto').click(function () {
+            $(".mi-form").attr('method', 'POST').submit()
+            console.log($(this))
+        })
+    })
+</script>
+{% endblock %}

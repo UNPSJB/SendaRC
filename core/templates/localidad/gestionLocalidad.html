@@ -1,0 +1,50 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Localidad <span class="operacion">> Gestión Localidades</span></h1>
+<a href="{% url 'altaLocalidad' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Agregar Localidad</a>
+{% endblock %}
+{% block listado %}
+<div class="container contenedor-tabla">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="table-responsive">
+                <table class="datatableEntity table dataTables table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Código Postal</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for localidad in localidades %}
+                            <tr class="fila-tabla">
+                                <td scope="row">{{ localidad.cp }}</td>
+                                <td scope="row">{{ localidad.nombre }}</td>
+                                <td scope="row">
+                                    <a href="{% url 'modificarLocalidad' localidad.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></a>
+                                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Localidad:{{ localidad.nombre }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+        </button>
+    </div>
+    <div>
+
+    </div>
+</div>
+{% endblock %}

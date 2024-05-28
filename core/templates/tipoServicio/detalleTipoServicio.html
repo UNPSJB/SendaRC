@@ -1,0 +1,26 @@
+{% load static %}
+{% block detalle %}
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
+<div class="container wrapper-detalles">
+    <div class="container-detalles">
+        <h1 class="titulo-detalle"><i class="bi bi-truck"></i> Tipo de servicio: {{tipo.descripcion}}</h1>
+        <div class="divisor"></div>
+        <p class="detalles">Unidad de medida: {{tipo.getUnidadMedida}}</p>
+        <p class="detalles">Precio: {{tipo.getPrecioFormateado}}</p>
+        {% if tipo.activo %}
+            <p class="detalles">Activa: Sí</p>
+        {% else %}
+            <p class="detalles">Activa: No</p>
+        {% endif %}
+        <div class="divisor"></div>
+        <h1 class="titulo-detalle"><i class="bi bi-box2"></i> Insumos:</h1>
+        {% for insumo in insumos %}
+            <p class="detalles">&emsp;&emsp;- {{insumo.descripcion}} </p>
+        {% endfor %}
+        <h1 class="titulo-detalle"><i class="bi bi-hammer"></i> Maquinarias:</h1>
+        {% for maquinaria in maquinarias %}
+            <p class="detalles">&emsp;&emsp;- {{maquinaria.nombre}} </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

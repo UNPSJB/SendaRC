@@ -1,0 +1,55 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/facturasServicio.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title%}
+    <h1>Facturas</h1>
+    <h2>Gestión de Facturas del Servicio</h2>
+{% endblock %}
+{% block listado%}
+<div class="container contenedor-tabla-form">
+    <div class="container-card">
+        <div class="card-group">
+            {% for factura in facturas %}
+                <div class="card text-bg-dark mb-3" style="width: 16rem;">
+                    <div class="card-body" style="padding: 10px;">
+                        <h5 class="card-title">Factura Nro: {{ factura.pk }}</h5>
+                        <div class="info-factura">
+                            <p>Nro Servicio: {{ factura.servicio.pk }}</p>
+                            <hr>
+                            <p>Cliente: {{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</p>
+                            <p>Cuil/Cuit: {{ factura.cliente.cuil }}</p>
+                            <hr>
+                            <p>Fecha de emision: {{ factura.fechaEmision }}</p>
+                            <p>Periodo Servicio: {{ factura.getPeriodoServicio }}</p>
+                            <p>Importe: {{ factura.importe }}</p>
+                        </div>
+                        <div>
+                            {% if factura.fechaPago is None %}
+                                <a href="{% url 'formaPago' factura.pk %}" class="opcion">Pagar</a>
+                            {% endif %}
+                            <a href="{% url 'detalleFactura' factura.pk %}" class="opcion">Ver detalle</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}  
+        </div>  
+    </div>
+    <div>
+        <a class="btn-Volver" href="{% url 'serviciosCobrar' %}">Volver</a>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}{{block.super}}
+
+{% endblock %}

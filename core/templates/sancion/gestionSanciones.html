@@ -1,0 +1,53 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Sanción <span class="operacion">> Gestión Sanciones</span></h1>
+<a href="{% url 'altaSancion' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Generar Sanción</a>
+{% endblock %}
+{% block listado %}
+<div class="container contenedor-tabla">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="table-responsive">
+                <table class="datatableEntity table dataTables table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Num Sanción</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Legajo Empleado</th>
+                            <th scope="col">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sancion in sanciones %}
+                            <tr class="fila-tabla">
+                                <td scope="row">{{ sancion.pk }}</td>
+                                <td scope="row">{{ sancion.tipo }}</td>
+                                <td scope="row">{{ sancion.getEmpleado }}</td>
+                                <td scope="row">
+                                    <a href="{% url 'modificarSancion' sancion.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sancion:{{ sancion.nroSancion }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+        </button>
+    </div>
+    <div>
+
+    </div>
+</div>
+{% endblock %}

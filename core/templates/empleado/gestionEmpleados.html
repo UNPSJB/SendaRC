@@ -1,0 +1,74 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title%}
+<h1 class="titulo">Empleado <span class="operacion">> Gestión Empleados</span></h1>
+<a href="{% url 'altaEmpleado' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Agregar Empleado</a>
+{% endblock %}
+{% block listado%}
+<!--<div class="container contenedor-tabla-form">
+    <div class="container contenedor-filtrados">
+        <form method="GET" action="{% url 'gestionEmpleado' %}">
+            <label for="id_estado" class="form-label">Estado</label>
+            <div class="contenedor-select-btn">
+                <select name="estado" id="estado" class="form-select form-select-sm form-select-filter">
+                    {% for option in estados %}
+                        <option value="{{ option }}" {% if option == request.GET.estado %} selected {% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn-filtrar">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>-->
+<div class="container contenedor-tabla">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="table-responsive">
+                <table class="datatableEntity table dataTables table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Num. Legajo</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellido</th>
+                            <th scope="col">Telefono</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empleado in empleados %}
+                            <tr class="fila-tabla">
+                                <td scope="row">{{ empleado.pk }}</td>
+                                <td scope="row">{{ empleado.numDNI }}</td>
+                                <td scope="row">{{ empleado.nombre }}</td>
+                                <td scope="row">{{ empleado.apellido }}</td>
+                                <td scope="row">{{ empleado.telefono }}</td>
+                                <td scope="row">{{ empleado.getEstado }}</td>
+                                <td scope="row">
+                                    <button href="{% url 'detalleEmpleado' empleado.pk %}" class="opcion" type="button" 
+                                        data-url="/gestionEmpleado/{{empleado.pk}}"
+                                        data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasExample"
+                                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                                    <a href="{% url 'modificarEmpleado' empleado.pk%}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo"Factura Seña de Servicio</h1>
+    <div class="container-info">
+        <h2 class="operacion">Factura Pagada</h2>
+    </div>
+{% endblock %}
+{% block formulario %}
+    <div class="container" style="color: white;">
+        <h1>Factura Pagada Correctamente</h1>
+        <p>Numero de Factura: {{factura_seña.pk}}
+        <p>Fecha de Emision: {{factura_seña.fechaEmision}}
+        <p>Cliente: {{factura_seña.cliente.apellido}} {{factura_seña.cliente.nombre}}
+        <p>Cuil: {{factura_seña.cliente.cuil}}
+        <p>Importe total del servicio: ${{factura_seña.servicio.importe_total}}
+        <h1>Importe Seña pagada: ${{factura_seña.importe}}</h1>
+        <p>Forma de Pago: {{factura_seña.tipo}}</p>
+        <p>Fecha de Pago: {{factura_seña.fechaPago}}</p>
+    </div>
+    <div class="container container-form">
+        <a class="btn btn-primary" href="#">Imprimir Pago</a>
+        <a class="btn btn-primary" href="{% url 'contratarServicioCorrecto' pk=factura_seña.servicio.pk %}">Finalizar Contratacion</a>
+    </div>
+{% endblock %}

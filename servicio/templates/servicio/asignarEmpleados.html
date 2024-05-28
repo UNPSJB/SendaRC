@@ -1,0 +1,59 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/formset.css'%}" rel="stylesheet" />
+<link href="{%static 'css/servicio.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Contratar Servicio <span class="operacion"> > Asignacion de Empleados | Servicio #{{servicio.pk}} |
+        Cliente: {{servicio.cliente.nombre}}
+        {{servicio.cliente.apellido}} | Inicio: {{servicio.fecha_inicio}}  Fin: {{servicio.fecha_finaliza}}</span></h1>
+{% endblock %}
+{% block formulario %}
+<div style="max-width: 100%; overflow: hidden;">
+    <div class="row g-5" style="padding-inline: 200px; min-width: 1250px;">
+        <div class="card card-servicio text-light" style="padding-top: 20px; background-color: #15151a;">
+            <div class="card-header card-header-servicio"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: none;">
+                <h4>Asignación de empleados:</h4>
+                <button type="submit" class="btn-contratar btn-siguiente-vista">Siguiente <i
+                        class="bi bi-arrow-right"></i></button>
+            </div>
+            <hr class="my-0">
+            <div class="card-body card-body-servicio">
+                <form method="POST" class="formsetEmpleados">
+                    {% csrf_token %}
+                    {{ formset.management_form }}
+                    <div class="form-group mb-3" style="display: flex; flex-direction: column; gap: 20px;">
+                        {% for f in formset %}
+                        <div class="formSetEmpleados"
+                            style="background-color: #09090b; padding: 20px; border-radius: 6px;">
+                            <span class="numEmpleado" id="numEmpleado{{ index }}" style="color: #adfa1d;"></span>
+                            {{ f | crispy}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    $(function () {
+        const $total_forms = $('#id_form-TOTAL_FORMS')
+        for (let i = 0; i < $total_forms.val(); i++) {
+            $("#id_form-" + i + "-empleados").select2({
+                allowClear: true,
+                placeholder: "Seleccione empleado",
+            })
+        }
+        $('.btn-siguiente-vista').on("click", function () {
+            $(".formsetEmpleados").submit();
+        })
+    });
+
+</script>
+{% endblock %}

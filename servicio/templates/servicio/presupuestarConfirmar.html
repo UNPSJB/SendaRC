@@ -1,0 +1,230 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Presupuestar Servicio <span class="operacion">> Resumen Presupuesto: {{ presupuesto.cliente.nombre }}
+        {{ presupuesto.cliente.apellido }}</span></h1>
+<a href="{% url 'presupuestarFrecuencias' %}" class="btn-atras"><i class="bi bi-arrow-left"></i> Atras</a>
+{% endblock %}
+{% block formulario %}
+<div class="row g-4" style="display: flex; justify-content: center;">
+    <div class="col-md-6 col-lg-4 order-md-last">
+        <ul class="nav nav-tabs" style="font-size: 13px; gap: 20px; display: flex; margin-bottom: 5px;" id="opcionesCheckOut">
+            <li class="nav-item">
+                <a class="nav-link navItemResumen" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
+                    data-lista="servicios-lista">Tipos
+                    de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link navItemResumen" style="width: auto; display: flex; gap:5px;" href="#"
+                    data-lista="frecuencias-lista">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
+            </li>
+        </ul>
+        <div class="listasContainer" style="max-height: 316px; overflow: auto; margin-bottom: 10px; padding-right: 5px;">
+            <ul class="list-group mb-3" id="servicios-lista">
+                {% for s in tipo_Servicios %}
+                <li class="list-group-item d-flex justify-content-between lh-sm servicio-item">
+                    <div>
+                        <h6 class="my-0">{{s.tipo_servicio.descripcion}}</i></h6>
+                        <small class="text-body-secondary cantidad">Cantidad: {{ s.cantidad }}</small>
+                    </div>
+                    <span class="text-body-secondary precio-span">{{ s.tipo_servicio.getPrecioFormateado }}</span>
+                </li>
+                {% endfor %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Total Servicios (ARS):</span>
+                    <strong id="totalServicios" class="totalServiciosUnitario"></strong>
+                </li>
+            </ul>
+            <ul class="list-group mb-3" id="frecuencias-lista">
+                {% for frecu in frecuencias %}
+                <li class="list-group-item d-flex justify-content-between lh-sm frecuencia-item">
+                    <div>
+                        <h6 class="my-0">{{ frecu.dia }}</i></h6>
+                        <small class="text-body-secondary frecuenciaTurno">{{ frecu.turno }}</small>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <h4 class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-light totalServicicioFrecuencia" style="font-size: 15px;">Total Tipos de Servicios *
+                Frecuencias (ARS):</span>
+        </h4>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between">
+                <span>Total (ARS):</span>
+                <strong class="totalPresupuestoFrecuenciaServicios">{{ total_servicios }}</strong>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-7 col-lg-8">
+        <h4 class="mb-3" id="titulo-CheckOutPresupuesto">Datos Presupuesto:</h4>
+        <hr class="my-3">
+        <p class="texto datosCliente">Cliente: <span class="datoCliente">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</span></p>
+        <p class="texto">CUIT/CUIL: <span class="datoCliente">{{presupuesto.cliente.cuil}}</span></p>
+        <p class="texto">Dirección Inmueble: <span class="datoCliente">{{presupuesto.direccion}}</span></p>
+        <p class="texto">Metros cuadrados Inmueble: <span class="datoCliente">{{presupuesto.metros2}}m²</span></p>
+        <p class="texto">Fecha Emisión: <span class="datoCliente">{{fecha_actual}}</span></p>
+        <p class="texto">Plazo Vigencia: <span class="datoCliente">Son 10 días desde la fecha de emisión</span> </p>
+        <span class="badge rounded-pill text-bg-primary" style="font-weight: 500;">Mano de obra: {{ mano_obra }}</span>
+        <span class="badge rounded-pill" style="font-weight: 500; background-color: #adfa1d; color: #000;">Ganancia 15%:
+            {{ porcentaje_ganancia }}</span>
+        <div>
+            <span class="badge rounded-pill text-bg-warning"
+                style="font-size: 15px; margin-top: 10px; font-weight: 500;" id="importe_sugerido_badge">Importe
+                Sugerido: {{ importe_total_formateado }}</span>
+        </div>
+        <div class="importes" style="display: flex; align-items: center; gap: 10px;">
+            <span class="badge rounded-pill text-bg-success"
+                style="font-size: 15px; margin-bottom: 20px; margin-top: 10px; font-weight: 500;"
+                id="importe_total_badge">Importe Total: {{ importe_total_formateado }}</span>
+            <div id="porcentaje-badge-container"></div>
+        </div>
+        <form class="mi-form" novalidate="" method="GET">
+            <div class="row g-3">
+                {% csrf_token %}
+                <div class="col-sm-6">
+                    {{ form.cantidad_empleados | as_crispy_field }}
+                    <span class="badge rounded-pill bg-danger" id="error_message"></span>
+                    <input type="hidden" name="{{ form.importe_sugerido.name }}" value="{{ importe_sugerido }}">
+                </div>
+                <div class="col-sm-6">
+                    {{ form.porcentaje | as_crispy_field }}
+                    <input type="hidden" name="{{ form.importe_total.name }}" value="{{ importe_total }}">
+                </div>
+                <input type="hidden" name="{{ form.nuevo_importe_total.name }}" id="{{ form.nuevo_importe_total.id }}">
+                <hr class="my-3">
+                <button class="w-100 btn btn-lg confirmar-presupuesto" type="submit">Confirmar Presupuesto</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    $(document).ready(function () {
+        $('#id_cantidad_empleados').on('input', function () {
+            const cantidadEmpleados = $(this).val();
+            // Realizar la solicitud AJAX al backend
+            $.ajax({
+                url: '/servicio/presupuestarConfirmar/',
+                method: 'GET',
+                data: {
+                    cantidad_empleados: cantidadEmpleados,
+                },
+                success: function (data) {
+                    if (data.error) {
+                        // Mostrar el error en tu formulario
+                        $('#error_message').text(data.error).show();
+                        $('.confirmar-presupuesto').prop('disabled', true);
+                        // Puedes desactivar el botón de enviar u otras acciones aquí
+                    } else {
+                        // Si no hay error, actualizar la página normalmente
+                        console.log("estoy en la salida buena de la peticion de ajax")
+                        $('#error_message').hide();
+                        $('.confirmar-presupuesto').prop('disabled', false);
+                        let dataFormateada = parseFloat(data.importe_total).toLocaleString('es-AR', {
+                            style: 'currency',
+                            currency: 'ARS',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                        $('#importe_total_badge').text('Importe Total:' + dataFormateada);
+                        $('input[name="{{ form.importe_total.name }}"]').val(data.importe_total);
+                    }
+                },
+            });
+        });
+
+        // Función para calcular la suma total de precios
+        function calcularSumaTotal() {
+            let sumaTotal = 0;
+
+            $('#servicios-lista .precio-span').each(function () {
+                let precioString = $(this).text().replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+                let precio = parseFloat(precioString);
+                let cantidadString = $(this).siblings('div').find('.text-body-secondary').text().match(/\d+/);
+                let cantidad = parseInt(cantidadString);
+
+                if (!isNaN(precio) && !isNaN(cantidad)) {
+                    sumaTotal += precio * cantidad;
+                }
+            });
+
+            return sumaTotal;
+        }
+
+        // Función para actualizar la cantidad de elementos y badges
+        function actualizarCantidadElementos() {
+            let cantidadServicios = $('#servicios-lista .servicio-item').length;
+            $('#servicios-badge').text(cantidadServicios);
+
+            let cantidadFrecuencias = $('#frecuencias-lista .frecuencia-item').length;
+            $('#frecuencias-badge').text(cantidadFrecuencias);
+        }
+
+        function agregarBadgePorcentaje(porcentaje, porcentajeValorImporteTotal) {
+            // Crear el badge con el contenido adecuado
+            let badge = $('<span class="badge bg-primary rounded-pill" style="margin-bottom: 20px; margin-top: 10px;font-size: 15px;"></span>');
+            badge.text((porcentaje >= 0 ? '+ ' : '') + porcentajeValorImporteTotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+            // Insertar el badge en el contenedor
+            $('#porcentaje-badge-container').empty().append(badge);
+        }
+
+        // Función para actualizar el importe total con el porcentaje y la cantidad de empleados
+        function actualizarImporteTotal() {
+            $('input[name="{{ form.porcentaje.name }}"]').on('input', function () {
+                let porcentaje = parseFloat($(this).val()) || 0;
+                let porcentajeViejo = parseFloat("{{ importe_total }}")
+                let importeTotalOriginal = parseFloat("{{ importe_total }}");
+                let porcentajeValorImporteTotal = (importeTotalOriginal * (porcentaje / 100))
+                let nuevoImporteTotal = importeTotalOriginal + porcentajeValorImporteTotal;
+                let nuevoImporteTotalFormateado = nuevoImporteTotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                // Actualizar solo el valor del badge del importe total
+                $('#importe_total_badge').text('Importe Total: ' + nuevoImporteTotalFormateado);
+
+                // Actualizar el valor del campo oculto en el formulario
+                $('input[name="{{ form.importe_total.name }}"]').val(nuevoImporteTotal);
+
+                agregarBadgePorcentaje(porcentaje, porcentajeValorImporteTotal);
+            });
+        }
+
+        $('#opcionesCheckOut a').on('click', function (e) {
+            e.preventDefault();
+
+            // Obtener el id de la lista correspondiente
+            const listaId = $(this).data('lista');
+            console.log(listaId)
+
+            // Ocultar todas las listas y luego mostrar la lista seleccionada
+            $('#servicios-lista,#frecuencias-lista').hide();
+            $('#' + listaId).show();
+
+            // Agregar la clase 'active' al enlace clicado y eliminarla de los demás
+            $('#opcionesCheckOut a').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        // Simular clic en el enlace "Tipos de Servicios" al cargar la página
+        $('#opcionesCheckOut a[data-lista="servicios-lista"]').click();
+
+        // Inicializar la suma total y actualizar badges al cargar la página
+        let sumaTotalInicial = calcularSumaTotal();
+        $('#totalServicios').text('$' + sumaTotalInicial.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        actualizarCantidadElementos();
+        actualizarImporteTotal();
+    });
+
+    $(function () {
+        $('.confirmar-presupuesto').click(function () {
+            $(".mi-form").attr('method', 'POST').submit()
+        })
+    })
+</script>
+{% endblock %}

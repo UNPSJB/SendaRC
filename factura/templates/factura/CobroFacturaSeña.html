@@ -1,0 +1,31 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+    <h1 class="titulo">Cobro de Factura Seña de Servicio</h1>
+    <div class="container-info">
+        <h2 class="operacion">Seleccionar tipo de pago - Cliente Ocasional</h2>
+    </div>
+{% endblock %}
+{% block formulario %}
+    <div class="container" style="color: white;">
+        <h1>Detalles de la factura seña de servicio</h1>
+        <p>Numero de Factura: {{facturaSeña.pk}}
+        <p>Fecha de Emision: {{facturaSeña.fechaEmision}}
+        <p>Cliente: {{facturaSeña.cliente.apellido}} {{facturaSeña.cliente.nombre}}
+        <p>Cuil: {{facturaSeña.cliente.cuil}}
+        <p>Importe total del servicio: ${{facturaSeña.servicio.importe_total}}
+        <h1>Importe Seña: ${{facturaSeña.importe}}</h1>
+    </div>
+    <div class="container container-form">
+        <p> Importe a Pagar; ${{facturaSeña.importe}}</p>
+        <form method="POST">
+            {% csrf_token %}
+            {{form|crispy}}
+            <button class="btn btn-primary" type="submit">Realizar Cobro</button>
+        </form>
+    </div>
+{% endblock %}

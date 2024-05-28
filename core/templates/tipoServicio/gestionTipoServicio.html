@@ -1,0 +1,68 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% block extracss %}
+    {{block.super}}
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title%}
+<h1 class="titulo">Tipo de Servicio <span class="operacion">> Gestión Tipo de Servicio</span></h1>
+<a href="{% url 'altaTipoServicio' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Agregar Tipo de Servicio</a>
+{% endblock %}
+{% block listado%}
+<div class="container contenedor-tabla">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="table-responsive">
+                <table class="datatableEntity table dataTables table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Unidad de Medida</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Activo</th>
+                            <th scope="col">Opciones</th>
+                        </tr>
+                        </thead>
+                    <tbody>
+                        {% for tipo in tipoServicios %}
+                            <tr class="fila-tabla" data-id="{{ tipo.pk }}">
+                                <td scope="row">{{ tipo.pk }}</td>
+                                <td scope="row">{{ tipo.descripcion }}</td>
+                                <td scope="row">{{ tipo.getUnidadMedida }}</td>
+                                <td scope="row">{{ tipo.getPrecioFormateado }}</td>
+                                {% if tipo.activo %}
+                                    <td scope="row"><i class="bi bi-check-circle"></i></td>
+                                {% else %}
+                                    <td scope="row"><i class="bi bi-x-circle"></i></td>
+                                {% endif %}
+                                <td scope="row">
+                                    <button href="{% url 'detalleTipoServicio' tipo.pk %}" class="opcion" type="button" 
+                                        data-url="/gestionTipoServicio/{{tipo.pk}}"
+                                        data-bs-toggle="offcanvas" 
+                                        data-bs-target="#offcanvasExample" 
+                                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                                    <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}{{block.super}}
+   
+{% endblock %}

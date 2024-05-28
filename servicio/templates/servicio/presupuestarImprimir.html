@@ -1,0 +1,23 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/imprimirVista.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+<section class="wrapper-imprimir">
+    <div class="contenedor-imprimir">
+        {% if '/presupuestarImprimir/' in request.path %}
+            <h1>Presupuesto generado correctamente. <i class="bi bi-check2-circle check-imprimir"></i></h1>
+        {% else %}
+            <h1>Presupuesto modificado correctamente. <i class="bi bi-check2-circle check-imprimir"></i></h1>
+        {% endif %}
+        <div class="contenedor-acciones-imprimir">
+            <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}">Imprimir</a>
+            <a href="{% url 'presupuestarCliente' %}">Generar otro Presupuesto</a>
+            <a href="{% url 'gestionServicios' %}">Ir a Gestión de Servicios</a>
+            <a href="{% url 'home' %}">Ir a Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

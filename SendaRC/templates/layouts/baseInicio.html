@@ -1,0 +1,318 @@
+{% extends 'layouts/base.html' %} {% load static %} {% block extracss %}
+{{block.super}}
+<link href="{% static 'css/baseInicio.css' %}" rel="stylesheet" />
+{% endblock %} {% block container %}
+<main class="container-main">
+  <aside class="nav-container">
+    <nav class="navbar d-flex flex-column flex-shrink-0 bg-body-tertiary">
+      <!--<div class="contenedor-usuario">
+                <i class="bi bi-person-fill" style="font-size: 25px;"></i>
+                <div class="contenedor-info-usuario">
+                    <h5>Administrador de ventas</h5>
+                    {% if user.is_authenticated %}
+                    <p>{{ user.username }}</p>
+                    {% endif %}
+                </div>
+            </div>-->
+      <ul
+        class="list-navbar nav nav-pills nav-flush flex-column mb-auto text-center"
+      >
+        <li class="nav-item" id="expand-button">
+          <button
+            id="btn-toExpand"
+            href="#"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="open-bar"
+            data-bs-original-title="open-bar"
+          >
+            <i
+              id="expand-icon"
+              class="bi {% if 'expanded' in nav_container_class %}bi-arrow-right-short{% else %}bi-arrow-left-short{% endif %}"
+            ></i>
+          </button>
+        </li>
+        <li class="nav-item {% if request.path == '/home/' %}active{% endif %}">
+          <a
+            href="{% url 'home' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Home"
+            data-bs-original-title="Home"
+          >
+            <i class="bi bi-house"></i>
+            <span class="nav-item-span">Home</span>
+          </a>
+          <span class="spanSideBarExpand">Home</span>
+        </li>
+        <li
+          class="nav-item {% if request.path == '/Calendario/' %}active{% endif %}"
+        >
+          <a
+            href="{% url 'calendario' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Home"
+            data-bs-original-title="Home"
+          >
+            <i class="bi bi-calendar-day"></i>
+            <span class="nav-item-span">Calendario</span>
+          </a>
+          <span class="spanSideBarExpand">Calendario</span>
+        </li>
+        <li
+          class="nav-item {% if '/gestionLocalidad/' in request.path or '/altaLocalidad/' in request.path or '/modificarLocalidad/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionLocalidad' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Localidades"
+            data-bs-original-title="Localidades"
+          >
+            <i class="bi bi-geo-alt"></i>
+            <span class="nav-item-span">Localidades</span>
+          </a>
+          <span class="spanSideBarExpand">Localidades</span>
+        </li>
+        <li
+          class="nav-item {% if '/gestionEmpleado/' in request.path or '/altaEmpleado/' in request.path or '/modificarEmpleado/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionEmpleado' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Empleados"
+            data-bs-original-title="Empleados"
+          >
+            <i class="bi bi-people"></i>
+            <span class="nav-item-span">Empleados</span>
+          </a>
+          <span class="spanSideBarExpand">Empleados</span>
+        </li>
+        <li
+          class="nav-item {% if '/gestionMaquinaria/' in request.path or '/altaMaquinaria/' in request.path or '/modificarMaquinaria/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionMaquinaria' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Maquinarias"
+            data-bs-original-title="Maquinarias"
+          >
+            <i class="bi bi-hammer"></i>
+            <span class="nav-item-span">Maquinarias</span>
+          </a>
+          <span class="spanSideBarExpand">Maquinarias</span>
+        </li>
+        <li
+          class="nav-item {% if '/gestionTipoServicio/' in request.path or '/altaTipoServicio/' in request.path or '/modificarTipoServicio/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionTipoServicio' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="TipoServicios"
+            data-bs-original-title="TipoServicios"
+          >
+            <i class="bi bi-truck"></i>
+            <span class="nav-item-span">Tipos de Servicios</span>
+          </a>
+          <span class="spanSideBarExpand">Tipos de Servicios</span>
+        </li>
+        <li
+          class="nav-item {% if '/gestionInsumos/' in request.path or '/altaInsumo/' in request.path or '/modificarInsumo/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionInsumos' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Insumos"
+            data-bs-original-title="Insumos"
+          >
+            <i class="bi bi-box2"></i>
+            <span class="nav-item-span">Insumos</span>
+          </a>
+          <span class="spanSideBarExpand">Insumos</span>
+        </li>
+        <li
+          class="nav-item {% if '/gestionClientes/' in request.path or '/altaCliente/' in request.path or '/modificarCliente/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionClientes' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Clientes"
+            data-bs-original-title="Clientes"
+          >
+            <i class="bi bi-person-vcard"></i>
+            <span class="nav-item-span">Clientes</span>
+          </a>
+          <span class="spanSideBarExpand">Clientes</span>
+        </li>
+        <li class="nav-item">
+          <a
+            href="#"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Reclamos"
+            data-bs-original-title="Reclamos"
+          >
+            <i class="bi bi-clipboard-x"></i>
+            <span class="nav-item-span">Reclamos</span>
+          </a>
+          <span class="spanSideBarExpand">Reclamos</span>
+        </li>
+        <li
+          class="nav-item {% if '/gestionSanciones/' in request.path or '/altaSancion/' in request.path or '/modificarSancion/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionSanciones' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Sanciones"
+            data-bs-original-title="Sanciones"
+          >
+            <i class="bi bi-person-x"></i>
+            <span class="nav-item-span">Sanciones</span>
+          </a>
+          <span class="spanSideBarExpand">Sanciones</span>
+        </li>
+        <li class="nav-item">
+          <a
+            href="#"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Asistencias"
+            data-bs-original-title="Asistencias"
+          >
+            <i class="bi bi-journal-text"></i>
+            <span class="nav-item-span">Asistencias</span>
+          </a>
+          <span class="spanSideBarExpand">Asistencias</span>
+        </li>
+        <li
+          class="nav-item {% if '/servicio/' in request.path%}active{% endif %}"
+        >
+          <a
+            href="{% url 'gestionServicios' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Presupuestos"
+            data-bs-original-title="Presupuestos"
+          >
+            <i class="bi bi-cash-coin"></i>
+            <span class="nav-item-span">Servicios</span>
+          </a>
+          <span class="spanSideBarExpand">Servicios</span>
+        </li>
+        <li
+          class="nav-item {% if '/factura/' in request.path %}active{% endif %}"
+        >
+          <a
+            href="{% url 'facturas' %}"
+            class="nav-link py-3 rounded-2"
+            aria-current="page"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            aria-label="Facturas"
+            data-bs-original-title="Facturas"
+          >
+            <i class="bi bi-newspaper"></i>
+            <span class="nav-item-span">Facturas</span>
+          </a>
+          <span class="spanSideBarExpand">Facturas</span>
+        </li>
+      </ul>
+      <div
+        class="dropup position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle"
+        style="margin-right: 2rem !important"
+      >
+        <button
+          class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+          id="bd-theme"
+          type="button"
+          aria-expanded="false"
+          data-bs-toggle="dropdown"
+          aria-label="Toggle theme (dark)"
+          style="
+            border-radius: 6px !important;
+            width: 40px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+          "
+        >
+          <i class="bi bi-moon-stars"></i>
+        </button>
+        <ul
+          class="dropdown-menuColor dropdown-menu dropdown-menu-end shadow"
+          aria-labelledby="bd-theme-text"
+        >
+          <li>
+            <button
+              type="button"
+              class="dropdown-item d-flex align-items-center colorMode-item"
+              data-bs-theme-value="light"
+              aria-pressed="false"
+              id="btn-LightMode"
+            >
+              Light
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="dropdown-item d-flex align-items-center colorMode-item"
+              data-bs-theme-value="dark"
+              aria-pressed="true"
+              id="btn-DarkMode"
+            >
+              Dark
+            </button>
+          </li>
+        </ul>
+      </div>
+      {% if user.is_authenticated %}
+      <div class="container-btn-cerrar-sesion">
+        <a
+          class="cerrar-sesion-btn btn d-inline-flex align-items-center"
+          href="{% url 'logout' %}"
+        >
+          <i class="bi bi-arrow-bar-left"></i>
+        </a>
+      </div>
+      {% endif %}
+    </nav>
+  </aside>
+  <section class="container-seccion-main">
+    {% block seccion-main %} {% endblock %}
+  </section>
+</main>
+{% endblock %}

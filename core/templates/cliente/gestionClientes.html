@@ -1,0 +1,74 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Cliente <span class="operacion">> Gestión Clientes</span></h1>
+<a href="{% url 'altaCliente' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Agregar Cliente</a>
+{% endblock %}
+{% block listado%}
+<!--<div class="contenedor-filtrados">
+    <form method="GET" action="{% url 'gestionClientes' %}">
+        {% crispy form %}
+    </form>
+</div>-->
+<div class="container contenedor-tabla">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="table-responsive">
+                <table class="datatableEntity table dataTables table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">CUIT/CUIL</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellido</th>
+                            <th scope="col">Tipo cliente</th>
+                            <th scope="col">Tipo persona</th>
+                            <th scope="col">Activo</th>
+                            <th scope="col">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                            <tr class="fila-tabla">
+                                <td scope="row">{{ cliente.cuil }}</td>
+                                <td scope="row">{{ cliente.nombre }}</td>
+                                <td scope="row">{{ cliente.apellido }}</td>
+                                <td scope="row">{{ cliente.getTipo }}</td>
+                                <td scope="row">{{ cliente.getTipoPersona }}</td>
+                                {% if cliente.activo %}
+                                    <td scope="row"><i class="bi bi-check-circle"></i></td>
+                                {% else %}
+                                    <td scope="row"><i class="bi bi-x-circle"></i></td>
+                                {% endif %}
+                                <td scope="row">
+                                    <button href="{% url 'detalleCliente' cliente.pk %}" class="opcion" type="button" 
+                                        data-url="/gestionClientes/{{cliente.pk}}"
+                                        data-bs-toggle="offcanvas" 
+                                        data-bs-target="#offcanvasExample" 
+                                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+                                    <a href="{% url 'modificarCliente' cliente.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+                                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}{{block.super}}
+   
+{% endblock %}

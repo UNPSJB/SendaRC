@@ -1,0 +1,17 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/imprimirVista.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+<section class="wrapper-imprimir">
+    <div class="contenedor-imprimir">
+        <h1>Servicio contratado correctamente <i class="bi bi-check2-circle check-imprimir"></i></h1>
+        <div class="contenedor-acciones-imprimir">
+            <a href="{% url 'gestionServicios' %}">Ir a Gestion de Servicio</a>
+            <a href="{% url 'home' %}">Ir a Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

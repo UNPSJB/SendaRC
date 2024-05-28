@@ -1,0 +1,21 @@
+{% load static %}
+{% block detalle %}
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
+<div class="container wrapper-detalles">
+    <div class="container-detalles">
+        <h1 class="titulo-detalle"><i class="bi bi-hammer"></i> Maquinaria: {{maquinaria.nombre}}</h1>
+        <div class="divisor"></div>
+        <p class="detalles">Modelo: {{maquinaria.modelo}}</p>
+        <p class="detalles">Marca: {{maquinaria.marca}}</p>
+        <p class="detalles">Cantidad: {{maquinaria.cantidad}}</p>
+        {% if maquinaria.activo %}
+            <p class="detalles">Activa: Sí</p>
+        {% else %}
+            <p class="detalles">Activa: No</p>
+        {% endif %}
+        <div class="divisor"></div>
+        <h1 class="titulo-detalle"><i class="bi bi-eyeglasses"></i> Observaciones:</h1>
+        <p class="detalles">{{maquinaria.observaciones}}</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,172 @@
+.info-form-FechasContratar {
+    color: #adfa1d;
+}
+
+.btn-contratar,
+.btnImprimir {
+    background: none;
+    color: #fff;
+    border: none;
+    transition: color .1s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    gap: 5px;
+}
+
+.btn-contratar:hover,
+.btnImprimir:hover {
+    color: #1DA1F2;
+}
+
+.dateinput {
+    background-color: #09090b;
+}
+
+.form-select {
+    background-color: #15151a;
+}
+
+#tablaServicios > thead,#tablaFrecuencias > thead{
+    border: 1px solid #252527;
+}
+.rowResumen, 
+.colResumen {
+    background-color: transparent !important;
+    border-bottom: 1px solid #252527;
+    color: #fff !important;
+}
+.fila-tabla{
+    border-right: 1px solid #252527;
+    border-left: 1px solid #252527;
+    transition: background 0.1s ease-in-out;
+}
+.fila-tabla:hover {
+    background: #161616; 
+}
+
+.colTitulo{
+    color: #b1b1bd!important;
+}
+.navItemResumen{
+    background-color: transparent !important;
+}
+.navItemResumen.active{
+    border-bottom: 3px solid #fff;
+    background-color: transparent;
+}
+.navItemResumen:hover{
+    background-color: transparent !important;
+    color: #fff !important;
+}
+
+/*LIGHT MODE*/
+.light-mode navItemResumen.active{
+    border-bottom: 3px solid #050505;
+}
+.light-mode .card-servicio {
+    border: 1px solid #cfcfcf!important;
+    background-color: #f3f3f3 !important;
+}
+
+.light-mode .card-servicio:hover {
+    border: 1px solid #cfcfcf !important;
+    background-color: #f3f3f3 !important;
+}
+
+.light-mode .card-header-servicio {
+    background-color: #f3f3f3 !important;
+}
+
+.light-mode .card-body-servicio {
+    background-color: #f3f3f3 !important;
+    color: #252527 !important;
+}
+
+.light-mode .card-header-observaciones {
+    background-color: #f3f3f3 !important;
+}
+
+.light-mode .card-body-observaciones {
+    border-radius: 0px 0px 6px 6px;
+    background-color: #f3f3f3 !important;
+    color: #252527;
+}
+
+.light-mode .dateinput {
+    background-color: #cecece;
+}
+
+.light-mode .btn-contratar {
+    color: #252527;
+}
+
+.light-mode .btn-contratar:hover {
+    color: rgb(0, 81, 202);
+}
+
+.light-mode .formSetEmpleados {
+    background-color: #cecece !important;
+}
+
+.light-mode .form-select {
+    background-color: #a7a7a7 !important;
+}
+
+.light-mode .select2-selection--multiple {
+    background-color: #a7a7a7 !important;
+}
+
+.light-mode .select2-search__field {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+.light-mode .info-form-FechasContratar {
+    color: #0059ff;
+}
+
+.light-mode .rowResumen {
+    background-color: #f3f3f3 !important;
+    border-bottom: 1px solid #d5d5d8;
+    color: #252527 !important;
+}
+
+.light-mode .colResumen {
+    background-color: #f3f3f3 !important;
+    border-bottom: 1px solid #d5d5d8;
+    color: #72727b !important;
+}
+.light-mode .navItemResumen:hover{
+    color: #252527 !important;
+}
+
+.light-mode .btnImprimir{
+    color: #252527;
+}
+
+.light-mode .btnImprimir:hover{
+    color: #1DA1F2;
+}
+
+.light-mode #tablaServicios > thead{
+    border: 1px solid #cfcfcf;
+}
+.light-mode #tablaFrecuencias > thead{
+    border: 1px solid #cfcfcf;
+}
+.light-mode .fila-tabla{
+    border-right: 1px solid #cfcfcf;
+    border-left: 1px solid #cfcfcf;
+}
+
+.light-mode .colTitulo{
+    color: #3b3b3f !important;
+}
+.light-mode .card-observaciones{
+    border: 1px solid #cfcfcf !important;
+}
+.light-mode .card-header-observaciones{
+    color: #3b3b3f !important;
+}

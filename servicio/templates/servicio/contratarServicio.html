@@ -1,0 +1,66 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/servicio.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Contratar Servicio <span class="operacion">> Confirmar Contratación / Asignar Fechas</span></h1>
+{% endblock %}
+{% block formulario %}
+<div style="max-width: 100%; overflow: hidden;">
+    <div class="row g-5" style="padding-inline: 200px; min-width: 1250px;">
+        <div class="card card-servicio text-light" style="padding-top: 20px; background-color: #15151a;">
+            <div class="card-header card-header-servicio"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: none;">
+                <h4>Servicio Información:</h4>
+                <button type="submit" class="btn-contratar">Siguiente <i class="bi bi-arrow-right"></i></button>
+            </div>
+            <hr class="my-0">
+            <div class="card-body card-body-servicio" style="background-color: #15151a;">
+                <h5 class="card-title">Cliente:</h5>
+                <p class="mb-2" style="font-size: 13px;">Nombre y apellido: {{servicio.cliente.nombre}}
+                    {{servicio.cliente.apellido}}</p>
+                <p class="mb-2" style="font-size: 13px;">CUIT/CUIL: {{servicio.cliente.cuil}}</p>
+                <p class="mb-2" style="font-size: 13px;">Telefono: {{servicio.cliente.telefono}}</p>
+                <p class="mb-2" style="font-size: 13px;">Email: {{servicio.cliente.email}}</p>
+            </div>
+            <hr class="my-0">
+            <div class="card-body card-body-servicio" style="background-color: #15151a;">
+                <h5 class="card-title">Servicio:</h5>
+                <p class="mb-2" style="font-size: 13px;">Tipo de servicio: {{servicio.getTipo}}</p>
+                <p class="mb-2" style="font-size: 13px;">Fecha de emisión: {{servicio.fecha_emision}}</p>
+                <p class="mb-2" style="font-size: 13px;">Dirección: {{ servicio.direccion }}</p>
+                <span class="badge rounded-pill text-bg-success"
+                    style="font-size: 13px; margin-bottom: 20px; margin-top: 10px; font-weight: 500;"
+                    id="importe_total_badge">Costo: {{ servicio.getImporteTotalFormateado }}</span>
+                <form method="POST" class="formFechasContratar mi-form">
+                    <h5 class="card-title info-form-FechasContratar">Selecciona las fechas del contrato aquí:</h5>
+                    {%csrf_token %}
+                    {{form | crispy}}
+                </form>
+                <div class="card card-observaciones mb-0 text-light" style="background-color: #09090b; border: none;">
+                    <div class="card-header card-header-observaciones">
+                        Observaciones:
+                    </div>
+                    <div class="card-body card-body-observaciones" style="border-radius: 0px 0px 6px 6px;">
+                        <blockquote class="blockquote mb-0 ">
+                            <p style="font-size: 15px;">{{servicio.observaciones}}</p>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    $(function () {
+        $('.btn-contratar').click(function () {
+            $(".mi-form").attr('method', 'POST').submit()
+            console.log($(this))
+        })
+    })
+</script>
+{% endblock %}

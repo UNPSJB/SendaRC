@@ -1,0 +1,196 @@
+.atajoLink {
+  text-decoration: none;
+}
+
+.container-home {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  padding-inline: 6px;
+  padding-block: 12px;
+  background: #050505;
+}
+
+.wrapper-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper-top > h2 {
+  font-size: 80px !important;
+}
+
+.wrapper-top {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.wrapper-bottom {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.logo-senda-svg {
+  z-index: 40;
+}
+
+.notification {
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  position: relative;
+  width: 20rem;
+  height: 9.5rem;
+  background: #09090b;
+  border: 1px solid #2b2b2b;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 16px;
+  --gradient: linear-gradient(to bottom, #2eadff, #3d83ff, #0e67ff);
+  --color: rgb(0, 195, 255);
+}
+
+.notification:before {
+  position: absolute;
+  content: "";
+  inset: 0.0625rem;
+  border-radius: 0.1rem;
+  background: #09090b;
+  z-index: 2;
+}
+
+.notification:after {
+  position: absolute;
+  content: "";
+  width: 0.25rem;
+  inset: 0.65rem auto 0.65rem 0.5rem;
+  border-radius: 0.025rem;
+  background: var(--gradient);
+  transition: transform 300ms ease;
+  z-index: 4;
+}
+
+.notification:hover:after {
+  transform: translateX(0.15rem);
+}
+
+.notititle {
+  color: var(--color);
+  padding: 0.65rem 0.25rem 0.4rem 1.25rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: transform 300ms ease;
+  z-index: 5;
+  font-weight: 600;
+}
+
+.notification:hover .notititle {
+  transform: translateX(0.15rem);
+}
+
+.notibody {
+  color: #cfcfcf;
+  padding: 0 1.25rem;
+  transition: transform 300ms ease;
+  z-index: 5;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.notification:hover .notibody {
+  transform: translateX(0.25rem);
+}
+
+.notiglow,
+.notiborderglow {
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle closest-side at center,
+    white,
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.notiglow {
+  z-index: 3;
+}
+
+.notiborderglow {
+  z-index: 1;
+}
+
+.notification:hover .notiglow {
+  opacity: 0.1;
+}
+
+.notification:hover .notiborderglow {
+  opacity: 0.1;
+}
+
+.note {
+  color: var(--color);
+  position: fixed;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 0.9rem;
+  width: 75%;
+}
+.badge-usuario {
+  padding: 6px 20px;
+  background-color: #ffe600 !important;
+  color: #242424 !important;
+  font-weight: 500;
+}
+
+.senda-brand {
+  color: rgb(0, 195, 255);
+}
+
+.light-mode .notification{
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+}
+.light-mode .notification::before{
+    background: #ffffff;
+}
+
+.light-mode .notibody{
+    color: #252527;
+}
+.light-mode .notititle{
+    color: #252527;
+}
+
+
+@media (max-width: 950px) {
+  .container-home > svg {
+    display: none;
+  }
+
+  .container-tarjetas {
+    display: block;
+    height: 198px;
+    top: 10px;
+    position: absolute;
+  }
+}

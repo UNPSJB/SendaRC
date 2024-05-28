@@ -1,0 +1,4 @@
+<option value="">------------------</option>
+{% for servicio in servicios %}
+    <option value="{{ servicio.id }}">{{ servicio.id }} | {{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</option>
+{% endfor %}

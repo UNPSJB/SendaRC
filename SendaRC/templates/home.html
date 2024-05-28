@@ -1,0 +1,55 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% block extracss %}{{block.super}}
+<link href="{% static 'css/home.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+<section class="container-home">
+    <div class="wrapper-home">
+        <div class="wrapper-top">
+            <span class="badge rounded-pill text-bg-light badge-usuario"><i class="bi bi-person-fill"></i>
+                {{user.username}} </span>
+            <h2>Bienvenido a <span class="senda-brand">SendaRC</span>🧹</h2>
+            <p style="opacity: 85%;">Gestiona tu empresa de limpieza con elegancia y eficiencia. Simplifica y
+                personaliza tu flujo de trabajo
+                con facilidad.</p>
+        </div>
+        <div class="wrapper-bottom">
+            <a href="{% url 'presupuestarCliente'%}" class="atajoLink"> 
+                <div class="notification">
+                    <div class="notiglow"></div>
+                    <div class="notiborderglow"></div>
+                    <div class="notititle"><i class="icono-tarjeta bi bi-piggy-bank"></i> <span>Presupuestar servicio.</span></div>
+                    <div class="notibody"><p>Presupuestar servicios de manera eficiente y organizar las finanzas de
+                        la
+                        empresa
+                        sistemáticamente.</p></div>
+                </div>
+            </a>
+            <a href="#" class="atajoLink"> 
+                <div class="notification">
+                    <div class="notiglow"></div>
+                    <div class="notiborderglow"></div>
+                    <div class="notititle"><i class="bi bi-file-earmark-check"></i></i> <span>Contratar servicio.</span></div>
+                    <div class="notibody"><p>Asentar la contratación de un servicio presupuestado donde podrás hacer
+                        la
+                        asignación
+                        de empleados y muchos más.</p></div>
+                </div>
+            </a>
+            <a href="{% url 'serviciosCobrar' %}" class="atajoLink"> 
+                <div class="notification">
+                    <div class="notiglow"></div>
+                    <div class="notiborderglow"></div>
+                    <div class="notititle"><i class="bi bi-bank"></i> <span>Cobrar servicio.</span></div>
+                    <div class="notibody"><p>Gestionar la cobranza de un servicio de limpieza, donde podras iniciar
+                        el
+                        proceso
+                        de
+                        facturacion de un servicio y más.</p></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

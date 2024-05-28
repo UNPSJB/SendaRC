@@ -1,0 +1,26 @@
+{% load static %}
+{% block detalle %}
+<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
+<div class="container wrapper-detalles">
+    <div class="container-detalles">
+        <h1 class="titulo-detalle"><i class="bi bi-file-person"></i> Cliente: {{cliente.nombre}} {{cliente.apellido}}</h1>
+        <div class="divisor"></div>
+        <p class="detalles">CUIL/CUIT: {{cliente.cuil}}</p>
+        <p class="detalles">Telefono: {{cliente.telefono}}</p>
+        <p class="detalles">Email: {{cliente.email}}</p>
+        <p class="detalles">Localidad: {{cliente.localidad}}</p>
+        <p class="detalles">Dirección: {{cliente.direccion}}</p>
+        <p class="detalles">Tipo persona: {{cliente.getTipoPersona}}</p>
+        <p class="detalles">Tipo cliente: {{cliente.getTipo}}</p>
+        {% if cliente.activo %}
+            <p class="detalles">Activo: Sí</p>
+        {% else %}
+            <p class="detalles">Activo: No</p>
+        {% endif %}
+        <div class="divisor"></div>
+    </div>
+    <div class="container-acciones">
+        <a href="{%url 'presupuestarIdCliente' cliente.pk %}" class="btn-accion-detalle">Generar presupuesto</a>
+    </div>
+</div>
+{% endblock %}

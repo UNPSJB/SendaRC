@@ -1,0 +1,45 @@
+.texto {
+    margin-bottom: 0.5rem !important;
+    font-size: 15px;
+}
+
+.cantidad,.precio-span,.totalServiciosNumero,.frecuenciaTurno,.totalServicios,.totalPresupuestoFrecuenciaServicios,.datoCliente{
+    font-family: 'InterRegular',sans-serif;
+}
+
+
+.confirmar-presupuesto {
+    background-color: #fff;
+    color: #000;
+}
+
+.confirmar-presupuesto:hover {
+    background-color: #cfcfcf;
+    color: #000;
+}
+
+.list-group {
+    border: 1px solid #050505;
+    border-radius: 6px;
+}
+
+.list-group-item {
+    background-color: #050505;
+    color: #fff;
+    border: 1px solid #252527;
+}
+
+.list-group-item>div>small {
+    color: #fff !important;
+}
+
+.list-group-item>span {
+    color: #fff !important;
+}
+
+.light-mode #opcionesCheckOut{
+    border-bottom: 1px solid #cfcfcf;
+}
+#opcionesCheckOut{
+    border-bottom: 1px solid #252525;
+}

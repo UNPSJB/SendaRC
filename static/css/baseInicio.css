@@ -1,0 +1,233 @@
+.container-main {
+    display: flex;
+    height: 100vh;
+}
+
+.container-seccion-main {
+    z-index: 50;
+    margin-left: 60px;
+    transition: all 0.3s ease-in-out;
+    height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.container-seccion-main.mainExpanded {
+    margin-left: 210px;
+}
+
+.nav-container {
+    position: fixed;
+    transition: all 0.3s ease-in-out;
+    width: 60px;
+    flex-shrink: 0;
+    position: fixed;
+    height: 100%;
+    z-index: 800;
+    border-right: 1px solid #212125;
+}
+
+.nav-container.expanded {
+    width: 210px;
+    display: flex;
+    align-items: start;
+}
+
+.sideBarExpand {
+    width: 100%;
+}
+
+.sideBarExpand>ul>li>.nav-link {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+    padding-inline: 10px;
+}
+
+.sideBarExpand>ul>li>#btn-toExpand {
+    display: flex;
+    justify-content: center;
+}
+
+.sideBarExpand>ul>li>.nav-link>.nav-item-span {
+    display: block;
+    font-size: 13px;
+}
+
+.nav-item {
+    border-radius: 7px;
+    position: relative;
+    margin-bottom: 2px;
+    transition: all 0.1s ease-in-out;
+}
+
+.nav-item:hover{
+    transform: scale(1.08);
+}
+
+.navbar {
+    background-color: #050505 !important;
+    height: 100%;
+    align-content: center;
+}
+
+.nav-link {
+    width: 38px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.no-transition {
+    transition: none;
+}
+
+.nav-link:hover {
+    background-color: #27272a;
+    color: rgb(255, 255, 255);
+}
+
+.list-navbar {
+    gap: 2px;
+}
+
+.container-btn-cerrar-sesion>a {
+    width: 38px !important;
+    height: 35px !important;
+    background-color: #252527;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.cerrar-sesion-btn:hover {
+    background-color: #4a4a50;
+    color: #fff;
+}
+
+.icono-sendaRC {
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.active {
+    background-color: #252527;
+}
+
+.active>a>i {
+    color: #ffffff;
+}
+
+.active>a>span {
+    color: #ffffff;
+}
+
+#btn-toExpand {
+    background: none;
+    color: #fff;
+}
+
+#btn-toExpand:hover {
+    background: none;
+}
+.sideBarExpand{
+    transition: opacity 1s ease-in-out;
+}
+/* Oculta el span por defecto */
+.navbar .spanSideBarExpand {
+    display: none;
+}
+
+/* Muestra el span cuando haces hover en el nav-item */
+.navbar:not(.sideBarExpand) .nav-item:hover .spanSideBarExpand {
+    display: block;
+    opacity: 1;
+}
+
+/* Estilos adicionales para el span cuando no hay sideBarExpand */
+.navbar:not(.sideBarExpand) .spanSideBarExpand {
+    position: absolute;
+    top: 3px;
+    z-index: 100;
+    background-color: #27272a;
+    padding-inline: 14px;
+    padding-block: 4px;
+    border-radius: 4px;
+    font-size: 14px;
+    left: 45px;
+    width: max-content;
+    color: #fff;
+}
+
+.navbar:not(.sideBarExpand) .nav-item .nav-item-span {
+    display: none;
+}
+
+.bi-list {
+    color: #fff !important;
+}
+.contenedor-usuario{
+    display: flex;
+    padding: 10px;
+    gap: 12px;
+    justify-content: center;
+}
+.contenedor-info-usuario{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+}
+.contenedor-info-usuario > h5{
+    font-size: 10px;
+    margin-bottom: 0 !important;
+    color: #afafaf;
+}
+.contenedor-info-usuario > p{
+    font-size: 12px;
+    margin-bottom: 0 !important;
+    color: #dbdbdb;
+}
+
+#bd-theme{
+    background-color: #ffffff;
+    transition: all 0.1s ease-in-out;
+}
+
+#bd-theme:hover{
+    background-color: #ebebeb;
+    transform: scale(1.1);
+}
+#bd-theme:active{
+    background-color: #ebebeb;
+    color: #000;
+}
+
+.dropdown-menuColor{
+    background-color: #ffffff;
+}
+
+.colorMode-item{
+    font-size: 13px;
+    color: #000;
+}
+
+.colorMode-item:hover{
+    background-color: #f3f3f3;
+    color: #000;
+}
+.dropdown-item.active{
+    background-color: #f3f3f3;
+    color: #000;
+}
+.bi-brightness-high{
+    color: #fff;
+}
+

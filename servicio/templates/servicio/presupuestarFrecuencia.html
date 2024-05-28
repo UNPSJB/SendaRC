@@ -1,0 +1,177 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extracss %}{{block.super}}
+<link href="{%static 'css/formset.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block title %}
+<h1 class="titulo">Presupuestar Servicio <span class="operacion">> Agregar Frecuencias</span></h1>
+{% endblock %}
+{% block formulario %}
+<div class="row g-5" style="display: flex; justify-content: center; padding-inline: 20px;">
+    <div class="contenedor-header-form-set">
+        <div style="display: flex; gap: 8px;">
+            <h1 class="titulo-formset">Frecuencias <span class="contador"></span></h1>
+        </div>
+        {% if presupuesto.tipo == 1 %}
+            <p class="texto-TipoPresupuesto">Presupuesto: Eventual </p>
+        {% else %}
+            <p class="texto-TipoPresupuesto">Presupuesto: Determinado </p>
+        {% endif %}
+        <div style="display: flex; gap: 10px;">
+            <button type="button" class="accion agregar-frecuencia"><i class="bi bi-plus-lg"></i> Añadir</button>
+            <a href="{% url 'presupuestarServicios' %}" class="accion" style="display: flex; justify-content: center; align-items: center; text-decoration: none; gap: 5px;"><i class="bi bi-arrow-left"></i> Atras</a>
+            <button type="submit" class="accion btn-siguiente-vista" style="display: flex; justify-content: center; align-items: center; text-decoration: none; gap: 5px;">Siguiente <i class="bi bi-arrow-right"></i></button>
+        </div>
+    </div>
+    <form method="POST" class="mi-formset">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div id="form-frecuencias" class="form-group form-set mb-3">
+            {% for f in formset %}
+            <div class="form-frecuencia">
+                <div class="contenedor-inputs-form-set">
+                    {{ f | crispy }}
+                </div>
+                <button class="noselect quitar-form quitar-frecuencia">
+                  <span class="text">Eliminar</span>
+                  <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
+                    </svg>
+                  </span>
+                </button> 
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    const TEMPLATE_FORM = `
+    <div class="form-frecuencia">
+        <div class="contenedor-inputs-form-set">
+            {{formset.empty_form | crispy}}
+        </div>
+        <button class="noselect quitar-form quitar-frecuencia">
+                  <span class="text">Eliminar</span>
+                  <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
+                    </svg>
+                  </span>
+        </button> 
+    </div>
+    `;
+
+    const buildForm = (id) => {
+        const form = TEMPLATE_FORM.replace(/__prefix__/g, id);
+        return $(form)
+    }
+
+    const actualizarContenido = (seleccion, container) => {
+        let textContent = '';
+
+        if (seleccion == 1) {
+            textContent = '8:00 a 12:00';
+        } else if (seleccion == 2) {
+            textContent = '14:00 a 18:00';
+        } else if (seleccion == 3) {
+            textContent = '19:00 a 23:00';
+        } else {
+            textContent = 'none';
+        }
+
+        // Encuentra los elementos .texto y .container-hora dentro del contenedor
+        const elementosARemover = $('.quitar-frecuencia', container).siblings('.texto, .container-hora');
+
+        // Remueve los elementos
+        elementosARemover.remove();
+
+        // Inserta el nuevo contenido antes del botón "Quitar Frecuencia"
+        $(`<div class="container-hora"> <h6 class="texto">${textContent}<i class="bi bi-clock"></i></h6></div>`).insertBefore($('.quitar-frecuencia', container));
+    };
+
+    // Se ejecuta cuando el documento esta listo
+    $(function () {
+        const $total_forms = $('#id_form-TOTAL_FORMS')
+        const $forms_container = $('#form-frecuencias')
+        const $contador = $('.contador')
+
+
+        $('.btn-siguiente-vista').on("click", function () {
+            $(".mi-formset").submit();
+        })
+        
+        const updateCounter = () => {
+            let totalFormsValue = parseInt($total_forms.val(), 10);
+            totalFormsValue = isNaN(totalFormsValue) ? 1 : Math.max(totalFormsValue, 1);
+            $contador.text(`(${totalFormsValue})`);
+        };
+
+        updateCounter();
+
+        const getValues = () => {
+            let inputs = $forms_container.find("input, select, textarea");
+            return inputs.toArray().map(i => $(i).val());
+        }
+
+
+        const setValues = (values) => {
+            inputs = $forms_container.find("input, select, h6");
+            inputs.toArray().forEach((el, index) => $(el).val(values[index]));
+        }
+
+        const bindAcciones = (container) => {
+            $(".quitar-frecuencia", container).on("click", function () {
+                console.log("click");
+                let total = parseInt($total_forms.val());
+                total = total - 1;
+                $(this).parent(".form-frecuencia").remove();
+                const values = getValues();
+                $forms_container.empty();
+                $forms_container.empty();
+                for (let i = 0; i < total; i++) {
+                    $form = buildForm(i);
+                    bindAcciones($form);
+                    $forms_container.append($form)
+                }
+                setValues(values);
+                $total_forms.val(total)
+                updateCounter();
+            })
+            
+            $('select[name$=turno]', container).each(function () {
+                const seleccionInicial = this.value;
+                const formContainer = $(this).closest('.form-frecuencia');
+                actualizarContenido(seleccionInicial, formContainer);
+            });
+
+            // Evento change para los select
+            $('select[name$=turno]', container).on('change', function () {
+                const seleccion = this.value;
+                const formContainer = $(this).closest('.form-frecuencia');
+                actualizarContenido(seleccion, formContainer);
+            });
+
+        }
+
+        $('.form-group').each(e => bindAcciones(e))
+
+        $('.agregar-frecuencia').on("click", function () {
+            const total = parseInt($total_forms.val());
+            $form = buildForm(total);
+            bindAcciones($form);
+            $form.addClass('destello');
+            $forms_container.prepend($form)
+            $total_forms.val(total + 1)
+            updateCounter();
+            
+            setTimeout(() => {
+                $form.removeClass('destello');
+            }, 1000); // Ajusta la duración de la animación en milisegundos
+        });
+    })
+</script>
+{% endblock %}

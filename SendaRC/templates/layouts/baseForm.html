@@ -1,0 +1,15 @@
+{% extends 'layouts/baseInicio.html' %}
+{% load static %}
+{% block extracss %}{{block.super}}
+    <link href="{% static 'css/baseForm.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block seccion-main %}
+        <div class="seccion-cabecera">
+            {% block title %}
+            {% endblock %}
+        </div>
+        <div class="secccion-form"> 
+            {% block formulario %}
+            {% endblock %}
+        </div>
+{% endblock %}
