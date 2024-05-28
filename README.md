@@ -15,7 +15,8 @@ python manage.py runserver<br>
 
 # Stack 🛠️ 
 
-# Desarrollado por:
+# Desarrollado por 🗿
 Fernando Benitez<br>
 Gaston Llampa<br>
 Agustin Bowen<br> 
+Sergio Pereyra<br> 
