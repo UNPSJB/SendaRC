@@ -9,3 +9,6 @@ git clone git@github.com:UNPSJB/SendaRC.git<br>
 pip virtualenv venv<br>
 ./venv/Scripts/activate<br>
 pip install -r requirements.txt<br>
+
+# Ejecutar el proyecto
+python manage.py runserver
