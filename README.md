@@ -10,5 +10,5 @@ pip virtualenv venv<br>
 pip install -r requirements.txt<br>
 
 # Ejecutar el proyecto 🏃
-aca falta agregar que haga las migraciones y eso
-python manage.py runserver
+aca falta agregar que haga las migraciones y eso<br>
+python manage.py runserver<br>
