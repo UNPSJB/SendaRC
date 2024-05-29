@@ -10,13 +10,13 @@ El proyecto busca desarrollar un software para la empresa Senda, permitiendo la 
 [![295shots-so.png](https://i.postimg.cc/MKm1R8Xp/295shots-so.png)](https://postimg.cc/WhtDLCMB) <br>
 
 # Instalar 🧑‍💻
-### Windows ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+### ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 git clone git@github.com:UNPSJB/SendaRC.git<br>
 pip virtualenv venv<br>
 ./venv/Scripts/activate<br>
 pip install -r requirements.txt<br>
 
-### Linux ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+### ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 git clone git@github.com:UNPSJB/SendaRC.git<br>
 sudo apt install python3-venv (esto puede variar segun la distribucion) <br>
 python3 -m venv venv <br>
