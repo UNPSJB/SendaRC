@@ -20,7 +20,7 @@ class SelectClienteForm(forms.Form):
             Div(
                 Field('cliente', css_class='form-select form-select-sm form-select-filter'),
                 Submit('submit', 'Ver servicios', css_class='btn-filtrar'),
-                css_class='contenedor-select-btn'
+                css_class='contenedorFiltersForm'
             )
         )
         

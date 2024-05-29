@@ -20,6 +20,7 @@
 .secccion-listado{
     display: flex;
     justify-content: center;
+    padding-top: 20px;
 }
 
 .contenedor-tabla{
@@ -117,12 +118,14 @@
     width: auto;
     position: relative;
 }
-.contenedor-filtrados{
-    position: absolute;
+.filters{
     padding-inline: 12px;
     font-size: 13px;
-    top: -25px;
-    width: auto;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 85px;
 }
 .form-select-filter{
     width: auto !important;
@@ -131,10 +134,13 @@
     border: 1px solid #fff !important;
     font-size: 12px;
 }
-.contenedor-select-btn{
+.contenedorFiltersForm{
     display: flex;
-    gap: 5px;
-    align-items: end;
+    align-items: center;
+    gap: 10px;
+}
+.contenedorFiltersForm > div{
+    margin-bottom: 0px !important;
 }
 #div_id_estado,
 #div_id_tipo_persona,
@@ -150,6 +156,7 @@
     transition: all .1s ease-in-out;
     height: 27px;
     padding: 0px 15px;
+    margin-top:27px;
 }
 .btn-filtrar:hover{
     background-color: #1887cc;
@@ -167,8 +174,12 @@
     background-color: #050505;
 }
 .light-mode div.dt-container div.dt-length label {
-    color: #050505 !important;
+    color: #252527 !important;
 }
 .light-mode div.dt-container div.dt-info{
-    color: #050505 !important;
+    color: #252527 !important;
+}
+
+.light-mode div.dt-container div.dt-search label{
+    color: #252527 !important;
 }

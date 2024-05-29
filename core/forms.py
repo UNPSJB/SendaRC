@@ -227,34 +227,6 @@ class ClienteForm(forms.ModelForm):
         )
 
 
-class FiltroClientesForm(forms.Form):
-    ESTADOS = [('Activos', 'Activos'), ('No activos',
-                                        'No activos'), ('Todos', 'Todos')]
-    TIPOS_PERSONA = [('', '---'), ('1', 'Particular'), ('2', 'Juridico')]
-    TIPOS = [('', '---'), ('1', 'Ocasional'), ('2', 'Habitual')]
-
-    estado = forms.ChoiceField(choices=ESTADOS, required=False)
-    tipo_persona = forms.ChoiceField(choices=TIPOS_PERSONA, required=False)
-    tipo = forms.ChoiceField(choices=TIPOS, required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(FiltroClientesForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'get'
-        self.helper.layout = Layout(
-            Div(
-                Field(
-                    'estado', css_class='form-select form-select-sm form-select-filter'),
-                Field('tipo_persona',
-                      css_class='form-select form-select-sm form-select-filter'),
-                Field(
-                    'tipo', css_class='form-select form-select-sm form-select-filter mb-0'),
-                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
-                css_class='contenedor-select-btn'
-            )
-        )
-
-
 class TipoServicioForm(forms.ModelForm):
 
     class Meta:
@@ -347,5 +319,51 @@ class FormAltaMaquinaria(forms.ModelForm):
                     css_class='input-group mb-3 operaciones'
                 ),
                 css_class='container-forms'
+            )
+        )
+
+
+class FiltroClientesForm(forms.Form):
+    ESTADOS = [('Activos', 'Activos'), ('No activos',
+                                        'No activos'), ('Todos', 'Todos')]
+    TIPOS_PERSONA = [('', '---'), ('1', 'Particular'), ('2', 'Juridico')]
+    TIPOS = [('', '---'), ('1', 'Ocasional'), ('2', 'Habitual')]
+
+    estado = forms.ChoiceField(choices=ESTADOS, required=False)
+    tipo_persona = forms.ChoiceField(choices=TIPOS_PERSONA, required=False)
+    tipo = forms.ChoiceField(choices=TIPOS, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(FiltroClientesForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    'estado', css_class='form-select form-select-sm form-select-filter'),
+                Field('tipo_persona',
+                      css_class='form-select form-select-sm form-select-filter'),
+                Field(
+                    'tipo', css_class='form-select form-select-sm form-select-filter mb-0'),
+                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
+                css_class='contenedorFiltersForm'
+            )
+        )
+
+class FiltroEmpleadosForm(forms.Form):
+    ESTADOS = [('Activos', 'Activos'), ('No activos',
+                                        'No activos'), ('Todos', 'Todos')]
+    estado = forms.ChoiceField(choices=ESTADOS, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(FiltroClientesForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    'estado', css_class='form-select form-select-sm form-select-filter'),
+                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
+                css_class='contenedorFiltersForm'
             )
         )

@@ -9,12 +9,12 @@
 <a href="{% url 'altaCliente' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Agregar Cliente</a>
 {% endblock %}
 {% block listado%}
-<!--<div class="contenedor-filtrados">
-    <form method="GET" action="{% url 'gestionClientes' %}">
-        {% crispy form %}
-    </form>
-</div>-->
 <div class="container contenedor-tabla">
+    <div class="filters">
+        <form method="GET" action="{% url 'gestionClientes' %}">
+            {% crispy form %}
+        </form>
+    </div>
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="table-responsive">

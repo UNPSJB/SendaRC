@@ -361,7 +361,9 @@ class gestionEmpleado(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['form'] = FiltroEmpleadosForm(self.request.GET)
         context['estados'] = ['Habilitado', 'Deshabilitado', 'Todos']
+        return context
         
         estado = self.request.GET.get('estado', '')
         if estado == 'Habilitado' or not estado:
