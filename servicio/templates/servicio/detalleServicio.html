@@ -98,17 +98,15 @@
                 <table class="table table-container" id="tablaEmpleados" style="font-size: 14px;">
                     <thead>
                         <tr class="fila-tabla">
-                            <th scope="col" class="text-center colResumen colTitulo">Nombre</th>
-                            <th scope="col" class="text-center colResumen colTitulo">Apellido</th>
+                            <th scope="col" class="text-center colResumen colTitulo">Nombre y Apellido</th>
                             <th scope="col" class="text-center colResumen colTitulo">Sueldo</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for empleado in empleados %}
                         <tr class="fila-tabla">
-                            <td scope="row" class="text-center rowResumen">{{ empleado.nombre }}</td>
-                            <td scope="row" class="text-center rowResumen">{{ empleado.apellido }}</td>
-                            <td scope="row" class="text-center rowResumen">{{ empleado.getSueldoFormateado }}</td>
+                            <td scope="row" class="text-center rowResumen">{{ empleado.nombre }} {{ empleado.apellido }}</td>
+                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterThin',serif;">{{ empleado.getSueldoFormateado }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

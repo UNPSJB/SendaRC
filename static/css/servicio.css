@@ -28,7 +28,7 @@
     background-color: #15151a;
 }
 
-#tablaServicios > thead,#tablaFrecuencias > thead{
+#tablaServicios > thead,#tablaFrecuencias > thead, #tablaEmpleados > thead{
     border: 1px solid #252527;
 }
 .rowResumen, 
@@ -156,6 +156,9 @@
 .light-mode #tablaFrecuencias > thead{
     border: 1px solid #cfcfcf;
 }
+.light-mode #tablaEmpleados > thead{
+    border: 1px solid #cfcfcf;
+}
 .light-mode .fila-tabla{
     border-right: 1px solid #cfcfcf;
     border-left: 1px solid #cfcfcf;
@@ -169,4 +172,10 @@
 }
 .light-mode .card-header-observaciones{
     color: #3b3b3f !important;
+}
+
+.light-mode .navItemResumen.active{
+    background-color: transparent !important;
+    border-bottom: 3px solid #09090b;
+    color: #09090b !important;
 }
