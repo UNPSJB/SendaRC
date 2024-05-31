@@ -49,15 +49,13 @@
 {% block extrajs %}{{block.super}}
 <script>
     $(document).ready(function() {
-        $('.filtersForm').on('change', 'select', function() {
-            $.ajax({
-                url: $('.filtersForm').attr('action'),
-                data: $('.filtersForm').serialize(),
-                success: function(response) {
-                    $('#empleadosList').html(response.html);
-                }
-            });
-        });
+        let tableSelector = ".datatableEntity";
+        let formSelector = ".filtersForm";
+        let resultSelector = "#empleadosList";
+
+        initializeDataTable(tableSelector);
+
+        setupDataTableFilters(tableSelector, formSelector, resultSelector);
     });
 </script>
 {% endblock %}

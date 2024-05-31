@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="table-responsive">
-                <table class="datatableEntity table dataTables table-hover">
+                <table class="datatableEntity table dataTables table-hover" id="localidadesList">
                     <thead>
                         <tr>
                             <th scope="col">Código Postal</th>
@@ -47,4 +47,12 @@
 
     </div>
 </div>
+{% endblock %}
+{% block extrajs %}{{block.super}}
+<script>
+    $(document).ready(function() {
+        let tableSelector = ".datatableEntity";
+        initializeDataTable(tableSelector);
+    });
+</script>
 {% endblock %}

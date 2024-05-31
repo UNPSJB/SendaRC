@@ -53,25 +53,15 @@
 {% block extrajs %}{{block.super}}
 <script>
     $(document).ready(function () {
-        let table = $(".datatableEntity").DataTable();
-        $('.filtersForm').on('change', 'select, input, input[type="date"]', function () {
-            $.ajax({
-                url: $('.filtersForm').attr('action'),
-                data: $('.filtersForm').serialize(),
-                success: function (response) {
-                    // Destruir la instancia existente de DataTable
-                    if ($.fn.DataTable.isDataTable(".datatableEntity")) {
-                        table.destroy();
-                    }
+        let tableSelector = ".datatableEntity";
+        let formSelector = ".filtersForm";
+        let resultSelector = "#serviciosList";
 
-                    // Reemplazar el contenido del cuerpo de la tabla
-                    $('#serviciosList').html(response.html);
+        // Inicializa DataTable cuando se carga la página por primera vez
+        initializeDataTable(tableSelector);
 
-                    // Seleccionar nuevamente el elemento de la tabla y volver a inicializar DataTable
-                    table = initializeDataTable(".datatableEntity");
-                }
-            });
-        });
+        // Configura el filtrado de DataTable
+        setupDataTableFilters(tableSelector, formSelector, resultSelector);
     });
 </script>
 {% endblock %}

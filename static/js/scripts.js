@@ -1,4 +1,5 @@
 function initializeDataTable(selector) {
+  console.log("holaa")
   return $(selector).DataTable({
       "destroy": true,
       pageLength: 10,
@@ -27,6 +28,24 @@ function initializeDataTable(selector) {
           }
       },
       order: [[0, "desc"]],
+  });
+}
+
+function setupDataTableFilters(tableSelector, formSelector, resultSelector) {
+  $(formSelector).on('change', 'select, input, input[type="date"]', function () {
+      $.ajax({
+          url: $(formSelector).attr('action'),
+          data: $(formSelector).serialize(),
+          success: function (response) {
+              if ($.fn.DataTable.isDataTable(tableSelector)) {
+                  $(tableSelector).DataTable().destroy();
+              }
+
+              $(resultSelector).html(response.html);
+
+              initializeDataTable(tableSelector);
+          }
+      });
   });
 }
 
