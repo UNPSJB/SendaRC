@@ -9,9 +9,9 @@ El proyecto busca desarrollar un software para la empresa Senda, permitiendo la 
 ### Listados:
 [![193shots-so.png](https://i.postimg.cc/9QSmBxD4/193shots-so.png)](https://postimg.cc/k2QPJvF9) <br>
 #### Altas, Bajas, Modificaciones y Eliminaciónes: 
-[![493shots-so.png](https://i.postimg.cc/kXTX2M9v/493shots-so.png)](https://postimg.cc/GHs1NC44) <br>
+[![493shots-so.png](https://i.postimg.cc/y6vzPf5V/493shots-so.png)](https://postimg.cc/pyh7VBR7) <br>
 ### Generar Presupuestos: 
-[![12shots-so.png](https://i.postimg.cc/ZqdTsrNw/12shots-so.png)](https://postimg.cc/wt987R0N) <br>
+[![12shots-so.png](https://i.postimg.cc/gJpPM1m0/12shots-so.png)](https://postimg.cc/1gvTXCgx) <br>
 
 # Instalar 🧑‍💻
 ### ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
