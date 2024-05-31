@@ -6,7 +6,8 @@
 {% endblock %}
 {% block title%}
 <h1 class="titulo">Servicio <span class="operacion">> Gestión Servicios</span></h1>
-<a href="{% url 'presupuestarCliente' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Generar Presupuesto</a>
+<a href="{% url 'presupuestarCliente' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Generar
+    Presupuesto</a>
 {% endblock %}
 {% block listado%}
 <div class="container contenedor-tabla">
@@ -42,7 +43,8 @@
 </div>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i
+                class="bi bi-x-lg"></i></button>
     </div>
     <div class="offcanvas-body">
     </div>
@@ -50,14 +52,23 @@
 {% endblock %}
 {% block extrajs %}{{block.super}}
 <script>
-    $(document).ready(function() {
-        $('.filtersForm').on('change', 'select, input, input[type="date"]', function() {
-            console.log("cambio la fecha")
+    $(document).ready(function () {
+        let table = $(".datatableEntity").DataTable();
+        $('.filtersForm').on('change', 'select, input, input[type="date"]', function () {
             $.ajax({
                 url: $('.filtersForm').attr('action'),
                 data: $('.filtersForm').serialize(),
-                success: function(response) {
+                success: function (response) {
+                    // Destruir la instancia existente de DataTable
+                    if ($.fn.DataTable.isDataTable(".datatableEntity")) {
+                        table.destroy();
+                    }
+
+                    // Reemplazar el contenido del cuerpo de la tabla
                     $('#serviciosList').html(response.html);
+
+                    // Seleccionar nuevamente el elemento de la tabla y volver a inicializar DataTable
+                    table = initializeDataTable(".datatableEntity");
                 }
             });
         });

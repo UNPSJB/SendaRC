@@ -227,6 +227,7 @@ class gestionServicios(ListView):
         try:
             if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 html = render_to_string('servicio/serviciosList.html', context, request=self.request)
+                print(html)
                 return JsonResponse({'html': html})
             else:
                 return super().render_to_response(context, **response_kwargs)
