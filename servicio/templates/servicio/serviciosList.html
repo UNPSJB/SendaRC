@@ -5,16 +5,27 @@
     <td scope="row">{{ servicio.metros2 }}m²</td>
     <td scope="row">{{ servicio.getTipo }}</td>
     <td scope="row">{{ servicio.getEstado }}</td>
+    {% if servicio.fecha_inicio %}
+        <td scope="row">{{ servicio.fecha_inicio|date:"d/m/Y" }}</td>
+    {% else %}
+        <td scope="row"><i class="bi bi-dash-lg"></i></td>
+    {% endif %}
+
+    {% if servicio.fecha_finaliza %}
+        <td scope="row">{{ servicio.fecha_finaliza|date:"d/m/Y" }}</td>
+    {% else %}
+        <td scope="row"><i class="bi bi-dash-lg"></i></td>
+    {% endif %}
     <td scope="row">{{ servicio.getImporteTotalFormateado }}</td>
     <td scope="row">
-        <button href="{% url 'canvasServicio' servicio.pk %}" class="opcion" type="button" 
-            data-url="/servicio/gestionServicios/{{servicio.pk}}"
-            data-bs-toggle="offcanvas" 
-            data-bs-target="#offcanvasExample" 
-            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-        <a href="{% url 'modificarPresupuesto' servicio.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+        <button href="{% url 'canvasServicio' servicio.pk %}" class="opcion" type="button"
+            data-url="/servicio/gestionServicios/{{servicio.pk}}" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+        <a href="{% url 'modificarPresupuesto' servicio.pk %}" class="opcion"><i
+                class="bi bi-pencil-square"></i></i></a>
         <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-        <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}" class="opcion"><i class="bi bi-printer"></i></i></i></a>
+        <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}" class="opcion"><i
+                class="bi bi-printer"></i></i></i></a>
     </td>
 
     </td>

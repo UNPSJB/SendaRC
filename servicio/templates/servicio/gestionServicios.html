@@ -26,6 +26,8 @@
                             <th scope="col">Metros cuadrados</th>
                             <th scope="col">Tipo</th>
                             <th scope="col">Estado</th>
+                            <th scope="col">Fecha Inicio</th>
+                            <th scope="col">Fecha Fin</th>
                             <th scope="col">Total</th>
                             <th scope="col">Opciones</th>
                         </tr>
@@ -49,7 +51,8 @@
 {% block extrajs %}{{block.super}}
 <script>
     $(document).ready(function() {
-        $('.filtersForm').on('change', 'select', function() {
+        $('.filtersForm').on('change', 'select, input, input[type="date"]', function() {
+            console.log("cambio la fecha")
             $.ajax({
                 url: $('.filtersForm').attr('action'),
                 data: $('.filtersForm').serialize(),

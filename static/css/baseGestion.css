@@ -2,11 +2,12 @@
     color: #FFF;
     height: auto;
     padding-inline: 25px;
-    padding-block: 20px;
+    padding-block: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #252527;
+    margin-bottom: 7px;
 }
 
 .titulo {
@@ -63,15 +64,16 @@
 .datatableEntity {
     background-color: #0c0c0c;
     border-collapse: collapse; 
-    border-radius: 5px; 
+    border: 1px solid #252527;
 }
 
 .light-mode .datatableEntity{
     background-color: #f3f3f3;
+    border: 1px solid #d3d3d3;
 }
 
 .light-mode .datatableEntity th{
-    border-bottom: 1px solid #c7c7c7;
+    border-bottom: 1px solid #d3d3d3 ;
     color: #2e2e2e;
 }
 
@@ -80,7 +82,7 @@
 }
 
 .light-mode .datatableEntity tbody tr:not(:last-child){
-    border-bottom: 1px solid #c7c7c7; 
+    border-bottom: 1px solid #cfcfcf; 
 }
 
 
@@ -97,6 +99,7 @@
     padding-block: 10px;
     background-color: #ffffff;
     transition: all 0.1s ease-in-out;
+    border: 1px solid #ffff;
 }
 .seccion-cabecera > a:hover{
     background-color: #c7c7c7;

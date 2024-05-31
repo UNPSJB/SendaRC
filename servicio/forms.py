@@ -14,7 +14,7 @@ class FiltrosServiciosForm(forms.Form):
 
     estado = forms.ChoiceField(choices=ESTADOS, required=False)
     tipo = forms.ChoiceField(choices=TIPO, required=False)
-    """"
+
     fecha_inicio = forms.DateField(
         required=False,
         widget=forms.DateInput(attrs={'type': 'date'})
@@ -23,7 +23,6 @@ class FiltrosServiciosForm(forms.Form):
         required=False,
         widget=forms.DateInput(attrs={'type': 'date'})
     )
-    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,8 +32,8 @@ class FiltrosServiciosForm(forms.Form):
             Div(
                 Field('estado', css_class='form-select form-select-sm form-select-filter'),
                 Field('tipo', css_class='form-select form-select-sm form-select-filter mb-0'),
-                #Field('fecha_inicio', css_class='form-control form-control-sm form-select-filter'),
-                #Field('fecha_finaliza', css_class='form-control form-control-sm form-select-filter'),
+                Field('fecha_inicio', css_class='form-control form-control-sm form-select-filter'),
+                Field('fecha_finaliza', css_class='form-control form-control-sm form-select-filter'),
                 css_class='contenedorFiltersForm'
             )
         )

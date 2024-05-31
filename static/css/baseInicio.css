@@ -94,7 +94,7 @@
     gap: 2px;
 }
 
-.container-btn-cerrar-sesion>a {
+.optionsNavBar >a {
     width: 38px !important;
     height: 35px !important;
     background-color: #252527;
