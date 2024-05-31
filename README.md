@@ -4,8 +4,10 @@
 El proyecto busca desarrollar un software para la empresa Senda, permitiendo la gestión de servicios de limpieza eventual y determinado. Los objetivos incluyen automatizar; La gestión de Presupuestos, para eso gestiona los tipos de servicios. La gestión de los empleados, para luego poder ser asignados a servicios específicos. La gestión de clientes ocasionales o habituales. Además, el software se enfocará en agilizar el proceso de cobro de los servicios ofrecidos, también registrar reclamos de los servicios o sancionar a los empleados. La meta es mejorar la eficacia operativa de Senda al optimizar la planificación, ejecución y seguimiento de los servicios de limpieza, brindando así una solución centralizada y funcional para todas las fases del proceso.
 
 # Caracteristicas principales ✅
+### Manejo de Usuarios
+[![284shots-so.png](https://i.postimg.cc/K89Hw7Zs/284shots-so.png)](https://postimg.cc/21ZGBZL4)
 ### Bienvenida:
-[![766shots-so.png](https://i.postimg.cc/Qx8dNKLM/766shots-so.png)](https://postimg.cc/K4W2Jz8X) <br>
+[![766shots-so.png](https://i.postimg.cc/P5f7SVkw/766shots-so.png)](https://postimg.cc/RN8GFRhS) <br>
 ### Listados:
 [![193shots-so.png](https://i.postimg.cc/tJmwHcQW/193shots-so.png)](https://postimg.cc/xNMtvtd1) <br>
 #### Altas, Bajas, Modificaciones y Eliminaciónes: 
