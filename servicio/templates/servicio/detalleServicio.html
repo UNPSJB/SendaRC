@@ -19,7 +19,6 @@
             </div>
             <hr class="my-0">
             <div class="card-body card-body-servicio" style="background-color: #0c0c0c;">
-                <h5 class="card-title">Servicio Información:</h5>
                 <p class="mb-2" style="font-size: 13px;">Cliente: {{servicio.cliente.nombre}}
                     {{servicio.cliente.apellido}}</p>
                 <p class="mb-2" style="font-size: 13px;">CUIT/CUIL: {{servicio.cliente.cuil}}</p>
@@ -54,8 +53,8 @@
                         </li>
                         {% if servicio.getEstado != "Presupuestado" %}
                         <li class="nav-item">
-                            <a class="nav-link navItemResumen" style="padding-inline: 80px;" href="#"
-                                data-tabla="tablaEmpleados">Empleados</a>
+                            <a class="nav-link navItemResumen" style="width: auto; display: flex; gap: 5px; align-items: center;" href="#"
+                                data-tabla="tablaEmpleados">Empleados <i class="bi bi-people-fill"></i></a>
                         </li>
                         {% endif %}
                     </ul>

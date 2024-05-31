@@ -1,7 +1,7 @@
 from typing import Any
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Div, Field, HTML, Submit
+from crispy_forms.layout import Layout, Fieldset, Div, Field,Button, HTML, Submit
 from crispy_bootstrap5.bootstrap5 import FloatingField 
 from django.forms import ValidationError, formset_factory, modelformset_factory, ModelMultipleChoiceField, CheckboxSelectMultiple
 from datetime import datetime
@@ -23,6 +23,9 @@ class FiltrosServiciosForm(forms.Form):
         required=False,
         widget=forms.DateInput(attrs={'type': 'date'})
     )
+
+    limpiar_fecha_inicio = forms.BooleanField(required=False, initial=False, widget=forms.HiddenInput())
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

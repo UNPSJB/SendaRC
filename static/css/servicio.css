@@ -21,11 +21,13 @@
 }
 
 .dateinput {
-    background-color: #09090b;
+    border: 1px solid #252527;
+    background-color: #0c0c0c;
 }
 
 .form-select {
-    background-color: #15151a;
+    background-color: #0c0c0c;
+    border: 1px solid #252527;
 }
 
 #tablaServicios > thead,#tablaFrecuencias > thead, #tablaEmpleados > thead{
@@ -95,7 +97,7 @@
 }
 
 .light-mode .dateinput {
-    background-color: #cecece;
+    background-color: #f3f3f3 ;
 }
 
 .light-mode .btn-contratar {
@@ -107,15 +109,18 @@
 }
 
 .light-mode .formSetEmpleados {
-    background-color: #cecece !important;
+    background-color: #f3f3f3 !important;
+    border: 1px solid #cfcfcf !important;
 }
 
 .light-mode .form-select {
-    background-color: #a7a7a7 !important;
+    background-color: #f3f3f3 !important;
+    border: 1px solid #cfcfcf !important;
 }
 
 .light-mode .select2-selection--multiple {
-    background-color: #a7a7a7 !important;
+    background-color: #f3f3f3 !important;
+    border: 1px solid #cfcfcf !important;
 }
 
 .light-mode .select2-search__field {

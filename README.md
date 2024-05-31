@@ -5,13 +5,13 @@ El proyecto busca desarrollar un software para la empresa Senda, permitiendo la 
 
 # Caracteristicas principales ✅
 ### Bienvenida:
-[![778shots-so.png](https://i.postimg.cc/DZ4qbJ49/778shots-so.png)](https://postimg.cc/sQyBk2cm) <br>
+[![766shots-so.png](https://i.postimg.cc/Qx8dNKLM/766shots-so.png)](https://postimg.cc/K4W2Jz8X) <br>
 ### Listados:
-[![994shots-so.png](https://i.postimg.cc/qqf2cJ8z/994shots-so.png)](https://postimg.cc/7GVCwytk) <br>
+[![193shots-so.png](https://i.postimg.cc/9QSmBxD4/193shots-so.png)](https://postimg.cc/k2QPJvF9) <br>
 #### Altas, Bajas, Modificaciones y Eliminaciónes: 
-[![686shots-so.png](https://i.postimg.cc/MZR76BSR/686shots-so.png)](https://postimg.cc/hhDzMfhP) <br>
+[![493shots-so.png](https://i.postimg.cc/kXTX2M9v/493shots-so.png)](https://postimg.cc/GHs1NC44) <br>
 ### Generar Presupuestos: 
-[![295shots-so.png](https://i.postimg.cc/MKm1R8Xp/295shots-so.png)](https://postimg.cc/WhtDLCMB) <br>
+[![12shots-so.png](https://i.postimg.cc/ZqdTsrNw/12shots-so.png)](https://postimg.cc/wt987R0N) <br>
 
 # Instalar 🧑‍💻
 ### ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)

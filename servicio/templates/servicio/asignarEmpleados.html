@@ -11,9 +11,9 @@
         {{servicio.cliente.apellido}} | Inicio: {{servicio.fecha_inicio}}  Fin: {{servicio.fecha_finaliza}}</span></h1>
 {% endblock %}
 {% block formulario %}
-<div style="max-width: 100%; overflow: hidden;">
-    <div class="row g-5" style="padding-inline: 200px; min-width: 1250px;">
-        <div class="card card-servicio text-light" style="padding-top: 20px; background-color: #15151a;">
+<div style="max-width: 100%; overflow: hidden; display: flex; justify-content: center;">
+    <div class="row g-5" style="padding-inline: 200px; min-width: 1250px; margin-bottom: 40px;">
+        <div class="card card-servicio text-light" style="padding-top: 20px; background-color: #0c0c0c; border: 1px solid #252527;">
             <div class="card-header card-header-servicio"
                 style="display: flex; justify-content: space-between; align-items: center; border-bottom: none;">
                 <h4>Asignación de empleados:</h4>
@@ -28,7 +28,7 @@
                     <div class="form-group mb-3" style="display: flex; flex-direction: column; gap: 20px;">
                         {% for f in formset %}
                         <div class="formSetEmpleados"
-                            style="background-color: #09090b; padding: 20px; border-radius: 6px;">
+                            style="background-color: #0c0c0c; padding: 20px; border-radius: 6px; border: 1px solid #252527">
                             <span class="numEmpleado" id="numEmpleado{{ index }}" style="color: #adfa1d;"></span>
                             {{ f | crispy}}
                         </div>
