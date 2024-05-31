@@ -19,22 +19,22 @@
             </div>
             <hr class="my-0">
             <div class="card-body card-body-servicio" style="background-color: #0c0c0c;">
-                <p class="mb-2" style="font-size: 13px;">Cliente: {{servicio.cliente.nombre}}
-                    {{servicio.cliente.apellido}}</p>
-                <p class="mb-2" style="font-size: 13px;">CUIT/CUIL: {{servicio.cliente.cuil}}</p>
-                <p class="mb-2" style="font-size: 13px;">Dirección Inmueble: {{servicio.direccion}}</p>
-                <p class="mb-2" style="font-size: 13px;">Metros Inmueble: {{servicio.metros2}}m²</p>
-                <p class="mb-2" style="font-size: 13px;">Fecha Emisión: {{servicio.fecha_emision}}</p>
-                <p class="mb-2" style="font-size: 13px;">Plazo de Vigencia: {{servicio.plazo_vigencia}}</p>
-                <p class="mb-2" style="font-size: 13px;">Tipo de Servicio: {{servicio.getTipo}}</p>
-                <p class="mb-4" style="font-size: 13px;">Estado: {{servicio.getEstado}}</p>
+                <p class="mb-2" style="font-size: 13px;">Cliente: <span style="font-family: 'InterRegular', serif;">{{servicio.cliente.nombre}}
+                    {{servicio.cliente.apellido}}</span></p>
+                <p class="mb-2" style="font-size: 13px;">CUIT/CUIL: <span style="font-family: 'InterRegular', serif;">{{servicio.cliente.cuil}}</span></p>
+                <p class="mb-2" style="font-size: 13px;">Dirección Inmueble: <span style="font-family: 'InterRegular', serif;">{{servicio.direccion}}</span></p>
+                <p class="mb-2" style="font-size: 13px;">Metros Inmueble: <span style="font-family: 'InterRegular', serif;">{{servicio.metros2}}m²</span></p>
+                <p class="mb-2" style="font-size: 13px;">Fecha Emisión: <span style="font-family: 'InterRegular', serif;">{{servicio.fecha_emision}}</span></p>
+                <p class="mb-2" style="font-size: 13px;">Plazo de Vigencia: <span style="font-family: 'InterRegular', serif;">{{servicio.plazo_vigencia}}</span></p>
+                <p class="mb-2" style="font-size: 13px;">Tipo de Servicio: <span style="font-family: 'InterRegular', serif;">{{servicio.getTipo}}</span></p>
+                <p class="mb-4" style="font-size: 13px;">Estado: <span style= "font-family: 'InterRegular', serif;">{{servicio.getEstado}}</span></p>
                 <div class="card card-observaciones mb-0 text-light" style="background-color: #0c0c0c; border: 1px solid #252527;">
                     <div class="card-header card-header-observaciones" style="color: #b1b1bd;">
                         Observaciones <i class="bi bi-eye-fill"></i>
                     </div>
                     <div class="card-body card-body-observaciones">
                         <blockquote class="blockquote mb-0 ">
-                            <p style="font-size: 15px; font-family: 'InterMedium', serif;">{{servicio.observaciones}}</p>
+                            <p style="font-size: 15px; font-family: 'InterThin', serif;">{{servicio.observaciones}}</p>
                         </blockquote>
                     </div>
                 </div>
@@ -42,17 +42,17 @@
             <div class="card-body card-body-servicio" style="background-color: #0c0c0c;">
                 <h5 class="card-title">
                     <ul class="nav nav-tabs" style="font-size: 13px; gap: 20px;" id="opcionesTabla">
-                        <li class="nav-item">
+                        <li class="nav-item navItemTab">
                             <a class="nav-link navItemResumen" style="width: auto; display: flex; gap: 5px; align-items: center;" aria-current="page" href="#"
                                 data-tabla="tablaServicios">Tipos
                                 de Servicios<i class="bi bi-tags-fill"></i></a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item navItemTab">
                             <a class="nav-link navItemResumen" style="width: auto; display: flex; gap: 5px; align-items: center;" href="#"
                                 data-tabla="tablaFrecuencias">Frecuencias <i class="bi bi-stopwatch-fill"></i></a>
                         </li>
                         {% if servicio.getEstado != "Presupuestado" %}
-                        <li class="nav-item">
+                        <li class="nav-item navItemTab">
                             <a class="nav-link navItemResumen" style="width: auto; display: flex; gap: 5px; align-items: center;" href="#"
                                 data-tabla="tablaEmpleados">Empleados <i class="bi bi-people-fill"></i></a>
                         </li>
@@ -71,8 +71,8 @@
                         {% for t in tipoServicios %}
                         <tr class="fila-tabla">
                             <td scope="row" class="text-center rowResumen" style=" font-family: 'InterSemiBold',serif;">{{ t.tipoServicio.descripcion }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterThin',serif;">{{ t.tipoServicio.getPrecioFormateado }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterThin',serif;">{{ t.cantidad }}</td>
+                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ t.tipoServicio.getPrecioFormateado }}</td>
+                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ t.cantidad }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -88,7 +88,7 @@
                         {% for frecu in frecuencias %}
                         <tr class="fila-tabla">
                             <td scope="row" class="text-center rowResumen" style=" font-family: 'InterSemiBold',serif;">{{ frecu.getDia }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterThin',serif;">{{ frecu.getTurno }}</td>
+                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ frecu.getTurno }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -105,7 +105,7 @@
                         {% for empleado in empleados %}
                         <tr class="fila-tabla">
                             <td scope="row" class="text-center rowResumen">{{ empleado.nombre }} {{ empleado.apellido }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterThin',serif;">{{ empleado.getSueldoFormateado }}</td>
+                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ empleado.getSueldoFormateado }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

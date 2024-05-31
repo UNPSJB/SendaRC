@@ -2,6 +2,10 @@
     color: #adfa1d;
 }
 
+.navItemTab{
+    margin-bottom: 0px !important;
+}
+
 .btn-contratar,
 .btnImprimir {
     background: none;
