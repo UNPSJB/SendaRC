@@ -6,13 +6,13 @@ El proyecto busca desarrollar un software para la empresa Senda, permitiendo la 
 # Caracteristicas principales ✅
 ### Manejo de Usuarios
 [![284shots-so.png](https://i.postimg.cc/K89Hw7Zs/284shots-so.png)](https://postimg.cc/21ZGBZL4)
-### Bienvenida:
+### Bienvenida
 [![766shots-so.png](https://i.postimg.cc/P5f7SVkw/766shots-so.png)](https://postimg.cc/RN8GFRhS) <br>
-### Listados:
+### Listados
 [![193shots-so.png](https://i.postimg.cc/tJmwHcQW/193shots-so.png)](https://postimg.cc/xNMtvtd1) <br>
-#### Altas, Bajas, Modificaciones y Eliminaciónes: 
+#### Altas, Bajas, Modificaciones y Eliminaciónes
 [![493shots-so.png](https://i.postimg.cc/y6vzPf5V/493shots-so.png)](https://postimg.cc/pyh7VBR7) <br>
-### Generar Presupuestos: 
+### Generar Presupuestos
 [![12shots-so.png](https://i.postimg.cc/gJpPM1m0/12shots-so.png)](https://postimg.cc/1gvTXCgx) <br>
 
 # Instalar 🧑‍💻
