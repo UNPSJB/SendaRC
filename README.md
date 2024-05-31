@@ -7,13 +7,13 @@ El proyecto busca desarrollar un software para la empresa Senda, permitiendo la 
 ### Manejo de Usuarios
 [![284shots-so.png](https://i.postimg.cc/K89Hw7Zs/284shots-so.png)](https://postimg.cc/21ZGBZL4)
 ### Bienvenida
-[![766shots-so.png](https://i.postimg.cc/P5f7SVkw/766shots-so.png)](https://postimg.cc/RN8GFRhS) <br>
+[![766shots-so.png](https://i.postimg.cc/P5f7SVkw/766shots-so.png)](https://postimg.cc/RN8GFRhS)
 ### Listados
-[![193shots-so.png](https://i.postimg.cc/tJmwHcQW/193shots-so.png)](https://postimg.cc/xNMtvtd1) <br>
+[![193shots-so.png](https://i.postimg.cc/tJmwHcQW/193shots-so.png)](https://postimg.cc/xNMtvtd1)
 #### Altas, Bajas, Modificaciones y Eliminaciónes
-[![493shots-so.png](https://i.postimg.cc/y6vzPf5V/493shots-so.png)](https://postimg.cc/pyh7VBR7) <br>
+[![493shots-so.png](https://i.postimg.cc/y6vzPf5V/493shots-so.png)](https://postimg.cc/pyh7VBR7)
 ### Generar Presupuestos
-[![12shots-so.png](https://i.postimg.cc/gJpPM1m0/12shots-so.png)](https://postimg.cc/1gvTXCgx) <br>
+[![12shots-so.png](https://i.postimg.cc/gJpPM1m0/12shots-so.png)](https://postimg.cc/1gvTXCgx)
 
 # Instalar 🧑‍💻
 ### ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
