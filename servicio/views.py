@@ -12,6 +12,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.template.loader import render_to_string
 
 
 def calcularPorcentaje(total_importe, porcentaje):
@@ -194,37 +195,44 @@ class gestionServicios(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = FiltrosServiciosForm(self.request.GET)
         return context
+
     def get_queryset(self):
-        queryset = Servicio.objects.all()
-        
+        queryset = Servicio.objects.all()   
         # Filtrar por estado
         estado_servicio = self.request.GET.get('estado', '')
         tipo_servicio = self.request.GET.get('tipo', '')
+        print(estado_servicio)
         
         if tipo_servicio:
             queryset = queryset.filter(tipo=tipo_servicio)
         if estado_servicio:
             queryset = queryset.filter(estado=estado_servicio)
+            print(queryset)
 
         # Filtrar por fecha de inicio
         fecha_inicio = self.request.GET.get('fecha_inicio', '')
         if fecha_inicio:
             queryset = queryset.filter(fecha_inicio__gte=fecha_inicio)
-        
         # Filtrar por fecha de finalización
         fecha_finaliza = self.request.GET.get('fecha_finaliza', '')
         if fecha_finaliza:
             queryset = queryset.filter(fecha_finaliza__lte=fecha_finaliza)
-
         return queryset
-    def get(self, request, *args, **kwargs):
-        self.request.session['presupuesto'] = {}
-        self.request.session['servicios'] = []
-        self.request.session['frecuencias'] = []
-        self.request.session['servicio_pk'] = None
 
-        # Llama al método super() para ejecutar el comportamiento normal de la vista
-        return super().get(request, *args, **kwargs)
+    def render_to_response(self, context, **response_kwargs):
+        #self.request.session['presupuesto'] = {}
+        #self.request.session['servicios'] = []
+        #self.request.session['frecuencias'] = []
+        #self.request.session['servicio_pk'] = None
+        try:
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('servicio/serviciosList.html', context, request=self.request)
+                return JsonResponse({'html': html})
+            else:
+                return super().render_to_response(context, **response_kwargs)
+        except Exception as e:
+            print(f"Error al renderizar la respuesta: {e}")
+            return super().render_to_response(context, **response_kwargs)
 
 @login_required
 #vista que utiliza en canvas (modal) en la gestion para ver un miniResumen de un servicio

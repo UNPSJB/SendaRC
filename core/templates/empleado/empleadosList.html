@@ -1,0 +1,18 @@
+{% for empleado in empleados %}
+<tr class="fila-tabla">
+    <td scope="row">{{ empleado.pk }}</td>
+    <td scope="row">{{ empleado.numDNI }}</td>
+    <td scope="row">{{ empleado.nombre }}</td>
+    <td scope="row">{{ empleado.apellido }}</td>
+    <td scope="row">{{ empleado.telefono }}</td>
+    <td scope="row">{{ empleado.getEstado }}</td>
+    <td scope="row">
+        <button href="{% url 'detalleEmpleado' empleado.pk %}" class="opcion" type="button" 
+            data-url="/gestionEmpleado/{{empleado.pk}}"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasExample"
+            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+        <a href="{% url 'modificarEmpleado' empleado.pk%}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+    </td>
+</tr>
+{% endfor %}

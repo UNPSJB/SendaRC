@@ -1,7 +1,8 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block extracss %}
-    {{block.super}}
+{{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block title%}
@@ -10,6 +11,11 @@
 {% endblock %}
 {% block listado%}
 <div class="container contenedor-tabla">
+    <div class="filters">
+        <form method="GET" class="filtersForm">
+            {% crispy form %}
+        </form>
+    </div>
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="table-responsive">
@@ -24,30 +30,8 @@
                             <th scope="col">Opciones</th>
                         </tr>
                         </thead>
-                    <tbody>
-                        {% for tipo in tipoServicios %}
-                            <tr class="fila-tabla" data-id="{{ tipo.pk }}">
-                                <td scope="row">{{ tipo.pk }}</td>
-                                <td scope="row">{{ tipo.descripcion }}</td>
-                                <td scope="row">{{ tipo.getUnidadMedida }}</td>
-                                <td scope="row">{{ tipo.getPrecioFormateado }}</td>
-                                {% if tipo.activo %}
-                                    <td scope="row"><i class="bi bi-check-circle"></i></td>
-                                {% else %}
-                                    <td scope="row"><i class="bi bi-x-circle"></i></td>
-                                {% endif %}
-                                <td scope="row">
-                                    <button href="{% url 'detalleTipoServicio' tipo.pk %}" class="opcion" type="button" 
-                                        data-url="/gestionTipoServicio/{{tipo.pk}}"
-                                        data-bs-toggle="offcanvas" 
-                                        data-bs-target="#offcanvasExample" 
-                                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                                    <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                
-                        {% endfor %}
+                    <tbody id="tiposServiciosList">
+                        {% include 'tipoServicio/tiposServiciosList.html' %}
                     </tbody>
                 </table>
             </div>
@@ -62,7 +46,18 @@
     </div>
 </div>
 {% endblock %}
-
 {% block extrajs %}{{block.super}}
-   
+<script>
+    $(document).ready(function() {
+        $('.filtersForm').on('change', 'select', function() {
+            $.ajax({
+                url: $('.filtersForm').attr('action'),
+                data: $('.filtersForm').serialize(),
+                success: function(response) {
+                    $('#tiposServiciosList').html(response.html);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

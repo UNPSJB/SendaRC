@@ -1,5 +1,6 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/baseGestion.css' %}" rel="stylesheet" />
 {% endblock %}
@@ -8,23 +9,12 @@
 <a href="{% url 'altaInsumo' %}" class="btn-agregarEntidad"><i class="bi bi-plus-lg"></i> Agregar Insumo</a>
 {% endblock %}
 {% block listado %}
-<!--<div class="container contenedor-tabla-form">
-    <div class="container contenedor-filtrados">
-        <form method="GET" action="{% url 'gestionInsumos' %}">
-            <label for="id_estado" class="form-label">Estado</label>
-            <div class="contenedor-select-btn">
-                <select name="estado" id="estado" class="form-select form-select-sm form-select-filter">
-
-                    {% for option in estados %}
-                        <option value="{{ option }}" {% if option == request.GET.estado %} selected {% endif %}>{{ option }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit" class="btn-filtrar">Filtrar</button>
-            </div>
+<div class="container contenedor-tabla">
+    <div class="filters">
+        <form method="GET" class="filtersForm">
+            {% crispy form %}
         </form>
     </div>
-</div>-->
-<div class="container contenedor-tabla">
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="table-responsive">
@@ -41,26 +31,27 @@
                             <th scope="col">Opciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for insumo in insumos %}
-                            <tr class="fila-tabla">
-                                <td scope="row">{{ insumo.pk }} </td>
-                                <td scope="row">{{ insumo.descripcion }} </td>
-                                <td scope="row">{{ insumo.marca }} </td>
-                                <td scope="row">{{ insumo.getUni_Medida }} </td>
-                                <td scope="row">{{ insumo.contenido_neto }} </td>
-                                <td scope="row">{{ insumo.cantidad }} </td>
-                                <td scope="row">{{ insumo.getEstado }} </td>
-                                <td scope="row">      
-                                    <a href="{% url 'modificarInsumo' insumo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                    <tbody id="insumosList">
+                        {% include 'insumo/insumosList.html' %}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+{% block extrajs %}{{block.super}}
+<script>
+    $(document).ready(function() {
+        $('.filtersForm').on('change', 'select', function() {
+            $.ajax({
+                url: $('.filtersForm').attr('action'),
+                data: $('.filtersForm').serialize(),
+                success: function(response) {
+                    $('#insumosList').html(response.html);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

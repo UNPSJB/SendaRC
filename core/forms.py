@@ -345,25 +345,23 @@ class FiltroClientesForm(forms.Form):
                       css_class='form-select form-select-sm form-select-filter'),
                 Field(
                     'tipo', css_class='form-select form-select-sm form-select-filter mb-0'),
-                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
                 css_class='contenedorFiltersForm'
             )
         )
 
-class FiltroEmpleadosForm(forms.Form):
+class FiltroActivoForm(forms.Form):
     ESTADOS = [('Activos', 'Activos'), ('No activos',
                                         'No activos'), ('Todos', 'Todos')]
     estado = forms.ChoiceField(choices=ESTADOS, required=False)
 
     def __init__(self, *args, **kwargs):
-        super(FiltroClientesForm, self).__init__(*args, **kwargs)
+        super(FiltroActivoForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'get'
         self.helper.layout = Layout(
             Div(
                 Field(
                     'estado', css_class='form-select form-select-sm form-select-filter'),
-                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
                 css_class='contenedorFiltersForm'
             )
         )

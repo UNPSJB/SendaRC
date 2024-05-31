@@ -12,6 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from factura.models import Factura
 import re
+from django.template.loader import render_to_string
+
 
 @method_decorator(login_required, name='dispatch')
 class altaCliente(CreateView):
@@ -49,9 +51,9 @@ class gestionClientes(ListView):
         # Filtrar por estado (activo o no activo)
         estado = self.request.GET.get('estado', '')
         if estado == 'Activos' or not estado:
-            queryset = queryset.filter(activo=True)
+            queryset = Cliente.habilitados.all()
         elif estado == 'No activos':
-            queryset = queryset.filter(activo=False)
+            queryset = Cliente.deshabilitados.all()
 
         # Filtrar por tipo de persona o tipo
         tipo_persona = self.request.GET.get('tipo_persona', '')
@@ -63,6 +65,17 @@ class gestionClientes(ListView):
             queryset = queryset.filter(tipo=tipo)
 
         return queryset
+
+    def render_to_response(self, context, **response_kwargs):
+        try:
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('cliente/clientesList.html', context, request=self.request)
+                return JsonResponse({'html': html})
+            else:
+                return super().render_to_response(context, **response_kwargs)
+        except Exception as e:
+            print(f"Error al renderizar la respuesta: {e}")
+            return super().render_to_response(context, **response_kwargs)
     
 @method_decorator(login_required, name='dispatch')
 class updateCliente(UpdateView):
@@ -126,16 +139,29 @@ class gestionInsumos(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['estados'] = ['Habilitado', 'Deshabilitado', 'Todos']
-        
-        estado = self.request.GET.get('estado', '')
-        if estado == 'Habilitado' or not estado:
-            context['insumos'] = Insumo.habilitados.all()
-        elif estado == 'Deshabilitado':
-            context['insumos'] = Insumo.deshabilitados.all()
-        elif estado == 'Todos':
-            context['insumos'] = Insumo.objects.all()
+        context['form'] = FiltroActivoForm(self.request.GET)
         return context
+
+    def get_queryset(self):
+        queryset = Insumo.objects.all()
+        # Filtrar por estado (activo o no activo)
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activos' or not estado:
+            queryset = Insumo.habilitados.all()
+        elif estado == 'No activos':
+            queryset = Insumo.deshabilitados.all()
+        return queryset
+
+    def render_to_response(self, context, **response_kwargs):
+        try:
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('insumo/insumosList.html', context, request=self.request)
+                return JsonResponse({'html': html})
+            else:
+                return super().render_to_response(context, **response_kwargs)
+        except Exception as e:
+            print(f"Error al renderizar la respuesta: {e}")
+            return super().render_to_response(context, **response_kwargs)
 
 @method_decorator(login_required, name='dispatch')
 class updateInsumo(UpdateView):
@@ -177,6 +203,32 @@ class gestionTipoServicio(ListView):
     model = TipoServicio
     template_name = 'tipoServicio/gestionTipoServicio.html'
     context_object_name = 'tipoServicios'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FiltroActivoForm(self.request.GET)
+        return context
+
+    def get_queryset(self):
+        queryset = TipoServicio.objects.all()
+        # Filtrar por estado (activo o no activo)
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activos' or not estado:
+            queryset = TipoServicio.habilitados.all()
+        elif estado == 'No activos':
+            queryset = TipoServicio.deshabilitados.all()
+        return queryset
+
+    def render_to_response(self, context, **response_kwargs):
+        try:
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('tipoServicio/tiposServiciosList.html', context, request=self.request)
+                return JsonResponse({'html': html})
+            else:
+                return super().render_to_response(context, **response_kwargs)
+        except Exception as e:
+            print(f"Error al renderizar la respuesta: {e}")
+            return super().render_to_response(context, **response_kwargs)
 
 @login_required
 def tipoServicioDetalles(request, pk):
@@ -233,16 +285,29 @@ class gestionMaquinaria(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['estados'] = ['Activas', 'No activas', 'Todas']
-        
-        estado = self.request.GET.get('estado', '')
-        if estado == 'Activas' or not estado:
-            context['maquinarias'] = Maquinaria.habilitadas.all()
-        elif estado == 'No activas':
-            context['maquinarias'] = Maquinaria.deshabilitadas.all()
-        elif estado == 'Todas':
-            context['maquinarias'] = Maquinaria.objects.all()
+        context['form'] = FiltroActivoForm(self.request.GET)
         return context
+
+    def get_queryset(self):
+        queryset = Maquinaria.objects.all()
+        # Filtrar por estado (activo o no activo)
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Activos' or not estado:
+            queryset = Maquinaria.habilitadas.all()
+        elif estado == 'No activos':
+            queryset = Maquinaria.deshabilitadas.all()
+        return queryset
+
+    def render_to_response(self, context, **response_kwargs):
+        try:
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('maquinaria/maquinariasList.html', context, request=self.request)
+                return JsonResponse({'html': html})
+            else:
+                return super().render_to_response(context, **response_kwargs)
+        except Exception as e:
+            print(f"Error al renderizar la respuesta: {e}")
+            return super().render_to_response(context, **response_kwargs)
 
 @method_decorator(login_required, name='dispatch')
 class updateMaquinaria(UpdateView):
@@ -361,18 +426,29 @@ class gestionEmpleado(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = FiltroEmpleadosForm(self.request.GET)
-        context['estados'] = ['Habilitado', 'Deshabilitado', 'Todos']
+        context['form'] = FiltroActivoForm(self.request.GET)
         return context
-        
+
+    def get_queryset(self):
+        queryset = Empleado.objects.all()
+        # Filtrar por estado (activo o no activo)
         estado = self.request.GET.get('estado', '')
-        if estado == 'Habilitado' or not estado:
-            context['empleados'] = Empleado.habilitados.all()
-        elif estado == 'Deshabilitado':
-            context['empleados'] = Empleado.deshabilitados.all()
-        elif estado == 'Todos':
-            context['empleados'] = Empleado.objects.all()
-        return context
+        if estado == 'Activos' or not estado:
+            queryset = Empleado.habilitados.all()
+        elif estado == 'No activos':
+            queryset = Empleado.deshabilitados.all()
+        return queryset
+
+    def render_to_response(self, context, **response_kwargs):
+        try:
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('empleado/empleadosList.html', context, request=self.request)
+                return JsonResponse({'html': html})
+            else:
+                return super().render_to_response(context, **response_kwargs)
+        except Exception as e:
+            print(f"Error al renderizar la respuesta: {e}")
+            return super().render_to_response(context, **response_kwargs)
 
 @login_required
 def detalleEmpleado(request, pk):

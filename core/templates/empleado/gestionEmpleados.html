@@ -11,7 +11,7 @@
 {% block listado%}
 <div class="container contenedor-tabla">
     <div class="filters">
-        <form method="GET" action="{% url 'gestionEmpleado' %}">
+        <form method="GET" class="filtersForm">
             {% crispy form %}
         </form>
     </div>
@@ -30,25 +30,8 @@
                             <th scope="col">Opciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for empleado in empleados %}
-                            <tr class="fila-tabla">
-                                <td scope="row">{{ empleado.pk }}</td>
-                                <td scope="row">{{ empleado.numDNI }}</td>
-                                <td scope="row">{{ empleado.nombre }}</td>
-                                <td scope="row">{{ empleado.apellido }}</td>
-                                <td scope="row">{{ empleado.telefono }}</td>
-                                <td scope="row">{{ empleado.getEstado }}</td>
-                                <td scope="row">
-                                    <button href="{% url 'detalleEmpleado' empleado.pk %}" class="opcion" type="button" 
-                                        data-url="/gestionEmpleado/{{empleado.pk}}"
-                                        data-bs-toggle="offcanvas"
-                                        data-bs-target="#offcanvasExample"
-                                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                                    <a href="{% url 'modificarEmpleado' empleado.pk%}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                    <tbody id="empleadosList">
+                        {% include 'empleado/empleadosList.html' %}
                     </tbody>
                 </table>
             </div>
@@ -62,4 +45,19 @@
     <div class="offcanvas-body">
     </div>
 </div>
+{% endblock %}
+{% block extrajs %}{{block.super}}
+<script>
+    $(document).ready(function() {
+        $('.filtersForm').on('change', 'select', function() {
+            $.ajax({
+                url: $('.filtersForm').attr('action'),
+                data: $('.filtersForm').serialize(),
+                success: function(response) {
+                    $('#empleadosList').html(response.html);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

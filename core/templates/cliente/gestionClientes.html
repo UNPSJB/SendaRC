@@ -11,7 +11,7 @@
 {% block listado%}
 <div class="container contenedor-tabla">
     <div class="filters">
-        <form method="GET" action="{% url 'gestionClientes' %}">
+        <form method="GET" class="filtersForm">
             {% crispy form %}
         </form>
     </div>
@@ -30,30 +30,8 @@
                             <th scope="col">Opciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for cliente in clientes %}
-                            <tr class="fila-tabla">
-                                <td scope="row">{{ cliente.cuil }}</td>
-                                <td scope="row">{{ cliente.nombre }}</td>
-                                <td scope="row">{{ cliente.apellido }}</td>
-                                <td scope="row">{{ cliente.getTipo }}</td>
-                                <td scope="row">{{ cliente.getTipoPersona }}</td>
-                                {% if cliente.activo %}
-                                    <td scope="row"><i class="bi bi-check-circle"></i></td>
-                                {% else %}
-                                    <td scope="row"><i class="bi bi-x-circle"></i></td>
-                                {% endif %}
-                                <td scope="row">
-                                    <button href="{% url 'detalleCliente' cliente.pk %}" class="opcion" type="button" 
-                                        data-url="/gestionClientes/{{cliente.pk}}"
-                                        data-bs-toggle="offcanvas" 
-                                        data-bs-target="#offcanvasExample" 
-                                        aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-                                    <a href="{% url 'modificarCliente' cliente.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-                                    <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                    <tbody id="clientesList">
+                        {% include 'cliente/clientesList.html' %}
                     </tbody>
                 </table>
             </div>
@@ -70,5 +48,17 @@
 {% endblock %}
 
 {% block extrajs %}{{block.super}}
-   
+<script>
+    $(document).ready(function() {
+        $('.filtersForm').on('change', 'select', function() {
+            $.ajax({
+                url: $('.filtersForm').attr('action'),
+                data: $('.filtersForm').serialize(),
+                success: function(response) {
+                    $('#clientesList').html(response.html);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

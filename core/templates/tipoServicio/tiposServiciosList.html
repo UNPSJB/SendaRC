@@ -1,0 +1,23 @@
+{% for tipo in tipoServicios %}
+<tr class="fila-tabla" data-id="{{ tipo.pk }}">
+    <td scope="row">{{ tipo.pk }}</td>
+    <td scope="row">{{ tipo.descripcion }}</td>
+    <td scope="row">{{ tipo.getUnidadMedida }}</td>
+    <td scope="row">{{ tipo.getPrecioFormateado }}</td>
+    {% if tipo.activo %}
+        <td scope="row"><i class="bi bi-check-circle"></i></td>
+    {% else %}
+        <td scope="row"><i class="bi bi-x-circle"></i></td>
+    {% endif %}
+    <td scope="row">
+        <button href="{% url 'detalleTipoServicio' tipo.pk %}" class="opcion" type="button" 
+            data-url="/gestionTipoServicio/{{tipo.pk}}"
+            data-bs-toggle="offcanvas" 
+            data-bs-target="#offcanvasExample" 
+            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+        <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+        <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+    </td>
+</tr>
+
+{% endfor %}

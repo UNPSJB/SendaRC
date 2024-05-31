@@ -35,8 +35,7 @@ class FiltrosServiciosForm(forms.Form):
                 Field('tipo', css_class='form-select form-select-sm form-select-filter mb-0'),
                 #Field('fecha_inicio', css_class='form-control form-control-sm form-select-filter'),
                 #Field('fecha_finaliza', css_class='form-control form-control-sm form-select-filter'),
-                Submit('submit', 'Filtrar', css_class='btn-filtrar'),
-                css_class='contenedor-select-btn'
+                css_class='contenedorFiltersForm'
             )
         )
 class FormPresupuestoCliente(forms.ModelForm):

@@ -1,0 +1,22 @@
+{% for servicio in servicios %}
+<tr class="fila-tabla">
+    <td scope="row">{{ servicio.pk }}</td>
+    <td scope="row">{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
+    <td scope="row">{{ servicio.metros2 }}m²</td>
+    <td scope="row">{{ servicio.getTipo }}</td>
+    <td scope="row">{{ servicio.getEstado }}</td>
+    <td scope="row">{{ servicio.getImporteTotalFormateado }}</td>
+    <td scope="row">
+        <button href="{% url 'canvasServicio' servicio.pk %}" class="opcion" type="button" 
+            data-url="/servicio/gestionServicios/{{servicio.pk}}"
+            data-bs-toggle="offcanvas" 
+            data-bs-target="#offcanvasExample" 
+            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+        <a href="{% url 'modificarPresupuesto' servicio.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+        <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
+        <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}" class="opcion"><i class="bi bi-printer"></i></i></i></a>
+    </td>
+
+    </td>
+</tr>
+{% endfor %}

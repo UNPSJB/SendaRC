@@ -1,0 +1,21 @@
+{% for maquinaria in maquinarias %}
+<tr class="fila-tabla">
+    <td scope="row">{{ maquinaria.nombre }}</td>
+    <td scope="row">{{ maquinaria.modelo }}</td>
+    <td scope="row">{{ maquinaria.marca }}</td>
+    <td scope="row">{{ maquinaria.cantidad }}</td>
+    {% if maquinaria.activo %}
+        <td scope="row"><i class="bi bi-check-circle"></i></td>
+    {% else %}
+        <td scope="row"><i class="bi bi-x-circle"></i></td>
+    {% endif %}
+    <td scope="row">
+        <button href="{% url 'detalleMaquinaria' maquinaria.pk %}" class="opcion" type="button" 
+            data-url="/gestionMaquinaria/{{maquinaria.pk}}"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasExample"
+            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+        <a href="{% url 'modificarMaquinaria' maquinaria.pk%}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
+    </td>
+</tr>
+{% endfor %}
