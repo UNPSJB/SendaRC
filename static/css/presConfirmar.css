@@ -87,7 +87,11 @@
     background-color: #ffff;
     border: 1px solid #cfcfcf;
 }
-.light-mode .infoServicioConfirmar > h6,h5{
+
+.light-mode .infoServicioConfirmar > h6{
+    color: #09090b;
+}
+.light-mode .infoServicioConfirmar > h5{
     color: #09090b;
 }
 .listasConfirmar{
