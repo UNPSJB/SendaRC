@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
-<link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
+<link href="{%static 'css/servicio.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
 <h1 class="titulo">Presupuestar Servicio <span class="operacion">> Resumen Presupuesto: {{ presupuesto.cliente.nombre }}
@@ -10,21 +10,21 @@
 <a href="{% url 'presupuestarFrecuencias' %}" class="btn-atras"><i class="bi bi-arrow-left"></i> Atras</a>
 {% endblock %}
 {% block formulario %}
-<div class="contenedorConfirmar"> 
-    <section class="listasConfirmar">
-        <div class="tablasConfirmarContainer">
-            <ul class="opcionesListasConfirmar" id="opcionesCheckOut">
-                <li class="liOpcionesListasConfirmar">
-                    <a class="linkOpcionesListasConfirmar" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
+<div class="contenedorDetalleServicio"> 
+    <section class="tablasServicio">
+        <div class="tablasServicioContainer">
+            <ul class="opcionesTablasServicio" id="opcionesCheckOut">
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
                         data-lista="tablaTiposServicios">Tipos
                         de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
                 </li>
-                <li class="liOpcionesListasConfirmar">
-                    <a class="linkOpcionesListasConfirmar" style="width: auto; display: flex; gap:5px;" href="#"
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
                         data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
                 </li>
             </ul>
-            <table class="tablaConfirmar table table-hover" id="tablaTiposServicios">
+            <table class="tablaServicio table table-hover" id="tablaTiposServicios">
                 <thead>
                     <tr>
                         <th scope="col">Descripción</th>
@@ -42,7 +42,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <table class="tablaConfirmar table table-hover" id="tablaFrecuencias">
+            <table class="tablaServicio table table-hover" id="tablaFrecuencias">
                 <thead>
                     <tr>
                         <th scope="col">Día</th>
@@ -60,71 +60,71 @@
             </table>
         </div>
     </section>
-    <section class="infoServicioConfirmar">
+    <section class="infoServicioDetalle">
         <h5 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio #{{ presupuesto.pk }}</h5>
         <p class="texto">Fecha Emisión: <span class="datoCliente">{{fecha_actual}}</span></p>
         <hr class="my-3">
         <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Cliente Información</h6>
         <div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto datosCliente">Cliente</p>
-                <span class="datoConfirmar">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</span>
+                <span class="datoServicio">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</span>
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">CUIT/CUIL</p>
-                <span class="datoConfirmar">{{presupuesto.cliente.cuil}}</span>
+                <span class="datoServicio">{{presupuesto.cliente.cuil}}</span>
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Email</p>
-                <span class="datoConfirmar">{{presupuesto.cliente.email}}</span>
+                <span class="datoServicio">{{presupuesto.cliente.email}}</span>
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Telefono</p>
-                <span class="datoConfirmar">{{presupuesto.cliente.telefono}}</span>
+                <span class="datoServicio">{{presupuesto.cliente.telefono}}</span>
             </div>
         </div>
         <hr class="my-3">
         <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Inmueble Información</h6>
         <div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Dirección Inmueble</p>
-                <span class="datoConfirmar">{{presupuesto.direccion}}</span>
+                <span class="datoServicio">{{presupuesto.direccion}}</span>
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Metros cuadrados Inmueble</p>
-                <span class="datoConfirmar">{{presupuesto.metros2}}m²</span>
+                <span class="datoServicio">{{presupuesto.metros2}}m²</span>
             </div>
         </div>
         <hr class="my-3">
         <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio Información</h6>
         <div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Plazo Vigencia</p>
-                <span class="datoConfirmar">10 días desde la fecha de emisión</span> 
+                <span class="datoServicio">10 días desde la fecha de emisión</span> 
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto datosCliente">Total Servicios</p>
-                <span class="datoConfirmar" id="totalServicios"></span> 
+                <span class="datoServicio" id="totalServicios"></span> 
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Total Servicios * Frecuencias</p>
-                <span class="datoConfirmar">{{ total_servicios }}</span>   
+                <span class="datoServicio">{{ total_servicios }}</span>   
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Mano de Obra</p>
-                <span class="datoConfirmar">{{ mano_obra }}</span> 
+                <span class="datoServicio">{{ mano_obra }}</span> 
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Ganancia 15%</p>
-                <span class="datoConfirmar">{{ porcentaje_ganancia }}</span> 
+                <span class="datoServicio">{{ porcentaje_ganancia }}</span> 
             </div>
-            <div class="miniContenedorConfirmar">
+            <div class="miniContenedorDetalleServicio">
                 <p class="texto">Importe Sugerido</p>
-                <span class="datoConfirmar">{{ importe_total_formateado }}</span> 
+                <span class="datoServicio">{{ importe_total_formateado }}</span> 
             </div>
-            <div class="miniContenedorConfirmar">
-                <p class="texto" id="totalConfirmar">Total</p>
-                <span class="datoConfirmar" id="importe_total_span">{{ importe_total_formateado }}</span> 
+            <div class="miniContenedorDetalleServicio totalFinalServicio">
+                <p class="texto titleTotal">Total</p>
+                <span class="datoServicio totalSpan" id="importe_total_span">{{ importe_total_formateado }}</span> 
             </div>
             <div class="importes" style="display: flex; align-items: center; gap: 10px;justify-content: end;">
                 <div id="porcentaje-badge-container"></div>

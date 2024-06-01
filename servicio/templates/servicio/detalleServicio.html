@@ -9,160 +9,182 @@
         {{servicio.cliente.apellido}}</span></h1>
 {% endblock %}
 {% block formulario %}
-<div style="max-width: 100%; overflow: hidden; display: flex; justify-content: center;">
-    <div class="row g-5" style="padding-inline: 200px; min-width: 1250px; margin-bottom: 40px;">
-        <div class="card card-servicio text-light" style="padding-top: 20px; background-color: #0c0c0c; border: 1px solid #252527;">
-            <div class="card-header card-header-servicio"
-                style="display: flex; justify-content: space-between; align-items: center; border-bottom: none;">
-                <h4>Servicio #{{servicio.pk}}</h4>
-                <a href="{% url 'pdfImprimir' servicio.pk %}" target="_blank" class="btnImprimir">Imprimir <i class="bi bi-printer"></i></a>
-            </div>
-            <hr class="my-0">
-            <div class="card-body card-body-servicio" style="background-color: #0c0c0c;">
-                <p class="mb-2" style="font-size: 13px;">Cliente: <span style="font-family: 'InterRegular', serif;">{{servicio.cliente.nombre}}
-                    {{servicio.cliente.apellido}}</span></p>
-                <p class="mb-2" style="font-size: 13px;">CUIT/CUIL: <span style="font-family: 'InterRegular', serif;">{{servicio.cliente.cuil}}</span></p>
-                <p class="mb-2" style="font-size: 13px;">Dirección Inmueble: <span style="font-family: 'InterRegular', serif;">{{servicio.direccion}}</span></p>
-                <p class="mb-2" style="font-size: 13px;">Metros Inmueble: <span style="font-family: 'InterRegular', serif;">{{servicio.metros2}}m²</span></p>
-                <p class="mb-2" style="font-size: 13px;">Fecha Emisión: <span style="font-family: 'InterRegular', serif;">{{servicio.fecha_emision}}</span></p>
-                <p class="mb-2" style="font-size: 13px;">Plazo de Vigencia: <span style="font-family: 'InterRegular', serif;">{{servicio.plazo_vigencia}}</span></p>
-                <p class="mb-2" style="font-size: 13px;">Tipo de Servicio: <span style="font-family: 'InterRegular', serif;">{{servicio.getTipo}}</span></p>
-                <p class="mb-4" style="font-size: 13px;">Estado: <span style= "font-family: 'InterRegular', serif;">{{servicio.getEstado}}</span></p>
-                <div class="card card-observaciones mb-0 text-light" style="background-color: #0c0c0c; border: 1px solid #252527;">
-                    <div class="card-header card-header-observaciones" style="color: #b1b1bd;">
-                        Observaciones <i class="bi bi-eye-fill"></i>
-                    </div>
-                    <div class="card-body card-body-observaciones">
-                        <blockquote class="blockquote mb-0 ">
-                            <p style="font-size: 15px; font-family: 'InterRegular', serif;">{{servicio.observaciones}}</p>
-                        </blockquote>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body card-body-servicio" style="background-color: #0c0c0c;">
-                <h5 class="card-title">
-                    <ul class="nav nav-tabs" style="font-size: 13px; gap: 20px;" id="opcionesTabla">
-                        <li class="nav-item navItemTab">
-                            <a class="nav-link navItemResumen" style="width: auto; display: flex; gap: 5px; align-items: center;" aria-current="page" href="#"
-                                data-tabla="tablaServicios">Tipos
-                                de Servicios<i class="bi bi-tags-fill"></i></a>
-                        </li>
-                        <li class="nav-item navItemTab">
-                            <a class="nav-link navItemResumen" style="width: auto; display: flex; gap: 5px; align-items: center;" href="#"
-                                data-tabla="tablaFrecuencias">Frecuencias <i class="bi bi-stopwatch-fill"></i></a>
-                        </li>
-                        {% if servicio.getEstado != "Presupuestado" %}
-                        <li class="nav-item navItemTab">
-                            <a class="nav-link navItemResumen" style="width: auto; display: flex; gap: 5px; align-items: center;" href="#"
-                                data-tabla="tablaEmpleados">Empleados <i class="bi bi-people-fill"></i></a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </h5>
-                <table class="table table-container" id="tablaServicios" style="font-size: 14px;">
-                    <thead>
-                        <tr class="fila-tabla">
-                            <th scope="col" class="text-center colResumen colTitulo">Tipo de Servicio</th>
-                            <th scope="col" class="text-center colResumen colTitulo">Precio</th>
-                            <th scope="col" class="text-center colResumen colTitulo">Cantidad</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for t in tipoServicios %}
-                        <tr class="fila-tabla">
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterSemiBold',serif;">{{ t.tipoServicio.descripcion }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ t.tipoServicio.getPrecioFormateado }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ t.cantidad }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <table class="table table-container" id="tablaFrecuencias" style="font-size: 14px;">
-                    <thead>
-                        <tr class="fila-tabla">
-                            <th scope="col" class="text-center colResumen colTitulo">Dia</th>
-                            <th scope="col" class="text-center colResumen colTitulo">Turno</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for frecu in frecuencias %}
-                        <tr class="fila-tabla">
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterSemiBold',serif;">{{ frecu.getDia }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ frecu.getTurno }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+<div class="contenedorDetalleServicio"> 
+    <section class="tablasServicio">
+        <div class="tablasServicioContainer">
+            <ul class="opcionesTablasServicio" id="opcionesDetalleServicio">
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
+                        data-lista="tablaTiposServicios">Tipos
+                        de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
+                </li>
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
+                        data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
+                </li>
                 {% if servicio.getEstado != "Presupuestado" %}
-                <table class="table table-container" id="tablaEmpleados" style="font-size: 14px;">
-                    <thead>
+                    <li class="liOpcionesTablasServicio">
+                        <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
+                            data-lista="tablaEmpleados">Empleados <span class="badge bg-primary rounded-pill"></span></a>
+                    </li>
+                {% endif %}
+            </ul>
+            <table class="tablaServicio table table-hover" id="tablaTiposServicios">
+                <thead>
+                    <tr>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio Unitario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tipoServicios %}
                         <tr class="fila-tabla">
-                            <th scope="col" class="text-center colResumen colTitulo">Nombre y Apellido</th>
-                            <th scope="col" class="text-center colResumen colTitulo">Sueldo</th>
+                            <td scope="row">{{ t.tipoServicio.descripcion }}</td>
+                            <td scope="row">{{ t.cantidad }}</td>
+                            <td scope="row">{{ t.tipoServicio.getPrecioFormateado }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table class="tablaServicio table table-hover" id="tablaFrecuencias">
+                <thead>
+                    <tr>
+                        <th scope="col">Día</th>
+                        <th scope="col">Turno</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in frecuencias %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ f.getDia }}</td>
+                            <td scope="row">{{ f.getTurno }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if servicio.getEstado != "Presupuestado" %}
+                <table class="tablaServicio table table-hover" id="tablaEmpleados">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre y Apellido</th>
+                            <th scope="col">Sueldo</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for empleado in empleados %}
-                        <tr class="fila-tabla">
-                            <td scope="row" class="text-center rowResumen">{{ empleado.nombre }} {{ empleado.apellido }}</td>
-                            <td scope="row" class="text-center rowResumen" style=" font-family: 'InterRegular',serif;">{{ empleado.getSueldoFormateado }}</td>
-                        </tr>
+                        {% for e in empleados %}
+                            <tr class="fila-tabla">
+                                <td scope="row">{{ e.nombre }} {{ e.apellido }}</td>
+                                <td scope="row">{{ e.getSueldoFormateado }}</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+    <section class="infoServicioDetalle">
+        <h5 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio #{{ servicio.pk }}</h5>
+        <p class="texto">Fecha Emisión: <span class="datoCliente">{{servicio.fecha_emision}}</span></p>
+        <hr class="my-3">
+        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Cliente Información</h6>
+        <div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto datosCliente">Cliente</p>
+                <span class="datoServicio">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
             </div>
-            <div class="card-body card-body-servicio" style="background-color: #0c0c0c;">
-                <h5 class="card-title">Total:</h5>
-                <div>
-                    <span class="badge rounded-pill bg-secondary mb-2" style="font-weight: 500; font-size: 12px; color: #fff;">Total
-                        Tipos de Servicios (ARS): {{ servicio.getImporteTotalServicios }}</span>
-                    <span class="badge rounded-pill bg-primary mb-2" style="font-weight: 500; font-size: 12px; color: #fff;">Total
-                        Servicios * Frecuencias (ARS): {{ servicio.getSubtotalServiciosFrecuencias }}</span>
-                    <span class="badge rounded-pill bg-warning mb-2" style="font-weight: 500; font-size: 12px; color: #000;">Total
-                        Mano de Obra (ARS): {{ servicio.getSubtotalEmpleados }}</span>
-                    <span class="badge rounded-pill mb-2"
-                        style="font-weight: 500; background-color: #adfa1d; color: #000; font-size: 12px;">Ganancia 15% (ARS): rever este porcentaje ya que no esta bien creo</span>
-                </div>
-                {% if servicio.tipo == 1 %}
-                <span class="badge rounded-pill text-bg-success"
-                    style="font-size: 16px; margin-bottom: 20px; margin-top: 10px; font-weight: 500;"
-                    id="importe_total_badge">Total Servicio Completo
-                    (ARS): {{ servicio.getImporteTotalFormateado }}</span>
-                {% else %}
-                <span class="badge rounded-pill text-bg-success"
-                    style="font-size: 16px; margin-bottom: 20px; margin-top: 10px; font-weight: 500;"
-                    id="importe_total_badge">Total Servicio Mensual
-                    (ARS): {{ servicio.getImporteTotalFormateado }}</span>
-                {% endif %}
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">CUIT/CUIL</p>
+                <span class="datoServicio">{{servicio.cliente.cuil}}</span>
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Email</p>
+                <span class="datoServicio">{{servicio.cliente.email}}</span>
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Telefono</p>
+                <span class="datoServicio">{{servicio.cliente.telefono}}</span>
             </div>
         </div>
-    </div>
+        <hr class="my-3">
+        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Inmueble Información</h6>
+        <div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Dirección Inmueble</p>
+                <span class="datoServicio">{{servicio.direccion}}</span>
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Metros cuadrados Inmueble</p>
+                <span class="datoServicio">{{servicio.metros2}}m²</span>
+            </div>
+        </div>
+        <hr class="my-3">
+        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio Información</h6>
+        <div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Tipo Servicio</p>
+                <span class="datoServicio">{{servicio.getTipo}}</span> 
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Estado</p>
+                <span class="datoServicio">{{servicio.getEstado}}</span> 
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Plazo Vigencia</p>
+                <span class="datoServicio">{{servicio.plazo_vigencia}}</span> 
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto datosCliente">Total Servicios</p>
+                <span class="datoServicio">{{ servicio.getImporteTotalServicios }}</span> 
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Total Servicios * Frecuencias</p>
+                <span class="datoServicio">{{ servicio.getSubtotalServiciosFrecuencias }}</span>   
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Mano de Obra</p>
+                <span class="datoServicio">{{ servicio.getSubtotalEmpleados }}</span> 
+            </div>
+            <div class="miniContenedorDetalleServicio">
+                <p class="texto">Ganancia 15%</p>
+                <span class="datoServicio">revisar este porcentaje</span> 
+            </div>
+            {% if servicio.tipo == 1 %}
+                <div class="miniContenedorDetalleServicio totalFinalServicio">
+                    <p class="texto titleTotal">Total Servicio Completo(ARS)</p>
+                    <span class="datoServicio totalSpan">{{ servicio.getImporteTotalFormateado }}</span> 
+                </div>
+            {% else %}
+                <div class="miniContenedorDetalleServicio totalFinalServicio">
+                    <p class="texto">Total Servicio Mensual(ARS)</p>
+                    <span class="datoServicio">{{ servicio.getImporteTotalFormateado }}</span> 
+                </div>
+            {% endif %}
+        </div>       
+    </section>
 </div>
 {% endblock %}
 {% block extrajs %}
 <script>
     $(() => {
-        $('#opcionesTabla a').on('click', function (e) {
+        $('#opcionesDetalleServicio a').on('click', function (e) {
             e.preventDefault();
 
-            // Obtener el id de la tabla y el subtotal correspondientes
-            const tablaId = $(this).data('tabla');
+            // Obtener el id de la lista correspondiente
+            const listaId = $(this).data('lista');
+            console.log(listaId)
 
-            // Ocultar todas las tablas y subtotales
-            $('.table-container').hide();
-
-            // Mostrar la tabla 
-            $('#' + tablaId).show();
-
+            // Ocultar todas las listas y luego mostrar la lista seleccionada
+            $('#tablaTiposServicios,#tablaFrecuencias,#tablaEmpleados').hide();
+            $('#' + listaId).show();
 
             // Agregar la clase 'active' al enlace clicado y eliminarla de los demás
-            $('#opcionesTabla a').removeClass('active');
+            $('#opcionesDetalleServicio a').removeClass('active');
             $(this).addClass('active');
         });
 
         // Simular clic en el enlace "Tipos de Servicios" al cargar la página
-        $('#opcionesTabla a[data-tabla="tablaServicios"]').click();
+        $('#opcionesDetalleServicio a[data-lista="tablaTiposServicios"]').click();
     });
 </script>
 {% endblock %}

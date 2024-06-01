@@ -1,191 +1,233 @@
-.info-form-FechasContratar {
-    color: #adfa1d;
+.texto {
+    margin-bottom: 0.5rem !important;
+    font-size: 13px;
+    color: #b1b1bd;
+    font-family: 'InterMedium',sans-serif;
+}
+.light-mode .texto{
+    color: #70717b;
+}
+.titleTotal,.totalSpan{
+    font-family: 'InterBold',sans-serif !important;
+}
+.titleTotal{
+    color: #fff !important;
+}
+.light-mode .titleTotal{
+    color: #09090b !important;
+}
+.light-mode .datoServicio{
+    color: #09090b;
+}
+.textoTitle{
+    font-size: 16px;
+    margin-bottom: 0.5rem !important;
 }
 
-.navItemTab{
+.cantidad,.precio-span,.totalServiciosNumero,.frecuenciaTurno,.totalPresupuestoFrecuenciaServicios,.datoServicio{
+    font-family: 'InterMedium',sans-serif;
+}
+
+
+.confirmar-presupuesto {
+    background-color: #fff;
+    color: #000;
+    font-size: 15px;
+}
+
+.confirmar-presupuesto:hover {
+    background-color: #cfcfcf;
+    color: #000;
+}
+
+.list-group {
+    border: 1px solid #050505;
+    border-radius: 6px;
+}
+
+.list-group-item {
+    background-color: #0c0c0c;
+    color: #fff;
+    border: 1px solid #252527;
+}
+
+.list-group-item>div>small {
+    color: #fff !important;
+}
+
+.list-group-item>span {
+    color: #fff !important;
+}
+
+.light-mode #opcionesCheckOut{
+    border-bottom: 1px solid #cfcfcf;
+}
+
+.contenedorDetalleServicio{
+    display: flex; 
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    padding:5px;
+    gap: 20px;
+}
+
+.infoServicioDetalle{
+    height: auto;
+    padding: 32px;
+    width: 400px;
+    background-color: #0c0c0c;
+    border-radius: 8px;
+    border: 1px solid #252527;
+}
+
+.light-mode .infoServicioDetalle{
+    box-shadow: 0 0 5px #cfcfcf;
+    background-color: #ffff;
+    border: 1px solid #cfcfcf;
+}
+
+.light-mode .infoServicioDetalle > h6{
+    color: #09090b;
+}
+.light-mode .infoServicioDetalle > h5{
+    color: #09090b;
+}
+.tablasServicio{
+    flex: 1;
+    height: auto;
+}
+
+.miniContenedorDetalleServicio{
+    display: flex;
+    justify-content: space-between;
+}
+.miniContenedorDetalleServicio > span{
+    font-size: 0.8rem;
+}
+
+.opcionesTablasServicio{
+    background-color: #252527;
+    border: 1px solid #2c2c2c;
+    border-radius: 4px;
+    width: max-content;
+    padding-inline: 10px;
+    padding-block: 5px;
+    list-style-type: none;
+    margin-bottom: 35px;
+    font-size: 13px; 
+    gap: 20px; 
+    display: flex; 
+}
+.light-mode .opcionesTablasServicio{
+    background-color: #cfcfcf;
+    border: 1px solid #cfcfcf;    
+}
+.linkOpcionesTablasServicio{
+    padding-block: 15px;
+    padding-inline:25px;
+    border-radius: 4px;
+    color: #cfcfcf;
+    text-decoration: none;
+    transition: all .1s ease-in-out;
+}
+.light-mode .linkOpcionesTablasServicio{
+    color: #494949;
+}
+.linkOpcionesTablasServicio:hover{
+    transform: scale(1.08);
+}
+.active.linkOpcionesTablasServicio{
+    color: #fff;
+    background-color: #0c0c0c;
+}
+
+.light-mode .active.linkOpcionesTablasServicio{
+    color: #09090b !important;
+    background-color: #fff !important;
+}
+
+.tablasServicioContainer{
+    background-color: #0c0c0c;
+    padding: 20px;
+    border: 1px solid #252527;
+    border-radius: 6px;
+}
+.light-mode .tablasServicioContainer{
+    background-color: #fff;
+    border: 1px solid #cfcfcf;
+    box-shadow: 0 0 5px #cfcfcf;
+}
+.tablaConfirmar{
     margin-bottom: 0px !important;
 }
 
-.btn-contratar,
-.btnImprimir {
-    background: none;
+.tablaServicio > thead > tr > th,.tablaServicio > tbody > tr > td{
+    background-color: transparent !important;
     color: #fff;
-    border: none;
-    transition: color .1s ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    gap: 5px;
 }
-
-.btn-contratar:hover,
-.btnImprimir:hover {
-    color: #1DA1F2;
+.light-mode .tablaServicio > thead > tr > th{
+    color: #70717b;
+    border-bottom: 1px solid #cfcfcf;
 }
-
-.dateinput {
-    border: 1px solid #252527;
-    background-color: #0c0c0c;
+.light-mode .tablaServicio > tbody > tr > td{
+    color: #09090b;
 }
-
-.form-select {
-    background-color: #0c0c0c;
-    border: 1px solid #252527;
-}
-
-#tablaServicios > thead,#tablaFrecuencias > thead, #tablaEmpleados > thead{
-    border: 1px solid #252527;
-}
-.rowResumen, 
-.colResumen {
-    background-color: transparent !important;
+.tablaServicio > thead > tr > th{
+    font-size: 14px;
+    font-family: 'InterMedium',sans-serif;
+    color: #b1b1bd;
+    padding-bottom: 20px;
     border-bottom: 1px solid #252527;
-    color: #fff !important;
 }
-.fila-tabla{
-    border-right: 1px solid #252527;
-    border-left: 1px solid #252527;
-    transition: background 0.1s ease-in-out;
+.tablaServicio > tbody > tr > td{
+    font-size: 14px;
+    font-family: 'InterMedium',sans-serif;
+    color: #ffff;
+    padding-bottom: 20px;
+    padding-top: 20px;
 }
-.fila-tabla:hover {
-    background: #161616; 
+.tablaServicio > tbody > tr {
+    transition: background-color 0.3s ease; 
 }
-
-.colTitulo{
-    color: #b1b1bd!important;
+.tablaServicio > tbody > tr:hover{
+    background-color: #252527;
 }
-.navItemResumen{
-    background-color: transparent !important;
+.light-mode .tablaServicio > tbody > tr:hover{
+    background-color: #fcfcfc;
 }
-.navItemResumen.active{
-    border-bottom: 3px solid #fff;
-    background-color: transparent;
+.tablaServicio > tbody > tr:not(:last-child) {
+    border-bottom: 1px solid #252527;
 }
-.navItemResumen:hover{
-    background-color: transparent !important;
-    color: #fff !important;
+.light-mode .tablaServicio > tbody > tr:not(:last-child) {
+    border-bottom: 1px solid #cfcfcf !important;
 }
-
-/*LIGHT MODE*/
-.light-mode navItemResumen.active{
-    border-bottom: 3px solid #050505;
-}
-.light-mode .card-servicio {
-    border: 1px solid #cfcfcf!important;
-    box-shadow: 0 0 5px #cfcfcf;
-    background-color: #ffff !important;
+.tablaServicio td,tr {
+    text-align: center; 
 }
 
-.light-mode .card-servicio:hover {
-    border: 1px solid #cfcfcf !important;
-    background-color: #ffff !important;
-}
-
-.light-mode .card-header-servicio {
-    background-color: #ffff !important;
-}
-
-.light-mode .card-body-servicio {
-    background-color: #ffff !important;
-    color: #252527 !important;
-}
-
-.light-mode .card-header-observaciones {
-    background-color: #ffff !important;
-}
-
-.light-mode .card-body-observaciones {
+.containerTotalServicios{
+    background-color: #222224;
+    padding-block: 20px;
+    padding-inline: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-radius: 0px 0px 4px 4px;
-    background-color: #ffff !important;
-    color: #252527;
 }
 
-.light-mode .dateinput {
-    background-color: #f3f3f3 ;
+.containerTotalServicios h6{
+    margin-bottom: 0px;
+    font-family: 'InterMedium',sans-serif;
 }
 
-.light-mode .btn-contratar {
-    color: #252527;
+.totalFinalServicio{
+    background-color: #252527;
+    padding: 10px;
+    border-radius: 0px 0px 4px 4px
 }
 
-.light-mode .btn-contratar:hover {
-    color: rgb(0, 81, 202);
-}
-
-.light-mode .formSetEmpleados {
-    background-color: #f3f3f3 !important;
-    border: 1px solid #cfcfcf !important;
-}
-
-.light-mode .form-select {
-    background-color: #f3f3f3 !important;
-    border: 1px solid #cfcfcf !important;
-}
-
-.light-mode .select2-selection--multiple {
-    background-color: #f3f3f3 !important;
-    border: 1px solid #cfcfcf !important;
-}
-
-.light-mode .select2-search__field {
-    color: #000000 !important;
-    font-weight: 600;
-}
-
-.light-mode .info-form-FechasContratar {
-    color: #0059ff;
-}
-
-.light-mode .rowResumen {
-    background-color: #ffff !important;
-    border-bottom: 1px solid #cfcfcf;
-    color: #252527 !important;
-}
-
-.light-mode .colResumen {
-    background-color: #ffff !important;
-    border-bottom: 1px solid #cfcfcf;
-    color: #72727b !important;
-}
-.light-mode .navItemResumen:hover{
-    color: #252527 !important;
-}
-
-.light-mode .btnImprimir{
-    color: #252527;
-}
-
-.light-mode .btnImprimir:hover{
-    color: #1DA1F2;
-}
-
-.light-mode #tablaServicios > thead{
-    border: 1px solid #cfcfcf;
-}
-.light-mode #tablaFrecuencias > thead{
-    border: 1px solid #cfcfcf;
-}
-.light-mode #tablaEmpleados > thead{
-    border: 1px solid #cfcfcf;
-}
-.light-mode .fila-tabla{
-    border-right: 1px solid #cfcfcf;
-    border-left: 1px solid #cfcfcf;
-}
-
-.light-mode .colTitulo{
-    color: #3b3b3f !important;
-}
-.light-mode .card-observaciones{
-    border: 1px solid #cfcfcf !important;
-}
-.light-mode .card-header-observaciones{
-    color: #3b3b3f !important;
-}
-
-.light-mode .navItemResumen.active{
-    background-color: transparent !important;
-    border-bottom: 3px solid #09090b;
-    color: #09090b !important;
+.light-mode .totalFinalServicio{
+    background-color: #cfcfcf;
 }
