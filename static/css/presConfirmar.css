@@ -1,16 +1,38 @@
 .texto {
     margin-bottom: 0.5rem !important;
-    font-size: 15px;
+    font-size: 13px;
+    color: #b1b1bd;
+    font-family: 'InterMedium',sans-serif;
+}
+.light-mode .texto{
+    color: #70717b;
+}
+#totalConfirmar,#importe_total_span{
+    font-family: 'InterBold',sans-serif !important;
+}
+#totalConfirmar{
+    color: #fff !important;
+}
+.light-mode #totalConfirmar{
+    color: #09090b !important;
+}
+.light-mode .datoConfirmar{
+    color: #09090b;
+}
+.textoTitle{
+    font-size: 16px;
+    margin-bottom: 0.5rem !important;
 }
 
-.cantidad,.precio-span,.totalServiciosNumero,.frecuenciaTurno,.totalServicios,.totalPresupuestoFrecuenciaServicios,.datoCliente{
-    font-family: 'InterRegular',sans-serif;
+.cantidad,.precio-span,.totalServiciosNumero,.frecuenciaTurno,.totalPresupuestoFrecuenciaServicios,.datoConfirmar{
+    font-family: 'InterMedium',sans-serif;
 }
 
 
 .confirmar-presupuesto {
     background-color: #fff;
     color: #000;
+    font-size: 15px;
 }
 
 .confirmar-presupuesto:hover {
@@ -24,7 +46,7 @@
 }
 
 .list-group-item {
-    background-color: #050505;
+    background-color: #0c0c0c;
     color: #fff;
     border: 1px solid #252527;
 }
@@ -40,6 +62,158 @@
 .light-mode #opcionesCheckOut{
     border-bottom: 1px solid #cfcfcf;
 }
-#opcionesCheckOut{
-    border-bottom: 1px solid #252525;
+
+.contenedorConfirmar{
+    display: flex; 
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    padding:5px;
+    gap: 20px;
+}
+
+.infoServicioConfirmar{
+    height: auto;
+    padding: 40px;
+    width: 400px;
+    background-color: #0c0c0c;
+    border-radius: 8px;
+    border: 1px solid #252527;
+}
+
+.light-mode .infoServicioConfirmar{
+    box-shadow: 0 0 5px #cfcfcf;;
+    background-color: #ffff;
+    border: 1px solid #cfcfcf;
+}
+.light-mode .infoServicioConfirmar > h6,h5{
+    color: #09090b;
+}
+.listasConfirmar{
+    flex: 1;
+    height: auto;
+}
+
+.miniContenedorConfirmar{
+    display: flex;
+    justify-content: space-between;
+}
+.miniContenedorConfirmar > span{
+    font-size: 0.8rem;
+}
+
+.opcionesListasConfirmar{
+    background-color: #252527;
+    border: 1px solid #2c2c2c;
+    border-radius: 4px;
+    width: max-content;
+    padding-inline: 10px;
+    padding-block: 5px;
+    list-style-type: none;
+    margin-bottom: 35px;
+    font-size: 13px; 
+    gap: 20px; 
+    display: flex; 
+}
+.light-mode .opcionesListasConfirmar{
+    background-color: #cfcfcf;
+    border: 1px solid #cfcfcf;    
+}
+.linkOpcionesListasConfirmar{
+    padding-block: 15px;
+    padding-inline:25px;
+    border-radius: 4px;
+    color: #cfcfcf;
+    text-decoration: none;
+    transition: all .1s ease-in-out;
+}
+.light-mode .linkOpcionesListasConfirmar{
+    color: #494949;
+}
+.linkOpcionesListasConfirmar:hover{
+    transform: scale(1.08);
+}
+.active.linkOpcionesListasConfirmar{
+    color: #fff;
+    background-color: #0c0c0c;
+}
+
+.light-mode .active.linkOpcionesListasConfirmar{
+    color: #09090b !important;
+    background-color: #fff !important;
+}
+
+.tablasConfirmarContainer{
+    background-color: #0c0c0c;
+    padding: 20px;
+    border: 1px solid #252527;
+    border-radius: 6px;
+}
+.light-mode .tablasConfirmarContainer{
+    background-color: #fff;
+    border: 1px solid #cfcfcf;
+    box-shadow: 0 0 5px #cfcfcf;
+}
+.tablaConfirmar{
+    margin-bottom: 0px !important;
+}
+
+.tablaConfirmar > thead > tr > th,.tablaConfirmar > tbody > tr > td{
+    background-color: transparent !important;
+    color: #fff;
+}
+.light-mode .tablaConfirmar > thead > tr > th{
+    color: #70717b;
+    border-bottom: 1px solid #cfcfcf;
+}
+.light-mode .tablaConfirmar > tbody > tr > td{
+    color: #09090b;
+}
+.tablaConfirmar > thead > tr > th{
+    font-size: 14px;
+    font-family: 'InterMedium',sans-serif;
+    color: #b1b1bd;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #252527;
+}
+.tablaConfirmar > tbody > tr > td{
+    font-size: 14px;
+    font-family: 'InterMedium',sans-serif;
+    color: #ffff;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+.tablaConfirmar > tbody > tr {
+    transition: background-color 0.3s ease; 
+}
+.tablaConfirmar > tbody > tr:hover{
+    background-color: #252527;
+}
+.light-mode .tablaConfirmar > tbody > tr:hover{
+    background-color: #fcfcfc;
+}
+.tablaConfirmar > tbody > tr:not(:last-child) {
+    border-bottom: 1px solid #252527;
+}
+.light-mode .tablaConfirmar > tbody > tr:not(:last-child) {
+    border-bottom: 1px solid #cfcfcf !important;
+}
+.tablaConfirmar td,tr {
+    text-align: center; 
+}
+
+.containerTotalServicios{
+    background-color: #222224;
+    padding-block: 20px;
+    padding-inline: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0px 0px 4px 4px;
+}
+
+.containerTotalServicios h6{
+    margin-bottom: 0px;
+    font-family: 'InterMedium',sans-serif;
 }

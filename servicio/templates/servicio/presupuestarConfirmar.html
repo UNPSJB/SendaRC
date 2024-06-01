@@ -10,97 +10,145 @@
 <a href="{% url 'presupuestarFrecuencias' %}" class="btn-atras"><i class="bi bi-arrow-left"></i> Atras</a>
 {% endblock %}
 {% block formulario %}
-<div class="row g-4" style="display: flex; justify-content: center;">
-    <div class="col-md-6 col-lg-4 order-md-last">
-        <ul class="nav nav-tabs" style="font-size: 13px; gap: 20px; display: flex; margin-bottom: 5px;" id="opcionesCheckOut">
-            <li class="nav-item">
-                <a class="nav-link navItemResumen" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
-                    data-lista="servicios-lista">Tipos
-                    de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link navItemResumen" style="width: auto; display: flex; gap:5px;" href="#"
-                    data-lista="frecuencias-lista">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
-            </li>
-        </ul>
-        <div class="listasContainer" style="max-height: 316px; overflow: auto; margin-bottom: 10px; padding-right: 5px;">
-            <ul class="list-group mb-3" id="servicios-lista">
-                {% for s in tipo_Servicios %}
-                <li class="list-group-item d-flex justify-content-between lh-sm servicio-item">
-                    <div>
-                        <h6 class="my-0">{{s.tipo_servicio.descripcion}}</i></h6>
-                        <small class="text-body-secondary cantidad">Cantidad: {{ s.cantidad }}</small>
-                    </div>
-                    <span class="text-body-secondary precio-span">{{ s.tipo_servicio.getPrecioFormateado }}</span>
+<div class="contenedorConfirmar"> 
+    <section class="listasConfirmar">
+        <div class="tablasConfirmarContainer">
+            <ul class="opcionesListasConfirmar" id="opcionesCheckOut">
+                <li class="liOpcionesListasConfirmar">
+                    <a class="linkOpcionesListasConfirmar" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
+                        data-lista="tablaTiposServicios">Tipos
+                        de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
                 </li>
-                {% endfor %}
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>Total Servicios (ARS):</span>
-                    <strong id="totalServicios" class="totalServiciosUnitario"></strong>
+                <li class="liOpcionesListasConfirmar">
+                    <a class="linkOpcionesListasConfirmar" style="width: auto; display: flex; gap:5px;" href="#"
+                        data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
                 </li>
             </ul>
-            <ul class="list-group mb-3" id="frecuencias-lista">
-                {% for frecu in frecuencias %}
-                <li class="list-group-item d-flex justify-content-between lh-sm frecuencia-item">
-                    <div>
-                        <h6 class="my-0">{{ frecu.dia }}</i></h6>
-                        <small class="text-body-secondary frecuenciaTurno">{{ frecu.turno }}</small>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
+            <table class="tablaConfirmar table table-hover" id="tablaTiposServicios">
+                <thead>
+                    <tr>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio Unitario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in tipo_Servicios %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ s.tipo_servicio.descripcion }}</td>
+                            <td scope="row">{{ s.cantidad }}</td>
+                            <td scope="row">{{ s.tipo_servicio.getPrecioFormateado }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table class="tablaConfirmar table table-hover" id="tablaFrecuencias">
+                <thead>
+                    <tr>
+                        <th scope="col">Día</th>
+                        <th scope="col">Turno</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for frecu in frecuencias %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ frecu.dia }}</td>
+                            <td scope="row">{{ frecu.turno }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <h4 class="d-flex justify-content-between align-items-center mb-2">
-            <span class="text-light totalServicicioFrecuencia" style="font-size: 15px;">Total Tipos de Servicios *
-                Frecuencias (ARS):</span>
-        </h4>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between">
-                <span>Total (ARS):</span>
-                <strong class="totalPresupuestoFrecuenciaServicios">{{ total_servicios }}</strong>
-            </li>
-        </ul>
-    </div>
-    <div class="col-md-7 col-lg-8">
-        <h4 class="mb-3" id="titulo-CheckOutPresupuesto">Datos Presupuesto:</h4>
-        <hr class="my-3">
-        <p class="texto datosCliente">Cliente: <span class="datoCliente">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</span></p>
-        <p class="texto">CUIT/CUIL: <span class="datoCliente">{{presupuesto.cliente.cuil}}</span></p>
-        <p class="texto">Dirección Inmueble: <span class="datoCliente">{{presupuesto.direccion}}</span></p>
-        <p class="texto">Metros cuadrados Inmueble: <span class="datoCliente">{{presupuesto.metros2}}m²</span></p>
+    </section>
+    <section class="infoServicioConfirmar">
+        <h5 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio #{{ presupuesto.pk }}</h5>
         <p class="texto">Fecha Emisión: <span class="datoCliente">{{fecha_actual}}</span></p>
-        <p class="texto">Plazo Vigencia: <span class="datoCliente">Son 10 días desde la fecha de emisión</span> </p>
-        <span class="badge rounded-pill text-bg-primary" style="font-weight: 500;">Mano de obra: {{ mano_obra }}</span>
-        <span class="badge rounded-pill" style="font-weight: 500; background-color: #adfa1d; color: #000;">Ganancia 15%:
-            {{ porcentaje_ganancia }}</span>
+        <hr class="my-3">
+        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Cliente Información</h6>
         <div>
-            <span class="badge rounded-pill text-bg-warning"
-                style="font-size: 15px; margin-top: 10px; font-weight: 500;" id="importe_sugerido_badge">Importe
-                Sugerido: {{ importe_total_formateado }}</span>
+            <div class="miniContenedorConfirmar">
+                <p class="texto datosCliente">Cliente</p>
+                <span class="datoConfirmar">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</span>
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">CUIT/CUIL</p>
+                <span class="datoConfirmar">{{presupuesto.cliente.cuil}}</span>
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Email</p>
+                <span class="datoConfirmar">{{presupuesto.cliente.email}}</span>
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Telefono</p>
+                <span class="datoConfirmar">{{presupuesto.cliente.telefono}}</span>
+            </div>
         </div>
-        <div class="importes" style="display: flex; align-items: center; gap: 10px;">
-            <span class="badge rounded-pill text-bg-success"
-                style="font-size: 15px; margin-bottom: 20px; margin-top: 10px; font-weight: 500;"
-                id="importe_total_badge">Importe Total: {{ importe_total_formateado }}</span>
-            <div id="porcentaje-badge-container"></div>
+        <hr class="my-3">
+        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Inmueble Información</h6>
+        <div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Dirección Inmueble</p>
+                <span class="datoConfirmar">{{presupuesto.direccion}}</span>
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Metros cuadrados Inmueble</p>
+                <span class="datoConfirmar">{{presupuesto.metros2}}m²</span>
+            </div>
+        </div>
+        <hr class="my-3">
+        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio Información</h6>
+        <div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Plazo Vigencia</p>
+                <span class="datoConfirmar">10 días desde la fecha de emisión</span> 
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto datosCliente">Total Servicios</p>
+                <span class="datoConfirmar" id="totalServicios"></span> 
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Total Servicios * Frecuencias</p>
+                <span class="datoConfirmar">{{ total_servicios }}</span>   
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Mano de Obra</p>
+                <span class="datoConfirmar">{{ mano_obra }}</span> 
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Ganancia 15%</p>
+                <span class="datoConfirmar">{{ porcentaje_ganancia }}</span> 
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto">Importe Sugerido</p>
+                <span class="datoConfirmar">{{ importe_total_formateado }}</span> 
+            </div>
+            <div class="miniContenedorConfirmar">
+                <p class="texto" id="totalConfirmar">Total</p>
+                <span class="datoConfirmar" id="importe_total_span">{{ importe_total_formateado }}</span> 
+            </div>
+            <div class="importes" style="display: flex; align-items: center; gap: 10px;justify-content: end;">
+                <div id="porcentaje-badge-container"></div>
+            </div>
         </div>
         <form class="mi-form" novalidate="" method="GET">
-            <div class="row g-3">
+            <div class="row g-2">
                 {% csrf_token %}
-                <div class="col-sm-6">
+                <div>
                     {{ form.cantidad_empleados | as_crispy_field }}
                     <span class="badge rounded-pill bg-danger" id="error_message"></span>
                     <input type="hidden" name="{{ form.importe_sugerido.name }}" value="{{ importe_sugerido }}">
                 </div>
-                <div class="col-sm-6">
+                <div>
                     {{ form.porcentaje | as_crispy_field }}
                     <input type="hidden" name="{{ form.importe_total.name }}" value="{{ importe_total }}">
                 </div>
                 <input type="hidden" name="{{ form.nuevo_importe_total.name }}" id="{{ form.nuevo_importe_total.id }}">
                 <hr class="my-3">
-                <button class="w-100 btn btn-lg confirmar-presupuesto" type="submit">Confirmar Presupuesto</button>
-        </form>
-    </div>
+                <div>
+                    <button class="w-100 btn btn-lg confirmar-presupuesto" type="submit">Confirmar Presupuesto</button>
+                </div>
+        </form>       
+    </section>
 </div>
 {% endblock %}
 {% block extrajs %}
@@ -132,7 +180,7 @@
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         });
-                        $('#importe_total_badge').text('Importe Total:' + dataFormateada);
+                        $('#importe_total_span').text(dataFormateada);
                         $('input[name="{{ form.importe_total.name }}"]').val(data.importe_total);
                     }
                 },
@@ -143,11 +191,12 @@
         function calcularSumaTotal() {
             let sumaTotal = 0;
 
-            $('#servicios-lista .precio-span').each(function () {
-                let precioString = $(this).text().replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
-                let precio = parseFloat(precioString);
-                let cantidadString = $(this).siblings('div').find('.text-body-secondary').text().match(/\d+/);
+            $('#tablaTiposServicios tbody tr').each(function () {
+                let cantidadString = $(this).find('td:nth-child(2)').text();
+                let precioString = $(this).find('td:nth-child(3)').text().replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+                
                 let cantidad = parseInt(cantidadString);
+                let precio = parseFloat(precioString);
 
                 if (!isNaN(precio) && !isNaN(cantidad)) {
                     sumaTotal += precio * cantidad;
@@ -159,16 +208,16 @@
 
         // Función para actualizar la cantidad de elementos y badges
         function actualizarCantidadElementos() {
-            let cantidadServicios = $('#servicios-lista .servicio-item').length;
+            let cantidadServicios = $('#tablaTiposServicios tbody tr').length;
             $('#servicios-badge').text(cantidadServicios);
 
-            let cantidadFrecuencias = $('#frecuencias-lista .frecuencia-item').length;
+            let cantidadFrecuencias = $('#tablaFrecuencias tbody tr').length;
             $('#frecuencias-badge').text(cantidadFrecuencias);
         }
 
         function agregarBadgePorcentaje(porcentaje, porcentajeValorImporteTotal) {
             // Crear el badge con el contenido adecuado
-            let badge = $('<span class="badge bg-primary rounded-pill" style="margin-bottom: 20px; margin-top: 10px;font-size: 15px;"></span>');
+            let badge = $('<span class="badge bg-primary rounded-pill" style="margin-bottom:10px; font-size: 13px;"></span>');
             badge.text((porcentaje >= 0 ? '+ ' : '') + porcentajeValorImporteTotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
             // Insertar el badge en el contenedor
@@ -186,7 +235,7 @@
                 let nuevoImporteTotalFormateado = nuevoImporteTotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 // Actualizar solo el valor del badge del importe total
-                $('#importe_total_badge').text('Importe Total: ' + nuevoImporteTotalFormateado);
+                $('#importe_total_span').text(nuevoImporteTotalFormateado);
 
                 // Actualizar el valor del campo oculto en el formulario
                 $('input[name="{{ form.importe_total.name }}"]').val(nuevoImporteTotal);
@@ -203,7 +252,7 @@
             console.log(listaId)
 
             // Ocultar todas las listas y luego mostrar la lista seleccionada
-            $('#servicios-lista,#frecuencias-lista').hide();
+            $('#tablaTiposServicios,#tablaFrecuencias').hide();
             $('#' + listaId).show();
 
             // Agregar la clase 'active' al enlace clicado y eliminarla de los demás
@@ -212,7 +261,7 @@
         });
 
         // Simular clic en el enlace "Tipos de Servicios" al cargar la página
-        $('#opcionesCheckOut a[data-lista="servicios-lista"]').click();
+        $('#opcionesCheckOut a[data-lista="tablaTiposServicios"]').click();
 
         // Inicializar la suma total y actualizar badges al cargar la página
         let sumaTotalInicial = calcularSumaTotal();
