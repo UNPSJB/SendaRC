@@ -74,7 +74,7 @@
 }
 
 .infoServicioDetalle{
-    height: auto;
+    height: max-content;
     padding: 32px;
     width: 400px;
     background-color: #0c0c0c;
