@@ -246,7 +246,7 @@ body {
 .light-mode .container-form {
     background-color: #fff;
     border: 1px solid #cfcfcf;
-    box-shadow: 0 4px 8px #dfdfdf;
+    box-shadow: 0 0 10px #dfdfdf;
 }
 
 .light-mode .container-form>form {

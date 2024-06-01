@@ -73,30 +73,31 @@
 }
 .light-mode .card-servicio {
     border: 1px solid #cfcfcf!important;
-    background-color: #f3f3f3 !important;
+    box-shadow: 0 0 5px #cfcfcf;
+    background-color: #ffff !important;
 }
 
 .light-mode .card-servicio:hover {
     border: 1px solid #cfcfcf !important;
-    background-color: #f3f3f3 !important;
+    background-color: #ffff !important;
 }
 
 .light-mode .card-header-servicio {
-    background-color: #f3f3f3 !important;
+    background-color: #ffff !important;
 }
 
 .light-mode .card-body-servicio {
-    background-color: #f3f3f3 !important;
+    background-color: #ffff !important;
     color: #252527 !important;
 }
 
 .light-mode .card-header-observaciones {
-    background-color: #f3f3f3 !important;
+    background-color: #ffff !important;
 }
 
 .light-mode .card-body-observaciones {
-    border-radius: 0px 0px 6px 6px;
-    background-color: #f3f3f3 !important;
+    border-radius: 0px 0px 4px 4px;
+    background-color: #ffff !important;
     color: #252527;
 }
 
@@ -137,14 +138,14 @@
 }
 
 .light-mode .rowResumen {
-    background-color: #f3f3f3 !important;
-    border-bottom: 1px solid #d5d5d8;
+    background-color: #ffff !important;
+    border-bottom: 1px solid #cfcfcf;
     color: #252527 !important;
 }
 
 .light-mode .colResumen {
-    background-color: #f3f3f3 !important;
-    border-bottom: 1px solid #d5d5d8;
+    background-color: #ffff !important;
+    border-bottom: 1px solid #cfcfcf;
     color: #72727b !important;
 }
 .light-mode .navItemResumen:hover{
