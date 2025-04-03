@@ -1,15 +1,21 @@
-.container {
-  height: 550px;
-  display: flex;
-  flex-direction: column;
-  padding-top: 20px;
+.contenedorFormsets{
+  display: flex; 
+  justify-content: center; 
+  padding-block: 30px;
+  padding-inline: 40px;
+  background-color: #0c0c0c;
+  border: 1px solid #252527;
+  margin-inline: 15px;
+  margin-top: 5px;
+  margin-bottom: 25px;
+  border-radius: 6px;
 }
 
 .quitar-form {
   margin-top: 1rem;
   position: relative;
-  width: 135px;
-  height: 45px;
+  width: 125px;
+  height: 40px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -26,7 +32,7 @@
 }
 
 .quitar-form .text {
-  transform: translateX(35px);
+  transform: translateX(20px);
   color: white;
   font-weight: bold;
 }
@@ -34,7 +40,7 @@
 .quitar-form .icon {
   position: absolute;
   border-left: 1px solid #c41b1b;
-  transform: translateX(105px);
+  transform: translateX(90px);
   height: 20px;
   width: 20px;
   display: flex;
@@ -56,7 +62,7 @@
 }
 
 .quitar-form:hover .icon {
-  width: 150px;
+  width: 130px;
   border-left: none;
   transform: translateX(0);
 }
@@ -81,8 +87,6 @@
 #form-frecuencias {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  overflow-y: auto;
   width: 100%;
 }
 .form-servicio,
@@ -92,11 +96,10 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 15px;
-  border-radius: 4px;
   height: auto;
-  border: 1px solid #333333;
+  border-bottom: 1px solid #333333;
 }
+
 
 .accion {
   height: 35px;
@@ -123,6 +126,7 @@
 }
 .accion:hover {
   background-color: #187cb9;
+  transform: scale(1.1);
 }
 .texto {
   color: #ffffff;
@@ -175,11 +179,11 @@
 .contenedor-header-form-set {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 8px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #333333;
-  margin-bottom: 6px;
   align-items: center;
   padding-inline: 0;
+  margin: 10px;
 }
 .contenedor-form-sets {
   padding-inline: 50px;
@@ -214,4 +218,10 @@ strong {
 .texto-TipoPresupuesto {
   color: #fff;
   font-size: 15px;
+}
+
+.light-mode .contenedorFormsets{
+  background-color: #fff;
+  border: 1px solid #cfcfcf;
+  box-shadow: 0 0 10px #dfdfdf;
 }

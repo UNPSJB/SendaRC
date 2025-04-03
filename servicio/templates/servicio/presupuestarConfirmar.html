@@ -11,55 +11,6 @@
 {% endblock %}
 {% block formulario %}
 <div class="contenedorDetalleServicio"> 
-    <section class="tablasServicio">
-        <div class="tablasServicioContainer">
-            <ul class="opcionesTablasServicio" id="opcionesCheckOut">
-                <li class="liOpcionesTablasServicio">
-                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
-                        data-lista="tablaTiposServicios">Tipos
-                        de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
-                </li>
-                <li class="liOpcionesTablasServicio">
-                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
-                        data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
-                </li>
-            </ul>
-            <table class="tablaServicio table table-hover" id="tablaTiposServicios">
-                <thead>
-                    <tr>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio Unitario</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s in tipo_Servicios %}
-                        <tr class="fila-tabla">
-                            <td scope="row">{{ s.tipo_servicio.descripcion }}</td>
-                            <td scope="row">{{ s.cantidad }}</td>
-                            <td scope="row">{{ s.tipo_servicio.getPrecioFormateado }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <table class="tablaServicio table table-hover" id="tablaFrecuencias">
-                <thead>
-                    <tr>
-                        <th scope="col">Día</th>
-                        <th scope="col">Turno</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for frecu in frecuencias %}
-                        <tr class="fila-tabla">
-                            <td scope="row">{{ frecu.dia }}</td>
-                            <td scope="row">{{ frecu.turno }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
     <section class="infoServicioDetalle">
         <h5 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio #{{ presupuesto.pk }}</h5>
         <p class="texto">Fecha Emisión: <span class="datoCliente">{{fecha_actual}}</span></p>
@@ -126,7 +77,7 @@
                 <p class="texto titleTotal">Total</p>
                 <span class="datoServicio totalSpan" id="importe_total_span">{{ importe_total_formateado }}</span> 
             </div>
-            <div class="importes" style="display: flex; align-items: center; gap: 10px;justify-content: end;">
+            <div class="contenedorPorcentaje" style="margin-block: 5px; display: flex; justify-content: end;">
                 <div id="porcentaje-badge-container"></div>
             </div>
         </div>
@@ -148,6 +99,55 @@
                     <button class="w-100 btn btn-lg confirmar-presupuesto" type="submit">Confirmar Presupuesto</button>
                 </div>
         </form>       
+    </section>
+    <section class="tablasServicio">
+        <div class="tablasServicioContainer">
+            <ul class="opcionesTablasServicio" id="opcionesCheckOut">
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
+                        data-lista="tablaTiposServicios">Tipos
+                        de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
+                </li>
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
+                        data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
+                </li>
+            </ul>
+            <table class="tablaServicio table table-hover" id="tablaTiposServicios">
+                <thead>
+                    <tr>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio Unitario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in tipo_Servicios %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ s.tipo_servicio.descripcion }}</td>
+                            <td scope="row">{{ s.cantidad }}</td>
+                            <td scope="row">{{ s.tipo_servicio.getPrecioFormateado }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table class="tablaServicio table table-hover" id="tablaFrecuencias">
+                <thead>
+                    <tr>
+                        <th scope="col">Día</th>
+                        <th scope="col">Turno</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for frecu in frecuencias %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ frecu.dia }}</td>
+                            <td scope="row">{{ frecu.turno }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </section>
 </div>
 {% endblock %}
@@ -217,7 +217,7 @@
 
         function agregarBadgePorcentaje(porcentaje, porcentajeValorImporteTotal) {
             // Crear el badge con el contenido adecuado
-            let badge = $('<span class="badge bg-primary rounded-pill" style="margin-bottom:10px; font-size: 13px;"></span>');
+            let badge = $('<span class="badge bg-primary rounded-pill"></span>');
             badge.text((porcentaje >= 0 ? '+ ' : '') + porcentajeValorImporteTotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
             // Insertar el badge en el contenedor

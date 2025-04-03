@@ -10,79 +10,6 @@
 {% endblock %}
 {% block formulario %}
 <div class="contenedorDetalleServicio"> 
-    <section class="tablasServicio">
-        <div class="tablasServicioContainer">
-            <ul class="opcionesTablasServicio" id="opcionesDetalleServicio">
-                <li class="liOpcionesTablasServicio">
-                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
-                        data-lista="tablaTiposServicios">Tipos
-                        de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
-                </li>
-                <li class="liOpcionesTablasServicio">
-                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
-                        data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
-                </li>
-                {% if servicio.getEstado != "Presupuestado" %}
-                    <li class="liOpcionesTablasServicio">
-                        <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
-                            data-lista="tablaEmpleados">Empleados <span class="badge bg-primary rounded-pill"></span></a>
-                    </li>
-                {% endif %}
-            </ul>
-            <table class="tablaServicio table table-hover" id="tablaTiposServicios">
-                <thead>
-                    <tr>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio Unitario</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for t in tipoServicios %}
-                        <tr class="fila-tabla">
-                            <td scope="row">{{ t.tipoServicio.descripcion }}</td>
-                            <td scope="row">{{ t.cantidad }}</td>
-                            <td scope="row">{{ t.tipoServicio.getPrecioFormateado }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <table class="tablaServicio table table-hover" id="tablaFrecuencias">
-                <thead>
-                    <tr>
-                        <th scope="col">Día</th>
-                        <th scope="col">Turno</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for f in frecuencias %}
-                        <tr class="fila-tabla">
-                            <td scope="row">{{ f.getDia }}</td>
-                            <td scope="row">{{ f.getTurno }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% if servicio.getEstado != "Presupuestado" %}
-                <table class="tablaServicio table table-hover" id="tablaEmpleados">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nombre y Apellido</th>
-                            <th scope="col">Sueldo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for e in empleados %}
-                            <tr class="fila-tabla">
-                                <td scope="row">{{ e.nombre }} {{ e.apellido }}</td>
-                                <td scope="row">{{ e.getSueldoFormateado }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
-        </div>
-    </section>
     <section class="infoServicioDetalle">
         <h5 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio #{{ servicio.pk }}</h5>
         <p class="texto">Fecha Emisión: <span class="datoCliente">{{servicio.fecha_emision}}</span></p>
@@ -161,6 +88,79 @@
                 </div>
             {% endif %}
         </div>       
+    </section>
+    <section class="tablasServicio">
+        <div class="tablasServicioContainer">
+            <ul class="opcionesTablasServicio" id="opcionesDetalleServicio">
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
+                        data-lista="tablaTiposServicios">Tipos
+                        de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
+                </li>
+                <li class="liOpcionesTablasServicio">
+                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
+                        data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
+                </li>
+                {% if servicio.getEstado != "Presupuestado" %}
+                    <li class="liOpcionesTablasServicio">
+                        <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
+                            data-lista="tablaEmpleados">Empleados <span class="badge bg-primary rounded-pill"></span></a>
+                    </li>
+                {% endif %}
+            </ul>
+            <table class="tablaServicio table table-hover" id="tablaTiposServicios">
+                <thead>
+                    <tr>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio Unitario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tipoServicios %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ t.tipoServicio.descripcion }}</td>
+                            <td scope="row">{{ t.cantidad }}</td>
+                            <td scope="row">{{ t.tipoServicio.getPrecioFormateado }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table class="tablaServicio table table-hover" id="tablaFrecuencias">
+                <thead>
+                    <tr>
+                        <th scope="col">Día</th>
+                        <th scope="col">Turno</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in frecuencias %}
+                        <tr class="fila-tabla">
+                            <td scope="row">{{ f.getDia }}</td>
+                            <td scope="row">{{ f.getTurno }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if servicio.getEstado != "Presupuestado" %}
+                <table class="tablaServicio table table-hover" id="tablaEmpleados">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre y Apellido</th>
+                            <th scope="col">Sueldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in empleados %}
+                            <tr class="fila-tabla">
+                                <td scope="row">{{ e.nombre }} {{ e.apellido }}</td>
+                                <td scope="row">{{ e.getSueldoFormateado }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
     </section>
 </div>
 {% endblock %}

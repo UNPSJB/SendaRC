@@ -151,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
     sideBar.classList.add("sideBarExpand");
     mainContainer.classList.add("mainExpanded");
   }
+
 });
 
 $(function () {

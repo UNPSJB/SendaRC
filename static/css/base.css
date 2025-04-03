@@ -321,11 +321,11 @@ body {
 }
 
 .light-mode .form-frecuencia {
-    border: 1px solid #cfcfcf;
+    border-bottom: 1px solid #cfcfcf;
 }
 
 .light-mode .form-servicio {
-    border: 1px solid #cfcfcf;
+    border-bottom: 1px solid #cfcfcf;
 }
 
 .light-mode .contenedor-header-form-set {

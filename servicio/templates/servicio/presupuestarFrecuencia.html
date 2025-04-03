@@ -6,9 +6,13 @@
 {% endblock %}
 {% block title %}
 <h1 class="titulo">Presupuestar Servicio <span class="operacion">> Agregar Frecuencias</span></h1>
+<div>
+    <a href="{% url 'presupuestarServicios' %}" class="btn-atras"><i class="bi bi-arrow-left"></i> Atras</a>
+    <a href="{% url 'presupuestarConfirmar' %}" class="btn-siguiente">Siguiente <i class="bi bi-arrow-right"></i></a>
+</div>
 {% endblock %}
 {% block formulario %}
-<div class="row g-5" style="display: flex; justify-content: center; padding-inline: 20px;">
+<div class="row g-5 contenedorFormsets">
     <div class="contenedor-header-form-set">
         <div style="display: flex; gap: 8px;">
             <h1 class="titulo-formset">Frecuencias <span class="contador"></span></h1>
@@ -18,10 +22,8 @@
         {% else %}
             <p class="texto-TipoPresupuesto">Presupuesto: Determinado </p>
         {% endif %}
-        <div style="display: flex; gap: 10px;">
+        <div class="container-acciones">
             <button type="button" class="accion agregar-frecuencia"><i class="bi bi-plus-lg"></i> Añadir</button>
-            <a href="{% url 'presupuestarServicios' %}" class="accion" style="display: flex; justify-content: center; align-items: center; text-decoration: none; gap: 5px;"><i class="bi bi-arrow-left"></i> Atras</a>
-            <button type="submit" class="accion btn-siguiente-vista" style="display: flex; justify-content: center; align-items: center; text-decoration: none; gap: 5px;">Siguiente <i class="bi bi-arrow-right"></i></button>
         </div>
     </div>
     <form method="POST" class="mi-formset">
