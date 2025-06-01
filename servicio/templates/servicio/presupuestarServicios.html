@@ -1,134 +1,139 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-<link href="{%static 'css/formset.css'%}" rel="stylesheet" />
+
+{% block extracss %}{{ block.super }}
+<link href="{% static 'css/formset.css' %}" rel="stylesheet" />
 {% endblock %}
+
 {% block title %}
-<h1 class="titulo">Presupuestar Servicio <span class="operacion">> Agregar Servicios</span></h1>
-<div>
-    <a href="{% url 'presupuestarCliente' %}" class="btn-atras"><i class="bi bi-arrow-left"></i> Atras</a>
-    <a href="{% url 'presupuestarFrecuencias' %}" class="btn-siguiente">Siguiente <i class="bi bi-arrow-right"></i></a>
+<h1 class="titulo">Presupuestar Servicio</h1>
+<div class="container-info">
+    <h2 class="operacion">Agregar Servicios / {{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</h2>
 </div>
 {% endblock %}
+
 {% block formulario %}
-<div class="row g-5 contenedorFormsets">
-    <div class="contenedor-header-form-set">
-        <h1 class="titulo-formset" style="margin: 0 !important;">Tipos de servicios <span class="contador"></span></h1>
-        <div class="container-acciones">
-            <button type="button" class="accion agregar-servicio"><i class="bi bi-plus-lg"></i> Añadir</button>
-        </div>
-    </div>
+<div class="container">
     <form method="POST" class="mi-formset">
         {% csrf_token %}
         {{ formset.management_form }}
-        <div id="form-servicios" class="form-group form-set mb-3">
+
+        <div id="form-servicios" class="row g-3 form-group form-set">
             {% for f in formset %}
-            <div class="form-servicio">
-                <div class="contenedor-inputs-form-set">
-                    {{ f | crispy }}
-                </div>
-                <button class="noselect quitar-form quitar-servicio">
-                  <span class="text">Eliminar</span>
-                  <span class="icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                      <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
-                    </svg>
-                  </span>
-                </button>                
+            <div class="col-md-5 form-servicio bg-dark text-white">
+                <button type="button" class="quitar-servicio quitar-form">Quitar</button>
+                {{ f|crispy }}
             </div>
             {% endfor %}
         </div>
+
+        <div class="container-acciones mt-2">
+            <button type="button" class="accion agregar-servicio">Añadir Tipo Servicio</button>
+            <a href="{% url 'presupuestarIdCliente' presupuesto.cliente.pk %}" class="accion">Volver</a>
+            <button type="submit" class="accion btn-siguiente-vista">Siguiente</button>
+        </div>
     </form>
 </div>
-
 {% endblock %}
 {% block extrajs %}
 <script>
-    const TEMPLATE_FORM = `
-    <div class="form-servicio">
-        <div class="contenedor-inputs-form-set">
-            {{formset.empty_form | crispy}}
-        </div>
-        <button class="noselect quitar-form quitar-servicio">
-                  <span class="text">Eliminar</span>
-                  <span class="icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                      <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
-                    </svg>
-                  </span>
-        </button>  
-    </div>
-    `;
-
-    const buildForm = (id) => {
-        const form = TEMPLATE_FORM.replace(/__prefix__/g, id);
-        const $select_2 = $('#id_form-' + id + '-tipo_servicio')
-        $select_2.select2()
-        //$('#id_form-'+id+'-tipo_servicio').select2()
-        return $(form);
-    }
-
-    $(function () {
-        const $total_forms = $('#id_form-TOTAL_FORMS')
-        const $forms_container = $("#form-servicios");
-        const $contador = $('.contador')
-
-        $('.btn-siguiente-vista').on("click", function () {
-            $(".mi-formset").submit();
-        })
-
-        const updateCounter = () => {
-            let totalFormsValue = parseInt($total_forms.val(), 10);
-            totalFormsValue = isNaN(totalFormsValue) ? 1 : Math.max(totalFormsValue, 1);
-            $contador.text(`(${totalFormsValue})`);
-        };
-
-        updateCounter();
-
-        const getValues = () => {
-            let inputs = $forms_container.find("input, select, textarea");
-            return inputs.toArray().map(i => $(i).val());
-
+    document.addEventListener('DOMContentLoaded', function () {
+        const isFrecuencia = document.getElementById('form-frecuencias') !== null;
+        const prefix = isFrecuencia ? 'frecuencia' : 'servicio';
+        const containerId = isFrecuencia ? 'form-frecuencias' : 'form-servicios';
+        const addButtonClass = isFrecuencia ? 'agregar-frecuencia' : 'agregar-servicio';
+        const removeButtonClass = isFrecuencia ? 'quitar-frecuencia' : 'quitar-servicio';
+    
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+        const container = document.getElementById(containerId);
+        const emptyFormTemplate = `{{ formset.empty_form|crispy|escapejs }}`;
+    
+        // Crea un nuevo formulario reemplazando el __prefix__
+        function buildForm(index) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `col-md-5 form-${prefix} bg-dark text-white position-relative mb-3`;
+            wrapper.innerHTML = `
+                <button type="button" class="${removeButtonClass} quitar-form">Quitar</button>
+                ${emptyFormTemplate.replace(/__prefix__/g, index)}
+            `;
+            return wrapper;
         }
-        const setValues = (values) => {
-            inputs = $forms_container.find("input, select, textarea");
-            inputs.toArray().forEach((el, index) => $(el).val(values[index]));
+    
+        // Agrega un nuevo formulario al final
+        function addForm() {
+            const currentTotal = parseInt(totalForms.value);
+            const form = buildForm(currentTotal);
+            container.appendChild(form);
+            totalForms.value = currentTotal + 1;
+            bindRemoveButtons();
+            if (isFrecuencia) bindTurnoChange(form); // solo si es frecuencia
         }
-
-        const bindAcciones = ($container) => {
-            $(".quitar-servicio", $container).on("click", function () {
-                let total = parseInt($total_forms.val());
-                total = total - 1;
-                $(this).parent(".form-servicio").remove();
-                const values = getValues();
-                $forms_container.empty();
-                for (let i = 0; i < total; i++) {
-                    $form = buildForm(i);
-                    bindAcciones($form);
-                    $forms_container.append($form)
-                }
-                setValues(values);
-                $total_forms.val(total)
-                updateCounter();
-            })
+    
+        // Elimina un formulario y reindexa todos
+        function removeForm(button) {
+            const formElement = button.closest(`.form-${prefix}`);
+            if (!formElement) return;
+            formElement.remove();
+    
+            const forms = container.querySelectorAll(`.form-${prefix}`);
+            forms.forEach((form, i) => {
+                const inputs = form.querySelectorAll('input, select, textarea, label');
+                inputs.forEach(el => {
+                    if (el.name) el.name = el.name.replace(/form-\d+-/, `form-${i}-`);
+                    if (el.id) el.id = el.id.replace(/form-\d+-/, `form-${i}-`);
+                    if (el.htmlFor) el.htmlFor = el.htmlFor.replace(/form-\d+-/, `form-${i}-`);
+                });
+            });
+    
+            totalForms.value = forms.length;
         }
-
-        $('.form-group').each(e => bindAcciones(e))
-        $('.agregar-servicio').on("click", function () {
-            const total = parseInt($total_forms.val());
-            $form = buildForm(total);
-            bindAcciones($form);
-            $form.addClass('destello');
-            $forms_container.prepend($form)
-            $total_forms.val(total + 1)
-            updateCounter();
-
-            // Espera un momento antes de quitar la clase destello
-            setTimeout(() => {
-                $form.removeClass('destello');
-            }, 1000); // Ajusta la duración de la animación en milisegundos
+    
+        // Asocia eventos de eliminación
+        function bindRemoveButtons() {
+            const buttons = container.querySelectorAll(`.${removeButtonClass}`);
+            buttons.forEach(button => {
+                button.onclick = () => removeForm(button);
+            });
+        }
+    
+        // Evento especial para mostrar horario según turno
+        function bindTurnoChange(form) {
+            const selectTurno = form.querySelector("select[name$='turno']");
+            if (!selectTurno) return;
+    
+            selectTurno.addEventListener('change', function () {
+                const valor = this.value;
+                form.querySelectorAll('.container-hora').forEach(e => e.remove());
+    
+                let texto = '';
+                if (valor == "1") texto = '8:00 a 12:00';
+                else if (valor == "2") texto = '14:00 a 18:00';
+                else if (valor == "3") texto = '19:00 a 23:00';
+    
+                const div = document.createElement('div');
+                div.className = 'container-hora';
+                div.innerHTML = `<h6 class="texto">${texto} <i class="bi bi-clock"></i></h6>`;
+                selectTurno.insertAdjacentElement('afterend', div);
+            });
+        }
+    
+        // Botón de añadir formset
+        document.querySelector(`.${addButtonClass}`).addEventListener('click', () => {
+            addForm();
         });
-    })
-</script>
+    
+        // Botón de enviar formulario
+        document.querySelector('.btn-siguiente-vista')?.addEventListener('click', () => {
+            document.querySelector('.mi-formset').submit();
+        });
+    
+        // Inicialización al cargar
+        bindRemoveButtons();
+        if (isFrecuencia) {
+            document.querySelectorAll(`.form-${prefix}`).forEach(bindTurnoChange);
+        }
+    });
+    </script>
+       
 {% endblock %}

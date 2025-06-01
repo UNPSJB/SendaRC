@@ -13,6 +13,9 @@ from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+
 
 
 def calcularPorcentaje(total_importe, porcentaje):
@@ -483,14 +486,25 @@ def detalleServicio(request, pk):
 
 @login_required
 def pdfImprimir(request, pk):
-    subtotal = 0
     servicio = Servicio.objects.get(pk=pk)
-    lista_frecuencias = Frecuencia.objects.filter(servicio=servicio)
-    lista_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
-    for tipo in lista_tipos_servicios: 
-        tipo_Servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
-        subtotal = subtotal + tipo_Servicio.getPrecio(tipo.cantidad)
-    return render(request   , 'servicio/pdfImprimir.html', {'servicio': servicio, 'frecuencias': lista_frecuencias, 'tipoServicios': lista_tipos_servicios, 'subtotal' : subtotal})
+    tipo_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+    frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    subtotal = sum([tipo.tipoServicio.getPrecio(tipo.cantidad) for tipo in tipo_servicios])
+
+    html_string = render_to_string('servicio/pdfImprimir.html', {
+        'servicio': servicio,
+        'tipoServicios': tipo_servicios,
+        'frecuencias': frecuencias,
+        'subtotal': subtotal
+    })
+
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    result = html.write_pdf()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=presupuesto_{servicio.pk}.pdf'
+    response.write(result)
+    return response
 
 @method_decorator(login_required, name='dispatch')
 class contratarServicio(UpdateView):
