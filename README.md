@@ -5,15 +5,15 @@ El proyecto busca desarrollar un software para la empresa Senda, permitiendo la 
 
 # Caracteristicas principales ✅
 ### Manejo de Usuarios
-[![284shots-so.png](https://i.postimg.cc/K89Hw7Zs/284shots-so.png)](https://postimg.cc/21ZGBZL4)
+
 ### Bienvenida
-[![dasdas.png](https://i.postimg.cc/YCSX641N/dasdas.png)](https://postimg.cc/ykwXB8pW)
+
 ### Listados
-[![193shots-so.png](https://i.postimg.cc/tJmwHcQW/193shots-so.png)](https://postimg.cc/xNMtvtd1)
+
 #### Altas, Bajas, Modificaciones y Eliminaciónes
-[![493shots-so.png](https://i.postimg.cc/y6vzPf5V/493shots-so.png)](https://postimg.cc/pyh7VBR7)
+
 ### Generar Presupuestos
-[![12shots-so.png](https://i.postimg.cc/gJpPM1m0/12shots-so.png)](https://postimg.cc/1gvTXCgx)
+
 
 # Instalar 🧑‍💻
 ### ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
