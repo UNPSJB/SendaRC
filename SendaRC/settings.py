@@ -75,7 +75,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://adminsenda.onrender.com/"
+    "https://adminsenda.onrender.com"
 ]
 ROOT_URLCONF = 'SendaRC.urls'
 
