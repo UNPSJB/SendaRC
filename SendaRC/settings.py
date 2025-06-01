@@ -37,7 +37,7 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['adminsenda.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -74,7 +74,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://adminsenda.onrender.com/"
+]
 ROOT_URLCONF = 'SendaRC.urls'
 
 TEMPLATES = [
