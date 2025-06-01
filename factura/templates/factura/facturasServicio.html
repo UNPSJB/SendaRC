@@ -1,55 +1,161 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/facturasServicio.css' %}" rel="stylesheet" />
 {% endblock %}
-{% block title%}
-    <h1>Facturas</h1>
-    <h2>Gestión de Facturas del Servicio</h2>
+
+{% block title %}
+<div class="page-header-invoices">
+    <div class="header-content">
+        <h1 class="titulo">Facturas</h1>
+        <p class="subtitle">Gestión de Facturas del Servicio</p>
+    </div>
+    <a href="{% url 'serviciosCobrar' %}" class="btn-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"></polyline>
+        </svg>
+        Volver
+    </a>
+</div>
 {% endblock %}
-{% block listado%}
-<div class="container contenedor-tabla-form">
-    <div class="container-card">
-        <div class="card-group">
-            {% for factura in facturas %}
-                <div class="card text-bg-dark mb-3" style="width: 16rem;">
-                    <div class="card-body" style="padding: 10px;">
-                        <h5 class="card-title">Factura Nro: {{ factura.pk }}</h5>
-                        <div class="info-factura">
-                            <p>Nro Servicio: {{ factura.servicio.pk }}</p>
-                            <hr>
-                            <p>Cliente: {{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</p>
-                            <p>Cuil/Cuit: {{ factura.cliente.cuil }}</p>
-                            <hr>
-                            <p>Fecha de emision: {{ factura.fechaEmision }}</p>
-                            <p>Periodo Servicio: {{ factura.getPeriodoServicio }}</p>
-                            <p>Importe: {{ factura.importe }}</p>
+
+{% block listado %}
+<div class="invoices-container">
+    {% if facturas %}
+    <div class="invoices-grid">
+        {% for factura in facturas %}
+        <div class="invoice-card">
+            <div class="card-header">
+                <div class="header-left">
+                    <h3 class="card-title">Factura #{{ factura.pk }}</h3>
+                    <p class="card-subtitle">Servicio #{{ factura.servicio.pk }}</p>
+                </div>
+                <div class="status-badge {% if factura.fechaPago %}status-paid{% else %}status-pending{% endif %}">
+                    {% if factura.fechaPago %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Pagada
+                    {% else %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Pendiente
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card-content">
+                <!-- Información del cliente -->
+                <div class="info-section">
+                    <div class="section-header">
+                        <h4 class="section-title">Cliente</h4>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nombre</span>
+                            <span class="info-value">{{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</span>
                         </div>
-                        <div>
-                            {% if factura.fechaPago is None %}
-                                <a href="{% url 'formaPago' factura.pk %}" class="opcion">Pagar</a>
-                            {% endif %}
-                            <a href="{% url 'detalleFactura' factura.pk %}" class="opcion">Ver detalle</a>
+                        <div class="info-item">
+                            <span class="info-label">CUIT/CUIL</span>
+                            <span class="info-value">{{ factura.cliente.cuil }}</span>
                         </div>
                     </div>
                 </div>
-            {% endfor %}  
-        </div>  
+
+                <div class="divider"></div>
+
+                <!-- Información de la factura -->
+                <div class="info-section">
+                    <div class="section-header">
+                        <h4 class="section-title">Detalles</h4>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Emisión</span>
+                            <span class="info-value">{{ factura.fechaEmision }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Período de Servicio</span>
+                            <span class="info-value">{{ factura.getPeriodoServicio }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Importe -->
+                <div class="amount-section">
+                    <div class="amount-item">
+                        <span class="amount-label">Importe</span>
+                        <span class="amount-value">${{ factura.importe }}</span>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="actions-section">
+                    {% if factura.fechaPago is None %}
+                    <a href="{% url 'formaPago' factura.pk %}" class="payment-button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                        Pagar
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'detalleFactura' factura.pk %}" class="detail-button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Ver Detalle
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    <div>
-        <a class="btn-Volver" href="{% url 'serviciosCobrar' %}">Volver</a>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+        </div>
+        <h3 class="empty-title">No hay facturas</h3>
+        <p class="empty-description">No se encontraron facturas para este servicio.</p>
     </div>
+    {% endif %}
 </div>
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+
+<!-- Offcanvas para detalles -->
+<div class="offcanvas offcanvas-end modern-offcanvas" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        <h5 class="offcanvas-title">Detalles</h5>
+        <button type="button" class="btn-close-modern" data-bs-dismiss="offcanvas" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
     </div>
     <div class="offcanvas-body">
+        <!-- El contenido se carga dinámicamente -->
     </div>
 </div>
 {% endblock %}
 
 {% block extrajs %}{{block.super}}
-
+<script>
+$(function() {
+    // Animación de entrada para las tarjetas
+    $('.invoice-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+});
+</script>
 {% endblock %}

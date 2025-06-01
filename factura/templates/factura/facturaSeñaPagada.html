@@ -1,29 +1,126 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+
 {% block extracss %}{{block.super}}
-    <link href="{%static 'css/formsChicos.css'%}" rel="stylesheet" />
+<link href="{% static 'css/cobroFactura.css' %}" rel="stylesheet" />
 {% endblock %}
+
 {% block title %}
-    <h1 class="titulo"Factura Seña de Servicio</h1>
-    <div class="container-info">
-        <h2 class="operacion">Factura Pagada</h2>
+<div class="page-header-paid">
+    <div class="header-content">
+        <h1 class="titulo">Factura Seña de Servicio</h1>
+        <div class="subtitle-container">
+            <span class="subtitle">Factura Pagada</span>
+        </div>
     </div>
+    <div class="status-badge status-paid">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>Pagada</span>
+    </div>
+</div>
 {% endblock %}
+
 {% block formulario %}
-    <div class="container" style="color: white;">
-        <h1>Factura Pagada Correctamente</h1>
-        <p>Numero de Factura: {{factura_seña.pk}}
-        <p>Fecha de Emision: {{factura_seña.fechaEmision}}
-        <p>Cliente: {{factura_seña.cliente.apellido}} {{factura_seña.cliente.nombre}}
-        <p>Cuil: {{factura_seña.cliente.cuil}}
-        <p>Importe total del servicio: ${{factura_seña.servicio.importe_total}}
-        <h1>Importe Seña pagada: ${{factura_seña.importe}}</h1>
-        <p>Forma de Pago: {{factura_seña.tipo}}</p>
-        <p>Fecha de Pago: {{factura_seña.fechaPago}}</p>
+<div class="paid-container">
+    <div class="paid-card">
+        <div class="card-header">
+            <div class="header-left">
+                <h3 class="card-title">Factura Pagada Correctamente</h3>
+                <p class="card-subtitle">Seña de servicio #{{factura_seña.pk}}</p>
+            </div>
+            <div class="success-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+        </div>
+        
+        <div class="card-content">
+            <!-- Información de la factura -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h4 class="section-title">Información de la Factura</h4>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Número de Factura</span>
+                        <span class="info-value">{{factura_seña.pk}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Emisión</span>
+                        <span class="info-value">{{factura_seña.fechaEmision}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Pago</span>
+                        <span class="info-value">{{factura_seña.fechaPago}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Tipo de factura</span>
+                        <span class="info-value">{{factura_seña.getTipo}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Información del cliente -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h4 class="section-title">Información del Cliente</h4>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Cliente</span>
+                        <span class="info-value">{{factura_seña.cliente.apellido}} {{factura_seña.cliente.nombre}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">CUIT/CUIL</span>
+                        <span class="info-value">{{factura_seña.cliente.cuil}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Información del pago -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h4 class="section-title">Información del Pago</h4>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Importe Total del Servicio</span>
+                        <span class="info-value">${{factura_seña.servicio.importe_total}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Forma de Pago</span>
+                        <span class="info-value">{{factura_seña.getFormaPago}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total pagado -->
+            <div class="total-section">
+                <div class="total-item">
+                    <span class="total-label">Importe Seña Pagada</span>
+                    <span class="total-value">${{factura_seña.importe}}</span>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="actions-section">
+                <a href="{% url 'contratarServicioCorrecto' pk=factura_seña.servicio.pk %}" class="finalize-button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    Finalizar Contratación
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="container container-form">
-        <a class="btn btn-primary" href="#">Imprimir Pago</a>
-        <a class="btn btn-primary" href="{% url 'contratarServicioCorrecto' pk=factura_seña.servicio.pk %}">Finalizar Contratacion</a>
-    </div>
+</div>
 {% endblock %}

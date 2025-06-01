@@ -1,59 +1,191 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+
 {% block extracss %}{{block.super}}
-<link href="{%static 'css/formset.css'%}" rel="stylesheet" />
-<link href="{%static 'css/servicio.css'%}" rel="stylesheet" />
+<link href="{% static 'css/asignarEmpleado.css' %}" rel="stylesheet" />
 {% endblock %}
+
 {% block title %}
-<h1 class="titulo">Contratar Servicio <span class="operacion"> > Asignacion de Empleados | Servicio #{{servicio.pk}} |
-        Cliente: {{servicio.cliente.nombre}}
-        {{servicio.cliente.apellido}} | Inicio: {{servicio.fecha_inicio}}  Fin: {{servicio.fecha_finaliza}}</span></h1>
-{% endblock %}
-{% block formulario %}
-<div style="max-width: 100%; overflow: hidden; display: flex; justify-content: center;">
-    <div class="row g-5" style="padding-inline: 200px; min-width: 1250px; margin-bottom: 40px;">
-        <div class="card card-servicio text-light" style="padding-top: 20px; background-color: #0c0c0c; border: 1px solid #252527;">
-            <div class="card-header card-header-servicio"
-                style="display: flex; justify-content: space-between; align-items: center; border-bottom: none;">
-                <h4>Asignación de empleados:</h4>
-                <button type="submit" class="btn-contratar btn-siguiente-vista">Siguiente <i
-                        class="bi bi-arrow-right"></i></button>
+<div class="page-header-assign">
+    <div class="header-content">
+        <h1 class="titulo">Contratar Servicio</h1>
+        <div class="service-info">
+            <div class="info-pill">
+                <span class="info-label">Servicio #{{servicio.pk}}</span>
             </div>
-            <hr class="my-0">
-            <div class="card-body card-body-servicio">
-                <form method="POST" class="formsetEmpleados">
-                    {% csrf_token %}
-                    {{ formset.management_form }}
-                    <div class="form-group mb-3" style="display: flex; flex-direction: column; gap: 20px;">
-                        {% for f in formset %}
-                        <div class="formSetEmpleados"
-                            style="background-color: #0c0c0c; padding: 20px; border-radius: 6px; border: 1px solid #252527">
-                            <span class="numEmpleado" id="numEmpleado{{ index }}" style="color: #adfa1d;"></span>
-                            {{ f | crispy}}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </form>
+            <div class="info-pill">
+                <span class="info-label">Cliente:</span>
+                <span class="info-value">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
+            </div>
+            <div class="info-pill">
+                <span class="info-label">Inicio:</span>
+                <span class="info-value">{{servicio.fecha_inicio}}</span>
+            </div>
+            <div class="info-pill">
+                <span class="info-label">Fin:</span>
+                <span class="info-value">{{servicio.fecha_finaliza}}</span>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block formulario %}
+<div class="assign-container">
+    <div class="assign-card">
+        <!-- Header de la tarjeta -->
+        <div class="card-header">
+            <div class="header-left">
+                <h3 class="card-title">Asignación de Empleados</h3>
+                <p class="card-subtitle">Selecciona los empleados para cada turno</p>
+            </div>
+            <button type="button" class="next-button btn-siguiente-vista">
+                <span>Siguiente</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <div class="card-content">
+            <form method="POST" class="formsetEmpleados">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                
+                <div class="employees-grid">
+                    {% for f in formset %}
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-number">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <span class="numEmpleado" id="numEmpleado{{ forloop.counter }}">Empleado {{ forloop.counter }}</span>
+                            </div>
+                            <div class="employee-status">
+                                <span class="status-indicator"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="employee-form">
+                            {{ f | crispy }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block extrajs %}
 <script>
     $(function () {
-        const $total_forms = $('#id_form-TOTAL_FORMS')
+        // Configuración mejorada de Select2
+        const $total_forms = $('#id_form-TOTAL_FORMS');
+        
         for (let i = 0; i < $total_forms.val(); i++) {
-            $("#id_form-" + i + "-empleados").select2({
+            const selectId = "#id_form-" + i + "-empleados";
+            
+            // Destruir Select2 existente si existe
+            if ($(selectId).hasClass("select2-hidden-accessible")) {
+                $(selectId).select2('destroy');
+            }
+            
+            // Inicializar Select2 con configuración mejorada
+            $(selectId).select2({
                 allowClear: true,
                 placeholder: "Seleccione empleado",
-            })
+                width: '100%',
+                // CRÍTICO: No usar dropdownParent, dejar que se renderice en body
+                dropdownParent: $('body'),
+                // Configuraciones adicionales para mejorar funcionamiento
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                templateResult: function(data) {
+                    return data.text;
+                },
+                templateSelection: function(data) {
+                    return data.text;
+                }
+            });
+            
+            // Event listeners
+            $(selectId).on('select2:open', function() {
+                // Asegurar z-index alto cuando se abre
+                $('.select2-dropdown').css('z-index', 99999);
+                
+                // Agregar clase al body para manejar overflow
+                $('body').addClass('select2-dropdown-open');
+                
+                // Hacer scroll al elemento si es necesario
+                const $container = $(this).closest('.employee-card');
+                if ($container.length) {
+                    $container[0].scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'nearest' 
+                    });
+                }
+            });
+            
+            $(selectId).on('select2:close', function() {
+                // Remover clase del body
+                $('body').removeClass('select2-dropdown-open');
+            });
+            
+            // Actualizar estado cuando se selecciona un empleado
+            $(selectId).on('change', function() {
+                const card = $(this).closest('.employee-card');
+                if ($(this).val()) {
+                    card.addClass('has-selection');
+                } else {
+                    card.removeClass('has-selection');
+                }
+                updateFormStatus();
+            });
         }
+        
+        // Manejar envío del formulario
         $('.btn-siguiente-vista').on("click", function () {
+            // Cerrar todos los Select2 abiertos
+            $('.select2-hidden-accessible').select2('close');
+            
+            // Agregar estado de carga
+            $(this).addClass('loading').prop('disabled', true);
+            
+            // Enviar formulario
             $(".formsetEmpleados").submit();
-        })
+        });
+        
+        // Verificar estado del formulario
+        function updateFormStatus() {
+            const totalSelected = $('.employee-card.has-selection').length;
+            const totalForms = parseInt($total_forms.val());
+            
+            if (totalSelected > 0) {
+                $('.btn-siguiente-vista').prop('disabled', false);
+            } else {
+                $('.btn-siguiente-vista').prop('disabled', true);
+            }
+        }
+        
+        // Inicializar estado
+        updateFormStatus();
+        
+        // Manejar clicks fuera de Select2 para cerrar dropdowns
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.select2-container').length && 
+                !$(e.target).closest('.select2-dropdown').length) {
+                $('.select2-hidden-accessible').select2('close');
+            }
+        });
+        
+        // Debug: Log para verificar inicialización
+        console.log('Select2 inicializado para', $total_forms.val(), 'empleados');
     });
-
 </script>
 {% endblock %}

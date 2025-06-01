@@ -4,28 +4,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Presupuesto N° {{ servicio.pk }}</title>
-    <link rel="stylesheet" href="{% static 'css/imprimir.css' %}">
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        h1, h2, h4, h6 { margin: 10px 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #000; padding: 8px; text-align: center; }
-        .header, .footer { text-align: center; }
-        .footer { margin-top: 40px; font-size: 0.9em; }
-        .logo { float: right; width: 150px; }
-        .clearfix::after { content: ""; display: table; clear: both; }
-        .totales { margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 30px;
+        }
+
+        h1, h2, h4, h6 {
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .logo-cell {
+            text-align: right;
+        }
+
+        .totales {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-<div class="header clearfix">
-    <img src="{% static 'images/senda.png' %}" class="logo">
-    <h1>Presupuesto N° {{ servicio.pk }}</h1>
-    <hr>
-    <h6>Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut</h6>
-    <h6>Dante Brozzi 830 - (280)451069 - Esquel - e-mail: senda@cpsarg.com - www.sendaservicios.com.ar</h6>
-</div>
+<table width="100%">
+    <tr>
+        <td>
+            <h1>Presupuesto N° {{ servicio.pk }}</h1>
+        </td>
+        <td class="logo-cell">
+            <img src="{{ img_url }}" width="150">
+        </td>
+    </tr>
+</table>
+
+<hr>
+<h6>Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut</h6>
+<h6>Dante Brozzi 830 - (280)451069 - Esquel - e-mail: senda@cpsarg.com - www.sendaservicios.com.ar</h6>
 
 <h4>Datos del Cliente</h4>
 <table>

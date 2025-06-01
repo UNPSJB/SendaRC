@@ -1,190 +1,284 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+
 {% block extracss %}{{block.super}}
-<link href="{%static 'css/servicio.css'%}" rel="stylesheet" />
+<link href="{% static 'css/detalleServicio.css' %}" rel="stylesheet" />
 {% endblock %}
+
 {% block title %}
-<h1 class="titulo">Gestión de Servicios<span class="operacion"> > Servicio / {{servicio.cliente.nombre}}
-        {{servicio.cliente.apellido}}</span></h1>
-{% endblock %}
-{% block formulario %}
-<div class="contenedorDetalleServicio"> 
-    <section class="infoServicioDetalle">
-        <h5 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio #{{ servicio.pk }}</h5>
-        <p class="texto">Fecha Emisión: <span class="datoCliente">{{servicio.fecha_emision}}</span></p>
-        <hr class="my-3">
-        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Cliente Información</h6>
-        <div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto datosCliente">Cliente</p>
-                <span class="datoServicio">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">CUIT/CUIL</p>
-                <span class="datoServicio">{{servicio.cliente.cuil}}</span>
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Email</p>
-                <span class="datoServicio">{{servicio.cliente.email}}</span>
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Telefono</p>
-                <span class="datoServicio">{{servicio.cliente.telefono}}</span>
-            </div>
+<div class="page-header-detail">
+    <div class="header-content">
+        <h1 class="titulo">Gestión de Servicios</h1>
+        <div class="breadcrumb-container">
+            <span class="breadcrumb-item">Servicio</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-client">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
         </div>
-        <hr class="my-3">
-        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Inmueble Información</h6>
-        <div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Dirección Inmueble</p>
-                <span class="datoServicio">{{servicio.direccion}}</span>
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Metros cuadrados Inmueble</p>
-                <span class="datoServicio">{{servicio.metros2}}m²</span>
-            </div>
-        </div>
-        <hr class="my-3">
-        <h6 class="mb-2" style="font-family: 'InterSemiBold',sans-serif;">Servicio Información</h6>
-        <div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Tipo Servicio</p>
-                <span class="datoServicio">{{servicio.getTipo}}</span> 
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Estado</p>
-                <span class="datoServicio">{{servicio.getEstado}}</span> 
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Plazo Vigencia</p>
-                <span class="datoServicio">{{servicio.plazo_vigencia}}</span> 
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto datosCliente">Total Servicios</p>
-                <span class="datoServicio">{{ servicio.getImporteTotalServicios }}</span> 
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Total Servicios * Frecuencias</p>
-                <span class="datoServicio">{{ servicio.getSubtotalServiciosFrecuencias }}</span>   
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Mano de Obra</p>
-                <span class="datoServicio">{{ servicio.getSubtotalEmpleados }}</span> 
-            </div>
-            <div class="miniContenedorDetalleServicio">
-                <p class="texto">Ganancia 15%</p>
-                <span class="datoServicio">revisar este porcentaje</span> 
-            </div>
-            {% if servicio.tipo == 1 %}
-                <div class="miniContenedorDetalleServicio totalFinalServicio">
-                    <p class="texto titleTotal">Total Servicio Completo(ARS)</p>
-                    <span class="datoServicio totalSpan">{{ servicio.getImporteTotalFormateado }}</span> 
-                </div>
-            {% else %}
-                <div class="miniContenedorDetalleServicio totalFinalServicio">
-                    <p class="texto titleTotal">Total Servicio Mensual(ARS)</p>
-                    <span class="datoServicio totalSpan">{{ servicio.getImporteTotalFormateado }}</span> 
-                </div>
-            {% endif %}
-        </div>       
-    </section>
-    <section class="tablasServicio">
-        <div class="tablasServicioContainer">
-            <ul class="opcionesTablasServicio" id="opcionesDetalleServicio">
-                <li class="liOpcionesTablasServicio">
-                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" aria-current="page" href="#"
-                        data-lista="tablaTiposServicios">Tipos
-                        de Servicios <span class="badge bg-primary rounded-pill" id="servicios-badge"></span></a>
-                </li>
-                <li class="liOpcionesTablasServicio">
-                    <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
-                        data-lista="tablaFrecuencias">Frecuencias <span class="badge bg-primary rounded-pill" id="frecuencias-badge"></span></a>
-                </li>
-                {% if servicio.getEstado != "Presupuestado" %}
-                    <li class="liOpcionesTablasServicio">
-                        <a class="linkOpcionesTablasServicio" style="width: auto; display: flex; gap:5px;" href="#"
-                            data-lista="tablaEmpleados">Empleados <span class="badge bg-primary rounded-pill"></span></a>
-                    </li>
-                {% endif %}
-            </ul>
-            <table class="tablaServicio table table-hover" id="tablaTiposServicios">
-                <thead>
-                    <tr>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio Unitario</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for t in tipoServicios %}
-                        <tr class="fila-tabla">
-                            <td scope="row">{{ t.tipoServicio.descripcion }}</td>
-                            <td scope="row">{{ t.cantidad }}</td>
-                            <td scope="row">{{ t.tipoServicio.getPrecioFormateado }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <table class="tablaServicio table table-hover" id="tablaFrecuencias">
-                <thead>
-                    <tr>
-                        <th scope="col">Día</th>
-                        <th scope="col">Turno</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for f in frecuencias %}
-                        <tr class="fila-tabla">
-                            <td scope="row">{{ f.getDia }}</td>
-                            <td scope="row">{{ f.getTurno }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% if servicio.getEstado != "Presupuestado" %}
-                <table class="tablaServicio table table-hover" id="tablaEmpleados">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nombre y Apellido</th>
-                            <th scope="col">Sueldo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for e in empleados %}
-                            <tr class="fila-tabla">
-                                <td scope="row">{{ e.nombre }} {{ e.apellido }}</td>
-                                <td scope="row">{{ e.getSueldoFormateado }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
-        </div>
-    </section>
+    </div>
+    <a href="#" class="btn-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"></polyline>
+        </svg>
+        Volver
+    </a>
 </div>
 {% endblock %}
+
+{% block formulario %}
+<div class="detail-container">
+    <!-- Panel de información -->
+    <div class="info-panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="header-left">
+                    <h3 class="card-title">Servicio #{{ servicio.pk }}</h3>
+                    <p class="card-subtitle">Fecha Emisión: {{servicio.fecha_emision}}</p>
+                </div>
+                <div class="status-badge status-{{servicio.estado|lower}}">
+                    {{servicio.getEstado}}
+                </div>
+            </div>
+
+            <div class="card-content">
+                <!-- Información del Cliente -->
+                <div class="info-section">
+                    <div class="section-header">
+                        <h4 class="section-title">Información del Cliente</h4>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Cliente</span>
+                            <span class="info-value">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">CUIT/CUIL</span>
+                            <span class="info-value">{{servicio.cliente.cuil}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">{{servicio.cliente.email}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Teléfono</span>
+                            <span class="info-value">{{servicio.cliente.telefono}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Información del Inmueble -->
+                <div class="info-section">
+                    <div class="section-header">
+                        <h4 class="section-title">Información del Inmueble</h4>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Dirección</span>
+                            <span class="info-value">{{servicio.direccion}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Metros cuadrados</span>
+                            <span class="info-value">{{servicio.metros2}}m²</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Información del Servicio -->
+                <div class="info-section">
+                    <div class="section-header">
+                        <h4 class="section-title">Información del Servicio</h4>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Servicio</span>
+                            <span class="info-value">{{servicio.getTipo}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Plazo de Vigencia</span>
+                            <span class="info-value">{{servicio.plazo_vigencia}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Total Servicios</span>
+                            <span class="info-value">{{ servicio.getImporteTotalServicios }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Total Servicios × Frecuencias</span>
+                            <span class="info-value">{{ servicio.getSubtotalServiciosFrecuencias }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Mano de Obra</span>
+                            <span class="info-value">{{ servicio.getSubtotalEmpleados }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ganancia 15%</span>
+                            <span class="info-value">revisar este porcentaje</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Final -->
+                    <div class="total-section">
+                        <div class="total-item">
+                            <span class="total-label">
+                                {% if servicio.tipo == 1 %}
+                                Total Servicio Completo (ARS)
+                                {% else %}
+                                Total Servicio Mensual (ARS)
+                                {% endif %}
+                            </span>
+                            <span class="total-value">{{ servicio.getImporteTotalFormateado }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de tablas -->
+    <div class="tables-panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="header-left">
+                    <h3 class="card-title">Detalles del Servicio</h3>
+                    <p class="card-subtitle">Información detallada de servicios, frecuencias y empleados</p>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <!-- Tabs -->
+                <div class="tabs-container">
+                    <div class="tabs-list" id="opcionesDetalleServicio">
+                        <button class="tab-trigger" data-lista="tablaTiposServicios">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 12l2 2 4-4"></path>
+                                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+                                <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+                            </svg>
+                            Tipos de Servicios
+                            <span class="badge" id="servicios-badge">{{ tipoServicios|length }}</span>
+                        </button>
+                        <button class="tab-trigger" data-lista="tablaFrecuencias">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Frecuencias
+                            <span class="badge" id="frecuencias-badge">{{ frecuencias|length }}</span>
+                        </button>
+                        {% if servicio.getEstado != "Presupuestado" %}
+                        <button class="tab-trigger" data-lista="tablaEmpleados">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Empleados
+                            <span class="badge" id="empleados-badge">{{ empleados|length }}</span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Contenido de las tablas -->
+                <div class="table-container">
+                    <!-- Tabla Tipos de Servicios -->
+                    <table class="data-table" id="tablaTiposServicios">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in tipoServicios %}
+                            <tr>
+                                <td>{{ t.tipoServicio.descripcion }}</td>
+                                <td>{{ t.cantidad }}</td>
+                                <td>{{ t.tipoServicio.getPrecioFormateado }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!-- Tabla Frecuencias -->
+                    <table class="data-table" id="tablaFrecuencias" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Día</th>
+                                <th>Turno</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for f in frecuencias %}
+                            <tr>
+                                <td>{{ f.getDia }}</td>
+                                <td>{{ f.getTurno }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!-- Tabla Empleados -->
+                    {% if servicio.getEstado != "Presupuestado" %}
+                    <table class="data-table" id="tablaEmpleados" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Nombre y Apellido</th>
+                                <th>Sueldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in empleados %}
+                            <tr>
+                                <td>{{ e.nombre }} {{ e.apellido }}</td>
+                                <td>{{ e.getSueldoFormateado }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block extrajs %}
 <script>
-    $(() => {
-        $('#opcionesDetalleServicio a').on('click', function (e) {
+    $(function () {
+        // Manejar clicks en tabs
+        $('#opcionesDetalleServicio .tab-trigger').on('click', function (e) {
             e.preventDefault();
 
-            // Obtener el id de la lista correspondiente
-            const listaId = $(this).data('lista');
-            console.log(listaId)
+            // Obtener el id de la tabla correspondiente
+            const tablaId = $(this).data('lista');
 
-            // Ocultar todas las listas y luego mostrar la lista seleccionada
-            $('#tablaTiposServicios,#tablaFrecuencias,#tablaEmpleados').hide();
-            $('#' + listaId).show();
+            // Ocultar todas las tablas y mostrar la seleccionada
+            $('.data-table').hide();
+            $('#' + tablaId).show();
 
-            // Agregar la clase 'active' al enlace clicado y eliminarla de los demás
-            $('#opcionesDetalleServicio a').removeClass('active');
+            // Actualizar estado activo de los tabs
+            $('.tab-trigger').removeClass('active');
             $(this).addClass('active');
         });
 
-        // Simular clic en el enlace "Tipos de Servicios" al cargar la página
-        $('#opcionesDetalleServicio a[data-lista="tablaTiposServicios"]').click();
+        // Activar el primer tab por defecto
+        $('.tab-trigger[data-lista="tablaTiposServicios"]').addClass('active').click();
+
+        // Animación de entrada
+        $('.card').each(function (index) {
+            $(this).css('animation-delay', (index * 0.1) + 's');
+        });
+
     });
 </script>
 {% endblock %}

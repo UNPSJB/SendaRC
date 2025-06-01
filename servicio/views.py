@@ -13,8 +13,10 @@ from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.template.loader import render_to_string
-from weasyprint import HTML
-import tempfile
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.shortcuts import get_object_or_404
+from django.templatetags.static import static
 
 
 
@@ -486,24 +488,36 @@ def detalleServicio(request, pk):
 
 @login_required
 def pdfImprimir(request, pk):
-    servicio = Servicio.objects.get(pk=pk)
+    servicio = get_object_or_404(Servicio, pk=pk)
     tipo_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
     frecuencias = Frecuencia.objects.filter(servicio=servicio)
     subtotal = sum([tipo.tipoServicio.getPrecio(tipo.cantidad) for tipo in tipo_servicios])
 
-    html_string = render_to_string('servicio/pdfImprimir.html', {
+    # URL absoluta para la imagen (xhtml2pdf necesita una ruta válida o URL absoluta)
+    img_url = request.build_absolute_uri(static('images/senda.png'))
+
+    context = {
         'servicio': servicio,
         'tipoServicios': tipo_servicios,
         'frecuencias': frecuencias,
-        'subtotal': subtotal
-    })
+        'subtotal': subtotal,
+        'img_url': img_url,
+    }
 
-    html = HTML(string=html_string, base_url=request.build_absolute_uri())
-    result = html.write_pdf()
+    # Cargar template
+    template = get_template('servicio/pdfImprimir.html')
+    html = template.render(context)
 
+    # Crear respuesta HTTP como PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename=presupuesto_{servicio.pk}.pdf'
-    response.write(result)
+
+    # Convertir HTML a PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF', status=500)
+    
     return response
 
 @method_decorator(login_required, name='dispatch')

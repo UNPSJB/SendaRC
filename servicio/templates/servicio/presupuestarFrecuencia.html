@@ -1,40 +1,71 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
 {% block extracss %}{{ block.super }}
 <link href="{% static 'css/formset.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block title %}
-<h1 class="titulo">Presupuestar Servicio</h1>
-<div class="container-info">
-    <h2 class="operacion">Agregar Frecuencia / {{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</h2>
+<div class="page-header">
+    <h1 class="page-title">Presupuestar Frecuencia ></h1>
+    <div class="page-subtitle">
+        <span class="client-info">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}} ></span>
+        <span class="operation-type">Agregar Frecuencia</span>
+    </div>
 </div>
 {% endblock %}
 
 {% block formulario %}
-<div class="container">
-    <form method="POST" class="mi-formset">
+<div class="formset-container">
+    <form method="POST" class="formset-form">
         {% csrf_token %}
         {{ formset.management_form }}
 
-        <div id="form-frecuencias" class="row g-3 form-group form-set">
+        <div class="formset-header">
+            <h3 class="formset-title">Frecuencias</h3>
+            <button type="button" class="btn-add agregar-frecuencia">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Añadir Frecuencia
+            </button>
+        </div>
+
+        <div id="form-frecuencias" class="formset-grid">
             {% for f in formset %}
-            <div class="col-md-5 form-frecuencia bg-dark text-white">
-                <button type="button" class="quitar-frecuencia quitar-form">Quitar</button>
-                {{ f|crispy }}
+            <div class="form-card form-frecuencia">
+                <button type="button" class="btn-remove quitar-frecuencia quitar-form">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="form-content">
+                    {{ f|crispy }}
+                </div>
             </div>
             {% endfor %}
         </div>
-        <div class="container-acciones mt-2">
-            <button type="button" class="accion agregar-frecuencia">Añadir Frecuencia</button>
-            <a href="{% url 'presupuestarServicios' %}" class="accion">Volver</a>
-            <button type="submit" class="accion btn-siguiente-vista">Siguiente</button>
+
+        <div class="form-actions">
+            <a href="{% url 'presupuestarServicios' %}" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15,18 9,12 15,6"></polyline>
+                </svg>
+                Volver
+            </a>
+            <button type="submit" class="btn btn-primary btn-siguiente-vista">
+                Siguiente
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+            </button>
         </div>
     </form>
 </div>
 {% endblock %}
+
 {% block extrajs %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -48,47 +79,67 @@
         const container = document.getElementById(containerId);
         const emptyFormTemplate = `{{ formset.empty_form|crispy|escapejs }}`;
     
-        // Crea un nuevo formulario reemplazando el __prefix__
         function buildForm(index) {
             const wrapper = document.createElement('div');
-            wrapper.className = `col-md-5 form-${prefix} bg-dark text-white position-relative mb-3`;
+            wrapper.className = `form-card form-${prefix}`;
             wrapper.innerHTML = `
-                <button type="button" class="${removeButtonClass} quitar-form">Quitar</button>
-                ${emptyFormTemplate.replace(/__prefix__/g, index)}
+                <button type="button" class="btn-remove ${removeButtonClass} quitar-form">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="form-content">
+                    ${emptyFormTemplate.replace(/__prefix__/g, index)}
+                </div>
             `;
             return wrapper;
         }
     
-        // Agrega un nuevo formulario al final
         function addForm() {
             const currentTotal = parseInt(totalForms.value);
             const form = buildForm(currentTotal);
             container.appendChild(form);
             totalForms.value = currentTotal + 1;
             bindRemoveButtons();
-            if (isFrecuencia) bindTurnoChange(form); // solo si es frecuencia
+            if (isFrecuencia) bindTurnoChange(form);
+            
+            // Animación de entrada
+            form.style.opacity = '0';
+            form.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                form.style.transition = 'all 0.3s ease';
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }, 10);
         }
     
-        // Elimina un formulario y reindexa todos
         function removeForm(button) {
             const formElement = button.closest(`.form-${prefix}`);
             if (!formElement) return;
-            formElement.remove();
-    
-            const forms = container.querySelectorAll(`.form-${prefix}`);
-            forms.forEach((form, i) => {
-                const inputs = form.querySelectorAll('input, select, textarea, label');
-                inputs.forEach(el => {
-                    if (el.name) el.name = el.name.replace(/form-\d+-/, `form-${i}-`);
-                    if (el.id) el.id = el.id.replace(/form-\d+-/, `form-${i}-`);
-                    if (el.htmlFor) el.htmlFor = el.htmlFor.replace(/form-\d+-/, `form-${i}-`);
+            
+            // Animación de salida
+            formElement.style.transition = 'all 0.3s ease';
+            formElement.style.opacity = '0';
+            formElement.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                formElement.remove();
+                
+                const forms = container.querySelectorAll(`.form-${prefix}`);
+                forms.forEach((form, i) => {
+                    const inputs = form.querySelectorAll('input, select, textarea, label');
+                    inputs.forEach(el => {
+                        if (el.name) el.name = el.name.replace(/form-\d+-/, `form-${i}-`);
+                        if (el.id) el.id = el.id.replace(/form-\d+-/, `form-${i}-`);
+                        if (el.htmlFor) el.htmlFor = el.htmlFor.replace(/form-\d+-/, `form-${i}-`);
+                    });
                 });
-            });
-    
-            totalForms.value = forms.length;
+                
+                totalForms.value = forms.length;
+            }, 300);
         }
     
-        // Asocia eventos de eliminación
         function bindRemoveButtons() {
             const buttons = container.querySelectorAll(`.${removeButtonClass}`);
             buttons.forEach(button => {
@@ -96,43 +147,43 @@
             });
         }
     
-        // Evento especial para mostrar horario según turno
         function bindTurnoChange(form) {
             const selectTurno = form.querySelector("select[name$='turno']");
             if (!selectTurno) return;
     
             selectTurno.addEventListener('change', function () {
                 const valor = this.value;
-                form.querySelectorAll('.container-hora').forEach(e => e.remove());
+                form.querySelectorAll('.time-display').forEach(e => e.remove());
     
                 let texto = '';
                 if (valor == "1") texto = '8:00 a 12:00';
                 else if (valor == "2") texto = '14:00 a 18:00';
                 else if (valor == "3") texto = '19:00 a 23:00';
     
-                const div = document.createElement('div');
-                div.className = 'container-hora';
-                div.innerHTML = `<h6 class="texto">${texto} <i class="bi bi-clock"></i></h6>`;
-                selectTurno.insertAdjacentElement('afterend', div);
+                if (texto) {
+                    const div = document.createElement('div');
+                    div.className = 'time-display';
+                    div.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12,6 12,12 16,14"></polyline>
+                        </svg>
+                        <span>${texto}</span>
+                    `;
+                    selectTurno.closest('.form-group').appendChild(div);
+                }
             });
         }
     
-        // Botón de añadir formset
-        document.querySelector(`.${addButtonClass}`).addEventListener('click', () => {
-            addForm();
-        });
-    
-        // Botón de enviar formulario
+        document.querySelector(`.${addButtonClass}`).addEventListener('click', addForm);
         document.querySelector('.btn-siguiente-vista')?.addEventListener('click', () => {
-            document.querySelector('.mi-formset').submit();
+            document.querySelector('.formset-form').submit();
         });
     
-        // Inicialización al cargar
         bindRemoveButtons();
         if (isFrecuencia) {
             document.querySelectorAll(`.form-${prefix}`).forEach(bindTurnoChange);
         }
     });
-    </script>
-       
+</script>
 {% endblock %}

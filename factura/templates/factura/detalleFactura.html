@@ -1,130 +1,254 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+
 {% block extracss %}{{block.super}}
-<link href="{%static 'css/presConfirmar.css'%}" rel="stylesheet" />
+<link href="{% static 'css/detalleFactura.css' %}" rel="stylesheet" />
 {% endblock %}
+
 {% block title %}
-<h1 class="titulo">Detalle de Factura</h1>
-<div class="container-info">
-    <h2 class="operacion"></h2>
+<div class="page-header-invoice">
+    <div class="header-content">
+        <h1 class="titulo">Detalle de Factura</h1>
+        <div class="subtitle-container">
+            <span class="subtitle">Factura #{{factura.pk}}</span>
+        </div>
+    </div>
+    <div class="status-badge {% if factura.fechaPago %}status-paid{% else %}status-pending{% endif %}">
+        {% if factura.fechaPago %}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Pagada</span>
+        {% else %}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Pendiente</span>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
+
 {% block formulario %}
-<div class="container contenedor-resumen">
-    <div class="contenedor-info-form">
-        <div class="contenedor-header">
-            <div class="seccion-info-cliente">
-                <div class="contenedor-textos">
-                    <h4>Datos de Factura:</h4>
-                    <p class="operacion">Numero de Factura: {{factura.pk}} {{factura.cliente.apellido}}</p>
-                    <p class="operacion">Tipo de Factura: {{factura.getTipo}}</p>
-                    <p class="operacion">Fecha de emision: {{factura.fechaEmision}}</p>
-                    <p class="operacion">Fecha de vencimiento: {{factura.fecha_vencimiento}}</p>
-                    <p class="operacion">Periodo de Servicio: {{factura.getPeriodoServicio}} </p>
-                    {% if factura.fechaPago %}
-                        <p class="operacion">Fecha de pago: {{factura.fechaPago}} </p>
-                        <p class="operacion">Forma de pago: {{factura.getFormaPago}} </p>
-                    {% else %}
-                        <p class="operacion">Fecha de pago: - </p>
-                        <p class="operacion">Forma de pago: - </p>
-                    {% endif %}
+<div class="invoice-detail-container">
+    <div class="invoice-detail-card">
+        <!-- Información de la factura -->
+        <div class="card-section">
+            <div class="section-header">
+                <h3 class="section-title">Datos de la Factura</h3>
+            </div>
+            <div class="section-content">
+                <div class="info-grid">
+                    <div class="info-column">
+                        <div class="info-item">
+                            <span class="info-label">Número de Factura</span>
+                            <span class="info-value">{{factura.pk}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Factura</span>
+                            <span class="info-value">{{factura.getTipo}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Emisión</span>
+                            <span class="info-value">{{factura.fechaEmision}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Vencimiento</span>
+                            <span class="info-value">{{factura.fecha_vencimiento}}</span>
+                        </div>
+                    </div>
+                    <div class="info-column">
+                        <div class="info-item">
+                            <span class="info-label">Periodo de Servicio</span>
+                            <span class="info-value">{{factura.getPeriodoServicio}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Pago</span>
+                            <span class="info-value">{% if factura.fechaPago %}{{factura.fechaPago}}{% else %}-{% endif %}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Forma de Pago</span>
+                            <span class="info-value">{% if factura.fechaPago %}{{factura.getFormaPago}}{% else %}-{% endif %}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="contenedor-observaciones">
-                    <h4>Importe:</h4>
-                    <div class="contenedor-texto-observaciones">
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Importe -->
+        <div class="card-section">
+            <div class="section-header">
+                <h3 class="section-title">Importe</h3>
+            </div>
+            <div class="section-content">
+                <div class="amount-container">
+                    <div class="amount-value">${{factura.importe}}</div>
+                    <div class="amount-description">
                         {% if factura.servicio.tipo == 1 and factura.cliente.tipo == 1 and factura.tipo == 1 %}
-                            <p class="operacion">$ {{ factura.importe }}</p>
-                            <p class="operacion">*Importe seña del servicio</p>
+                            <span class="amount-note">Importe seña del servicio</span>
                         {% elif factura.servicio.tipo == 1 and factura.cliente.tipo == 1 and factura.tipo == 2 %}
-                            <p class="operacion">$ {{factura.importe}}</p>
-                            <p class="operacion">*50% faltante del importe del servicio</p>
+                            <span class="amount-note">50% faltante del importe del servicio</span>
                         {% elif factura.servicio.tipo == 1 and factura.cliente.tipo == 2 %}
-                            <p class="operacion">$ {{factura.importe}}</p>
-                            <p class="operacion">*Total importe servicio completo</p>
+                            <span class="amount-note">Total importe servicio completo</span>
                         {% elif factura.servicio.tipo == 2 and factura.cliente.tipo == 1 and factura.tipo == 1 %}
-                            <p class="operacion">$ {{factura.importe}}</p>
-                            <p class="operacion">*Importe seña del servicio</p>
+                            <span class="amount-note">Importe seña del servicio</span>
                         {% elif factura.servicio.tipo == 2 and factura.cliente.tipo == 2%}
-                            <p class="operacion">$ {{factura.importe}}</p>
-                            <p class="operacion">*Total importe mensual</p>
+                            <span class="amount-note">Total importe mensual</span>
                         {% endif %}
-                        <p class="operacion">*Recordar que hay un 15% de ganancia para SendaRC</p>
+                    </div>
+                </div>
+                <div class="note-container">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>Recordar que hay un 15% de ganancia para SendaRC</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Información del cliente y servicio -->
+        <div class="card-section">
+            <div class="section-header">
+                <h3 class="section-title">Datos del Cliente y Servicio</h3>
+            </div>
+            <div class="section-content">
+                <div class="info-grid">
+                    <div class="info-column">
+                        <h4 class="subsection-title">Cliente</h4>
+                        <div class="info-item">
+                            <span class="info-label">Nombre</span>
+                            <span class="info-value">{{factura.cliente.nombre}} {{factura.cliente.apellido}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">CUIT/CUIL</span>
+                            <span class="info-value">{{factura.cliente.cuil}}</span>
+                        </div>
+                    </div>
+                    <div class="info-column">
+                        <h4 class="subsection-title">Servicio</h4>
+                        <div class="info-item">
+                            <span class="info-label">Número de Servicio</span>
+                            <span class="info-value">{{factura.servicio.pk}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Servicio</span>
+                            <span class="info-value">{{factura.servicio.getTipo}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Servicio</span>
+                            <span class="info-value">
+                                {% if factura.servicio.tipo == 2 %}
+                                    {{factura.servicio.fecha_inicio}} a {{factura.servicio.fecha_finaliza}}
+                                {% else %}
+                                    {{factura.servicio.fecha_inicio}}
+                                {% endif %}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="contenedor-header">
-            <div class="seccion-info-cliente">
-                <div class="contenedor-textos">
-                    <h4>Datos del Cliente:</h4>
-                    <p class="operacion">Cliente: {{factura.cliente.nombre}} {{factura.cliente.apellido}}</p>
-                    <p class="operacion">Cuit/Cuil: {{factura.cliente.cuil}}</p>
-                    <h4>Datos del Servicio:</h4>
-                    <p class="operacion">Numero de Servicio: {{factura.servicio.pk}}</p>
-                    <p class="operacion">Tipo de Servicio: {{factura.servicio.getTipo}} </p>
-                    {% if factura.servicio.tipo == 2 %}
-                        <p class="operacion">Fecha de Servicio: {{factura.servicio.fecha_inicio}} a {{factura.servicio.fecha_finaliza}}</p>
-                    {% else %}
-                        <p class="operacion">Fecha de Servicio: {{factura.servicio.fecha_inicio}}</p>
-                    {% endif %}
+
+        {% if factura.tipo == 2 or factura.servicio.tipo == 3 %}
+        <div class="divider"></div>
+
+        <!-- Tipos de servicios -->
+        <div class="card-section">
+            <div class="section-header">
+                <h3 class="section-title">Tipos de Servicios</h3>
+            </div>
+            <div class="section-content">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Servicio</th>
+                                <th>Unidad de Medida</th>
+                                <th>Precio por Unidad</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detalle_servicio in detalles_servicios %}
+                            <tr>
+                                <td>{{ detalle_servicio.tipo_servicio }}</td>
+                                <td>{{ detalle_servicio.tipo_servicio_Unit }}</td>
+                                <td>{{ detalle_servicio.precio_tipo_servicio }}</td>
+                                <td>{{ detalle_servicio.cantidad }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="contenedor-listados">
-            <div class="seccion-lista-servicios">
-                {% if factura.tipo == 2 or factura.servicio.tipo == 3 %}
-                    <h4>Tipos de Servicios:</h4>
-                    <div class="tabla-wrapper">
-                        <table class="tabla-presupuestar" id="tabla-servicios">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Tipo de Servicio</th>
-                                    <th scope="col">Unidad de Medida</th>
-                                    <th scope="col">Precio por Unidad de Medida</th>
-                                    <th scope="col">Cantidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for detalle_servicio in detalles_servicios %}
-                                    <tr class="fila-tabla">
-                                        <td scope="row">{{ detalle_servicio.tipo_servicio }}</td>
-                                        <td scope="row">{{ detalle_servicio.tipo_servicio_Unit }}</td>
-                                        <td scope="row">{{ detalle_servicio.precio_tipo_servicio }}</td>
-                                        <td scope="row">{{ detalle_servicio.cantidad }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+        <div class="divider"></div>
+
+        <!-- Datos de empleados -->
+        <div class="card-section">
+            <div class="section-header">
+                <h3 class="section-title">Datos de Empleados en Servicio</h3>
+            </div>
+            <div class="section-content">
+                <div class="info-grid">
+                    <div class="info-column">
+                        <div class="info-item">
+                            <span class="info-label">Cantidad de Empleados</span>
+                            <span class="info-value">{{detalle_empleado.cantidad_empleados}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Importe Mano de Obra</span>
+                            <span class="info-value">{{detalle_empleado.importe_mano_obra}}</span>
+                        </div>
                     </div>
-                {% endif %}
-            </div>
-        <div class="contenedor-header">
-            <div class="seccion-info-cliente">
-                <div class="contenedor-textos">
-                    {% if factura.tipo == 2 or factura.servicio.tipo == 3 %}
-                        <h4>Datos de Empleados en Servicio:</h4>
-                        <p class="operacion">Cantidad de empleados: {{detalle_empleado.cantidad_empleados}}</p>
-                        <p class="operacion">Importe mano de obra: {{detalle_empleado.importe_mano_obra}}</p>
-                        <p class="operacion">*Esto es total si el servicio es eventual y mensual si el servicio es determinado</p>
-                    {% endif %}
+                </div>
+                <div class="note-container">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>Esto es total si el servicio es eventual y mensual si el servicio es determinado</span>
                 </div>
             </div>
         </div>
-        </div>
-        <div class="container-acciones">
-            <a href="{% url 'facturasServicio' factura.servicio.pk %}" class="btn-volver">Volver</a>
+        {% endif %}
+
+        <!-- Acciones -->
+        <div class="actions-section">
+            <a href="{% url 'facturasServicio' factura.servicio.pk %}" class="back-button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15,18 9,12 15,6"></polyline>
+                </svg>
+                Volver
+            </a>
+            <a href="#" class="print-button" onclick="window.print(); return false;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Imprimir
+            </a>
         </div>
     </div>
 </div>
 {% endblock %}
+
 {% block extrajs %}
 <script>
     $(function () {
-        $('.confirmar-presupuesto').click(function () {
-            $(".mi-form").attr('method', 'POST').submit()
-            console.log($(this))
-        })
-    })
+        // Animación de entrada
+        $('.invoice-detail-card').css('animation', 'fadeIn 0.5s ease-out');
+    });
 </script>
 {% endblock %}
