@@ -1,319 +1,294 @@
-{% extends 'layouts/base.html' %} {% load static %} {% block extracss %}
-{{block.super}}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block extracss %}{{block.super}}
 <link href="{% static 'css/baseInicio.css' %}" rel="stylesheet" />
-{% endblock %} {% block container %}
-<main class="container-main">
-  <aside class="nav-container">
-    <nav class="navbar d-flex flex-column flex-shrink-0 bg-body-tertiary ">
-      <h2 style="font-size: 18px; margin-bottom: 0px !important; margin-top: 10px;">SRC</h2>
-      <!--<div class="contenedor-usuario">
-                <i class="bi bi-person-fill" style="font-size: 25px;"></i>
-                <div class="contenedor-info-usuario">
-                    <h5>Administrador de ventas</h5>
-                    {% if user.is_authenticated %}
-                    <p>{{ user.username }}</p>
-                    {% endif %}
+{% endblock %}
+
+{% block container %}
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-container">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 7h-9"></path>
+                        <path d="M14 17H5"></path>
+                        <circle cx="17" cy="17" r="3"></circle>
+                        <circle cx="7" cy="7" r="3"></circle>
+                    </svg>
                 </div>
-            </div>-->
-      <ul
-        class="list-navbar nav nav-pills nav-flush flex-column mb-auto text-center"
-      >
-        <li class="nav-item" id="expand-button">
-          <button
-            id="btn-toExpand"
-            href="#"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="open-bar"
-            data-bs-original-title="open-bar"
-          >
-            <i
-              id="expand-icon"
-              class="bi {% if 'expanded' in nav_container_class %}bi-arrow-right-short{% else %}bi-arrow-left-short{% endif %}"
-            ></i>
-          </button>
-        </li>
-        <li class="nav-item {% if request.path == '/home/' %}active{% endif %}">
-          <a
-            href="{% url 'home' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Home"
-            data-bs-original-title="Home"
-          >
-            <i class="bi bi-house"></i>
-            <span class="nav-item-span">Home</span>
-          </a>
-          <span class="spanSideBarExpand">Home</span>
-        </li>
-        <li
-          class="nav-item {% if request.path == '/Calendario/' %}active{% endif %}"
-        >
-          <a
-            href="{% url 'calendario' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Home"
-            data-bs-original-title="Home"
-          >
-            <i class="bi bi-calendar-day"></i>
-            <span class="nav-item-span">Calendario</span>
-          </a>
-          <span class="spanSideBarExpand">Calendario</span>
-        </li>
-        <li
-          class="nav-item {% if '/gestionLocalidad/' in request.path or '/altaLocalidad/' in request.path or '/modificarLocalidad/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionLocalidad' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Localidades"
-            data-bs-original-title="Localidades"
-          >
-            <i class="bi bi-geo-alt"></i>
-            <span class="nav-item-span">Localidades</span>
-          </a>
-          <span class="spanSideBarExpand">Localidades</span>
-        </li>
-        <li
-          class="nav-item {% if '/gestionEmpleado/' in request.path or '/altaEmpleado/' in request.path or '/modificarEmpleado/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionEmpleado' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Empleados"
-            data-bs-original-title="Empleados"
-          >
-            <i class="bi bi-people"></i>
-            <span class="nav-item-span">Empleados</span>
-          </a>
-          <span class="spanSideBarExpand">Empleados</span>
-        </li>
-        <li
-          class="nav-item {% if '/gestionMaquinaria/' in request.path or '/altaMaquinaria/' in request.path or '/modificarMaquinaria/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionMaquinaria' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Maquinarias"
-            data-bs-original-title="Maquinarias"
-          >
-            <i class="bi bi-hammer"></i>
-            <span class="nav-item-span">Maquinarias</span>
-          </a>
-          <span class="spanSideBarExpand">Maquinarias</span>
-        </li>
-        <li
-          class="nav-item {% if '/gestionTipoServicio/' in request.path or '/altaTipoServicio/' in request.path or '/modificarTipoServicio/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionTipoServicio' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="TipoServicios"
-            data-bs-original-title="TipoServicios"
-          >
-            <i class="bi bi-truck"></i>
-            <span class="nav-item-span">Tipos de Servicios</span>
-          </a>
-          <span class="spanSideBarExpand">Tipos de Servicios</span>
-        </li>
-        <li
-          class="nav-item {% if '/gestionInsumos/' in request.path or '/altaInsumo/' in request.path or '/modificarInsumo/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionInsumos' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Insumos"
-            data-bs-original-title="Insumos"
-          >
-            <i class="bi bi-box2"></i>
-            <span class="nav-item-span">Insumos</span>
-          </a>
-          <span class="spanSideBarExpand">Insumos</span>
-        </li>
-        <li
-          class="nav-item {% if '/gestionClientes/' in request.path or '/altaCliente/' in request.path or '/modificarCliente/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionClientes' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Clientes"
-            data-bs-original-title="Clientes"
-          >
-            <i class="bi bi-person-vcard"></i>
-            <span class="nav-item-span">Clientes</span>
-          </a>
-          <span class="spanSideBarExpand">Clientes</span>
-        </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Reclamos"
-            data-bs-original-title="Reclamos"
-          >
-            <i class="bi bi-clipboard-x"></i>
-            <span class="nav-item-span">Reclamos</span>
-          </a>
-          <span class="spanSideBarExpand">Reclamos</span>
-        </li>
-        <li
-          class="nav-item {% if '/gestionSanciones/' in request.path or '/altaSancion/' in request.path or '/modificarSancion/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionSanciones' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Sanciones"
-            data-bs-original-title="Sanciones"
-          >
-            <i class="bi bi-person-x"></i>
-            <span class="nav-item-span">Sanciones</span>
-          </a>
-          <span class="spanSideBarExpand">Sanciones</span>
-        </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Asistencias"
-            data-bs-original-title="Asistencias"
-          >
-            <i class="bi bi-journal-text"></i>
-            <span class="nav-item-span">Asistencias</span>
-          </a>
-          <span class="spanSideBarExpand">Asistencias</span>
-        </li>
-        <li
-          class="nav-item {% if '/servicio/' in request.path%}active{% endif %}"
-        >
-          <a
-            href="{% url 'gestionServicios' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Presupuestos"
-            data-bs-original-title="Presupuestos"
-          >
-            <i class="bi bi-cash-coin"></i>
-            <span class="nav-item-span">Servicios</span>
-          </a>
-          <span class="spanSideBarExpand">Servicios</span>
-        </li>
-        <li
-          class="nav-item {% if '/factura/' in request.path %}active{% endif %}"
-        >
-          <a
-            href="{% url 'facturas' %}"
-            class="nav-link py-3 rounded-2"
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Facturas"
-            data-bs-original-title="Facturas"
-          >
-            <i class="bi bi-newspaper"></i>
-            <span class="nav-item-span">Facturas</span>
-          </a>
-          <span class="spanSideBarExpand">Facturas</span>
-        </li>
-      </ul>
-      <div
-        class="dropup position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle"
-        style="margin-right: 2rem !important"
-      >
-        <button
-          class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
-          id="bd-theme"
-          type="button"
-          aria-expanded="false"
-          data-bs-toggle="dropdown"
-          aria-label="Toggle theme (dark)"
-          style="
-            border-radius: 6px !important;
-            width: 40px;
-            height: 35px;
-            display: flex;
-            justify-content: center;
-          "
-        >
-          <i class="bi bi-moon-stars"></i>
-        </button>
-        <ul
-          class="dropdown-menuColor dropdown-menu dropdown-menu-end shadow"
-          aria-labelledby="bd-theme-text"
-        >
-          <li>
-            <button
-              type="button"
-              class="dropdown-item d-flex align-items-center colorMode-item"
-              data-bs-theme-value="light"
-              aria-pressed="false"
-              id="btn-LightMode"
-            >
-              Light
+                <span class="brand-text">SendaRC</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18m-9-9l9 9-9 9"></path>
+                </svg>
             </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              class="dropdown-item d-flex align-items-center colorMode-item"
-              data-bs-theme-value="dark"
-              aria-pressed="true"
-              id="btn-DarkMode"
-            >
-              Dark
-            </button>
-          </li>
-        </ul>
-      </div>
-      {% if user.is_authenticated %}
-      <div class="optionsNavBar">
-        <a
-          class="cerrar-sesion-btn btn d-inline-flex align-items-center"
-          href="{% url 'logout' %}"
-        >
-          <i class="bi bi-arrow-bar-left"></i>
-        </a>
-      </div>
-      {% endif %}
-    </nav>
-  </aside>
-  <section class="container-seccion-main">
-    {% block seccion-main %} {% endblock %}
-  </section>
-</main>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="{% url 'home' %}" class="nav-link {% if request.path == '/home/' %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span class="nav-text">Home</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'calendario' %}" class="nav-link {% if request.path == '/Calendario/' %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span class="nav-text">Calendario</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <span class="section-title">Gestión</span>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionLocalidad' %}" class="nav-link {% if '/gestionLocalidad/' in request.path or '/altaLocalidad/' in request.path or '/modificarLocalidad/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="nav-text">Localidades</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionEmpleado' %}" class="nav-link {% if '/gestionEmpleado/' in request.path or '/altaEmpleado/' in request.path or '/modificarEmpleado/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span class="nav-text">Empleados</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionMaquinaria' %}" class="nav-link {% if '/gestionMaquinaria/' in request.path or '/altaMaquinaria/' in request.path or '/modificarMaquinaria/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                        <span class="nav-text">Maquinarias</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionTipoServicio' %}" class="nav-link {% if '/gestionTipoServicio/' in request.path or '/altaTipoServicio/' in request.path or '/modificarTipoServicio/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                        <span class="nav-text">Tipos de Servicios</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionInsumos' %}" class="nav-link {% if '/gestionInsumos/' in request.path or '/altaInsumo/' in request.path or '/modificarInsumo/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                        <span class="nav-text">Insumos</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionClientes' %}" class="nav-link {% if '/gestionClientes/' in request.path or '/altaCliente/' in request.path or '/modificarCliente/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="nav-text">Clientes</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <span class="section-title">Operaciones</span>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11H1l6-6 6 6z"></path>
+                            <path d="M9 17l3 3 3-3"></path>
+                            <path d="M22 18h-7"></path>
+                            <path d="M22 6h-7"></path>
+                        </svg>
+                        <span class="nav-text">Reclamos</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionSanciones' %}" class="nav-link {% if '/gestionSanciones/' in request.path or '/altaSancion/' in request.path or '/modificarSancion/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <line x1="22" y1="2" x2="16" y2="8"></line>
+                            <line x1="16" y1="2" x2="22" y2="8"></line>
+                        </svg>
+                        <span class="nav-text">Sanciones</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <line x1="10" y1="9" x2="8" y2="9"></line>
+                        </svg>
+                        <span class="nav-text">Asistencias</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'gestionServicios' %}" class="nav-link {% if '/servicio/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <span class="nav-text">Servicios</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'facturas' %}" class="nav-link {% if '/factura/' in request.path %}active{% endif %}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        <span class="nav-text">Facturas</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            {% if user.is_authenticated %}
+            <div class="user-info">
+                <div class="user-avatar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="user-details">
+                    <span class="user-name">{{ user.username }}</span>
+                    <span class="user-role">Administrador</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="footer-actions">
+                <!--<button class="theme-toggle" id="themeToggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="theme-icon-dark">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="theme-icon-light" style="display: none;">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>-->
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="logout-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block seccion-main %}
+        {% endblock %}
+    </main>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+$(document).ready(function() {
+    // Sidebar toggle
+    $('#sidebarToggle').click(function() {
+        $('#sidebar').toggleClass('collapsed');
+        
+        // Rotar el icono
+        const icon = $(this).find('svg');
+        if ($('#sidebar').hasClass('collapsed')) {
+            icon.css('transform', 'rotate(180deg)');
+        } else {
+            icon.css('transform', 'rotate(0deg)');
+        }
+    });
+
+    // Theme toggle
+    $('#themeToggle').click(function() {
+        const body = $('body');
+        const darkIcon = $('.theme-icon-dark');
+        const lightIcon = $('.theme-icon-light');
+        
+        if (body.hasClass('light-theme')) {
+            body.removeClass('light-theme').addClass('dark-theme');
+            darkIcon.show();
+            lightIcon.hide();
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.removeClass('dark-theme').addClass('light-theme');
+            darkIcon.hide();
+            lightIcon.show();
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // Cargar tema guardado
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        $('body').addClass('light-theme');
+        $('.theme-icon-dark').hide();
+        $('.theme-icon-light').show();
+    } else {
+        $('body').addClass('dark-theme');
+    }
+
+    // Animación de entrada para los elementos del nav
+    $('.nav-item').each(function(index) {
+        $(this).css('animation-delay', (index * 0.05) + 's');
+    });
+});
+</script>
 {% endblock %}

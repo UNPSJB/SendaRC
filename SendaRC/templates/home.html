@@ -1,55 +1,381 @@
 {% extends 'layouts/baseInicio.html' %}
 {% load static %}
+
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/home.css' %}" rel="stylesheet" />
 {% endblock %}
+
 {% block seccion-main %}
-<section class="container-home">
-    <div class="wrapper-home">
-        <div class="wrapper-top">
-            <span class="badge rounded-pill text-bg-light badge-usuario"><i class="bi bi-person-fill"></i>
-                {{user.username}} </span>
-            <h2>Bienvenido a <span class="senda-brand">SendaRC</span>🧹</h2>
-            <p style="opacity: 85%;">Gestiona tu empresa de limpieza con elegancia y eficiencia. Simplifica y
-                personaliza tu flujo de trabajo
-                con facilidad.</p>
+<div class="dashboard-container">
+    <!-- Header del Dashboard -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="user-greeting">
+                    <div class="user-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="greeting-text">
+                        <h1>Bienvenido, {{ user.username }}</h1>
+                        <p>Gestiona tu empresa de limpieza con elegancia y eficiencia</p>
+                    </div>
+                </div>
+                <div class="current-date">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span id="currentDate"></span>
+                </div>
+            </div>
         </div>
-        <div class="wrapper-bottom">
-            <a href="{% url 'presupuestarCliente'%}" class="atajoLink"> 
-                <div class="notification">
-                    <div class="notiglow"></div>
-                    <div class="notiborderglow"></div>
-                    <div class="notititle"><i class="icono-tarjeta bi bi-piggy-bank"></i> <span>Presupuestar servicio.</span></div>
-                    <div class="notibody"><p>Presupuestar servicios de manera eficiente y organizar las finanzas de
-                        la
-                        empresa
-                        sistemáticamente.</p></div>
+    </header>
+
+    <!-- Métricas Principales -->
+    <section class="metrics-section">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon success">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
                 </div>
-            </a>
-            <a href="#" class="atajoLink"> 
-                <div class="notification">
-                    <div class="notiglow"></div>
-                    <div class="notiborderglow"></div>
-                    <div class="notititle"><i class="bi bi-file-earmark-check"></i></i> <span>Contratar servicio.</span></div>
-                    <div class="notibody"><p>Asentar la contratación de un servicio presupuestado donde podrás hacer
-                        la
-                        asignación
-                        de empleados y muchos más.</p></div>
+                <div class="metric-content">
+                    <h3>Ingresos del Mes</h3>
+                    <p class="metric-value">$125,430</p>
+                    <span class="metric-change positive">+12.5%</span>
                 </div>
-            </a>
-            <a href="{% url 'serviciosCobrar' %}" class="atajoLink"> 
-                <div class="notification">
-                    <div class="notiglow"></div>
-                    <div class="notiborderglow"></div>
-                    <div class="notititle"><i class="bi bi-bank"></i> <span>Cobrar servicio.</span></div>
-                    <div class="notibody"><p>Gestionar la cobranza de un servicio de limpieza, donde podras iniciar
-                        el
-                        proceso
-                        de
-                        facturacion de un servicio y más.</p></div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon primary">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
                 </div>
-            </a>
+                <div class="metric-content">
+                    <h3>Servicios Activos</h3>
+                    <p class="metric-value">24</p>
+                    <span class="metric-change positive">+3</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon warning">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="metric-content">
+                    <h3>Facturas Pendientes</h3>
+                    <p class="metric-value">8</p>
+                    <span class="metric-change negative">-2</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon info">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="metric-content">
+                    <h3>Clientes Activos</h3>
+                    <p class="metric-value">156</p>
+                    <span class="metric-change positive">+8</span>
+                </div>
+            </div>
         </div>
+    </section>
+
+    <!-- Gráficos y Accesos Rápidos -->
+    <div class="dashboard-grid">
+        <!-- Gráficos -->
+        <section class="charts-section">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Ingresos Mensuales</h3>
+                    <div class="chart-controls">
+                        <select class="chart-period">
+                            <option value="6">Últimos 6 meses</option>
+                            <option value="12">Último año</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Servicios por Tipo</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="servicesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accesos Rápidos -->
+        <section class="quick-actions">
+            <h3>Acciones Rápidas</h3>
+            <div class="actions-grid">
+                <a href="{% url 'presupuestarCliente' %}" class="action-card">
+                    <div class="action-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="action-content">
+                        <h4>Presupuestar Servicio</h4>
+                        <p>Crear presupuestos de manera eficiente</p>
+                    </div>
+                    <div class="action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11H1l6-6 6 6z"></path>
+                            <path d="M9 17l3 3 3-3"></path>
+                            <path d="M22 18h-7"></path>
+                            <path d="M22 6h-7"></path>
+                        </svg>
+                    </div>
+                    <div class="action-content">
+                        <h4>Contratar Servicio</h4>
+                        <p>Gestionar contrataciones y asignaciones</p>
+                    </div>
+                    <div class="action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="{% url 'serviciosCobrar' %}" class="action-card">
+                    <div class="action-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div class="action-content">
+                        <h4>Cobrar Servicio</h4>
+                        <p>Gestionar cobranzas y facturación</p>
+                    </div>
+                    <div class="action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="{% url 'gestionClientes' %}" class="action-card">
+                    <div class="action-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div class="action-content">
+                        <h4>Gestionar Clientes</h4>
+                        <p>Administrar base de datos de clientes</p>
+                    </div>
+                    <div class="action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+            </div>
+        </section>
     </div>
-</section>
+
+    <!-- Actividad Reciente -->
+    <section class="recent-activity">
+        <div class="activity-header">
+            <h3>Actividad Reciente</h3>
+            <a href="#" class="view-all">Ver todo</a>
+        </div>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon success">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="activity-content">
+                    <p><strong>Servicio completado</strong> - Limpieza oficina ABC Corp</p>
+                    <span class="activity-time">Hace 2 horas</span>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="activity-content">
+                    <p><strong>Nueva factura generada</strong> - #FAC-2024-001</p>
+                    <span class="activity-time">Hace 4 horas</span>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon warning">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="activity-content">
+                    <p><strong>Nuevo cliente registrado</strong> - María González</p>
+                    <span class="activity-time">Ayer</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(document).ready(function() {
+    // Mostrar fecha actual
+    const today = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    $('#currentDate').text(today.toLocaleDateString('es-ES', options));
+
+    // Configurar gráfico de ingresos
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+            datasets: [{
+                label: 'Ingresos',
+                data: [85000, 92000, 78000, 105000, 118000, 125000],
+                borderColor: '#1DA1F2',
+                backgroundColor: 'rgba(29, 161, 242, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#1DA1F2',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#a3a3a3',
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#a3a3a3'
+                    }
+                }
+            }
+        }
+    });
+
+    // Configurar gráfico de servicios
+    const servicesCtx = document.getElementById('servicesChart').getContext('2d');
+    const servicesChart = new Chart(servicesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Limpieza Oficinas', 'Limpieza Residencial', 'Limpieza Industrial', 'Mantenimiento'],
+            datasets: [{
+                data: [35, 25, 20, 20],
+                backgroundColor: [
+                    '#1DA1F2',
+                    '#22c55e',
+                    '#f59e0b',
+                    '#ef4444'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#a3a3a3',
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+
+    // Animaciones de entrada
+    $('.metric-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+
+    $('.action-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1 + 0.3) + 's');
+    });
+});
+</script>
 {% endblock %}
