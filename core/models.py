@@ -103,7 +103,7 @@ class TipoServicio(models.Model):
         return dict(self.UNIDAD)[self.unidad_medida]
 
     def getPrecioFormateado(self):
-        return locale.currency(self.precio, grouping=True)
+        return "${:,.2f}".format(self.precio)
     
     def getPrecio(self, cantidad):
         return self.precio * cantidad
