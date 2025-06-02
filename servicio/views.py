@@ -18,7 +18,8 @@ from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
 
-
+def formato_moneda(valor):
+    return "${:,.2f}".format(valor).replace(",", "X").replace(".", ",").replace("X", ".")
 
 def calcularPorcentaje(total_importe, porcentaje):
     cambio = (porcentaje / 100) * total_importe
@@ -452,12 +453,12 @@ def presupuestarConfirmar(request):
                 importe = calcularImportePresupuesto(tipos_servicios, form.fields['cantidad_empleados'].initial, len(frecuencias), datos_cliente['tipo'])
                 importe_total = importe['importe_sugerido']
 
-        total_servicios = locale.currency(importe['total_servicios'], grouping=True)
-        porcentaje_ganancia = locale.currency(importe['porcentaje_ganancia'], grouping=True)
-        mano_obra = locale.currency(importe['mano_obra_servicio'], grouping=True)
-        importe_sugerido = "{:.2f}".format(importe['importe_sugerido'])
-        importe_total_formateado = locale.currency(importe_total, grouping=True)
-        importe_total = "{:.2f}".format(importe_total)
+                total_servicios = formato_moneda(importe['total_servicios'])
+                porcentaje_ganancia = formato_moneda(importe['porcentaje_ganancia'])
+                mano_obra = formato_moneda(importe['mano_obra_servicio'])
+                importe_sugerido = "{:.2f}".format(importe['importe_sugerido'])
+                importe_total_formateado = formato_moneda(importe_total)
+                importe_total = "{:.2f}".format(importe_total)
             
     return render(request, 'servicio/presupuestarConfirmar.html', {
         'form': form, 
