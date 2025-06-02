@@ -1,7 +1,8 @@
 from django.db import models
-import locale
 
-locale.setlocale(locale.LC_ALL, '') 
+def formato_moneda(valor):
+    return "${:,.2f}".format(valor).replace(",", "X").replace(".", ",").replace("X", ".")
+
 class InsumoManager(models.Manager):
     def __init__(self, habilitado = None, *qargs, **kwargs):
         super().__init__(*qargs, **kwargs)
@@ -196,7 +197,7 @@ class Empleado(models.Model):
             return "Deshabilitado"
         
     def getSueldoFormateado(self):
-        return locale.currency(self.sueldo, grouping=True)
+        return formato_moneda(self.sueldo)
     
     
 class Sancion(models.Model):
