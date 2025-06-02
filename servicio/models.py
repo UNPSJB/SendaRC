@@ -1,10 +1,9 @@
 from django.db import models
 from core.models import Empleado, Cliente, TipoServicio
 from django.utils import timezone
-import locale
 
-# Create your models here.
-locale.setlocale(locale.LC_ALL, '') 
+def formato_moneda(valor):
+    return "${:,.2f}".format(valor).replace(",", "X").replace(".", ",").replace("X", ".")
 
 class Servicio(models.Model):
     ESTADO = {
@@ -49,14 +48,13 @@ class Servicio(models.Model):
     def getImporteTotalServicios(self):
         servicios_asociados = CantServicioTipoServicio.objects.filter(servicio=self)
         total_importe = sum(servicio.tipoServicio.precio * servicio.cantidad for servicio in servicios_asociados)
-
-        return locale.currency(total_importe, grouping=True)
+        return formato_moneda(total_importe)
 
     def getSubtotalServiciosFrecuencias(self):
         servicios_asociados = CantServicioTipoServicio.objects.filter(servicio=self)
         total_servicios = sum(servicio.tipoServicio.precio * servicio.cantidad for servicio in servicios_asociados)
         subtotal_servicios =  total_servicios * len(Frecuencia.objects.filter(servicio=self))
-        return locale.currency(subtotal_servicios, grouping=True)
+        return formato_moneda(subtotal_servicios)
     
     def getSubtotalEmpleados(self):
         mano_obra = Empleado.getSueldoBasico() / 24
@@ -66,10 +64,10 @@ class Servicio(models.Model):
             cant_empleados = len(Frecuencia.objects.filter(servicio=self)) * self.cant_empleados 
         
         subtotal = mano_obra * cant_empleados
-        return locale.currency(subtotal, grouping=True)
+        return formato_moneda(subtotal)
 
     def getImporteTotalFormateado(self):
-        return locale.currency(self.importe_total, grouping=True)
+        return formato_moneda(self.importe_total)
 
 class CantServicioTipoServicio(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
