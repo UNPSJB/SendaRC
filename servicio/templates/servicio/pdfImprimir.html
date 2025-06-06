@@ -3,143 +3,580 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Presupuesto N° {{ servicio.pk }}</title>
+    <title>
+        {% if servicio.estado == 1 or servicio.estado == 2 %}
+            Presupuesto N° {{ servicio.pk }}
+        {% else %}
+            Contrato N° {{ servicio.pk }}
+        {% endif %}
+    </title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            margin: 30px;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #2d3748;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 30px;
         }
 
-        h1, h2, h4, h6 {
-            margin: 10px 0;
+        .document-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        table {
+        .header-section {
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                border-bottom: 3px solid #1da1f2;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                border-bottom: 3px solid #22c55e;
+            {% elif servicio.estado == 5 %}
+                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                border-bottom: 3px solid #f59e0b;
+            {% elif servicio.estado == 6 %}
+                background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+                border-bottom: 3px solid #8b5cf6;
+            {% else %}
+                background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+                border-bottom: 3px solid #ef4444;
+            {% endif %}
+            padding: 25px 30px;
+        }
+
+        .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
         }
 
-        th, td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: center;
+        .header-table td {
+            border: none;
+            padding: 0;
+            vertical-align: middle;
         }
 
-        .footer {
-            margin-top: 40px;
-            font-size: 10px;
-            text-align: center;
+        .document-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .document-number {
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                color: #1da1f2;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                color: #22c55e;
+            {% elif servicio.estado == 5 %}
+                color: #f59e0b;
+            {% elif servicio.estado == 6 %}
+                color: #8b5cf6;
+            {% else %}
+                color: #ef4444;
+            {% endif %}
+            font-weight: 800;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+            {% if servicio.estado == 1 %}
+                background-color: rgba(29, 161, 242, 0.1);
+                color: #1da1f2;
+                border: 1px solid rgba(29, 161, 242, 0.3);
+            {% elif servicio.estado == 2 %}
+                background-color: rgba(239, 68, 68, 0.1);
+                color: #ef4444;
+                border: 1px solid rgba(239, 68, 68, 0.3);
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                background-color: rgba(34, 197, 94, 0.1);
+                color: #22c55e;
+                border: 1px solid rgba(34, 197, 94, 0.3);
+            {% elif servicio.estado == 5 %}
+                background-color: rgba(245, 158, 11, 0.1);
+                color: #f59e0b;
+                border: 1px solid rgba(245, 158, 11, 0.3);
+            {% elif servicio.estado == 6 %}
+                background-color: rgba(139, 92, 246, 0.1);
+                color: #8b5cf6;
+                border: 1px solid rgba(139, 92, 246, 0.3);
+            {% else %}
+                background-color: rgba(239, 68, 68, 0.1);
+                color: #ef4444;
+                border: 1px solid rgba(239, 68, 68, 0.3);
+            {% endif %}
         }
 
         .logo-cell {
             text-align: right;
         }
 
-        .totales {
-            margin-top: 20px;
+        .logo-cell img {
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .company-info {
+            background-color: #f7fafc;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .company-info h6 {
+            font-size: 12px;
+            color: #4a5568;
+            margin: 4px 0;
+            font-weight: 500;
+        }
+
+        .content-section {
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #374151;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 2px solid #cbd5e0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .totales-section {
+            margin-top: 30px;
+            padding: 25px;
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                border-left: 4px solid #1da1f2;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                border-left: 4px solid #22c55e;
+            {% elif servicio.estado == 5 %}
+                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                border-left: 4px solid #f59e0b;
+            {% elif servicio.estado == 6 %}
+                background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+                border-left: 4px solid #8b5cf6;
+            {% else %}
+                background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+                border-left: 4px solid #ef4444;
+            {% endif %}
+            border-radius: 8px;
+        }
+
+        .total-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .total-item:last-child {
+            border-top: 2px solid #cbd5e0;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .total-label {
+            color: #4a5568;
+        }
+
+        .total-value {
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                color: #1da1f2;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                color: #22c55e;
+            {% elif servicio.estado == 5 %}
+                color: #f59e0b;
+            {% elif servicio.estado == 6 %}
+                color: #8b5cf6;
+            {% else %}
+                color: #ef4444;
+            {% endif %}
+            font-weight: 600;
+        }
+
+        .footer-section {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            background-color: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .footer-section p {
+            margin: 8px 0;
+            color: #4a5568;
+            font-size: 12px;
+        }
+
+        .footer-section strong {
+            color: #1a202c;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e0, transparent);
+            margin: 20px 0;
+        }
+
+        /* Sección adicional para contratos */
+        .contract-info {
+            {% if servicio.estado == 3 or servicio.estado == 4 %}
+                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+            {% elif servicio.estado == 5 %}
+                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                border: 1px solid rgba(245, 158, 11, 0.2);
+            {% elif servicio.estado == 6 %}
+                background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+                border: 1px solid rgba(139, 92, 246, 0.2);
+            {% else %}
+                background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+                border: 1px solid rgba(239, 68, 68, 0.2);
+            {% endif %}
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        /* Estilos específicos para impresión */
+        @media print {
+            body {
+                margin: 0;
+                padding: 15px;
+                font-size: 11px;
+            }
+            
+            .document-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .data-table {
+                box-shadow: none;
+            }
+            
+            .section-title {
+                page-break-after: avoid;
+            }
+            
+            .data-table {
+                page-break-inside: avoid;
+            }
+            
+            .totales-section {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Iconos usando CSS */
+        .icon-document::before {
+            content: "📄";
+            margin-right: 8px;
+        }
+
+        .icon-contract::before {
+            content: "📋";
+            margin-right: 8px;
+        }
+
+        .icon-user::before {
+            content: "👤";
+            margin-right: 8px;
+        }
+
+        .icon-service::before {
+            content: "⚙️";
+            margin-right: 8px;
+        }
+
+        .icon-list::before {
+            content: "📋";
+            margin-right: 8px;
+        }
+
+        .icon-calendar::before {
+            content: "📅";
+            margin-right: 8px;
+        }
+
+        .icon-employee::before {
+            content: "👷";
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
 
-<table width="100%">
-    <tr>
-        <td>
-            <h1>Presupuesto N° {{ servicio.pk }}</h1>
-        </td>
-        <td class="logo-cell">
-            <img src="{{ img_url }}" width="150">
-        </td>
-    </tr>
-</table>
+<div class="document-container">
+    <div class="header-section">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <h1 class="document-title">
+                        {% if servicio.estado == 1 or servicio.estado == 2 %}
+                            <span class="icon-document"></span>
+                            Presupuesto N° <span class="document-number">{{ servicio.pk }}</span>
+                        {% else %}
+                            <span class="icon-contract"></span>
+                            Contrato N° <span class="document-number">{{ servicio.pk }}</span>
+                        {% endif %}
+                    </h1>
+                    <div class="status-badge">
+                        {{ servicio.getEstado }}
+                    </div>
+                </td>
+                <td class="logo-cell">
+                    <img src="{{ img_url }}" width="150" alt="Logo de la empresa">
+                </td>
+            </tr>
+        </table>
+    </div>
 
-<hr>
-<h6>Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut</h6>
-<h6>Dante Brozzi 830 - (280)451069 - Esquel - e-mail: senda@cpsarg.com - www.sendaservicios.com.ar</h6>
+    <div class="company-info">
+        <h6>📍 Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut</h6>
+        <h6>📍 Dante Brozzi 830 - (280)451069 - Esquel - 📧 senda@cpsarg.com - 🌐 www.sendaservicios.com.ar</h6>
+    </div>
 
-<h4>Datos del Cliente</h4>
-<table>
-    <tr>
-        <th>Cliente</th>
-        <th>Cuil/Cuit</th>
-        <th>Teléfono</th>
-        <th>Email</th>
-    </tr>
-    <tr>
-        <td>{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
-        <td>{{ servicio.cliente.cuil }}</td>
-        <td>{{ servicio.cliente.telefono }}</td>
-        <td>{{ servicio.cliente.email }}</td>
-    </tr>
-</table>
+    <div class="content-section">
+        <h4 class="section-title icon-user">Datos del Cliente</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>CUIL/CUIT</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
+                    <td>{{ servicio.cliente.cuil }}</td>
+                    <td>{{ servicio.cliente.telefono }}</td>
+                    <td>{{ servicio.cliente.email }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-<h4>Datos del Servicio</h4>
-<table>
-    <tr>
-        <th>N° Servicio</th>
-        <th>Fecha Emisión</th>
-        <th>Vigencia</th>
-        <th>Tipo</th>
-    </tr>
-    <tr>
-        <td>{{ servicio.pk }}</td>
-        <td>{{ servicio.fecha_emision }}</td>
-        <td>{{ servicio.plazo_vigencia }}</td>
-        <td>{{ servicio.getTipo }}</td>
-    </tr>
-</table>
+        <h4 class="section-title icon-service">Datos del Servicio</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>N° Servicio</th>
+                    <th>Fecha Emisión</th>
+                    {% if servicio.estado == 1 or servicio.estado == 2 %}
+                        <th>Vigencia</th>
+                    {% else %}
+                        <th>Fecha Inicio</th>
+                        {% if servicio.tipo == 2 %}
+                            <th>Fecha Fin</th>
+                        {% endif %}
+                    {% endif %}
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ servicio.pk }}</td>
+                    <td>{{ servicio.fecha_emision|date:"d/m/Y" }}</td>
+                    {% if servicio.estado == 1 or servicio.estado == 2 %}
+                        <td>{{ servicio.plazo_vigencia|date:"d/m/Y" }}</td>
+                    {% else %}
+                        <td>{{ servicio.fecha_inicio|date:"d/m/Y" }}</td>
+                        {% if servicio.tipo == 2 %}
+                            <td>{{ servicio.fecha_finaliza|date:"d/m/Y" }}</td>
+                        {% endif %}
+                    {% endif %}
+                    <td>{{ servicio.getTipo }}</td>
+                    <td>{{ servicio.getEstado }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-<h4>Tipos de Servicio</h4>
-<table>
-    <tr>
-        <th>Descripción</th>
-        <th>Cantidad</th>
-        <th>Unidad de Medida</th>
-        <th>Precio Unitario</th>
-        <th>Total</th>
-    </tr>
-    {% for tipoServicio in tipoServicios %}
-    <tr>
-        <td>{{ tipoServicio.tipoServicio.descripcion }}</td>
-        <td>{{ tipoServicio.cantidad }}</td>
-        <td>{{ tipoServicio.tipoServicio.getUnidadMedida }}</td>
-        <td>{{ tipoServicio.tipoServicio.getPrecioFormateado }}</td>
-        <td>{{ tipoServicio.getPrecio }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<h4>Frecuencias</h4>
-<table>
-    <tr>
-        <th>Día</th>
-        <th>Turno</th>
-    </tr>
-    {% for frecuencia in frecuencias %}
-    <tr>
-        <td>{{ frecuencia.getDia }}</td>
-        <td>{{ frecuencia.getTurno }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<div class="totales">
-    <h4>Subtotal Tipos de Servicios: ${{ subtotal }}</h4>
-    <h4>
-        {% if servicio.tipo == 2 %}
-            Servicio Mensual:
-        {% else %}
-            Servicio Completo:
+        {% if servicio.estado != 1 and servicio.estado != 2 and servicio.empleado.exists %}
+        <h4 class="section-title icon-employee">Empleados Asignados</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>CUIL</th>
+                    <th>Teléfono</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empleado in servicio.empleado.all %}
+                <tr>
+                    <td>{{ empleado.nombre }}</td>
+                    <td>{{ empleado.apellido }}</td>
+                    <td>{{ empleado.cuil }}</td>
+                    <td>{{ empleado.telefono }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% endif %}
-        {{ servicio.getImporteTotalFormateado }}
-    </h4>
-</div>
 
-<div class="footer">
-    <p>Saludamos a uds. muy atentamente</p>
-    <p><strong>SENDA SRL</strong></p>
+        <h4 class="section-title icon-list">Tipos de Servicio</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Unidad de Medida</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tipoServicio in tipoServicios %}
+                <tr>
+                    <td>{{ tipoServicio.tipoServicio.descripcion }}</td>
+                    <td>{{ tipoServicio.cantidad }}</td>
+                    <td>{{ tipoServicio.tipoServicio.getUnidadMedida }}</td>
+                    <td>{{ tipoServicio.tipoServicio.getPrecioFormateado }}</td>
+                    <td>${{ tipoServicio.getPrecio }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4 class="section-title icon-calendar">Frecuencias</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Día</th>
+                    <th>Turno</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for frecuencia in frecuencias %}
+                <tr>
+                    <td>{{ frecuencia.getDia }}</td>
+                    <td>{{ frecuencia.getTurno }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="totales-section">
+            <div class="total-item">
+                <span class="total-label">Subtotal Tipos de Servicios:</span>
+                <span class="total-value">${{ subtotal }}</span>
+            </div>
+            <div class="total-item">
+                <span class="total-label">
+                    {% if servicio.tipo == 2 %}
+                        {% if servicio.estado == 1 or servicio.estado == 2 %}
+                            Presupuesto Mensual:
+                        {% else %}
+                            Contrato Mensual:
+                        {% endif %}
+                    {% else %}
+                        {% if servicio.estado == 1 or servicio.estado == 2 %}
+                            Presupuesto Completo:
+                        {% else %}
+                            Contrato Completo:
+                        {% endif %}
+                    {% endif %}
+                </span>
+                <span class="total-value">{{ servicio.getImporteTotalFormateado }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <p>Saludamos a ustedes muy atentamente</p>
+        <p><strong>SENDA SRL</strong></p>
+        <div class="divider"></div>
+        {% if servicio.estado == 1 or servicio.estado == 2 %}
+            <p style="font-size: 10px; color: #718096;">
+                Este presupuesto tiene una validez hasta el {{ servicio.plazo_vigencia|date:"d/m/Y" }}
+            </p>
+        {% else %}
+            <p style="font-size: 10px; color: #718096;">
+                Contrato generado el {{ servicio.fecha_emision|date:"d/m/Y" }} - Estado: {{ servicio.getEstado }}
+            </p>
+        {% endif %}
+    </div>
 </div>
 
 </body>
