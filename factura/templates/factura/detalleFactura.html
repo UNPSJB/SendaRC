@@ -339,6 +339,8 @@
         <div class="subtitle-container">
             <span class="subtitle">Factura #{{factura.pk}}</span>
             <span class="subtitle">{{factura.getTipo}}</span>
+            <span class="subtitle">Servicio #{{factura.servicio.pk}}</span>
+            <span class="subtitle">Tipo de servicio: {{factura.servicio.getTipo}}</span>
         </div>
     </div>
     <div class="status-badge {% if factura.fechaPago %}status-paid{% else %}status-pending{% endif %}">
@@ -380,8 +382,16 @@
                             <span class="info-value">#{{factura.pk}}</span>
                         </div>
                         <div class="info-item">
+                            <span class="info-label">Número de servicio</span>
+                            <span class="info-value">#{{factura.servicio.pk}}</span>
+                        </div>
+                        <div class="info-item">
                             <span class="info-label">Tipo de Factura</span>
                             <span class="info-value">{{factura.getTipo}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Servicio</span>
+                            <span class="info-value">{{factura.servicio.getTipo}}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Fecha de Emisión</span>

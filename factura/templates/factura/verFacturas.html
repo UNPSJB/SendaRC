@@ -433,9 +433,9 @@
       <table class="invoices-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>ID Factura</th>
             <th>Cliente</th>
-            <th>Servicio</th>
+            <th>Id Servicio</th>
             <th>Tipo</th>
             <th>Importe</th>
             <th>Fecha Emisión</th>
@@ -456,7 +456,7 @@
                 <div style="font-weight: 500;">{{ factura.cliente.nombre }}</div>
               </div>
             </td>
-            <td>{{ factura.servicio.fecha_emision }}</td>
+            <td>{{ factura.servicio.pk }}</td>
             <td>{{ factura.getTipo }}</td>
             <td>
               <strong>{{ factura.getImporteFormateado }}</strong>
