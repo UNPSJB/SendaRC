@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.forms import formset_factory
 from django import forms
 from core.models import *
+from factura.models import Detalle_Empleados, Detalle_Servicios, Factura
 from .forms import *
 from .models import *
 from django.utils import timezone
@@ -17,6 +18,7 @@ from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
+from dateutil.relativedelta import relativedelta
 
 def formato_moneda(valor):
     return "${:,.2f}".format(valor).replace(",", "X").replace(".", ",").replace("X", ".")
@@ -540,6 +542,105 @@ class contratarServicio(UpdateView):
 @login_required
 def contratarServicioCorrecto(request, pk):
     servicio = Servicio.objects.get(pk=pk)
+    cliente = servicio.cliente
+    fecha_actual = timezone.now().date()
+
+    # Determine the first day of the next month for invoice due date
+    if fecha_actual.month == 12:
+        primer_dia_next_mes = fecha_actual.replace(day=1, month=1, year=fecha_actual.year + 1)
+    else:
+        primer_dia_next_mes = fecha_actual.replace(day=1, month=fecha_actual.month + 1)
+
+    # EVENTUAL → factura restante después de la seña
+    if servicio.tipo == 1:  # Eventual
+        factura = Factura(
+            fecha_vencimiento=primer_dia_next_mes.replace(day=10),
+            cliente=cliente,
+            servicio=servicio,
+            tipo=2,  # Única
+            periodoServicio=13
+        )
+        if cliente.tipo == 1:  # Ocacional
+            factura.importe = servicio.importe_total * 0.5  # 50% del importe total
+        else:  # Habitual
+            factura.importe = servicio.importe_total
+        factura.save()
+
+        # Crear detalles de servicios
+        servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+        for tipo in servicio_tipos_servicios:
+            tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
+            Detalle_Servicios.objects.create(
+                factura=factura,
+                tipo_servicio=tipo_servicio.descripcion,
+                tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
+                precio_tipo_servicio=tipo_servicio.precio,
+                cantidad=tipo.cantidad
+            )
+
+        # Crear detalle de empleados
+        cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados
+        mano_obra = Empleado.getSueldoBasico() / 24
+        Detalle_Empleados.objects.create(
+            factura=factura,
+            cantidad_empleados=servicio.cant_empleados,
+            importe_mano_obra=(mano_obra * cant_empleados)
+        )
+
+    # DETERMINADO → una factura mensual por cada mes
+    elif servicio.tipo == 2:  # Determinado
+        fecha = servicio.fecha_inicio.replace(day=1)
+        fecha_fin = servicio.fecha_finaliza.replace(day=1)
+        while fecha <= fecha_fin:
+            vencimiento = (fecha + relativedelta(months=1)).replace(day=10)
+            factura = Factura(
+                fecha_vencimiento=vencimiento,
+                cliente=cliente,
+                servicio=servicio,
+                tipo=3,  # Mensual
+                periodoServicio=fecha.month
+            )
+            if cliente.tipo == 1:  # Ocacional
+                try:
+                    factura_seña = Factura.objects.get(servicio=servicio, tipo=1)
+                    # Check if a monthly invoice with the same amount as the deposit exists
+                    if Factura.objects.filter(servicio=servicio, tipo=3, importe=factura_seña.importe).exists():
+                        factura.importe = servicio.importe_total
+                    else:
+                        factura.importe = servicio.importe_total * 0.5  # 50% del importe total
+                except Factura.DoesNotExist:
+                    factura.importe = servicio.importe_total * 0.5  # 50% si no hay seña
+            else:  # Habitual
+                factura.importe = servicio.importe_total
+            factura.save()
+
+            # Crear detalles de servicios
+            servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+            for tipo in servicio_tipos_servicios:
+                tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
+                Detalle_Servicios.objects.create(
+                    factura=factura,
+                    tipo_servicio=tipo_servicio.descripcion,
+                    tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
+                    precio_tipo_servicio=tipo_servicio.precio,
+                    cantidad=tipo.cantidad
+                )
+
+            # Crear detalle de empleados
+            cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados * 4
+            mano_obra = Empleado.getSueldoBasico() / 24
+            Detalle_Empleados.objects.create(
+                factura=factura,
+                cantidad_empleados=servicio.cant_empleados,
+                importe_mano_obra=(mano_obra * cant_empleados)
+            )
+
+            fecha += relativedelta(months=1)
+
+    # Cambiar estado del servicio a contratado
+    servicio.estado = 3
+    servicio.save()
+
     return render(request, 'servicio/contratarOpciones.html', {'servicio': servicio})
 
 @method_decorator(login_required, name='dispatch')
@@ -558,7 +659,7 @@ def asignarEmpleados(request, pk):
                 frecuencia = form.cleaned_data['frecuencia']
                 empleados = form.cleaned_data['empleados']
                 if empleados.count() != servicio.cant_empleados:
-                    form.add_error('empleados', 'Solo se pueden asignar ' + str(servicio.cant_empleados) + ' empleados')
+                    form.add_error('empleados', 'Se necesitan ' + str(servicio.cant_empleados) + ' empleados por turno')
                     form.fields['empleados'].choices = [(empleado.pk, empleado.nombre +' '+empleado.apellido) for empleado in form.fields['empleados'].queryset]
                     return render(request, 'servicio/asignarEmpleados.html', {'formset': formset, 'servicio': servicio})
                 frecuencia = Frecuencia.objects.get(pk=frecuencia.pk)

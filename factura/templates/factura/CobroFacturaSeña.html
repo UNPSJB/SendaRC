@@ -1,11 +1,9 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/cobroFactura.css' %}" rel="stylesheet" />
 {% endblock %}
-
 {% block title %}
 <div class="page-header-payment">
     <div class="header-content">
@@ -84,16 +82,8 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="info-label">Importe Total del Servicio</span>
-                            <span class="info-value">${{facturaSeña.servicio.importe_total}}</span>
+                            <span class="info-value">{{facturaSeña.servicio.getImporteTotalFormateado}}</span>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Total a pagar -->
-                <div class="total-section">
-                    <div class="total-item">
-                        <span class="total-label">Importe Seña</span>
-                        <span class="total-value">${{facturaSeña.importe}}</span>
                     </div>
                 </div>
             </div>
@@ -113,7 +103,7 @@
             <div class="card-content">
                 <div class="payment-amount">
                     <span class="amount-label">Importe a Pagar:</span>
-                    <span class="amount-value">${{facturaSeña.importe}}</span>
+                    <span class="amount-value">{{facturaSeña.getImporteFormateado}}</span>
                 </div>
                 
                 <form method="POST" class="payment-form">

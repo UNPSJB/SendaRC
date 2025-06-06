@@ -163,7 +163,7 @@ class FormContratarServicio(forms.ModelForm):
 class FormAsignarEmpleados(forms.Form):
     frecuencia = forms.ModelChoiceField(label='Frecuencia', queryset=Frecuencia.objects.all(), widget=forms.Select(attrs={'class': 'input'}))
     empleados = forms.ModelMultipleChoiceField(
-        queryset=Empleado.objects.all(),
+        queryset=Empleado.habilitados.all(),  
         widget=forms.SelectMultiple(attrs={'class': 'input'}),
         label='Empleados'
     )

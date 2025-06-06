@@ -26,6 +26,10 @@
                 <span class="info-label">Fin:</span>
                 <span class="info-value">{{servicio.fecha_finaliza}}</span>
             </div>
+            <div class="info-pill" style="background-color: chartreuse; color: black; border: 1px solid chartreuse; ">
+                <span class="info-label" style="color: black; ">Cantidad de empleados necesarios por turno:</span>
+                <span class="info-value" style="color: black; ">{{servicio.cant_empleados}}</span>
+            </div>
         </div>
     </div>
 </div>
@@ -62,7 +66,7 @@
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
-                                <span class="numEmpleado" id="numEmpleado{{ forloop.counter }}">Empleado {{ forloop.counter }}</span>
+                                <span class="numEmpleado" id="numEmpleado{{ forloop.counter }}">Turno {{ forloop.counter }}</span>
                             </div>
                             <div class="employee-status">
                                 <span class="status-indicator"></span>

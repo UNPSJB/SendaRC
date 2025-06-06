@@ -39,6 +39,9 @@ class Servicio(models.Model):
     #Otros Datos Adicionales
     fecha_cancelada = models.DateField(auto_now=False, auto_now_add=False, null=True)
     
+    def __str__(self):
+        return self.fecha_emision.strftime('%d/%m/%Y')
+     
     def getEstado(self):
         return dict(self.ESTADO)[self.estado]
     
@@ -101,6 +104,7 @@ class Frecuencia(models.Model):
     turno = models.PositiveIntegerField(choices=TURNO)
     servicio = models.ForeignKey(Servicio, related_name="frecuencias", on_delete=models.CASCADE)
     empleados = models.ManyToManyField(Empleado, related_name="frecuencias", null=True)
+    
     
     def getDia(self):
         return dict(self.DIA)[self.dia]

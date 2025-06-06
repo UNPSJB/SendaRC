@@ -1,0 +1,59 @@
+{% for factura in facturas_proximas %}
+<div class="invoice-item">
+    <div class="invoice-info">
+        <div class="invoice-header">
+            <h4 class="invoice-number">Factura #{{ factura.numero }}</h4>
+            <span class="invoice-status status-{{ factura.estado|lower }}">{{ factura.estado }}</span>
+        </div>
+        <div class="invoice-details">
+            <p class="invoice-client">{{ factura.cliente.nombre }}</p>
+            <p class="invoice-amount">${{ factura.total|floatformat:2 }}</p>
+        </div>
+    </div>
+    <div class="invoice-due">
+        <div class="due-info">
+            <span class="due-label">Vence</span>
+            <span class="due-date">{{ factura.fecha_vencimiento|date:"d/m/Y" }}</span>
+            <span
+                class="due-days {% if factura.dias_restantes <= 3 %}urgent{% elif factura.dias_restantes <= 7 %}warning{% endif %}">
+                {% if factura.dias_restantes > 0 %}
+                {{ factura.dias_restantes }} días
+                {% elif factura.dias_restantes == 0 %}
+                Hoy
+                {% else %}
+                Vencida
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <div class="invoice-actions">
+        <button class="action-btn primary" onclick="window.location.href='{% url 'factura_detalle' factura.id %}'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            Ver
+        </button>
+        {% if factura.estado == 'Pendiente' %}
+        <button class="action-btn success" onclick="window.location.href='{% url 'factura_cobrar' factura.id %}'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+            Cobrar
+        </button>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="empty-state">
+    <div class="empty-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+    </div>
+    <h3 class="empty-title">No hay facturas próximas a vencer</h3>
+    <p class="empty-description">Todas las facturas están al día o no hay facturas pendientes</p>
+</div>
+{% endfor %}

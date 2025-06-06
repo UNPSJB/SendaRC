@@ -1,7 +1,6 @@
 {% extends 'layouts/baseGestion.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/facturasServicio.css' %}" rel="stylesheet" />
 {% endblock %}
@@ -89,7 +88,7 @@
                 <div class="amount-section">
                     <div class="amount-item">
                         <span class="amount-label">Importe</span>
-                        <span class="amount-value">${{ factura.importe }}</span>
+                        <span class="amount-value">{{ factura.getImporteFormateado }}</span>
                     </div>
                 </div>
 

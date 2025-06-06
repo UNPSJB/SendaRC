@@ -1,0 +1,24 @@
+<div class="pagination-container">
+  <div class="pagination-info">
+    {% if facturas %}
+      Mostrando {{ facturas.start_index }} - {{ facturas.end_index }} de {{ facturas.paginator.count }} facturas
+    {% else %}
+      Mostrando 0 facturas
+    {% endif %}
+  </div>
+  <div class="pagination-controls">
+    {% if facturas.has_previous %}
+      <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="pagination-btn">Primera</a>
+      <a href="?page={{ facturas.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="pagination-btn">Anterior</a>
+    {% endif %}
+    
+    {% if facturas %}
+      <span class="pagination-btn active">{{ facturas.number }}</span>
+    {% endif %}
+    
+    {% if facturas.has_next %}
+      <a href="?page={{ facturas.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="pagination-btn">Siguiente</a>
+      <a href="?page={{ facturas.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="pagination-btn">Última</a>
+    {% endif %}
+  </div>
+</div>

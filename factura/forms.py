@@ -26,7 +26,6 @@ class SelectClienteForm(forms.Form):
         
 class FormaPagoForm(forms.Form):
     ESTADOS = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia')]
-    #ESTADOS = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia'), ('Cheques', 'Cheques')]
 
     forma = forms.ChoiceField(choices=ESTADOS, required=False)
 

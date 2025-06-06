@@ -8,13 +8,91 @@ from django.utils import timezone
 from datetime import timedelta, datetime
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.db.models import Q
+from .models import Factura
+from django.core.paginator import Paginator
+from django.shortcuts import render, get_object_or_404
 
-# Create your views here.
-
-#10 Dias antes de finde mes y vence 10 Dias despues que comienza el mes siguiente
 @login_required
 def facturas(request):
-    return render(request, 'factura/facturas.html')
+    today = timezone.now().date()
+    # Fetch the 5 unpaid invoices with valid due dates, closest to their due date
+    facturas_proximas_vencer = Factura.objects.filter(
+        fechaPago__isnull=True,
+        fecha_vencimiento__isnull=False
+    ).select_related('cliente', 'servicio').order_by('fecha_vencimiento')[:5]
+
+    # Add dias_para_vencer, due_text, and due_class to each factura
+    for factura in facturas_proximas_vencer:
+        factura.dias_para_vencer = (factura.fecha_vencimiento - today).days
+        if factura.dias_para_vencer == 0:
+            factura.due_text = "Vence hoy"
+            factura.due_class = "due-urgent"
+        elif factura.dias_para_vencer == 1:
+            factura.due_text = "Vence mañana"
+            factura.due_class = "due-urgent"
+        elif factura.dias_para_vencer < 0:
+            abs_days = abs(factura.dias_para_vencer)
+            factura.due_text = f"Vencida hace {abs_days} día{'s' if abs_days != 1 else ''}"
+            factura.due_class = "due-urgent"
+        else:
+            factura.due_text = f"{factura.dias_para_vencer} día{'s' if factura.dias_para_vencer != 1 else ''}"
+            factura.due_class = "due-urgent" if factura.dias_para_vencer <= 3 else "due-warning" if factura.dias_para_vencer <= 7 else "due-normal"
+
+    context = {
+        'facturas_proximas_vencer': facturas_proximas_vencer,
+    }
+    return render(request, 'factura/facturas.html', context)
+
+@login_required
+def verFacturas(request):
+    facturas = Factura.objects.select_related('cliente', 'servicio').all().order_by('-fechaEmision')
+    today = timezone.now().date()
+
+    # Filtering
+    search_query = request.GET.get('search', '')
+    estado = request.GET.get('estado', '')
+    fecha_desde = request.GET.get('fecha_desde', '')
+    fecha_hasta = request.GET.get('fecha_hasta', '')
+
+    if search_query:
+        facturas = facturas.filter(
+            Q(cliente__nombre__icontains=search_query) 
+        )
+
+    if estado:
+        if estado == 'pagada':
+            facturas = facturas.filter(fechaPago__isnull=False)
+        elif estado == 'pendiente':
+            facturas = facturas.filter(fechaPago__isnull=True, fecha_vencimiento__gte=today)
+        elif estado == 'vencida':
+            facturas = facturas.filter(fechaPago__isnull=True, fecha_vencimiento__lt=today)
+
+    if fecha_desde:
+        facturas = facturas.filter(fechaEmision__gte=fecha_desde)
+    if fecha_hasta:
+        facturas = facturas.filter(fechaEmision__lte=fecha_hasta)
+
+    # Statistics
+    total_facturas = facturas.count()
+    facturas_pagadas = facturas.filter(fechaPago__isnull=False).count()
+    facturas_pendientes = facturas.filter(fechaPago__isnull=True, fecha_vencimiento__gte=today).count()
+    facturas_vencidas = facturas.filter(fechaPago__isnull=True, fecha_vencimiento__lt=today).count()
+
+    # Pagination
+    paginator = Paginator(facturas, 10)  # 10 invoices per page
+    page_number = request.GET.get('page')
+    facturas_page = paginator.get_page(page_number)
+
+    context = {
+        'facturas': facturas_page,
+        'total_facturas': total_facturas,
+        'facturas_pagadas': facturas_pagadas,
+        'facturas_pendientes': facturas_pendientes,
+        'facturas_vencidas': facturas_vencidas,
+        'today': today,
+    }
+    return render(request, 'factura/verFacturas.html', context)
 
 @login_required
 def serviciosFacturar(request):
@@ -151,14 +229,26 @@ def facturasServicio(request, pk):
 
 @login_required
 def detalleFactura(request, pk):
-    factura = Factura.objects.get(pk=pk)
-    detalles_servicios = []
-    detalle_empleado = []
-    if factura.tipo != 1:
-        detalles_servicios = Detalle_Servicios.objects.filter(factura=factura)
-        detalle_empleado = Detalle_Empleados.objects.get(factura=factura)
-
-    return render(request, 'factura/detalleFactura.html', {'factura': factura, 'detalles_servicios': detalles_servicios, 'detalle_empleado': detalle_empleado})
+    # Fetch the Factura instance
+    factura = get_object_or_404(Factura.objects.select_related('cliente', 'servicio'), pk=pk)
+    
+    # Fetch related DetalleServicio instances, if any
+    detalles_servicios = Detalle_Servicios.objects.filter(factura=factura)
+    
+    # Compute subtotal for each DetalleServicio
+    for detalle in detalles_servicios:
+        detalle.subtotal = detalle.precio_tipo_servicio * detalle.cantidad
+    
+    # Fetch related DetalleEmpleado instance, if any
+    detalle_empleado = Detalle_Empleados.objects.filter(factura=factura).first()
+    
+    context = {
+        'factura': factura,
+        'detalles_servicios': detalles_servicios,
+        'detalle_empleado': detalle_empleado,
+    }
+    
+    return render(request, 'factura/detalleFactura.html', context)
 
 @login_required
 def formaPago(request, pk):
@@ -176,7 +266,7 @@ def formaPago(request, pk):
                 factura.formaPago = 3
             
             factura.save()
-            return redirect('facturasServicio', factura.servicio.pk)
+            return redirect('verFacturas')
         else:
             print(form.errors)
     else:
@@ -184,17 +274,20 @@ def formaPago(request, pk):
         
     return render(request, 'factura/formaPago.html', {'form': form, 'factura': factura, 'servicio': factura.servicio})
 
-@login_required
 def crearFacturaSeña(request, pk):
-    servicio = Servicio.objects.get(pk=pk)
+    servicio = get_object_or_404(Servicio, pk=pk)
     cliente = servicio.cliente
-    factura_seña = Factura.objects.create(servicio=servicio, 
-        importe=servicio.importe_total*0.50, 
+    mitad_importe = servicio.importe_total * 0.50
+
+    factura_seña = Factura.objects.create(
+        servicio=servicio,
+        importe=mitad_importe,
         cliente=cliente,
         tipo=1,
-        fechaEmision=datetime.now())
-    factura_seña.save()
-    return redirect(to='detallesFacturaSeña', pk=factura_seña.pk)
+        fechaEmision=datetime.now()
+    )
+
+    return redirect('detallesFacturaSeña', pk=factura_seña.pk)
 
 @login_required
 def detallesFacturaSeña(request, pk):

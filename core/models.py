@@ -146,6 +146,9 @@ class Cliente(models.Model):
 
     def getTipo(self):
         return dict(self.TIPO)[self.tipo]
+    
+    def __str__(self):
+            return self.nombre
 
     def getTipoPersona(self):
         return dict(self.TIPOPERSONA)[self.tipoPersona]
@@ -198,6 +201,9 @@ class Empleado(models.Model):
         
     def getSueldoFormateado(self):
         return formato_moneda(self.sueldo)
+
+    def __str__(self):
+        return f"{self.nombre} {self.apellido}"
     
     
 class Sancion(models.Model):

@@ -27,6 +27,9 @@ class Factura(models.Model):
     formaPago =  models.PositiveIntegerField(choices=FORMAPAGO, null=True)
     fechaPago = models.DateField(auto_now=False, auto_now_add=False, null=True)
     
+    def getImporteFormateado(self):
+            return f"${self.importe:,.0f}".replace(",", ".")
+    
     def getTipo(self):
         return dict(self.TIPOFACTURA)[self.tipo] 
     
@@ -50,6 +53,8 @@ class Factura(models.Model):
             13: 'Un Dia'
         }
         return meses.get(self.periodoServicio, 'Mes no válido')
+
+    
     
 class Detalle_Servicios(models.Model):
     factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
@@ -64,4 +69,6 @@ class Detalle_Empleados(models.Model):
     #Importe que crabamos por mano de obra por la todos los empleados que trabajan en el servicio, eventual=un dia, determinado=un mes
     importe_mano_obra = models.IntegerField()
 
+    def getImporteManoObraFormateado(self):
+        return f"${self.importe_mano_obra:,.0f}".replace(",", ".")
     
