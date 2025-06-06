@@ -382,6 +382,15 @@
         <input type="text" name="search" class="filter-input" placeholder="Cliente, servicio..." value="{{ request.GET.search }}">
       </div>
       <div class="filter-group">
+        <label class="filter-label">Tipo de Factura</label>
+        <select name="tipo" class="filter-select">
+          <option value="">Todos los tipos</option>
+          <option value="1" {% if request.GET.tipo == '1' %}selected{% endif %}>Seña</option>
+          <option value="2" {% if request.GET.tipo == '2' %}selected{% endif %}>Única</option>
+          <option value="3" {% if request.GET.tipo == '3' %}selected{% endif %}>Mensual</option>
+        </select>
+      </div>
+      <div class="filter-group">
         <label class="filter-label">Estado</label>
         <select name="estado" class="filter-select">
           <option value="">Todos los estados</option>
@@ -391,12 +400,20 @@
         </select>
       </div>
       <div class="filter-group">
-        <label class="filter-label">Fecha desde</label>
-        <input type="date" name="fecha_desde" class="filter-input" value="{{ request.GET.fecha_desde }}">
+        <label class="filter-label">Fecha Emisión Desde</label>
+        <input type="date" name="fecha_emision_desde" class="filter-input" value="{{ request.GET.fecha_emision_desde }}">
       </div>
       <div class="filter-group">
-        <label class="filter-label">Fecha hasta</label>
-        <input type="date" name="fecha_hasta" class="filter-input" value="{{ request.GET.fecha_hasta }}">
+        <label class="filter-label">Fecha Emisión Hasta</label>
+        <input type="date" name="fecha_emision_hasta" class="filter-input" value="{{ request.GET.fecha_emision_hasta }}">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Fecha Vencimiento Desde</label>
+        <input type="date" name="fecha_vencimiento_desde" class="filter-input" value="{{ request.GET.fecha_vencimiento_desde }}">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Fecha Vencimiento Hasta</label>
+        <input type="date" name="fecha_vencimiento_hasta" class="filter-input" value="{{ request.GET.fecha_vencimiento_hasta }}">
       </div>
       <div class="filter-group">
         <button type="submit" class="btn-filter">

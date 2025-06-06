@@ -46,19 +46,28 @@ def facturas(request):
 
 @login_required
 def verFacturas(request):
-    facturas = Factura.objects.select_related('cliente', 'servicio').all().order_by('-fechaEmision')
+    # Obtener parámetros de los filtros
+    search_query = request.GET.get('search', '')
+    tipo = request.GET.get('tipo', '')
+    estado = request.GET.get('estado', '')
+    fecha_emision_desde = request.GET.get('fecha_emision_desde', '')
+    fecha_emision_hasta = request.GET.get('fecha_emision_hasta', '')
+    fecha_vencimiento_desde = request.GET.get('fecha_vencimiento_desde', '')
+    fecha_vencimiento_hasta = request.GET.get('fecha_vencimiento_hasta', '')
+
+    # Obtener todas las facturas
+    facturas = Factura.objects.all()
     today = timezone.now().date()
 
-    # Filtering
-    search_query = request.GET.get('search', '')
-    estado = request.GET.get('estado', '')
-    fecha_desde = request.GET.get('fecha_desde', '')
-    fecha_hasta = request.GET.get('fecha_hasta', '')
-
+    # Aplicar filtros
     if search_query:
         facturas = facturas.filter(
-            Q(cliente__nombre__icontains=search_query) 
+            models.Q(cliente__nombre__icontains=search_query) |
+            models.Q(servicio__id__icontains=search_query)
         )
+
+    if tipo:
+        facturas = facturas.filter(tipo=tipo)
 
     if estado:
         if estado == 'pagada':
@@ -68,19 +77,26 @@ def verFacturas(request):
         elif estado == 'vencida':
             facturas = facturas.filter(fechaPago__isnull=True, fecha_vencimiento__lt=today)
 
-    if fecha_desde:
-        facturas = facturas.filter(fechaEmision__gte=fecha_desde)
-    if fecha_hasta:
-        facturas = facturas.filter(fechaEmision__lte=fecha_hasta)
+    if fecha_emision_desde:
+        facturas = facturas.filter(fechaEmision__gte=fecha_emision_desde)
 
-    # Statistics
+    if fecha_emision_hasta:
+        facturas = facturas.filter(fechaEmision__lte=fecha_emision_hasta)
+
+    if fecha_vencimiento_desde:
+        facturas = facturas.filter(fecha_vencimiento__gte=fecha_vencimiento_desde)
+
+    if fecha_vencimiento_hasta:
+        facturas = facturas.filter(fecha_vencimiento__lte=fecha_vencimiento_hasta)
+
+    # Estadísticas rápidas
     total_facturas = facturas.count()
     facturas_pagadas = facturas.filter(fechaPago__isnull=False).count()
     facturas_pendientes = facturas.filter(fechaPago__isnull=True, fecha_vencimiento__gte=today).count()
     facturas_vencidas = facturas.filter(fechaPago__isnull=True, fecha_vencimiento__lt=today).count()
 
-    # Pagination
-    paginator = Paginator(facturas, 10)  # 10 invoices per page
+    # Paginación
+    paginator = Paginator(facturas, 10)  # Mostrar 10 facturas por página
     page_number = request.GET.get('page')
     facturas_page = paginator.get_page(page_number)
 
@@ -92,6 +108,7 @@ def verFacturas(request):
         'facturas_vencidas': facturas_vencidas,
         'today': today,
     }
+
     return render(request, 'factura/verFacturas.html', context)
 
 @login_required

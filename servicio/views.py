@@ -545,97 +545,166 @@ def contratarServicioCorrecto(request, pk):
     cliente = servicio.cliente
     fecha_actual = timezone.now().date()
 
-    # Determine the first day of the next month for invoice due date
     if fecha_actual.month == 12:
         primer_dia_next_mes = fecha_actual.replace(day=1, month=1, year=fecha_actual.year + 1)
     else:
         primer_dia_next_mes = fecha_actual.replace(day=1, month=fecha_actual.month + 1)
 
-    # EVENTUAL → factura restante después de la seña
+    # EVENTUAL → crear factura restante después de la seña (Ocacional) o factura única (Habitual)
     if servicio.tipo == 1:  # Eventual
-        factura = Factura(
-            fecha_vencimiento=primer_dia_next_mes.replace(day=10),
-            cliente=cliente,
-            servicio=servicio,
-            tipo=2,  # Única
-            periodoServicio=13
-        )
         if cliente.tipo == 1:  # Ocacional
-            factura.importe = servicio.importe_total * 0.5  # 50% del importe total
-        else:  # Habitual
-            factura.importe = servicio.importe_total
-        factura.save()
+            try:
+                factura_seña = Factura.objects.get(servicio=servicio, tipo=1)
+            except Factura.DoesNotExist:
+                messages.error(request, "No se encontró la seña para este servicio.")
+                return redirect('vista_servicio')
 
-        # Crear detalles de servicios
-        servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
-        for tipo in servicio_tipos_servicios:
-            tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
-            Detalle_Servicios.objects.create(
-                factura=factura,
-                tipo_servicio=tipo_servicio.descripcion,
-                tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
-                precio_tipo_servicio=tipo_servicio.precio,
-                cantidad=tipo.cantidad
-            )
-
-        # Crear detalle de empleados
-        cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados
-        mano_obra = Empleado.getSueldoBasico() / 24
-        Detalle_Empleados.objects.create(
-            factura=factura,
-            cantidad_empleados=servicio.cant_empleados,
-            importe_mano_obra=(mano_obra * cant_empleados)
-        )
-
-    # DETERMINADO → una factura mensual por cada mes
-    elif servicio.tipo == 2:  # Determinado
-        fecha = servicio.fecha_inicio.replace(day=1)
-        fecha_fin = servicio.fecha_finaliza.replace(day=1)
-        while fecha <= fecha_fin:
-            vencimiento = (fecha + relativedelta(months=1)).replace(day=10)
-            factura = Factura(
-                fecha_vencimiento=vencimiento,
-                cliente=cliente,
-                servicio=servicio,
-                tipo=3,  # Mensual
-                periodoServicio=fecha.month
-            )
-            if cliente.tipo == 1:  # Ocacional
-                try:
-                    factura_seña = Factura.objects.get(servicio=servicio, tipo=1)
-                    # Check if a monthly invoice with the same amount as the deposit exists
-                    if Factura.objects.filter(servicio=servicio, tipo=3, importe=factura_seña.importe).exists():
-                        factura.importe = servicio.importe_total
-                    else:
-                        factura.importe = servicio.importe_total * 0.5  # 50% del importe total
-                except Factura.DoesNotExist:
-                    factura.importe = servicio.importe_total * 0.5  # 50% si no hay seña
-            else:  # Habitual
-                factura.importe = servicio.importe_total
-            factura.save()
-
-            # Crear detalles de servicios
-            servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
-            for tipo in servicio_tipos_servicios:
-                tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
-                Detalle_Servicios.objects.create(
-                    factura=factura,
-                    tipo_servicio=tipo_servicio.descripcion,
-                    tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
-                    precio_tipo_servicio=tipo_servicio.precio,
-                    cantidad=tipo.cantidad
+            # Verificamos que aún no se haya generado la factura restante
+            if not Factura.objects.filter(servicio=servicio, tipo=2).exists():
+                factura = Factura.objects.create(
+                    fecha_vencimiento=primer_dia_next_mes.replace(day=10),
+                    cliente=cliente,
+                    servicio=servicio,
+                    tipo=2,  # Única
+                    periodoServicio=13,
+                    importe=servicio.importe_total - factura_seña.importe
                 )
 
-            # Crear detalle de empleados
-            cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados * 4
-            mano_obra = Empleado.getSueldoBasico() / 24
-            Detalle_Empleados.objects.create(
-                factura=factura,
-                cantidad_empleados=servicio.cant_empleados,
-                importe_mano_obra=(mano_obra * cant_empleados)
-            )
+                # Crear detalles de servicios
+                servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+                for tipo in servicio_tipos_servicios:
+                    tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
+                    Detalle_Servicios.objects.create(
+                        factura=factura,
+                        tipo_servicio=tipo_servicio.descripcion,
+                        tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
+                        precio_tipo_servicio=tipo_servicio.precio,
+                        cantidad=tipo.cantidad
+                    )
 
-            fecha += relativedelta(months=1)
+                # Crear detalle de empleados
+                cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados
+                mano_obra = Empleado.getSueldoBasico() / 24
+                Detalle_Empleados.objects.create(
+                    factura=factura,
+                    cantidad_empleados=servicio.cant_empleados,
+                    importe_mano_obra=(mano_obra * cant_empleados)
+                )
+        else:  # Habitual: paga todo junto (sin seña)
+            if not Factura.objects.filter(servicio=servicio, tipo=2).exists():
+                factura = Factura.objects.create(
+                    fecha_vencimiento=primer_dia_next_mes.replace(day=10),
+                    cliente=cliente,
+                    servicio=servicio,
+                    tipo=2,
+                    periodoServicio=13,
+                    importe=servicio.importe_total
+                )
+
+                # Detalles de servicios
+                servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+                for tipo in servicio_tipos_servicios:
+                    tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
+                    Detalle_Servicios.objects.create(
+                        factura=factura,
+                        tipo_servicio=tipo_servicio.descripcion,
+                        tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
+                        precio_tipo_servicio=tipo_servicio.precio,
+                        cantidad=tipo.cantidad
+                    )
+
+                # Detalle de empleados
+                cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados
+                mano_obra = Empleado.getSueldoBasico() / 24
+                Detalle_Empleados.objects.create(
+                    factura=factura,
+                    cantidad_empleados=servicio.cant_empleados,
+                    importe_mano_obra=(mano_obra * cant_empleados)
+                )
+
+    # DETERMINADO → factura única restante (Ocacional) o facturas mensuales como cuotas (Habitual)
+    elif servicio.tipo == 2:
+        if cliente.tipo == 1:  # Ocacional
+            try:
+                factura_seña = Factura.objects.get(servicio=servicio, tipo=1)
+            except Factura.DoesNotExist:
+                messages.error(request, "No se encontró la seña para este servicio.")
+                return redirect('vista_servicio')
+
+            # Verificamos que aún no se haya generado la factura restante
+            if not Factura.objects.filter(servicio=servicio, tipo=2).exists():
+                factura = Factura.objects.create(
+                    fecha_vencimiento=primer_dia_next_mes.replace(day=10),
+                    cliente=cliente,
+                    servicio=servicio,
+                    tipo=2,  # Única
+                    periodoServicio=13,
+                    importe=servicio.importe_total - factura_seña.importe
+                )
+
+                # Detalles de servicios
+                servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+                for tipo in servicio_tipos_servicios:
+                    tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
+                    Detalle_Servicios.objects.create(
+                        factura=factura,
+                        tipo_servicio=tipo_servicio.descripcion,
+                        tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
+                        precio_tipo_servicio=tipo_servicio.precio,
+                        cantidad=tipo.cantidad
+                    )
+
+                # Detalle de empleados
+                cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados * 4
+                mano_obra = Empleado.getSueldoBasico() / 24
+                Detalle_Empleados.objects.create(
+                    factura=factura,
+                    cantidad_empleados=servicio.cant_empleados,
+                    importe_mano_obra=(mano_obra * cant_empleados)
+                )
+        else:  # Habitual
+            fecha = servicio.fecha_inicio.replace(day=1)
+            fecha_fin = servicio.fecha_finaliza.replace(day=1)
+            # Calcular el número de meses
+            meses = (fecha_fin.year - fecha.year) * 12 + fecha_fin.month - fecha.month + 1
+            importe_mensual = servicio.importe_total / meses if meses > 0 else servicio.importe_total
+
+            while fecha <= fecha_fin:
+                vencimiento = (fecha + relativedelta(months=1)).replace(day=10)
+
+                # Evitar duplicados
+                if not Factura.objects.filter(servicio=servicio, tipo=3, periodoServicio=fecha.month).exists():
+                    factura = Factura.objects.create(
+                        fecha_vencimiento=vencimiento,
+                        cliente=cliente,
+                        servicio=servicio,
+                        tipo=3,  # Mensual
+                        periodoServicio=fecha.month,
+                        importe=importe_mensual
+                    )
+
+                    # Detalles de servicios
+                    servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
+                    for tipo in servicio_tipos_servicios:
+                        tipo_servicio = TipoServicio.habilitados.get(pk=tipo.tipoServicio.pk)
+                        Detalle_Servicios.objects.create(
+                            factura=factura,
+                            tipo_servicio=tipo_servicio.descripcion,
+                            tipo_servicio_Unit=tipo_servicio.getUnidadMedida(),
+                            precio_tipo_servicio=tipo_servicio.precio,
+                            cantidad=tipo.cantidad
+                        )
+
+                    # Detalles de empleados
+                    cant_empleados = len(Frecuencia.objects.filter(servicio=servicio)) * servicio.cant_empleados * 4
+                    mano_obra = Empleado.getSueldoBasico() / 24
+                    Detalle_Empleados.objects.create(
+                        factura=factura,
+                        cantidad_empleados=servicio.cant_empleados,
+                        importe_mano_obra=(mano_obra * cant_empleados)
+                    )
+
+                fecha += relativedelta(months=1)
 
     # Cambiar estado del servicio a contratado
     servicio.estado = 3
