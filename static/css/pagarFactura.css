@@ -16,9 +16,9 @@
   --border-dark: #252527;
   --border-darker: #333333;
   --text-light: #ffffff;
-  --text-muted: #a3a3a3;
-  --text-secondary: #cccccc;
-  --text-subtle: #b1b1bd;
+  --text-muted: #d1d1d1;
+  --text-secondary: #c4c4c4;
+  --text-subtle: #cccccc;
   
   /* Sombras */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
@@ -75,9 +75,9 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background-color: var(--bg-darker);
-  color: var(--text-light);
-  border: 1px solid var(--border-dark);
+  background-color: var(--highlight-color);
+  color: #0c0c0c;
+  border: 1px solid var(--highlight-color);
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 500;

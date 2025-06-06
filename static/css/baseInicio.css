@@ -16,9 +16,9 @@
   --border-dark: #252527;
   --border-darker: #333333;
   --text-light: #ffffff;
-  --text-muted: #a3a3a3;
-  --text-secondary: #fffff;
-  --text-subtle: #d6d6e4;
+  --text-muted: #d1d1d1;
+  --text-secondary: #c4c4c4;
+  --text-subtle: #bbbbbb;
   
   /* Sidebar específico */
   --sidebar-width: 280px;
@@ -175,7 +175,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: var(--text-secondary);
+  color: var(--text-light);
   text-decoration: none;
   border-radius: var(--radius-md);
   transition: var(--transition);

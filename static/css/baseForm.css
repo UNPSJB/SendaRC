@@ -10,8 +10,9 @@
   --border-dark: #252527;
   --border-darker: #333333;
   --text-light: #ffffff;
-  --text-muted: #a3a3a3;
-  --text-secondary: #cccccc;
+  --text-muted: #d1d1d1;
+  --text-secondary: #c4c4c4;
+  --text-subtle: #bbbbbb;
   
   /* Colores para botones y enlaces */
   --btn-light-bg: #ffffff;

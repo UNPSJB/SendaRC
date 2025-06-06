@@ -63,7 +63,8 @@ def verFacturas(request):
     if search_query:
         facturas = facturas.filter(
             models.Q(cliente__nombre__icontains=search_query) |
-            models.Q(servicio__id__icontains=search_query)
+            models.Q(servicio__id__icontains=search_query) |
+            models.Q(cliente__apellido__icontains=search_query)
         )
 
     if tipo:
