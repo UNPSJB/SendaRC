@@ -347,7 +347,7 @@
 
 /* Scrollbar personalizado */
 .sidebar-nav::-webkit-scrollbar {
-  width: 4px;
+  width: 10px;
 }
 
 .sidebar-nav::-webkit-scrollbar-track {
@@ -355,12 +355,12 @@
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background: var(--border-dark);
-  border-radius: 2px;
+  background: var(--primary-color);
+  border-radius: 25px;
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
-  background: var(--border-darker);
+  background: var(--primary-hover);
 }
 
 /* Animaciones */

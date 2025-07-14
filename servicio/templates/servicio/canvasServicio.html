@@ -6,6 +6,7 @@
         <h1 class="titulo-detalle"><i class="bi bi-clipboard"></i> Servicio: #{{servicio.pk}}</h1>
         <div class="divisor"></div>
         <p class="detalles"><i class="bi bi-person"></i> Cliente: <span style="font-family: 'InterRegular', serif;">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span></p>
+        <p class="detalles"><i class="bi bi-geo-alt"></i> Localidad: <span style="font-family: 'InterRegular', serif;">{{servicio.getLocalidad}}</span></p>
         <p class="detalles"><i class="bi bi-houses"></i> Dirección: <span style="font-family: 'InterRegular', serif;">{{servicio.direccion}}</span></p>
         <p class="detalles"><i class="bi bi-border-all"></i> Metros cuadrados: <span style="font-family: 'InterRegular', serif;">{{servicio.metros2}}m²</span></p>
         <p class="detalles"><i class="bi bi-truck"></i> Tipo de servicio: <span style="font-family: 'InterRegular', serif;">{{servicio.getTipo}}</span></p>

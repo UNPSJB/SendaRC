@@ -50,8 +50,27 @@ def calcularImportePresupuesto(listaTipoServicio, cantEmpleados, cantFrecuencias
     dicc_total_importe['importe_sugerido'] = importe_sugerido
     return dicc_total_importe
 
+
 def saveServicio(datos_cliente, form_data, total, servicio_pk):
     new_servicio = None
+    
+    # Get the Localidad instance if localidad is provided
+    localidad_instance = None
+    if datos_cliente.get('localidad'):
+        try:
+            # If localidad is a pk (integer), get the instance
+            if isinstance(datos_cliente['localidad'], int):
+                localidad_instance = Localidad.objects.get(pk=datos_cliente['localidad'])
+            # If localidad is already an instance, use it directly
+            elif hasattr(datos_cliente['localidad'], 'pk'):
+                localidad_instance = datos_cliente['localidad']
+            # If localidad is a string representation of pk
+            else:
+                localidad_instance = Localidad.objects.get(pk=int(datos_cliente['localidad']))
+        except (Localidad.DoesNotExist, ValueError, TypeError):
+            # Handle the case where localidad doesn't exist or conversion fails
+            localidad_instance = None
+    
     if servicio_pk == None:
         new_servicio = Servicio(plazo_vigencia=timezone.now() + timedelta(days=10),
                                 cliente=Cliente.objects.get(pk=datos_cliente['cliente_pk']),
@@ -62,7 +81,8 @@ def saveServicio(datos_cliente, form_data, total, servicio_pk):
                                 porcentaje=form_data['porcentaje'],
                                 tipo=datos_cliente['tipo'],
                                 estado=1,
-                                importe_total=total)
+                                importe_total=total,
+                                localidad=localidad_instance)
         new_servicio.save()
     else:
         print("-------ELSE PARA MODIFICAR ")
@@ -75,7 +95,8 @@ def saveServicio(datos_cliente, form_data, total, servicio_pk):
         new_servicio.porcentaje = form_data['porcentaje']
         new_servicio.tipo = datos_cliente['tipo']
         new_servicio.estado = 1
-        new_servicio.importe_total= total
+        new_servicio.importe_total = total
+        new_servicio.localidad = localidad_instance
         new_servicio.save()
     return new_servicio
 
@@ -104,7 +125,8 @@ def recargarSession(servicio, presupuestoSession):
                      'metros2': servicio.metros2,
                      'observaciones': servicio.observaciones,
                      'tipo': servicio.tipo,
-                     'cliente': servicio.cliente}
+                     'cliente': servicio.cliente,
+                     'localidad': servicio.localidad}  # Agregar localidad
     presupuestoSession.update(datos_cliente)
     presupuestoSession.store()
     #Cargamos la lista de tipos de servicio del servicio a modificar
@@ -126,7 +148,7 @@ def recargarSession(servicio, presupuestoSession):
 
 
 class PresupuestoSession(dict):
-    FIELDS = ["direccion", "metros2", "observaciones", "tipo"]
+    FIELDS = ["direccion", "metros2", "observaciones", "tipo", "localidad"]  # Agregar localidad
     # Create init for PresupuestoSession
     def __init__(self, session=None):
         self.session = session
@@ -166,9 +188,21 @@ class PresupuestoSession(dict):
         return listaF
     
     def store(self):
-        data = {k: v for k, v in self.items() if k in self.FIELDS} #Empareja y guarda solo los campos del formulario que nos interesa no ?
-        data["cliente_pk"] = self["cliente"].pk     # agrega una clave para el pk del cliente 
-        self.session["presupuesto"] = data      # almacena todas la claves en la clave presupuesto de la session no ? 
+        data = {k: v for k, v in self.items() if k in self.FIELDS}
+        data["cliente_pk"] = self["cliente"].pk
+        
+        # Handle localidad field correctly
+        if "localidad" in self and self["localidad"]:
+            if hasattr(self["localidad"], 'pk'):
+                # If it's a Localidad instance, store the pk
+                data["localidad"] = self["localidad"].pk
+            else:
+                # If it's already a pk or string, store it as is
+                data["localidad"] = self["localidad"]
+        else:
+            data["localidad"] = None
+            
+        self.session["presupuesto"] = data   # almacena todas la claves en la clave presupuesto de la session no ? 
         
     def storeServicio(self):
         data = self.session.get("servicios", [])

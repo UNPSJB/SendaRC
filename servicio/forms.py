@@ -43,11 +43,12 @@ class FiltrosServiciosForm(forms.Form):
 class FormPresupuestoCliente(forms.ModelForm):
     class Meta:
         model = Servicio
-        fields = ['cliente', 'direccion', 'metros2', 'observaciones', 'tipo']
+        fields = ['cliente', 'direccion', 'metros2', 'observaciones', 'tipo','localidad']
 
     def __init__(self, *args, **kwargs):
         super(FormPresupuestoCliente, self).__init__(*args, **kwargs)
         self.fields['cliente'].queryset = Cliente.habilitados.all()
+        self.fields['localidad'].queryset = Localidad.objects.all()
         self.fields['cliente'].widget.choices = [
             (cliente.pk, cliente.cuil+' | '+cliente.nombre+' '+cliente.apellido) for cliente in Cliente.habilitados.all()]
         self.helper = FormHelper()
@@ -60,9 +61,10 @@ class FormPresupuestoCliente(forms.ModelForm):
                     Div(
                         Field('cliente'),
                         FloatingField('tipo'),
+                        FloatingField('localidad'),
                         FloatingField('direccion'),
                         FloatingField('metros2'),
-                        FloatingField('observaciones'),
+                        FloatingField('observaciones'),                  
                         css_class='container-inputs'
                     ),
                     Div(

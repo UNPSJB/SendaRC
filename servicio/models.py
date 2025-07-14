@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Empleado, Cliente, TipoServicio
+from core.models import Empleado, Cliente, TipoServicio,Localidad  
 from django.utils import timezone
 
 def formato_moneda(valor):
@@ -38,6 +38,7 @@ class Servicio(models.Model):
     empleado = models.ManyToManyField(Empleado, null=True) 
     #Otros Datos Adicionales
     fecha_cancelada = models.DateField(auto_now=False, auto_now_add=False, null=True)
+    localidad = models.ForeignKey(Localidad, on_delete=models.DO_NOTHING, default=None, null=True)
     
     def __str__(self):
         return self.fecha_emision.strftime('%d/%m/%Y')
@@ -47,6 +48,11 @@ class Servicio(models.Model):
     
     def getTipo(self):
         return dict(self.TIPO)[self.tipo] 
+    
+    def getLocalidad(self):
+        if self.localidad:
+            return self.localidad.nombre
+        return "No asignada"
     
     def getImporteTotalServicios(self):
         servicios_asociados = CantServicioTipoServicio.objects.filter(servicio=self)

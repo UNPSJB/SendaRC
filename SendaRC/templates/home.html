@@ -3,6 +3,137 @@
 
 {% block extracss %}{{block.super}}
 <link href="{% static 'css/home.css' %}" rel="stylesheet" />
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<style>
+    .map-container {
+        height: 350px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .map-container-modal {
+        height: 500px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .map-info {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(30, 30, 46, 0.95);
+        color: #fff;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        z-index: 1000;
+        max-width: 200px;
+    }
+
+    .map-legend {
+        margin-top: 16px;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        font-size: 12px;
+        color: #a3a3a3;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+        margin-top: 38px;
+    }
+
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .expand-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(30, 30, 46, 0.95);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        z-index: 1000;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .expand-btn:hover {
+        background: rgba(30, 30, 46, 1);
+        transform: scale(1.05);
+    }
+
+    .chart-card {
+        background: #0c0c0c;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(26, 26, 26, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .chart-header h3 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .chart-controls span {
+        color: #e6e6e6;
+        font-size: 12px;
+    }
+
+    /* Estilos para el modal */
+    .modal-xl-custom {
+        max-width: 95%;
+        width: 95%;
+    }
+
+    @media (max-width: 768px) {
+        .modal-xl-custom {
+            max-width: 98%;
+            width: 98%;
+            margin: 0.5rem;
+        }
+    }
+
+    .filter-control {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        margin: 5px;
+    }
+
+    .filter-control select {
+        width: 100%;
+        margin-top: 5px;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+</style>
 {% endblock %}
 
 {% block seccion-main %}
@@ -13,7 +144,8 @@
             <div class="welcome-section">
                 <div class="user-greeting">
                     <div class="user-avatar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
@@ -48,8 +180,10 @@
                 </div>
                 <div class="metric-content">
                     <h3>Ingresos del Mes</h3>
-                    <p class="metric-value">$125,430</p>
-                    <span class="metric-change positive">+12.5%</span>
+                    <p class="metric-value">${{ ingresos_mes|floatformat:0 }}</p>
+                    <span class="metric-change {% if cambio_ingresos >= 0 %}positive{% else %}negative{% endif %}">
+                        {% if cambio_ingresos >= 0 %}+{% endif %}{{ cambio_ingresos }}%
+                    </span>
                 </div>
             </div>
 
@@ -64,8 +198,10 @@
                 </div>
                 <div class="metric-content">
                     <h3>Servicios Activos</h3>
-                    <p class="metric-value">24</p>
-                    <span class="metric-change positive">+3</span>
+                    <p class="metric-value">{{ servicios_activos }}</p>
+                    <span class="metric-change {% if cambio_servicios >= 0 %}positive{% else %}negative{% endif %}">
+                        {% if cambio_servicios >= 0 %}+{% endif %}{{ cambio_servicios }}
+                    </span>
                 </div>
             </div>
 
@@ -80,8 +216,10 @@
                 </div>
                 <div class="metric-content">
                     <h3>Facturas Pendientes</h3>
-                    <p class="metric-value">8</p>
-                    <span class="metric-change negative">-2</span>
+                    <p class="metric-value">{{ facturas_pendientes }}</p>
+                    <span class="metric-change {% if cambio_facturas >= 0 %}positive{% else %}negative{% endif %}">
+                        {% if cambio_facturas >= 0 %}+{{ cambio_facturas }}{% else %}{{ cambio_facturas }}{% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -94,8 +232,10 @@
                 </div>
                 <div class="metric-content">
                     <h3>Clientes Activos</h3>
-                    <p class="metric-value">156</p>
-                    <span class="metric-change positive">+8</span>
+                    <p class="metric-value">{{ clientes_activos }}</p>
+                    <span class="metric-change {% if cambio_clientes >= 0 %}positive{% else %}negative{% endif %}">
+                        {% if cambio_clientes >= 0 %}+{% endif %}{{ cambio_clientes }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -128,6 +268,65 @@
                     <canvas id="servicesChart"></canvas>
                 </div>
             </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Estado de Facturas</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="scatterChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Nuevo: Mapa de Servicios por Ubicación -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Ubicación de Servicios - Chubut</h3>
+                    <div class="chart-controls">
+                        <span style="font-size: 12px; color: #a3a3a3;">Ubicación exacta de cada servicio</span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div id="servicesMap" class="map-container"></div>
+                    <div class="map-info">
+                        <strong>Total de ubicaciones:</strong> <span id="totalCiudades">0</span><br>
+                        <strong>Total de servicios:</strong> <span id="totalServicios">0</span>
+                        <div id="estadisticasEstados"
+                            style="margin-top: 10px; font-size: 12px; border-top: 1px solid #e5e7eb; padding-top: 8px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #3b82f6;"></div>
+                        <span>📋 Presupuestado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ef4444;"></div>
+                        <span>⏰ Vencido</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #f59e0b;"></div>
+                        <span>📝 Contratado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #10b981;"></div>
+                        <span>🔧 En Curso</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #f97316;"></div>
+                        <span>⏸️ Suspendido</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #6b7280;"></div>
+                        <span>✅ Finalizado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #dc2626;"></div>
+                        <span>❌ Cancelado</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Accesos Rápidos -->
@@ -136,7 +335,8 @@
             <div class="actions-grid">
                 <a href="{% url 'presupuestarCliente' %}" class="action-card">
                     <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -149,7 +349,8 @@
                         <p>Crear presupuestos de manera eficiente</p>
                     </div>
                     <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                     </div>
@@ -157,7 +358,8 @@
 
                 <a href="{% url 'gestionServicios'%}" class="action-card">
                     <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M9 11H1l6-6 6 6z"></path>
                             <path d="M9 17l3 3 3-3"></path>
                             <path d="M22 18h-7"></path>
@@ -169,7 +371,8 @@
                         <p>Gestionar contrataciones y asignaciones</p>
                     </div>
                     <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                     </div>
@@ -177,7 +380,8 @@
 
                 <a href="{% url 'verFacturas' %}" class="action-card">
                     <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <line x1="12" y1="1" x2="12" y2="23"></line>
                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                         </svg>
@@ -187,7 +391,8 @@
                         <p>Gestionar cobranzas y facturación</p>
                     </div>
                     <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                     </div>
@@ -195,7 +400,8 @@
 
                 <a href="{% url 'gestionClientes' %}" class="action-card">
                     <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -207,7 +413,8 @@
                         <p>Administrar base de datos de clientes</p>
                     </div>
                     <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                     </div>
@@ -215,167 +422,409 @@
             </div>
         </section>
     </div>
-
-    <!-- Actividad Reciente -->
-    <section class="recent-activity">
-        <div class="activity-header">
-            <h3>Actividad Reciente</h3>
-            <a href="#" class="view-all">Ver todo</a>
-        </div>
-        <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-icon success">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <p><strong>Servicio completado</strong> - Limpieza oficina ABC Corp</p>
-                    <span class="activity-time">Hace 2 horas</span>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <p><strong>Nueva factura generada</strong> - #FAC-2024-001</p>
-                    <span class="activity-time">Hace 4 horas</span>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon warning">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </div>
-                <div class="activity-content">
-                    <p><strong>Nuevo cliente registrado</strong> - María González</p>
-                    <span class="activity-time">Ayer</span>
-                </div>
-            </div>
-        </div>
-    </section>
 </div>
+
+<!-- Datos JSON para JavaScript -->
+<script id="dashboard-data" type="application/json">
+{
+    "ingresos_mensuales": {{ ingresos_mensuales|safe }},
+    "labels_meses": {{ labels_meses|safe }},
+    "servicios_por_tipo": {{ servicios_por_tipo|safe }},
+    "facturas_estado": {{ facturas_estado|safe }},
+    "servicios_ubicacion_exacta": {{ servicios_ubicacion_exacta|safe }}
+}
+</script>
 {% endblock %}
 
 {% block extrajs %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-$(document).ready(function() {
-    // Mostrar fecha actual
-    const today = new Date();
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
-    $('#currentDate').text(today.toLocaleDateString('es-ES', options));
+    $(document).ready(function () {
+        // Mostrar fecha actual
+        const today = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+        $('#currentDate').text(today.toLocaleDateString('es-ES', options));
 
-    // Configurar gráfico de ingresos
-    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(revenueCtx, {
-        type: 'line',
-        data: {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-            datasets: [{
-                label: 'Ingresos',
-                data: [85000, 92000, 78000, 105000, 118000, 125000],
-                borderColor: '#1DA1F2',
-                backgroundColor: 'rgba(29, 161, 242, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#1DA1F2',
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 2,
-                pointRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
+        // Obtener datos del script JSON
+        const dashboardData = JSON.parse(document.getElementById('dashboard-data').textContent);
+        const ingresosData = dashboardData.ingresos_mensuales;
+        const labelsMeses = dashboardData.labels_meses;
+        const serviciosPorTipo = dashboardData.servicios_por_tipo;
+        const facturasEstado = dashboardData.facturas_estado;
+        const serviciosUbicacionExacta = dashboardData.servicios_ubicacion_exacta;
+
+        // Configurar gráfico de ingresos con datos reales
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: labelsMeses,
+                datasets: [{
+                    label: 'Ingresos',
+                    data: ingresosData,
+                    borderColor: '#1DA1F2',
+                    backgroundColor: 'rgba(29, 161, 242, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#1DA1F2',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: '#a3a3a3',
-                        callback: function(value) {
-                            return '$' + value.toLocaleString();
-                        }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 },
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#a3a3a3',
+                            callback: function (value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
                     },
-                    ticks: {
-                        color: '#a3a3a3'
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#a3a3a3'
+                        }
                     }
                 }
             }
-        }
-    });
+        });
 
-    // Configurar gráfico de servicios
-    const servicesCtx = document.getElementById('servicesChart').getContext('2d');
-    const servicesChart = new Chart(servicesCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Limpieza Oficinas', 'Limpieza Residencial', 'Limpieza Industrial', 'Mantenimiento'],
-            datasets: [{
-                data: [35, 25, 20, 20],
-                backgroundColor: [
-                    '#1DA1F2',
-                    '#22c55e',
-                    '#f59e0b',
-                    '#ef4444'
-                ],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: '#a3a3a3',
-                        padding: 20,
-                        usePointStyle: true
+        // Configurar gráfico de servicios con datos reales
+        const servicesCtx = document.getElementById('servicesChart').getContext('2d');
+        const servicesChart = new Chart(servicesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: serviciosPorTipo.map(item => item.label),
+                datasets: [{
+                    data: serviciosPorTipo.map(item => item.cantidad),
+                    backgroundColor: [
+                        '#1DA1F2',
+                        '#22c55e',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#8b5cf6',
+                        '#06b6d4'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#a3a3a3',
+                            padding: 20,
+                            usePointStyle: true
+                        }
                     }
                 }
             }
+        });
+
+        // Configurar gráfico de estado de facturas con datos reales
+        const scatterCtx = document.getElementById('scatterChart').getContext('2d');
+        const scatterChart = new Chart(scatterCtx, {
+            type: 'pie',
+            data: {
+                labels: facturasEstado.map(item => item.label),
+                datasets: [{
+                    data: facturasEstado.map(item => item.cantidad),
+                    backgroundColor: [
+                        '#22c55e',  // Verde para facturas pagadas
+                        '#ef4444'   // Rojo para facturas pendientes
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#a3a3a3',
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Configurar mapa de servicios por ubicación
+        // Configurar mapa de servicios con ubicaciones exactas
+        if (serviciosUbicacionExacta && serviciosUbicacionExacta.length > 0) {
+            // Inicializar el mapa centrado en Chubut
+            const map = L.map('servicesMap').setView([-43.5, -67.5], 7);
+
+            // Agregar capa de mapa (tema claro)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // Función para obtener icono según el estado del servicio
+            function getServiceIcon(color, estado) {
+                const iconos = {
+                    1: '📋', // Presupuestado
+                    2: '⏰', // Vencido
+                    3: '📝', // Contratado
+                    4: '🔧', // En Curso
+                    5: '⏸️', // Suspendido
+                    6: '✅', // Finalizado
+                    7: '❌'  // Cancelado
+                };
+
+                return L.divIcon({
+                    html: `<div style="
+                background-color: ${color};
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                border: 2px solid white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            ">${iconos[estado] || '📍'}</div>`,
+                    className: 'custom-div-icon',
+                    iconSize: [25, 25],
+                    iconAnchor: [12, 12]
+                });
+            }
+
+            // Agrupar servicios por coordenadas para manejar servicios en la misma ubicación
+            const serviciosAgrupados = {};
+
+            serviciosUbicacionExacta.forEach(function (servicio) {
+                const key = `${servicio.lat},${servicio.lng}`;
+                if (!serviciosAgrupados[key]) {
+                    serviciosAgrupados[key] = [];
+                }
+                serviciosAgrupados[key].push(servicio);
+            });
+
+            // Agregar marcadores para cada ubicación
+            let totalServicios = 0;
+            let serviciosPorEstado = {};
+
+            Object.keys(serviciosAgrupados).forEach(function (coordKey) {
+                const servicios = serviciosAgrupados[coordKey];
+                const [lat, lng] = coordKey.split(',').map(Number);
+
+                // Si hay múltiples servicios en la misma ubicación, usar un marcador cluster
+                if (servicios.length > 1) {
+                    // Crear marcador cluster
+                    const marker = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            html: `<div style="
+                        background-color: #4f46e5;
+                        color: white;
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        border: 2px solid white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                    ">${servicios.length}</div>`,
+                            className: 'custom-cluster-icon',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        })
+                    }).addTo(map);
+
+                    // Crear contenido del popup para múltiples servicios
+                    let popupContent = `
+                <div style="color: #1e1e2e; font-family: Arial, sans-serif; max-width: 350px;">
+                    <h4 style="margin: 0 0 8px 0; color: #1e1e2e;">${servicios[0].localidad}</h4>
+                    <p style="margin: 0 0 8px 0; font-size: 12px; color: #666;">📍 ${servicios[0].direccion}</p>
+                    <p style="margin: 0 0 8px 0;"><strong>Servicios en esta ubicación:</strong> ${servicios.length}</p>
+                    <div style="max-height: 300px; overflow-y: auto;">
+            `;
+
+                    servicios.forEach(function (servicio) {
+                        popupContent += `
+                    <div style="margin-bottom: 8px; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 12px; border-left: 3px solid ${servicio.color};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <div style="font-weight: bold; color: #333;">${servicio.cliente}</div>
+                            <div style="background: ${servicio.color}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px;">${servicio.estado}</div>
+                        </div>
+                        <div style="color: #666; margin: 2px 0;">🔧 ${servicio.tipo_servicio}</div>
+                        <div style="color: #666; margin: 2px 0;">📅 Inicio: ${servicio.fecha_inicio}</div>
+                        ${servicio.fecha_fin !== 'Sin fecha fin' ? `<div style="color: #666; margin: 2px 0;">🏁 Fin: ${servicio.fecha_fin}</div>` : ''}
+                        <div style="color: #666; margin: 2px 0;">👷 ${servicio.empleados}</div>
+                        <div style="color: #666; margin: 2px 0;">💰 ${servicio.importe}</div>
+                        <div style="color: #666; margin: 2px 0;">📐 ${servicio.metros2} m²</div>
+                        ${servicio.observaciones ? `<div style="color: #666; margin: 2px 0; font-style: italic;">📝 ${servicio.observaciones}</div>` : ''}
+                    </div>
+                `;
+                    });
+
+                    popupContent += '</div></div>';
+                    marker.bindPopup(popupContent, { maxWidth: 400 });
+
+                } else {
+                    // Servicio único en esta ubicación
+                    const servicio = servicios[0];
+                    const marker = L.marker([lat, lng], {
+                        icon: getServiceIcon(servicio.color, servicio.estado_numero)
+                    }).addTo(map);
+
+                    // Crear contenido del popup para servicio único
+                    let popupContent = `
+                <div style="color: #1e1e2e; font-family: Arial, sans-serif; max-width: 300px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h4 style="margin: 0; color: #1e1e2e;">${servicio.cliente}</h4>
+                        <div style="background: ${servicio.color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">${servicio.estado}</div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
+                        <div style="color: #666; margin: 3px 0; font-size: 13px;">📍 <strong>${servicio.localidad}</strong></div>
+                        <div style="color: #666; margin: 3px 0; font-size: 12px;">${servicio.direccion}</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+                        <div>
+                            <div style="color: #666; margin: 2px 0;">🔧 ${servicio.tipo_servicio}</div>
+                            <div style="color: #666; margin: 2px 0;">📅 ${servicio.fecha_inicio}</div>
+                            ${servicio.fecha_fin !== 'Sin fecha fin' ? `<div style="color: #666; margin: 2px 0;">🏁 ${servicio.fecha_fin}</div>` : ''}
+                        </div>
+                        <div>
+                            <div style="color: #666; margin: 2px 0;">💰 ${servicio.importe}</div>
+                            <div style="color: #666; margin: 2px 0;">📐 ${servicio.metros2} m²</div>
+                            <div style="color: #666; margin: 2px 0;">🏷️ ${servicio.tipo}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                        <div style="color: #666; margin: 2px 0; font-size: 12px;">👷 <strong>Empleados:</strong> ${servicio.empleados}</div>
+                        ${servicio.observaciones ? `<div style="color: #666; margin: 2px 0; font-size: 11px; font-style: italic;">📝 ${servicio.observaciones}</div>` : ''}
+                    </div>
+                </div>
+            `;
+
+                    marker.bindPopup(popupContent, { maxWidth: 350 });
+                }
+
+                // Contar servicios por estado
+                servicios.forEach(function (servicio) {
+                    if (!serviciosPorEstado[servicio.estado]) {
+                        serviciosPorEstado[servicio.estado] = 0;
+                    }
+                    serviciosPorEstado[servicio.estado]++;
+                    totalServicios++;
+                });
+            });
+
+            // Actualizar información del mapa
+            $('#totalCiudades').text(Object.keys(serviciosAgrupados).length);
+            $('#totalServicios').text(totalServicios);
+
+            // Mostrar estadísticas por estado si existe el contenedor
+            if ($('#estadisticasEstados').length) {
+                let estadisticasHtml = '';
+                Object.keys(serviciosPorEstado).forEach(function (estado) {
+                    estadisticasHtml += `<div style="display: flex; justify-content: space-between; margin: 2px 0;">
+                <span>${estado}:</span>
+                <strong>${serviciosPorEstado[estado]}</strong>
+            </div>`;
+                });
+                $('#estadisticasEstados').html(estadisticasHtml);
+            }
+
+            // Ajustar la vista del mapa para mostrar todos los marcadores
+            if (serviciosUbicacionExacta.length > 0) {
+                const group = new L.featureGroup(map._layers);
+                if (Object.keys(group._layers).length > 0) {
+                    map.fitBounds(group.getBounds().pad(0.1));
+                }
+            }
+
+            // Agregar controles de filtro por estado (opcional)
+            const filterControl = L.control({ position: 'topright' });
+            filterControl.onAdd = function (map) {
+                const div = L.DomUtil.create('div', 'filter-control');
+                div.innerHTML = `
+            <div style="background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                <strong>Filtrar por estado:</strong><br>
+                <select id="estadoFilter" style="width: 100%; margin-top: 5px;">
+                    <option value="">Todos los estados</option>
+                    <option value="1">Presupuestado</option>
+                    <option value="2">Vencido</option>
+                    <option value="3">Contratado</option>
+                    <option value="4">En Curso</option>
+                    <option value="5">Suspendido</option>
+                    <option value="6">Finalizado</option>
+                    <option value="7">Cancelado</option>
+                </select>
+            </div>
+        `;
+
+                // Prevenir que los clics en el control afecten el mapa
+                L.DomEvent.disableClickPropagation(div);
+
+                return div;
+            };
+            filterControl.addTo(map);
+
+        } else {
+            // Mostrar mensaje si no hay datos
+            $('#servicesMap').html('<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #a3a3a3;"><p>No hay servicios con ubicación disponibles</p></div>');
         }
-    });
 
-    // Animaciones de entrada
-    $('.metric-card').each(function(index) {
-        $(this).css('animation-delay', (index * 0.1) + 's');
-    });
+        // Animaciones de entrada
+        $('.metric-card').each(function (index) {
+            $(this).css('animation-delay', (index * 0.1) + 's');
+        });
 
-    $('.action-card').each(function(index) {
-        $(this).css('animation-delay', (index * 0.1 + 0.3) + 's');
+        $('.action-card').each(function (index) {
+            $(this).css('animation-delay', (index * 0.1 + 0.3) + 's');
+        });
     });
-});
 </script>
 {% endblock %}
