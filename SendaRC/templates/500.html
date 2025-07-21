@@ -1,0 +1,60 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block titleNavegador %}Error 500 - Error interno del servidor | SendaRC{% endblock %}
+
+{% block container %}
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="logo-container">
+        <i class="bi bi-exclamation-triangle-fill logo-icon" style="font-size: 2rem; color: hsl(var(--destructive));"></i>
+        <h1 class="logo-text">Error 500</h1>
+      </div>
+      <p class="login-subtitle">Error interno del servidor</p>
+    </div>
+
+    <!-- Contenido -->
+    <div class="text-center">
+      <h2 class="form-title">¡Ups! Algo salió mal</h2>
+      <p class="text-muted mb-4">
+        Se produjo un error inesperado en nuestros servidores. 
+        Nuestro equipo técnico ha sido notificado y está trabajando para resolverlo.
+      </p>
+
+      <!-- ID del incidente -->
+      <div class="alert alert-warning" role="alert">
+        <small>
+          <strong>ID del incidente:</strong> 
+          {{ request.META.REQUEST_ID|default:"SRC-"|add:request.session.session_key|slice:":8"|upper }}
+        </small>
+      </div>
+
+      <!-- Botones -->
+      <div class="d-grid gap-2">
+        <a href="{% url 'home' %}" class="btn btn-primary login-button">
+          <i class="bi bi-house"></i>
+          Ir al inicio
+        </a>
+        <button onclick="window.location.reload()" class="btn btn-outline-primary">
+          <i class="bi bi-arrow-clockwise"></i>
+          Intentar de nuevo
+        </button>
+        <a href="{% url 'contact' %}" class="btn btn-outline-primary">
+          <i class="bi bi-envelope"></i>
+          Contactar soporte
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p class="copyright">
+        <strong>Soporte:</strong> 
+        <a href="mailto:soporte@sendarc.com" class="brand-link">soporte@sendarc.com</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

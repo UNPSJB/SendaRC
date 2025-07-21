@@ -1,15 +1,21 @@
 {% extends 'layouts/baseInicio.html' %}
 {% load static %}
-{% block extracss %}{{block.super}}
-    <link href="{% static 'css/baseForm.css' %}" rel="stylesheet" />
-{% endblock %}
+
 {% block seccion-main %}
-        <div class="seccion-cabecera">
-            {% block title %}
-            {% endblock %}
-        </div>
-        <div class="secccion-form"> 
+<div class="seccion-cabecera animate-fade-in">
+    {% block title %}
+    <h1>Formulario</h1>
+    <p>Complete los campos requeridos</p>
+    {% endblock %}
+</div>
+
+<div class="secccion-form animate-fade-in">
+    <div class="card">
+        <div class="card-body">
             {% block formulario %}
             {% endblock %}
         </div>
+    </div>
+</div>
 {% endblock %}
+{% block extrajs %}{% endblock %}

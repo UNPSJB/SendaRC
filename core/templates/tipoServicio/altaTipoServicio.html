@@ -1,24 +1,57 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-    <link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
-{% endblock %}
+{% block titleNavegador %}SendaRC - Alta de Tipo de Servicio{% endblock %}
 {% block title %}
-<h1 class="titulo">Tipo de Servicio <span class="operacion">> Alta Tipo de Servicio</span></h1>
+<h1>Tipo de Servicio</h1>
+<p>Alta de nuevo tipo de servicio</p>
 {% endblock %}
+
 {% block formulario %}
-    <div class="container container-form">
-        {% crispy form %}
-    </div>
+<div class="animate-fade-in">
+    {% crispy form %}
+</div>
 {% endblock %}
+
 {% block extrajs %}
 <script>
+$(document).ready(function() {
+    // Inicializar Select2 con estilos personalizados
     $("#id_insumos").select2({
-        placeholder: "Busque y seleccione los insumos necesarios..",
+        placeholder: "Busque y seleccione los insumos necesarios...",
+        allowClear: true,
     });
+    
     $("#id_maquinarias").select2({
-        placeholder: "Busque y seleccione las maquinarias necesarias..",
+        placeholder: "Busque y seleccione las maquinarias necesarias...",
+        allowClear: true,
     });
+    
+    // Validación del formulario
+    $('form').on('submit', function(e) {
+        let isValid = true;
+        const requiredFields = $(this).find('input[required], select[required], textarea[required]');
+        
+        requiredFields.each(function() {
+            if (!$(this).val() || ($(this).is('select') && $(this).val() === '')) {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            // Scroll al primer campo con error
+            $('.is-invalid').first().focus();
+        }
+    });
+    
+    // Remover clase de error al escribir
+    $('input, select, textarea').on('input change', function() {
+        $(this).removeClass('is-invalid');
+    });
+});
 </script>
 {% endblock %}

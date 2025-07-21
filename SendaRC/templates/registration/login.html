@@ -1,39 +1,53 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/autenticacion.css' %}" rel="stylesheet" />
-{% endblock %}
-
 {% block container %}
 <div class="login-container">
-    <div class="login-card">
+    <div class="login-card animate-fade-in">
         <div class="login-header">
             <div class="logo-container">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="logo-icon">
-                    <path d="M20 7h-9"></path>
-                    <path d="M14 17H5"></path>
-                    <circle cx="17" cy="17" r="3"></circle>
-                    <circle cx="7" cy="7" r="3"></circle>
-                </svg>
+                <div class="brand-icon">
+                    <img src="{% static 'images/logo.png' %}" alt="SendaRC" width="38" height="38">
+                </div>
                 <h1 class="logo-text">SendaRC</h1>
             </div>
-            <p class="login-subtitle">Plataforma de gestión de servicios</p>
+            <p class="login-subtitle">Porque hasta la limpieza necesita orden</p>
         </div>
-        
+
         <div class="login-form-container">
             <h2 class="form-title">Iniciar Sesión</h2>
-            
-            <form method="POST" class="login-form">
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} animate-fade-in">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    style="margin-right: 0.5rem;">
+                    {% if message.tags == 'success' %}
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                    {% else %}
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    {% endif %}
+                </svg>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="animate-slide-in">
                 {% csrf_token %}
-                <div class="form-fields">
-                    {{ form | crispy }}
-                </div>
-                
+                {{ form|crispy }}
+
                 <div class="form-actions">
-                    <button type="submit" class="login-button">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="submit" class="btn btn-primary login-button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                             <polyline points="10 17 15 12 10 7"></polyline>
                             <line x1="15" y1="12" x2="3" y2="12"></line>
@@ -43,14 +57,14 @@
                 </div>
             </form>
         </div>
-        
+
         <div class="login-footer">
             <div class="copyright">
-                © 2024 <a href="#" class="brand-link">SendaRC</a>
+                © 2025 <a href="https://github.com/UNPSJB/SendaRC" target="_blank" class="brand-link">SendaRC</a>
             </div>
         </div>
     </div>
-    
+
     <div class="login-decoration">
         <div class="decoration-shape shape-1"></div>
         <div class="decoration-shape shape-2"></div>
@@ -61,17 +75,221 @@
 
 {% block extrajs %}
 <script>
-    $(document).ready(function() {
-        // Animación de entrada
-        $('.login-card').css('animation', 'fadeIn 0.6s ease-out');
-        
-        // Añadir clases a los campos de crispy forms para mejorar el estilo
-        $('.login-form .form-group').addClass('modern-form-group');
-        $('.login-form input').addClass('modern-input');
-        $('.login-form label').addClass('modern-label');
-        
+    $(document).ready(function () {
         // Focus en el primer campo al cargar
-        $('.login-form input:first').focus();
+        $('input:first').focus();
+
+        // Validación básica del lado del cliente
+        $('form').on('submit', function (e) {
+            let isValid = true;
+            const requiredFields = $(this).find('input[required], select[required]');
+
+            requiredFields.each(function () {
+                if (!$(this).val().trim()) {
+                    $(this).addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                // Mostrar mensaje de error si existe una función de notificación
+                if (typeof Utils !== 'undefined' && Utils.showNotification) {
+                    Utils.showNotification('Por favor complete todos los campos requeridos', 'error');
+                }
+            }
+        });
+
+        // Remover clase de error al escribir
+        $('input, select').on('input change', function () {
+            $(this).removeClass('is-invalid');
+        });
     });
 </script>
+{% endblock %}
+{% block extracss %}
+<style>
+    /* Fondo glassmorphism para login */
+    .login-container {
+        position: relative;
+        background: linear-gradient(135deg,
+                hsl(var(--primary) / 0.1) 0%,
+                hsl(var(--accent) / 0.05) 25%,
+                hsl(var(--secondary) / 0.08) 50%,
+                hsl(var(--primary) / 0.12) 75%,
+                hsl(var(--accent) / 0.06) 100%);
+        overflow: hidden;
+    }
+
+    .login-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(circle at 20% 30%, hsl(var(--primary) / 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, hsl(var(--accent) / 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, hsl(var(--secondary) / 0.1) 0%, transparent 50%);
+        backdrop-filter: blur(1px);
+        -webkit-backdrop-filter: blur(1px);
+        z-index: 1;
+    }
+
+    .login-card {
+        position: relative;
+        z-index: 10;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        box-shadow:
+            var(--glass-shadow),
+            0 0 0 1px hsl(var(--primary) / 0.05),
+            inset 0 1px 0 hsl(var(--background) / 0.1);
+        transition: all 0.2s ease-in-out;
+    }
+
+
+    /* Formas decorativas mejoradas */
+    .login-decoration {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .decoration-shape {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.6;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 {
+        width: 300px;
+        height: 300px;
+        background: hsl(var(--primary) / 0.2);
+        top: -150px;
+        right: -150px;
+        animation-delay: 0s;
+    }
+
+    .shape-2 {
+        width: 200px;
+        height: 200px;
+        background: hsl(var(--accent) / 0.15);
+        bottom: -100px;
+        left: -100px;
+        animation-delay: 2s;
+    }
+
+    .shape-3 {
+        width: 150px;
+        height: 150px;
+        background: hsl(var(--secondary) / 0.1);
+        top: 50%;
+        left: -75px;
+        animation-delay: 4s;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        33% {
+            transform: translateY(-20px) rotate(120deg);
+        }
+
+        66% {
+            transform: translateY(10px) rotate(240deg);
+        }
+    }
+
+    /* Efectos adicionales en la card */
+    .login-card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 20px 25px -5px rgb(0 0 0 / 0.1),
+            0 10px 10px -5px rgb(0 0 0 / 0.04),
+            0 0 0 1px hsl(var(--primary) / 0.1),
+            inset 0 1px 0 hsl(var(--background) / 0.15);
+    }
+
+    /* Mejorar el logo con glassmorphism */
+    .logo-icon {
+        background: hsl(var(--accent) / 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid hsl(var(--accent) / 0.2);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem;
+    }
+
+    /* Efectos en los botones */
+    .login-button {
+        background: linear-gradient(135deg,
+                hsl(var(--primary)) 0%,
+                hsl(var(--accent)) 100%) !important;
+        border: none !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg,
+                transparent,
+                hsl(var(--background) / 0.2),
+                transparent);
+        transition: left 0.5s;
+    }
+
+    .login-button:hover::before {
+        left: 100%;
+    }
+
+    .login-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px hsl(var(--primary) / 0.3);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            bottom: -75px;
+            left: -75px;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            left: -50px;
+        }
+    }
+</style>
 {% endblock %}

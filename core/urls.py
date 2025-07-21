@@ -34,7 +34,4 @@ urlpatterns = [
     path('modificarMaquinaria/<int:pk>', updateMaquinaria.as_view(), name='modificarMaquinaria'),
     path('gestionMaquinaria/', gestionMaquinaria.as_view(), name='gestionMaquinaria'),
     path('gestionMaquinaria/<int:pk>', maquinariaDetalles, name='detalleMaquinaria'),
-
-
-    path('calendario/',calendario,name='calendario')
 ]

@@ -1,23 +1,32 @@
 {% for tipo in tipoServicios %}
-<tr class="fila-tabla" data-id="{{ tipo.pk }}">
-    <td scope="row">{{ tipo.pk }}</td>
-    <td scope="row">{{ tipo.descripcion }}</td>
-    <td scope="row">{{ tipo.getUnidadMedida }}</td>
-    <td scope="row">{{ tipo.getPrecioFormateado }}</td>
+<tr>
+  <td>{{ tipo.pk }}</td>
+  <td>{{ tipo.descripcion }}</td>
+  <td>{{ tipo.getUnidadMedida }}</td>
+  <td>{{ tipo.getPrecioFormateado }}</td>
+  <td>
     {% if tipo.activo %}
-        <td scope="row"><i class="bi bi-check-circle"></i></td>
+    <i class="bi bi-check-circle-fill text-success"> Activo</i>
     {% else %}
-        <td scope="row"><i class="bi bi-x-circle"></i></td>
+    <i class="bi bi-x-circle-fill text-danger"> Inactivo</i>
     {% endif %}
-    <td scope="row">
-        <button href="{% url 'detalleTipoServicio' tipo.pk %}" class="opcion" type="button" 
-            data-url="/gestionTipoServicio/{{tipo.pk}}"
-            data-bs-toggle="offcanvas" 
-            data-bs-target="#offcanvasExample" 
-            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-        <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-        <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-    </td>
+  </td>
+  <td>
+    <button class="btn btn-sm btn-outline-primary me-1 btn-detalle"  data-url="{% url 'detalleTipoServicio' tipo.pk %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles tipo de servicio">
+      <i class="bi bi-eye"></i>
+    </button>
+    <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar tipo de servicio">
+      <i class="bi bi-pencil-square"></i>
+    </a>
+  </td>
 </tr>
-
+{% empty %}
+<tr>
+  <td></td>
+  <td></td>
+  <td colspan="0" class="text-center text-muted">No hay resultados</td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
 {% endfor %}

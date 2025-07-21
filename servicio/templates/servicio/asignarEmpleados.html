@@ -1,34 +1,32 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/asignarEmpleado.css' %}" rel="stylesheet" />
-{% endblock %}
-
+{% block titleNavegador %}SendaRC - Asignar Empleados{% endblock %}
 {% block title %}
-<div class="page-header-assign">
+<div class="seccion-cabecera animate-fade-in">
     <div class="header-content">
-        <h1 class="titulo">Contratar Servicio</h1>
-        <div class="service-info">
-            <div class="info-pill">
-                <span class="info-label">Servicio #{{servicio.pk}}</span>
-            </div>
-            <div class="info-pill">
-                <span class="info-label">Cliente:</span>
-                <span class="info-value">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
-            </div>
-            <div class="info-pill">
-                <span class="info-label">Inicio:</span>
-                <span class="info-value">{{servicio.fecha_inicio}}</span>
-            </div>
-            <div class="info-pill">
-                <span class="info-label">Fin:</span>
-                <span class="info-value">{{servicio.fecha_finaliza}}</span>
-            </div>
-            <div class="info-pill" style="background-color: chartreuse; color: black; border: 1px solid chartreuse; ">
-                <span class="info-label" style="color: black; ">Cantidad de empleados necesarios por turno:</span>
-                <span class="info-value" style="color: black; ">{{servicio.cant_empleados}}</span>
+        <div class="header-left">
+            <h1>Contratar Servicio</h1>
+            <p>Asignación de empleados para el servicio #{{servicio.pk}}</p>
+        </div>
+        <div class="header-actions">
+            <div class="service-info-badges">
+                <div class="info-badge">
+                    <span class="badge-label">Servicio</span>
+                    <span class="badge-value">#{{servicio.pk}}</span>
+                </div>
+                <div class="info-badge">
+                    <span class="badge-label">Cliente</span>
+                    <span class="badge-value">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
+                </div>
+                <div class="info-badge">
+                    <span class="badge-label">Período</span>
+                    <span class="badge-value">{{servicio.fecha_inicio}} - {{servicio.fecha_finaliza}}</span>
+                </div>
+                <div class="info-badge highlight">
+                    <span class="badge-label">Empleados necesarios por turno:</span>
+                    <span class="badge-value">{{servicio.cant_empleados}}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -36,160 +34,593 @@
 {% endblock %}
 
 {% block formulario %}
-<div class="assign-container">
-    <div class="assign-card">
-        <!-- Header de la tarjeta -->
-        <div class="card-header">
-            <div class="header-left">
-                <h3 class="card-title">Asignación de Empleados</h3>
-                <p class="card-subtitle">Selecciona los empleados para cada turno</p>
-            </div>
-            <button type="button" class="next-button btn-siguiente-vista">
-                <span>Siguiente</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"></polyline>
-                </svg>
-            </button>
-        </div>
-
-        <div class="card-content">
-            <form method="POST" class="formsetEmpleados">
-                {% csrf_token %}
-                {{ formset.management_form }}
-                
-                <div class="employees-grid">
-                    {% for f in formset %}
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-number">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <span class="numEmpleado" id="numEmpleado{{ forloop.counter }}">Turno {{ forloop.counter }}</span>
-                            </div>
-                            <div class="employee-status">
-                                <span class="status-indicator"></span>
-                            </div>
-                        </div>
-                        
-                        <div class="employee-form">
-                            {{ f | crispy }}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </form>
-        </div>
+<!-- Header de la tarjeta -->
+<div class="card-header-custom">
+    <div class="header-left">
+        <h3 class="card-title">Asignación de Empleados</h3>
+        <p class="card-subtitle">Selecciona los empleados para cada turno del servicio</p>
     </div>
+    <button type="button" class="btn btn-primary btn-siguiente-vista">
+        <span>Siguiente</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"></polyline>
+        </svg>
+    </button>
 </div>
-{% endblock %}
 
+<div class="card-content">
+    <form method="POST" class="formsetEmpleados">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="employees-grid">
+            {% for f in formset %}
+            <div class="employee-card">
+                <div class="employee-header">
+                    <div class="employee-number">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="numEmpleado" id="numEmpleado{{ forloop.counter }}">Turno {{forloop.counter}}</span>
+                    </div>
+                    <div class="employee-status">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+
+                <div class="employee-form">
+                    {{ f | crispy }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Estilos específicos para asignarEmpleados que complementan base-styles.css */
+
+    .assign-layout {
+        margin-top: 1.5rem;
+    }
+
+    .assign-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Header personalizado */
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .header-left h1 {
+        margin-bottom: 0.5rem;
+    }
+
+    .service-info-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .info-badge {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        background: hsl(var(--muted) / 0.3);
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-sm);
+        min-width: 120px;
+    }
+
+    .info-badge.highlight {
+        background: hsl(var(--success) / 0.1);
+        border-color: hsl(var(--success) / 0.3);
+        color: hsl(var(--success));
+    }
+
+    .badge-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: hsl(var(--muted-foreground));
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .badge-value {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+    }
+
+    .info-badge.highlight .badge-label,
+    .info-badge.highlight .badge-value {
+        color: hsl(var(--success));
+    }
+
+    /* Card header personalizado */
+    .card-header-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid hsl(var(--border));
+        gap: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+        margin: 0 0 0.25rem 0;
+    }
+
+    .card-subtitle {
+        color: hsl(var(--muted-foreground));
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    /* Grid de empleados */
+    .employees-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .employee-card {
+        background: hsl(var(--muted) / 0.3);
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-sm);
+        padding: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .employee-card:hover {
+        background: hsl(var(--muted) / 0.5);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .employee-card.has-selection {
+        border-color: hsl(var(--accent));
+        background: hsl(var(--accent) / 0.1);
+    }
+
+    .employee-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .employee-number {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+    }
+
+    .employee-number svg {
+        color: hsl(var(--accent));
+    }
+
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: hsl(var(--muted-foreground));
+        transition: var(--transition);
+    }
+
+    .employee-card.has-selection .status-indicator {
+        background: hsl(var(--success));
+    }
+
+    /* Formulario de empleado */
+    .employee-form {
+        position: relative;
+    }
+
+    /* Botón siguiente */
+    .btn-siguiente-vista {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .btn-siguiente-vista:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-siguiente-vista.loading {
+        opacity: 0.7;
+    }
+
+    .btn-siguiente-vista.loading svg {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .employees-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .service-info-badges {
+            justify-content: center;
+        }
+
+        .card-header-custom {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .btn-siguiente-vista {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .employees-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Estilos adicionales para el contador y Select2 mejorado */
+
+    /* Contador de empleados */
+    .employees-counter {
+        margin-top: 0.5rem;
+    }
+
+    .counter-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid;
+        transition: var(--transition);
+    }
+
+    .counter-badge.counter-pending {
+        background: hsl(var(--warning) / 0.1);
+        border-color: hsl(var(--warning) / 0.3);
+        color: hsl(var(--warning));
+    }
+
+    .counter-badge.counter-complete {
+        background: hsl(var(--success) / 0.1);
+        border-color: hsl(var(--success) / 0.3);
+        color: hsl(var(--success));
+    }
+
+    .counter-badge svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Select2 dropdown más grande */
+    .select2-large-dropdown .select2-results {
+        max-height: 300px !important;
+    }
+
+    .select2-large-dropdown .select2-results__options {
+        max-height: 300px !important;
+    }
+
+    .select2-large-dropdown .select2-results__option {
+        padding: 12px 16px !important;
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+        border-bottom: 1px solid hsl(var(--border) / 0.5) !important;
+    }
+
+    .select2-large-dropdown .select2-results__option:last-child {
+        border-bottom: none !important;
+    }
+
+    .select2-large-dropdown .select2-results__option--highlighted {
+        background-color: hsl(var(--accent) / 0.1) !important;
+        color: hsl(var(--accent)) !important;
+    }
+
+    /* Mejorar el input del Select2 */
+    .select2-container .select2-selection--single {
+        height: 42px !important;
+        border: 1px solid hsl(var(--border)) !important;
+        border-radius: var(--radius-sm) !important;
+        background: hsl(var(--background)) !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        line-height: 40px !important;
+        padding-left: 12px !important;
+        font-size: 0.9rem !important;
+        color: hsl(var(--foreground)) !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+        right: 8px !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__clear {
+        line-height: 38px !important;
+        right: 30px !important;
+        font-size: 1.2rem !important;
+        color: hsl(var(--muted-foreground)) !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__clear:hover {
+        color: hsl(var(--destructive)) !important;
+    }
+
+    /* Placeholder mejorado */
+    .select2-container .select2-selection--single .select2-selection__placeholder {
+        color: hsl(var(--muted-foreground)) !important;
+        font-style: normal !important;
+    }
+
+    /* Dropdown container */
+    .select2-dropdown {
+        border: 1px solid hsl(var(--border)) !important;
+        border-radius: var(--radius-sm) !important;
+        background: hsl(var(--background)) !important;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06) !important;
+    }
+
+    /* Search input en el dropdown */
+    .select2-search--dropdown .select2-search__field {
+        border: 1px solid hsl(var(--border)) !important;
+        border-radius: var(--radius-sm) !important;
+        padding: 8px 12px !important;
+        font-size: 0.9rem !important;
+        background: hsl(var(--background)) !important;
+        color: hsl(var(--foreground)) !important;
+    }
+
+    .select2-search--dropdown .select2-search__field:focus {
+        border-color: hsl(var(--accent)) !important;
+        box-shadow: 0 0 0 2px hsl(var(--accent) / 0.2) !important;
+        outline: none !important;
+    }
+
+    /* Estados de focus y hover para el select principal */
+    .select2-container--default .select2-selection--single:focus,
+    .select2-container--open .select2-selection--single {
+        border-color: hsl(var(--accent)) !important;
+        box-shadow: 0 0 0 2px hsl(var(--accent) / 0.2) !important;
+        outline: none !important;
+    }
+
+    /* Botón siguiente con estados */
+    .btn-siguiente-vista.btn-warning {
+        background-color: hsl(var(--warning));
+        border-color: hsl(var(--warning));
+        color: hsl(var(--warning-foreground));
+    }
+
+    .btn-siguiente-vista.btn-warning:hover {
+        background-color: hsl(var(--warning) / 0.9);
+        border-color: hsl(var(--warning) / 0.9);
+    }
+
+    /* Animación para cambios de estado */
+    .employee-card {
+        transition: all 0.3s ease !important;
+    }
+
+    .employee-card .status-indicator {
+        transition: all 0.3s ease !important;
+    }
+
+    /* Responsive para el contador */
+    @media (max-width: 768px) {
+        .employees-counter {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .counter-badge {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
 {% block extrajs %}
 <script>
     $(function () {
         // Configuración mejorada de Select2
         const $total_forms = $('#id_form-TOTAL_FORMS');
-        
+        const empleadosNecesarios = parseInt('{{ servicio.cant_empleados }}') || 0;
+
         for (let i = 0; i < $total_forms.val(); i++) {
             const selectId = "#id_form-" + i + "-empleados";
-            
+
             // Destruir Select2 existente si existe
             if ($(selectId).hasClass("select2-hidden-accessible")) {
                 $(selectId).select2('destroy');
             }
-            
+
             // Inicializar Select2 con configuración mejorada
             $(selectId).select2({
                 allowClear: true,
                 placeholder: "Seleccione empleado",
                 width: '100%',
-                // CRÍTICO: No usar dropdownParent, dejar que se renderice en body
                 dropdownParent: $('body'),
-                // Configuraciones adicionales para mejorar funcionamiento
+                dropdownCssClass: 'select2-large-dropdown',
                 escapeMarkup: function (markup) {
                     return markup;
                 },
-                templateResult: function(data) {
+                templateResult: function (data) {
                     return data.text;
                 },
-                templateSelection: function(data) {
+                templateSelection: function (data) {
                     return data.text;
                 }
             });
-            
-            // Event listeners
-            $(selectId).on('select2:open', function() {
-                // Asegurar z-index alto cuando se abre
+
+            // Event listeners mejorados
+            $(selectId).on('select2:open', function () {
                 $('.select2-dropdown').css('z-index', 99999);
-                
-                // Agregar clase al body para manejar overflow
                 $('body').addClass('select2-dropdown-open');
-                
-                // Hacer scroll al elemento si es necesario
+
                 const $container = $(this).closest('.employee-card');
                 if ($container.length) {
-                    $container[0].scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'nearest' 
+                    $container[0].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest'
                     });
                 }
             });
-            
-            $(selectId).on('select2:close', function() {
-                // Remover clase del body
+
+            $(selectId).on('select2:close', function () {
                 $('body').removeClass('select2-dropdown-open');
             });
-            
-            // Actualizar estado cuando se selecciona un empleado
-            $(selectId).on('change', function() {
-                const card = $(this).closest('.employee-card');
-                if ($(this).val()) {
-                    card.addClass('has-selection');
-                } else {
-                    card.removeClass('has-selection');
-                }
+
+            // Eventos para detectar cambios (incluyendo clear)
+            $(selectId).on('select2:select select2:unselect select2:clear change', function () {
+                updateCardStatus($(this));
                 updateFormStatus();
+                updateCounter();
+            });
+
+            // También detectar cuando se limpia manualmente
+            $(selectId).on('select2:clearing', function () {
+                setTimeout(() => {
+                    updateCardStatus($(this));
+                    updateFormStatus();
+                    updateCounter();
+                }, 100);
             });
         }
-        
+
+        // Función para actualizar el estado de una tarjeta específica
+        function updateCardStatus($select) {
+            const card = $select.closest('.employee-card');
+            const hasValue = $select.val() && $select.val().length > 0;
+
+            if (hasValue) {
+                card.addClass('has-selection');
+            } else {
+                card.removeClass('has-selection');
+            }
+        }
+
+        // Función para actualizar el contador
+        function updateCounter() {
+            const totalSelected = $('.employee-card.has-selection').length;
+            const faltantes = Math.max(0, empleadosNecesarios - totalSelected);
+
+            // Actualizar contador en el header
+            let $counter = $('.employees-counter');
+            if ($counter.length === 0) {
+                $counter = $('<div class="employees-counter"></div>');
+                $('.card-header-custom .header-left').append($counter);
+            }
+
+            const counterText = faltantes > 0
+                ? `Faltan ${faltantes} turno${faltantes !== 1 ? 's' : ''} por asignar`
+                : 'Todos los turnos asignados';
+
+            const counterClass = faltantes > 0 ? 'counter-pending' : 'counter-complete';
+
+            $counter.html(`
+            <div class="counter-badge ${counterClass}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    ${faltantes > 0
+                    ? '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+                    : '<polyline points="20,6 9,17 4,12"></polyline>'
+                }
+                </svg>
+                <span>${counterText}</span>
+            </div>
+        `);
+        }
+
         // Manejar envío del formulario
         $('.btn-siguiente-vista').on("click", function () {
-            // Cerrar todos los Select2 abiertos
             $('.select2-hidden-accessible').select2('close');
-            
-            // Agregar estado de carga
             $(this).addClass('loading').prop('disabled', true);
-            
-            // Enviar formulario
             $(".formsetEmpleados").submit();
         });
-        
+
         // Verificar estado del formulario
         function updateFormStatus() {
             const totalSelected = $('.employee-card.has-selection').length;
-            const totalForms = parseInt($total_forms.val());
-            
-            if (totalSelected > 0) {
-                $('.btn-siguiente-vista').prop('disabled', false);
+            const isComplete = totalSelected >= empleadosNecesarios;
+
+            $('.btn-siguiente-vista').prop('disabled', !isComplete);
+
+            if (isComplete) {
+                $('.btn-siguiente-vista').removeClass('btn-warning').addClass('btn-primary');
             } else {
-                $('.btn-siguiente-vista').prop('disabled', true);
+                $('.btn-siguiente-vista').removeClass('btn-primary').addClass('btn-warning');
             }
         }
-        
-        // Inicializar estado
+
+        // Inicializar estado de todas las tarjetas
+        for (let i = 0; i < $total_forms.val(); i++) {
+            const $select = $("#id_form-" + i + "-empleados");
+            updateCardStatus($select);
+        }
+
         updateFormStatus();
-        
+        updateCounter();
+
+        // Animación de entrada escalonada
+        $('.employee-card').each(function (index) {
+            $(this).css({
+                'animation-delay': (index * 0.1) + 's',
+                'animation-fill-mode': 'both'
+            }).addClass('animate-fade-in');
+        });
+
         // Manejar clicks fuera de Select2 para cerrar dropdowns
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('.select2-container').length && 
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.select2-container').length &&
                 !$(e.target).closest('.select2-dropdown').length) {
                 $('.select2-hidden-accessible').select2('close');
             }
         });
-        
-        // Debug: Log para verificar inicialización
+
         console.log('Select2 inicializado para', $total_forms.val(), 'empleados');
+        console.log('Empleados necesarios por turno:', empleadosNecesarios);
     });
 </script>
 {% endblock %}

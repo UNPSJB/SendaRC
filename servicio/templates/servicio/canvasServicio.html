@@ -1,40 +1,291 @@
 {% load static %}
-{% block detalle %}
-<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
-<div class="container">
-    <div class="container-detalles">
-        <h1 class="titulo-detalle"><i class="bi bi-clipboard"></i> Servicio: #{{servicio.pk}}</h1>
-        <div class="divisor"></div>
-        <p class="detalles"><i class="bi bi-person"></i> Cliente: <span style="font-family: 'InterRegular', serif;">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span></p>
-        <p class="detalles"><i class="bi bi-geo-alt"></i> Localidad: <span style="font-family: 'InterRegular', serif;">{{servicio.getLocalidad}}</span></p>
-        <p class="detalles"><i class="bi bi-houses"></i> Dirección: <span style="font-family: 'InterRegular', serif;">{{servicio.direccion}}</span></p>
-        <p class="detalles"><i class="bi bi-border-all"></i> Metros cuadrados: <span style="font-family: 'InterRegular', serif;">{{servicio.metros2}}m²</span></p>
-        <p class="detalles"><i class="bi bi-truck"></i> Tipo de servicio: <span style="font-family: 'InterRegular', serif;">{{servicio.getTipo}}</span></p>
-        <p class="detalles"><i class="bi bi-exclamation-circle"></i> Estado de servicio: <span style="font-family: 'InterRegular', serif;">{{servicio.getEstado}}</span></p>
-        <p class="detalles"><i class="bi bi-calendar-date"></i> Fecha de emisión: <span style="font-family: 'InterRegular', serif;">{{servicio.fecha_emision|date:"d-m-Y"}}</span></p>
-        <p class="detalles"><i class="bi bi-calendar2-x"></i> Fecha de inicio: <span style="font-family: 'InterRegular', serif;">{{servicio.fecha_inicio|date:"d-m-Y"}}</span></p>
-        <p class="detalles"><i class="bi bi-calendar-day"></i> Plazo de vigencia: <span style="font-family: 'InterRegular', serif;">{{servicio.plazo_vigencia|date:"d-m-Y"}}</span></p>
-        {% if servicio.getEstado == "Finalizado" %}
-            <p class="detalles"><i class="bi bi-calendar2-x"></i> Fecha de finalización: <span style="font-family: 'InterRegular', serif;">{{servicio.fecha_finaliza}}</span></p>
-        {% endif %}
-        {% if servicio.getEstado == "Cancelado" %}
-         <p class="detalles"><i class="bi bi-calendar-x"></i> Fecha de cancelación: <span style="font-family: 'InterRegular', serif;">{{servicio.fecha_cancelada}}</span></p>
-        {% endif %}
-        <p class="detalles"><i class="bi bi-person-walking"></i> Cantidad de empleados: <span style="font-family: 'InterRegular', serif;">{{servicio.cant_empleados}}</span></p>
-        <div class="divisor"></div>
-        <div class="contenedor-importe-ver-detalle">
-            <a href="{% url 'detalleServicio' servicio.pk %}" class="ancor-ver-servicio-detalle"><i class="bi bi-eye"></i> Ver completo</a>
-            <p class="detalles">Total: {{servicio.getImporteTotalFormateado}}</p>
+
+<div class="animate-fade-in">
+    <!-- Header del detalle -->
+    <div class="d-flex align-items-center mb-4">
+        <div class="me-3">
+            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                 style="width: 48px; height: 48px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </div>
         </div>
-        <div class="container-ancors">
-            {% if servicio.getEstado == "Presupuestado" %}
-            <a href="{% url 'contratarServicio' servicio.pk %}" class="ancors-detalle"><i class="bi bi-check-lg"></i> Contratar</a>
-            {% endif %}
-            {% if servicio.getEstado != "Vencido" %}
-                <a href="#" class="ancors-detalle"><i class="bi bi-ban"></i> Cancelar</a>
-            {% endif %}
-            <a href="#" class="ancors-detalle"><i class="bi bi-printer"></i> Imprimir</a>
+        <div>
+            <h4 class="mb-1">Servicio #{{ servicio.pk }}</h4>
+            <p class="text-muted mb-0">{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</p>
         </div>
     </div>
+
+    <!-- Información básica -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Información General
+            </h6>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Localidad</small>
+                            <span class="fw-medium">{{ servicio.getLocalidad }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Dirección</small>
+                            <span class="fw-medium">{{ servicio.direccion }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Metros cuadrados</small>
+                            <span class="fw-medium">{{ servicio.metros2 }}m²</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Tipo de servicio</small>
+                            <span class="fw-medium">{{ servicio.getTipo }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Estado</small>
+                            {% if servicio.getEstado == "Presupuestado" %}
+                                <span class="badge bg-warning">{{ servicio.getEstado }}</span>
+                            {% elif servicio.getEstado == "Contratado" %}
+                                <span class="badge bg-info">{{ servicio.getEstado }}</span>
+                            {% elif servicio.getEstado == "En Proceso" %}
+                                <span class="badge bg-primary">{{ servicio.getEstado }}</span>
+                            {% elif servicio.getEstado == "Finalizado" %}
+                                <span class="badge bg-success">{{ servicio.getEstado }}</span>
+                            {% elif servicio.getEstado == "Cancelado" %}
+                                <span class="badge bg-danger">{{ servicio.getEstado }}</span>
+                            {% elif servicio.getEstado == "Vencido" %}
+                                <span class="badge bg-secondary">{{ servicio.getEstado }}</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">{{ servicio.getEstado }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Cantidad de empleados</small>
+                            <span class="fw-medium">{{ servicio.cant_empleados }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fechas -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Fechas Importantes
+            </h6>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-success">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Fecha de emisión</small>
+                            <span class="fw-medium">{{ servicio.fecha_emision|date:"d-m-Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-primary">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Fecha de inicio</small>
+                            <span class="fw-medium">{{ servicio.fecha_inicio|date:"d-m-Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-warning">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Plazo de vigencia</small>
+                            <span class="fw-medium">{{ servicio.plazo_vigencia|date:"d-m-Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if servicio.getEstado == "Finalizado" %}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-success">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Fecha de finalización</small>
+                            <span class="fw-medium">{{ servicio.fecha_finaliza }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if servicio.getEstado == "Cancelado" %}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-danger">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Fecha de cancelación</small>
+                            <span class="fw-medium">{{ servicio.fecha_cancelada }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Total -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-success">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    <span class="fw-bold">Total del Servicio</span>
+                </div>
+                <span class="h5 mb-0 text-success fw-bold">{{ servicio.getImporteTotalFormateado }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="d-flex gap-2 justify-content-end flex-wrap">
+        <a href="{% url 'detalleServicio' servicio.pk %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            Ver completo
+        </a>
+        
+        {% if servicio.getEstado == "Presupuestado" %}
+        <a href="{% url 'contratarServicio' servicio.pk %}" class="btn btn-success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Contratar
+        </a>
+        {% endif %}
+        
+        {% if servicio.getEstado != "Vencido" %}
+        <button class="btn btn-danger" onclick="confirmarCancelacion({{ servicio.pk }}, '{{ servicio.pk }}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+
+            Cancelar
+        </button>
+        {% endif %}
+        
+        <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}"  class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Imprimir
+        </a>
+    </div>
 </div>
-{% endblock %}
+
+<script>
+function confirmarCancelacion(id, numero) {
+    if (confirm(`¿Está seguro que desea cancelar el servicio #${numero}?`)) {
+        console.log('Cancelar servicio:', id);
+        // Aquí iría la lógica de cancelación
+        // Ejemplo: window.location.href = `/cancelarServicio/${id}/`;
+    }
+}
+</script>

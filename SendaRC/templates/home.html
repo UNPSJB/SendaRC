@@ -1,22 +1,34 @@
 {% extends 'layouts/baseInicio.html' %}
 {% load static %}
 
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/home.css' %}" rel="stylesheet" />
+{% block extracss %}
+{{ block.super }}
+<!-- Chart.js CSS -->
+<style>
+    .chart-container canvas {
+        max-height: 300px !important;
+    }
+</style>
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
 <style>
     .map-container {
         height: 350px;
-        border-radius: 12px;
+        border-radius: var(--radius);
         overflow: hidden;
         position: relative;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
     }
 
     .map-container-modal {
         height: 500px;
-        border-radius: 12px;
+        border-radius: var(--radius);
         overflow: hidden;
         position: relative;
     }
@@ -25,22 +37,25 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        background: rgba(30, 30, 46, 0.95);
-        color: #fff;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: hsl(var(--foreground));
         padding: 12px;
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         font-size: 12px;
         z-index: 1000;
         max-width: 200px;
+        border: 1px solid var(--glass-border);
     }
 
     .map-legend {
-        margin-top: 16px;
+        margin-top: 56px;
         padding: 12px;
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: 8px;
+        background: hsl(var(--muted) / 0.5);
+        border-radius: var(--radius-sm);
         font-size: 12px;
-        color: #a3a3a3;
+        color: hsl(var(--muted-foreground));
     }
 
     .legend-item {
@@ -48,7 +63,7 @@
         align-items: center;
         gap: 8px;
         margin-bottom: 4px;
-        margin-top: 38px;
+        margin-top: 8px;
     }
 
     .legend-color {
@@ -61,50 +76,26 @@
         position: absolute;
         top: 10px;
         left: 10px;
-        background: rgba(30, 30, 46, 0.95);
-        color: white;
-        border: none;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: hsl(var(--foreground));
+        border: 1px solid var(--glass-border);
         padding: 8px 12px;
-        border-radius: 6px;
+        border-radius: var(--radius-sm);
         font-size: 12px;
         z-index: 1000;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: var(--transition);
     }
 
     .expand-btn:hover {
-        background: rgba(30, 30, 46, 1);
+        background: hsl(var(--accent));
+        color: hsl(var(--accent-foreground));
         transform: scale(1.05);
     }
 
-    .chart-card {
-        background: #0c0c0c;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(26, 26, 26, 0.1);
-        margin-bottom: 20px;
-    }
-
-    .chart-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .chart-header h3 {
-        margin: 0;
-        color: #ffffff;
-        font-size: 18px;
-        font-weight: 600;
-    }
-
-    .chart-controls span {
-        color: #e6e6e6;
-        font-size: 12px;
-    }
-
-    /* Estilos para el modal */
+    /* Modal personalizado */
     .modal-xl-custom {
         max-width: 95%;
         width: 95%;
@@ -119,19 +110,24 @@
     }
 
     .filter-control {
-        background: white;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border-radius: var(--radius-sm);
+        box-shadow: var(--glass-shadow);
         margin: 5px;
+        border: 1px solid var(--glass-border);
     }
 
     .filter-control select {
         width: 100%;
         margin-top: 5px;
         padding: 5px;
-        border: 1px solid #ddd;
-        border-radius: 3px;
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-sm);
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
     }
 </style>
 {% endblock %}
@@ -139,16 +135,11 @@
 {% block seccion-main %}
 <div class="dashboard-container">
     <!-- Header del Dashboard -->
-    <header class="dashboard-header">
+    <header class="dashboard-header animate-fade-in">
         <div class="header-content">
             <div class="welcome-section">
                 <div class="user-greeting">
-                    <div class="user-avatar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
+                    <div class="user-avatar" style="background-image: url('{% static 'images/profile-picture.jpg' %}'); background-size: cover; background-position: center; ">
                     </div>
                     <div class="greeting-text">
                         <h1>Bienvenido, {{ user.username }}</h1>
@@ -169,7 +160,7 @@
     </header>
 
     <!-- Métricas Principales -->
-    <section class="metrics-section">
+    <section class="metrics-section animate-fade-in">
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-icon success">
@@ -180,7 +171,7 @@
                 </div>
                 <div class="metric-content">
                     <h3>Ingresos del Mes</h3>
-                    <p class="metric-value">${{ ingresos_mes|floatformat:0 }}</p>
+                    <p class="metric-value">{{ ingresos_mes_formateado }}</p>
                     <span class="metric-change {% if cambio_ingresos >= 0 %}positive{% else %}negative{% endif %}">
                         {% if cambio_ingresos >= 0 %}+{% endif %}{{ cambio_ingresos }}%
                     </span>
@@ -242,14 +233,14 @@
     </section>
 
     <!-- Gráficos y Accesos Rápidos -->
-    <div class="dashboard-grid">
+    <div class="dashboard-grid animate-fade-in">
         <!-- Gráficos -->
         <section class="charts-section">
             <div class="chart-card">
                 <div class="chart-header">
                     <h3>Ingresos Mensuales</h3>
                     <div class="chart-controls">
-                        <select class="chart-period">
+                        <select class="form-select form-select-sm chart-period">
                             <option value="6">Últimos 6 meses</option>
                             <option value="12">Último año</option>
                         </select>
@@ -278,12 +269,12 @@
                 </div>
             </div>
 
-            <!-- Nuevo: Mapa de Servicios por Ubicación -->
+            <!-- Mapa de Servicios por Ubicación -->
             <div class="chart-card">
                 <div class="chart-header">
                     <h3>Ubicación de Servicios - Chubut</h3>
                     <div class="chart-controls">
-                        <span style="font-size: 12px; color: #a3a3a3;">Ubicación exacta de cada servicio</span>
+                        <span style="font-size: 12px; color: hsl(var(--muted-foreground));">Ubicación exacta de cada servicio</span>
                     </div>
                 </div>
                 <div class="chart-container">
@@ -292,7 +283,7 @@
                         <strong>Total de ubicaciones:</strong> <span id="totalCiudades">0</span><br>
                         <strong>Total de servicios:</strong> <span id="totalServicios">0</span>
                         <div id="estadisticasEstados"
-                            style="margin-top: 10px; font-size: 12px; border-top: 1px solid #e5e7eb; padding-top: 8px;">
+                            style="margin-top: 10px; font-size: 12px; border-top: 1px solid hsl(var(--border)); padding-top: 8px;">
                         </div>
                     </div>
                 </div>
@@ -301,10 +292,10 @@
                         <div class="legend-color" style="background-color: #3b82f6;"></div>
                         <span>📋 Presupuestado</span>
                     </div>
-                    <div class="legend-item">
+                    <!--<div class="legend-item">
                         <div class="legend-color" style="background-color: #ef4444;"></div>
                         <span>⏰ Vencido</span>
-                    </div>
+                    </div>-->
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: #f59e0b;"></div>
                         <span>📝 Contratado</span>
@@ -312,10 +303,6 @@
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: #10b981;"></div>
                         <span>🔧 En Curso</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #f97316;"></div>
-                        <span>⏸️ Suspendido</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: #6b7280;"></div>
@@ -470,13 +457,13 @@
                 datasets: [{
                     label: 'Ingresos',
                     data: ingresosData,
-                    borderColor: '#1DA1F2',
-                    backgroundColor: 'rgba(29, 161, 242, 0.1)',
+                    borderColor: 'hsl(217.2, 91.2%, 59.8%)',
+                    backgroundColor: 'hsla(217.2, 91.2%, 59.8%, 0.1)',
                     borderWidth: 3,
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: '#1DA1F2',
-                    pointBorderColor: '#ffffff',
+                    pointBackgroundColor: 'hsl(217.2, 91.2%, 59.8%)',
+                    pointBorderColor: 'hsl(var(--background))',
                     pointBorderWidth: 2,
                     pointRadius: 6
                 }]
@@ -493,10 +480,10 @@
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
+                            color: 'hsl(var(--border))'
                         },
                         ticks: {
-                            color: '#a3a3a3',
+                            color: 'hsl(var(--muted-foreground))',
                             callback: function (value) {
                                 return '$' + value.toLocaleString();
                             }
@@ -504,10 +491,10 @@
                     },
                     x: {
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
+                            color: 'hsl(var(--border))'
                         },
                         ticks: {
-                            color: '#a3a3a3'
+                            color: 'hsl(var(--muted-foreground))'
                         }
                     }
                 }
@@ -523,12 +510,12 @@
                 datasets: [{
                     data: serviciosPorTipo.map(item => item.cantidad),
                     backgroundColor: [
-                        '#1DA1F2',
-                        '#22c55e',
-                        '#f59e0b',
-                        '#ef4444',
-                        '#8b5cf6',
-                        '#06b6d4'
+                        'hsl(217.2, 91.2%, 59.8%)',
+                        'hsl(142.1, 76.2%, 36.3%)',
+                        'hsl(47.9, 95.8%, 53.1%)',
+                        'hsl(0, 84.2%, 60.2%)',
+                        'hsl(262.1, 83.3%, 57.8%)',
+                        'hsl(173, 58%, 39%)'
                     ],
                     borderWidth: 0
                 }]
@@ -540,7 +527,7 @@
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#a3a3a3',
+                            color: 'hsl(var(--muted-foreground))',
                             padding: 20,
                             usePointStyle: true
                         }
@@ -558,8 +545,8 @@
                 datasets: [{
                     data: facturasEstado.map(item => item.cantidad),
                     backgroundColor: [
-                        '#22c55e',  // Verde para facturas pagadas
-                        '#ef4444'   // Rojo para facturas pendientes
+                        'hsl(142.1, 76.2%, 36.3%)',  // Verde para facturas pagadas
+                        'hsl(0, 84.2%, 60.2%)'       // Rojo para facturas pendientes
                     ],
                     borderWidth: 0
                 }]
@@ -571,7 +558,7 @@
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#a3a3a3',
+                            color: 'hsl(var(--muted-foreground))',
                             padding: 20,
                             usePointStyle: true
                         }
@@ -592,13 +579,17 @@
         });
 
         // Configurar mapa de servicios por ubicación
-        // Configurar mapa de servicios con ubicaciones exactas
         if (serviciosUbicacionExacta && serviciosUbicacionExacta.length > 0) {
             // Inicializar el mapa centrado en Chubut
             const map = L.map('servicesMap').setView([-43.5, -67.5], 7);
 
-            // Agregar capa de mapa (tema claro)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            // Agregar capa de mapa (adaptable al tema)
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const tileLayer = currentTheme === 'dark' 
+                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
+            L.tileLayer(tileLayer, {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
                 subdomains: 'abcd',
                 maxZoom: 20
@@ -622,12 +613,12 @@
                 width: 25px;
                 height: 25px;
                 border-radius: 50%;
-                border: 2px solid white;
+                border: 2px solid hsl(var(--background));
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-size: 12px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                box-shadow: var(--glass-shadow);
             ">${iconos[estado] || '📍'}</div>`,
                     className: 'custom-div-icon',
                     iconSize: [25, 25],
@@ -660,17 +651,17 @@
                     const marker = L.marker([lat, lng], {
                         icon: L.divIcon({
                             html: `<div style="
-                        background-color: #4f46e5;
-                        color: white;
+                        background-color: hsl(var(--accent));
+                        color: hsl(var(--accent-foreground));
                         width: 30px;
                         height: 30px;
                         border-radius: 50%;
-                        border: 2px solid white;
+                        border: 2px solid hsl(var(--background));
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         font-weight: bold;
-                        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                        box-shadow: var(--glass-shadow);
                     ">${servicios.length}</div>`,
                             className: 'custom-cluster-icon',
                             iconSize: [30, 30],
@@ -680,27 +671,27 @@
 
                     // Crear contenido del popup para múltiples servicios
                     let popupContent = `
-                <div style="color: #1e1e2e; font-family: Arial, sans-serif; max-width: 350px;">
-                    <h4 style="margin: 0 0 8px 0; color: #1e1e2e;">${servicios[0].localidad}</h4>
-                    <p style="margin: 0 0 8px 0; font-size: 12px; color: #666;">📍 ${servicios[0].direccion}</p>
+                <div style="color: hsl(var(--foreground)); font-family: Arial, sans-serif; max-width: 350px;">
+                    <h4 style="margin: 0 0 8px 0; color: hsl(var(--foreground));">${servicios[0].localidad}</h4>
+                    <p style="margin: 0 0 8px 0; font-size: 12px; color: hsl(var(--muted-foreground));">📍 ${servicios[0].direccion}</p>
                     <p style="margin: 0 0 8px 0;"><strong>Servicios en esta ubicación:</strong> ${servicios.length}</p>
                     <div style="max-height: 300px; overflow-y: auto;">
             `;
 
                     servicios.forEach(function (servicio) {
                         popupContent += `
-                    <div style="margin-bottom: 8px; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 12px; border-left: 3px solid ${servicio.color};">
+                    <div style="margin-bottom: 8px; padding: 8px; background: hsl(var(--muted) / 0.5); border-radius: var(--radius-sm); font-size: 12px; border-left: 3px solid ${servicio.color};">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <div style="font-weight: bold; color: #333;">${servicio.cliente}</div>
+                            <div style="font-weight: bold; color: hsl(var(--foreground));">${servicio.cliente}</div>
                             <div style="background: ${servicio.color}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px;">${servicio.estado}</div>
                         </div>
-                        <div style="color: #666; margin: 2px 0;">🔧 ${servicio.tipo_servicio}</div>
-                        <div style="color: #666; margin: 2px 0;">📅 Inicio: ${servicio.fecha_inicio}</div>
-                        ${servicio.fecha_fin !== 'Sin fecha fin' ? `<div style="color: #666; margin: 2px 0;">🏁 Fin: ${servicio.fecha_fin}</div>` : ''}
-                        <div style="color: #666; margin: 2px 0;">👷 ${servicio.empleados}</div>
-                        <div style="color: #666; margin: 2px 0;">💰 ${servicio.importe}</div>
-                        <div style="color: #666; margin: 2px 0;">📐 ${servicio.metros2} m²</div>
-                        ${servicio.observaciones ? `<div style="color: #666; margin: 2px 0; font-style: italic;">📝 ${servicio.observaciones}</div>` : ''}
+                        <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">🔧 ${servicio.tipo_servicio}</div>
+                        <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">📅 Inicio: ${servicio.fecha_inicio}</div>
+                        ${servicio.fecha_fin !== 'Sin fecha fin' ? `<div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">🏁 Fin: ${servicio.fecha_fin}</div>` : ''}
+                        <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">👷 ${servicio.empleados}</div>
+                        <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">💰 ${servicio.importe}</div>
+                        <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">📐 ${servicio.metros2} m²</div>
+                        ${servicio.observaciones ? `<div style="color: hsl(var(--muted-foreground)); margin: 2px 0; font-style: italic;">📝 ${servicio.observaciones}</div>` : ''}
                     </div>
                 `;
                     });
@@ -717,33 +708,33 @@
 
                     // Crear contenido del popup para servicio único
                     let popupContent = `
-                <div style="color: #1e1e2e; font-family: Arial, sans-serif; max-width: 300px;">
+                <div style="color: hsl(var(--foreground)); font-family: Arial, sans-serif; max-width: 300px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <h4 style="margin: 0; color: #1e1e2e;">${servicio.cliente}</h4>
+                        <h4 style="margin: 0; color: hsl(var(--foreground));">${servicio.cliente}</h4>
                         <div style="background: ${servicio.color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">${servicio.estado}</div>
                     </div>
                     
-                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
-                        <div style="color: #666; margin: 3px 0; font-size: 13px;">📍 <strong>${servicio.localidad}</strong></div>
-                        <div style="color: #666; margin: 3px 0; font-size: 12px;">${servicio.direccion}</div>
+                    <div style="background: hsl(var(--muted) / 0.5); padding: 10px; border-radius: var(--radius-sm); margin-bottom: 8px;">
+                        <div style="color: hsl(var(--muted-foreground)); margin: 3px 0; font-size: 13px;">📍 <strong>${servicio.localidad}</strong></div>
+                        <div style="color: hsl(var(--muted-foreground)); margin: 3px 0; font-size: 12px;">${servicio.direccion}</div>
                     </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
                         <div>
-                            <div style="color: #666; margin: 2px 0;">🔧 ${servicio.tipo_servicio}</div>
-                            <div style="color: #666; margin: 2px 0;">📅 ${servicio.fecha_inicio}</div>
-                            ${servicio.fecha_fin !== 'Sin fecha fin' ? `<div style="color: #666; margin: 2px 0;">🏁 ${servicio.fecha_fin}</div>` : ''}
+                            <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">🔧 ${servicio.tipo_servicio}</div>
+                            <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">📅 ${servicio.fecha_inicio}</div>
+                            ${servicio.fecha_fin !== 'Sin fecha fin' ? `<div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">🏁 ${servicio.fecha_fin}</div>` : ''}
                         </div>
                         <div>
-                            <div style="color: #666; margin: 2px 0;">💰 ${servicio.importe}</div>
-                            <div style="color: #666; margin: 2px 0;">📐 ${servicio.metros2} m²</div>
-                            <div style="color: #666; margin: 2px 0;">🏷️ ${servicio.tipo}</div>
+                            <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">💰 ${servicio.importe}</div>
+                            <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">📐 ${servicio.metros2} m²</div>
+                            <div style="color: hsl(var(--muted-foreground)); margin: 2px 0;">🏷️ ${servicio.tipo}</div>
                         </div>
                     </div>
                     
-                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
-                        <div style="color: #666; margin: 2px 0; font-size: 12px;">👷 <strong>Empleados:</strong> ${servicio.empleados}</div>
-                        ${servicio.observaciones ? `<div style="color: #666; margin: 2px 0; font-size: 11px; font-style: italic;">📝 ${servicio.observaciones}</div>` : ''}
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid hsl(var(--border));">
+                        <div style="color: hsl(var(--muted-foreground)); margin: 2px 0; font-size: 12px;">👷 <strong>Empleados:</strong> ${servicio.empleados}</div>
+                        ${servicio.observaciones ? `<div style="color: hsl(var(--muted-foreground)); margin: 2px 0; font-size: 11px; font-style: italic;">📝 ${servicio.observaciones}</div>` : ''}
                     </div>
                 </div>
             `;
@@ -785,36 +776,9 @@
                 }
             }
 
-            // Agregar controles de filtro por estado (opcional)
-            const filterControl = L.control({ position: 'topright' });
-            filterControl.onAdd = function (map) {
-                const div = L.DomUtil.create('div', 'filter-control');
-                div.innerHTML = `
-            <div style="background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-                <strong>Filtrar por estado:</strong><br>
-                <select id="estadoFilter" style="width: 100%; margin-top: 5px;">
-                    <option value="">Todos los estados</option>
-                    <option value="1">Presupuestado</option>
-                    <option value="2">Vencido</option>
-                    <option value="3">Contratado</option>
-                    <option value="4">En Curso</option>
-                    <option value="5">Suspendido</option>
-                    <option value="6">Finalizado</option>
-                    <option value="7">Cancelado</option>
-                </select>
-            </div>
-        `;
-
-                // Prevenir que los clics en el control afecten el mapa
-                L.DomEvent.disableClickPropagation(div);
-
-                return div;
-            };
-            filterControl.addTo(map);
-
         } else {
             // Mostrar mensaje si no hay datos
-            $('#servicesMap').html('<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #a3a3a3;"><p>No hay servicios con ubicación disponibles</p></div>');
+            $('#servicesMap').html('<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: hsl(var(--muted-foreground));"><p>No hay servicios con ubicación disponibles</p></div>');
         }
 
         // Animaciones de entrada

@@ -1,33 +1,77 @@
 {% for servicio in servicios %}
-<tr class="fila-tabla">
-    <td scope="row">{{ servicio.pk }}</td>
-    <td scope="row">{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
-    <td scope="row">{{ servicio.metros2 }}m²</td>
-    <td scope="row">{{ servicio.getTipo }}</td>
-    <td scope="row">{{ servicio.getEstado }}</td>
-    {% if servicio.fecha_inicio %}
-    <td scope="row">{{ servicio.fecha_inicio|date:"d-m-Y" }}</td>
+<tr>
+  <td>{{ servicio.pk }}</td>
+  <td>{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
+  <td>{{ servicio.metros2 }} m²</td>
+  <td>
+    {% if servicio.getTipo == 'Determinado' %} 
+    <span class="badge badge-determinado">
+      <span class="badge-with-icon">Determinado</span>
+    </span></td>
+    {% elif servicio.getTipo == 'Eventual' %}
+    <span class="badge badge-eventual">
+      <span class="badge-with-icon">Eventual</span>
+    </span></td>
+    {% endif %}
+  <td>
+    {% if servicio.getEstado == 'Presupuestado' %}
+    <span class="badge badge-presupuestado">
+      <span class="badge-with-icon">Presupuestado</span>
+    </span>
+    {% elif servicio.getEstado == 'En Curso' %}
+    <span class="badge badge-en-curso">
+      <span class="badge-with-icon">En Curso</span>
+    </span>
+    {% elif servicio.getEstado == 'Contratado' %}
+    <span class="badge badge-contratado">
+      <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+    </span>
+    {% elif servicio.getEstado == 'Finalizado' %}
+    <span class="badge badge-finalizado">
+      <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+    </span>
+    {% elif servicio.getEstado == 'Cancelado' %}
+    <span class="badge badge-cancelado">
+      <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+    </span>
     {% else %}
-    <td scope="row"><i class="bi bi-dash-lg"></i></td>
+    <span class="badge badge-pendiente">
+      <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+    </span>
+    {% endif %}
+  </td>
+  <td>{{ servicio.fecha_inicio|date:"d-m-Y" }}</td>
+  <td>{{ servicio.fecha_finaliza|date:"d-m-Y" }}</td>
+  <td>{{ servicio.getImporteTotalFormateado }}</td>
+  <td>
+    <button class="btn btn-sm btn-outline-primary me-1 btn-detalle" style="margin-bottom: 4px;"
+      data-url="{% url 'canvasServicio' servicio.pk %}" data-bs-toggle="tooltip" data-bs-placement="top"
+      title="Ver detalles del servicio">
+      <i class="bi bi-eye"></i>
+    </button>
+
+    {% if servicio.getEstado == 'Presupuestado' %}
+    <a href="{% url 'modificarPresupuesto' servicio.pk %}" style="margin-bottom: 4px;"
+      class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+      title="Modificar presupuesto">
+      <i class="bi bi-pencil-square"></i>
+    </a>
+
+    <a href="{% url 'contratarServicio' servicio.pk %}" style="margin-bottom: 4px;"
+      class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+      title="Contratar servicio">
+      <i class="bi bi-file-earmark-check-fill"></i>
+    </a>
     {% endif %}
 
-    {% if servicio.fecha_finaliza %}
-    <td scope="row">{{ servicio.fecha_finaliza|date:"d-m-Y" }}</td>
-    {% else %}
-    <td scope="row"><i class="bi bi-dash-lg"></i></td>
-    {% endif %}
-    <td scope="row">{{ servicio.getImporteTotalFormateado }}</td>
-    <td scope="row">
-        <button href="{% url 'canvasServicio' servicio.pk %}" class="opcion" type="button"
-            data-url="/servicio/gestionServicios/{{servicio.pk}}" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-        <a href="{% url 'modificarPresupuesto' servicio.pk %}" class="opcion"><i
-                class="bi bi-pencil-square"></i></i></a>
-        <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-        <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}" class="opcion"><i
-                class="bi bi-printer"></i></i></i></a>
-    </td>
-
-    </td>
+    <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}" style="margin-bottom: 4px;"
+      class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir PDF">
+      <i class="bi bi-printer"></i>
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="9" class="text-center text-muted">No hay resultados</td>
 </tr>
 {% endfor %}

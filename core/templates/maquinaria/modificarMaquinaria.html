@@ -1,14 +1,39 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-    <link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
-{% endblock %}
+{% block titleNavegador %}SendaRC - Modificar Maquinaria{% endblock %}
 {% block title %}
-<h1 class="titulo">Maquinaria <span class="operacion">> Modificar Maquinaria</span></h1>
+<h1>Maquinaria</h1>
+<p>Modificar datos de la maquinaria</p>
 {% endblock %}
+
 {% block formulario %}
-    <div class="container container-form">
-        {% crispy form %}
-    </div> 
+<div class="animate-fade-in">
+    {% crispy form %}
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+$(document).ready(function () {
+    $('form').on('submit', function (e) {
+        let isValid = true;
+        const requiredFields = $(this).find('input[required], select[required], textarea[required]');
+        requiredFields.each(function () {
+            if (!$(this).val()) {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+        if (!isValid) {
+            e.preventDefault();
+            $('.is-invalid').first().focus();
+        }
+    });
+    $('input, select, textarea').on('input change', function () {
+        $(this).removeClass('is-invalid');
+    });
+});
+</script>
 {% endblock %}

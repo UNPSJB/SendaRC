@@ -1,428 +1,461 @@
-{% extends 'layouts/baseInicio.html' %}
+{% extends 'layouts/baseForm.html' %}
 {% load static %}
-
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/facturas.css' %}" rel="stylesheet" />
-<style>
-  /* Estilos adicionales para la lista de facturas próximas a vencer */
-  .upcoming-invoices {
-    margin-top: 40px;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-dark);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .upcoming-invoices-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border-dark);
-  }
-
-  .upcoming-invoices-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-light);
-    margin: 0;
-  }
-
-  .warning-icon {
-    color: #f59e0b;
-  }
-
-  .invoices-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .invoice-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: var(--bg-darker);
-    border: 1px solid var(--border-dark);
-    border-radius: var(--radius-md);
-    transition: var(--transition);
-  }
-
-  .invoice-item:hover {
-    background-color: var(--bg-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-
-  .invoice-main-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-  }
-
-  .invoice-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 4px;
-  }
-
-  .invoice-client {
-    font-weight: 600;
-    color: var(--text-light);
-    font-size: 1rem;
-  }
-
-  .invoice-number {
-    font-size: 0.75rem;
-    color: var(--text-subtle);
-    background-color: rgba(29, 161, 242, 0.1);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    border: 1px solid rgba(29, 161, 242, 0.3);
-  }
-
-  .invoice-service-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-
-  .service-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    color: var(--text-subtle);
-    background-color: rgba(173, 250, 29, 0.1);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    border: 1px solid rgba(173, 250, 29, 0.3);
-  }
-
-  .invoice-details-grid {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    gap: 24px;
-    align-items: center;
-  }
-
-  .invoice-amount {
-    text-align: center;
-  }
-
-  .amount-label {
-    font-size: 0.75rem;
-    color: var(--text-subtle);
-    margin-bottom: 4px;
-  }
-
-  .amount-value {
-    font-weight: 700;
-    color: var(--text-light);
-    font-size: 1.125rem;
-  }
-
-  .invoice-due {
-    text-align: center;
-  }
-
-  .due-label {
-    font-size: 0.75rem;
-    color: var(--text-subtle);
-    margin-bottom: 4px;
-  }
-
-  .due-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-  }
-
-  .due-urgent {
-    background-color: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-  }
-
-  .due-warning {
-    background-color: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
-    border: 1px solid rgba(245, 158, 11, 0.3);
-  }
-
-  .due-normal {
-    background-color: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.3);
-  }
-
-  .invoice-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 120px;
-  }
-
-  .action-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: var(--transition);
-    border: 1px solid;
-  }
-
-  .action-btn.view {
-    background-color: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-    border-color: rgba(59, 130, 246, 0.3);
-  }
-
-  .action-btn.view:hover {
-    background-color: rgba(59, 130, 246, 0.2);
-    transform: translateY(-1px);
-    text-decoration: none;
-    color: #3b82f6;
-  }
-
-  .action-btn.pay {
-    background-color: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-    border-color: rgba(34, 197, 94, 0.3);
-  }
-
-  .action-btn.pay:hover {
-    background-color: rgba(34, 197, 94, 0.2);
-    transform: translateY(-1px);
-    text-decoration: none;
-    color: #22c55e;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-subtle);
-  }
-
-  .empty-state svg {
-    margin-bottom: 16px;
-    opacity: 0.5;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .invoice-item {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
-    }
-
-    .invoice-details-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .invoice-actions {
-      flex-direction: row;
-      min-width: auto;
-    }
-
-    .action-btn {
-      flex: 1;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .invoice-details-grid {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
-
-    .invoice-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .invoice-service-info {
-      justify-content: flex-start;
-    }
-  }
-</style>
-{% endblock %}
-
-{% block seccion-main %}
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">Gestión de Facturas</h1>
-        <p class="dashboard-subtitle">Administre todas las operaciones relacionadas con facturación</p>
-    </div>
-    
-    <div class="cards-grid">
-        <!-- Cobrar Facturas 
-        <a href="{% url 'serviciosCobrar' %}" class="card-link">
-            <div class="action-card collect-card">
-                <div class="card-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                        <line x1="1" y1="10" x2="23" y2="10"></line>
-                    </svg>
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">Cobrar Facturas</h3>
-                    <p class="card-description">Procese pagos y gestione el cobro de facturas pendientes</p>
-                </div>
-                <div class="card-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </div>
-            </div>
-        </a>-->
-
-        <!-- Ver Facturas -->
-        <a href="{% url 'verFacturas' %}" class="card-link">
-            <div class="action-card view-card">
-                <div class="card-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">Ver Facturas</h3>
-                    <p class="card-description">Consulte y revise todas las facturas del sistema</p>
-                </div>
-                <div class="card-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <!-- Facturas próximas a vencer -->
-    <div class="upcoming-invoices">
-        <div class="upcoming-invoices-header">
-            <svg class="warning-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            <h2 class="upcoming-invoices-title">Facturas Próximas a Vencer</h2>
-        </div>
-        
-        <div class="invoices-list">
-            {% if facturas_proximas_vencer %}
-                {% for factura in facturas_proximas_vencer %}
-                <div class="invoice-item">
-                    <div class="invoice-main-info">
-                        <div class="invoice-header">
-                            <div class="invoice-client">{{ factura.cliente.nombre|add:" " }}{{ factura.cliente.apellido }}</div>
-                            <div class="invoice-number">Factura #{{ factura.id }}</div>
-                        </div>
-                        
-                        <div class="invoice-service-info">
-                            <div class="service-badge">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                                </svg>
-                                Fecha emisión: {{ factura.fechaEmision|date:"d/m/Y" }} - {{ factura.getTipo }}
-                            </div>
-                            <div class="service-badge">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                                    <polyline points="2 17 12 22 22 17"></polyline>
-                                    <line x1="12" y1="12" x2="12" y2="22"></line>
-                                </svg>
-                                Servicio #{{ factura.servicio.pk }}</div>
-                        </div>
-                    </div>
-
-                    <div class="invoice-details-grid">
-                        <div class="invoice-amount">
-                            <div class="amount-label">Importe</div>
-                            <div class="amount-value">{{ factura.getImporteFormateado }}</div>
-                        </div>
-
-                        <div class="invoice-due">
-                            <div class="due-label">Vencimiento</div>
-                            <div class="due-badge {{ factura.due_class }}">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                {{ factura.due_text }}
-                            </div>
-                        </div>
-
-                        <div class="invoice-actions">
-                            <a href="{% url 'detalleFactura' factura.pk %}" class="action-btn view">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                                Ver Detalle
-                            </a>
-                            {% if not factura.fechaPago %}
-                            <a href="{% url 'formaPago' factura.pk %}" class="action-btn pay">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                    <line x1="1" y1="10" x2="23" y2="10"></line>
-                                </svg>
-                                Pagar Ahora
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <p>No hay facturas próximas a vencer</p>
-                </div>
-            {% endif %}
+{% block titleNavegador %}SendaRC - Gestión de Facturas{% endblock %}
+{% block title %}
+<div class="seccion-cabecera animate-fade-in">
+    <div class="header-content">
+        <div class="header-left">
+            <h1>Gestión de Facturas</h1>
+            <p>Administre todas las operaciones relacionadas con facturación</p>
         </div>
     </div>
 </div>
 {% endblock %}
 
-{% block extrajs %}
+{% block formulario %}
+<div class="facturas-layout">
+    <!-- Cards de acciones -->
+    <div class="actions-grid">
+        <a href="{% url 'verFacturas' %}" class="action-card">
+
+            <div class="action-content">
+                <div class="action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </div>
+                <div class="action-text">
+                    <h3 class="action-title">Ver Facturas</h3>
+                    <p class="action-description">Consulte y revise todas las facturas del sistema</p>
+                </div>
+                <div class="action-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+        </a>
+    </div>
+
+    <!-- Facturas próximas a vencer -->
+    <div class="upcoming-section">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header-custom">
+                    <div class="section-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" class="warning-icon">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                            </path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <h2 class="section-title">Facturas Próximas a Vencer</h2>
+                    </div>
+                </div>
+
+                <div class="invoices-list">
+                    {% if facturas_proximas_vencer %}
+                    {% for factura in facturas_proximas_vencer %}
+                    <div class="invoice-item">
+                        <div class="invoice-main-info">
+                            <div class="invoice-header">
+                                <div class="invoice-client">{{ factura.cliente.nombre|add:" " }}{{factura.cliente.apellido }}</div>
+                                <div class="invoice-number">Factura #{{ factura.id }}</div>
+                            </div>
+
+                            <div class="invoice-service-info">
+                                <div class="service-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                        </path>
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                    </svg>
+                                    Fecha emisión: {{ factura.fechaEmision|date:"d/m/Y" }} - {{ factura.getTipo }}
+                                </div>
+                                <div class="service-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                        <polyline points="2 17 12 22 22 17"></polyline>
+                                        <line x1="12" y1="12" x2="12" y2="22"></line>
+                                    </svg>
+                                    Servicio #{{ factura.servicio.pk }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="invoice-details-grid">
+                            <div class="invoice-amount">
+                                <div class="amount-label">Importe</div>
+                                <div class="amount-value">{{ factura.getImporteFormateado }}</div>
+                            </div>
+
+                            <div class="invoice-due">
+                                <div class="due-label">Vencimiento</div>
+                                <div class="due-badge {{ factura.due_class }}">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    {{ factura.due_text }}
+                                </div>
+                            </div>
+
+                            <div class="invoice-actions">
+                                <a href="{% url 'detalleFactura' factura.pk %}" class="btn btn-outline-primary btn-sm">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Ver Detalle
+                                </a>
+                                {% if not factura.fechaPago %}
+                                <a href="{% url 'formaPago' factura.pk %}" class="btn btn-primary btn-sm">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                    Pagar Ahora
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <p>No hay facturas próximas a vencer</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos específicos para facturas que complementan base-styles.css */
+
+    .facturas-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    /* Actions grid */
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .action-card {
+        text-decoration: none;
+        color: inherit;
+        transition: var(--transition);
+    }
+
+    .action-card:hover {
+        text-decoration: none;
+        color: inherit;
+        transform: translateY(-2px);
+    }
+
+    .action-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+
+    .action-icon {
+        width: 48px;
+        height: 48px;
+        background: hsl(var(--accent) / 0.1);
+        color: hsl(var(--accent));
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .action-text {
+        flex: 1;
+    }
+
+    .action-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+        margin: 0 0 0.25rem 0;
+    }
+
+    .action-description {
+        font-size: 0.875rem;
+        color: hsl(var(--muted-foreground));
+        margin: 0;
+    }
+
+    .action-arrow {
+        color: hsl(var(--muted-foreground));
+        transition: var(--transition);
+    }
+
+    .action-card:hover .action-arrow {
+        transform: translateX(4px);
+        color: hsl(var(--accent));
+    }
+
+    /* Upcoming section */
+    .upcoming-section {
+        margin-top: 1rem;
+    }
+
+    .card-header-custom {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .warning-icon {
+        color: hsl(var(--warning));
+        flex-shrink: 0;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+        margin: 0;
+    }
+
+    /* Invoice items */
+    .invoices-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .invoice-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+        background: hsl(var(--muted) / 0.3);
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
+    }
+
+    .invoice-item:hover {
+        background: hsl(var(--muted) / 0.5);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .invoice-main-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        flex: 1;
+    }
+
+    .invoice-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .invoice-client {
+        font-weight: 600;
+        color: hsl(var(--foreground));
+        font-size: 1rem;
+    }
+
+    .invoice-number {
+        font-size: 0.75rem;
+        color: hsl(var(--accent));
+        background: hsl(var(--accent) / 0.1);
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--radius-sm);
+        border: 1px solid hsl(var(--accent) / 0.2);
+    }
+
+    .invoice-service-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .service-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.75rem;
+        color: hsl(var(--muted-foreground));
+        background: hsl(var(--muted));
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--radius-sm);
+        border: 1px solid hsl(var(--border));
+    }
+
+    .invoice-details-grid {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .invoice-amount,
+    .invoice-due {
+        text-align: center;
+    }
+
+    .amount-label,
+    .due-label {
+        font-size: 0.75rem;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .amount-value {
+        font-weight: 700;
+        color: hsl(var(--foreground));
+        font-size: 1.125rem;
+    }
+
+    .due-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+    .due-urgent {
+        background: hsl(var(--destructive) / 0.1);
+        color: hsl(var(--destructive));
+        border: 1px solid hsl(var(--destructive) / 0.2);
+    }
+
+    .due-warning {
+        background: hsl(var(--warning) / 0.1);
+        color: hsl(var(--warning));
+        border: 1px solid hsl(var(--warning) / 0.2);
+    }
+
+    .due-normal {
+        background: hsl(var(--success) / 0.1);
+        color: hsl(var(--success));
+        border: 1px solid hsl(var(--success) / 0.2);
+    }
+
+    .invoice-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        min-width: 120px;
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+        height: auto;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1.5rem;
+        color: hsl(var(--muted-foreground));
+    }
+
+    .empty-state svg {
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .invoice-details-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .invoice-actions {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            min-width: auto;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .invoice-item {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .invoice-details-grid {
+            grid-template-columns: 1fr;
+            text-align: left;
+        }
+
+        .invoice-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .actions-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
 <script>
-$(function() {
-    // Animación de entrada para las tarjetas
-    $('.action-card').each(function(index) {
-        $(this).css('animation-delay', (index * 0.1) + 's');
+    $(function () {
+        // Animación de entrada para las tarjetas
+        $('.action-card').each(function (index) {
+            $(this).css('animation-delay', (index * 0.1) + 's');
+            $(this).addClass('animate-fade-in');
+        });
+
+        $('.invoice-item').each(function (index) {
+            $(this).css('animation-delay', (0.3 + index * 0.1) + 's');
+            $(this).addClass('animate-fade-in');
+        });
     });
-    
-    $('.invoice-item').each(function(index) {
-        $(this).css('animation-delay', (0.3 + index * 0.1) + 's');
-        $(this).addClass('fadeInUp');
-    });
-});
 </script>
 {% endblock %}

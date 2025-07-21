@@ -1,189 +1,280 @@
 {% extends 'layouts/baseForm.html' %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block extracss %}{{ block.super }}
-<link href="{% static 'css/formset.css' %}" rel="stylesheet" />
-{% endblock %}
-
+{% load static crispy_forms_tags %}
+{% block titleNavegador %}SendaRC - Seleccionar Frecuencias{% endblock %}
 {% block title %}
-<div class="page-header">
-    <h1 class="page-title">Presupuestar Frecuencia ></h1>
-    <div class="page-subtitle">
-        <span class="client-info">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}} ></span>
-        <span class="operation-type">Agregar Frecuencia</span>
-    </div>
-</div>
+<style>
+  input[type="checkbox"][name$="-DELETE"] {
+    display: none;
+  }
+
+  label[for$="-DELETE"] {
+    display: none;
+  }
+</style>
+
+<h1>Presupuestar Servicio</h1>
+<p>
+  Cliente: {{ presupuesto.cliente.nombre }} {{ presupuesto.cliente.apellido }}
+  <span class="text-muted-foreground mx-2">•</span>
+  <span class="text-muted">Configurar Frecuencias</span>
+</p>
 {% endblock %}
 
 {% block formulario %}
-<div class="formset-container">
-    <form method="POST" class="formset-form">
-        {% csrf_token %}
-        {{ formset.management_form }}
+<div class="animate-fade-in">
+  <form method="POST" class="needs-validation" novalidate>
+    {% csrf_token %}
+    {{ formset.management_form }}
 
-        <div class="formset-header">
-            <h3 class="formset-title">Frecuencias</h3>
-            <button type="button" class="btn-add agregar-frecuencia">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                Añadir Frecuencia
+    <!-- Header con botón agregar -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h5 class="fw-semibold mb-0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12,6 12,12 16,14"></polyline>
+        </svg>
+        Frecuencias del Servicio
+      </h5>
+
+      <button type="button" class="btn btn-primary btn-sm agregar-frecuencia">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Añadir Frecuencia
+      </button>
+    </div>
+
+    <!-- Contenedor de formularios -->
+    <div id="form-frecuencias" class="row g-3">
+      {% for form in formset %}
+      <div class="col-md-6 form-card">
+        <div class="card">
+          <div class="card-body position-relative">
+            <button type="button"
+              class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2 quitar-frecuencia"
+              title="Quitar frecuencia">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
-        </div>
-
-        <div id="form-frecuencias" class="formset-grid">
-            {% for f in formset %}
-            <div class="form-card form-frecuencia">
-                <button type="button" class="btn-remove quitar-frecuencia quitar-form">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="form-content">
-                    {{ f|crispy }}
-                </div>
+            <div class="row g-3">
+              {{ form.DELETE }}
+              {% crispy form %}
             </div>
-            {% endfor %}
+          </div>
         </div>
-
-        <div class="form-actions">
-            <a href="{% url 'presupuestarServicios' %}" class="btn btn-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"></polyline>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center text-muted py-5">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="mb-3">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+          <line x1="9" y1="9" x2="9.01" y2="9"></line>
+          <line x1="15" y1="9" x2="15.01" y2="9"></line>
+        </svg>
+        <p class="mb-0">No hay frecuencias configuradas</p>
+        <small class="text-muted">Haga clic en "Añadir Frecuencia" para comenzar</small>
+      </div>
+      {% endfor %}
+      <div id="empty-form-template" class="d-none">
+        {% with form=formset.empty_form %}
+        <div class="col-md-6 form-card">
+          <div class="card">
+            <div class="card-body position-relative">
+              <button type="button"
+                class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2 quitar-frecuencia"
+                title="Quitar frecuencia">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
-                Volver
-            </a>
-            <button type="submit" class="btn btn-primary btn-siguiente-vista">
-                Siguiente
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"></polyline>
-                </svg>
-            </button>
+              </button>
+              <div class="row g-3">
+                {{ form.DELETE }}
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
         </div>
-    </form>
+        {% endwith %}
+      </div>
+    </div>
 </div>
+
+<div class="d-flex gap-2 justify-content-end mt-4">
+  <a href="{% url 'presupuestarServicios' %}" class="btn btn-secondary">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    Volver
+  </a>
+  <button type="submit" class="btn btn-primary">
+    Siguiente
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </button>
+</div>
+</form>
 {% endblock %}
 
 {% block extrajs %}
+<script id="dias-data" type="application/json">
+  {{ dias_json|safe }}
+</script>
+<script id="turnos-data" type="application/json">
+  {{ turnos_json|safe }}
+</script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const isFrecuencia = document.getElementById('form-frecuencias') !== null;
-        const prefix = isFrecuencia ? 'frecuencia' : 'servicio';
-        const containerId = isFrecuencia ? 'form-frecuencias' : 'form-servicios';
-        const addButtonClass = isFrecuencia ? 'agregar-frecuencia' : 'agregar-servicio';
-        const removeButtonClass = isFrecuencia ? 'quitar-frecuencia' : 'quitar-servicio';
-    
-        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
-        const container = document.getElementById(containerId);
-        const emptyFormTemplate = `{{ formset.empty_form|crispy|escapejs }}`;
-    
-        function buildForm(index) {
-            const wrapper = document.createElement('div');
-            wrapper.className = `form-card form-${prefix}`;
-            wrapper.innerHTML = `
-                <button type="button" class="btn-remove ${removeButtonClass} quitar-form">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="form-content">
-                    ${emptyFormTemplate.replace(/__prefix__/g, index)}
-                </div>
-            `;
-            return wrapper;
-        }
-    
-        function addForm() {
-            const currentTotal = parseInt(totalForms.value);
-            const form = buildForm(currentTotal);
-            container.appendChild(form);
-            totalForms.value = currentTotal + 1;
-            bindRemoveButtons();
-            if (isFrecuencia) bindTurnoChange(form);
-            
-            // Animación de entrada
-            form.style.opacity = '0';
-            form.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                form.style.transition = 'all 0.3s ease';
-                form.style.opacity = '1';
-                form.style.transform = 'translateY(0)';
-            }, 10);
-        }
-    
-        function removeForm(button) {
-            const formElement = button.closest(`.form-${prefix}`);
-            if (!formElement) return;
-            
-            // Animación de salida
-            formElement.style.transition = 'all 0.3s ease';
-            formElement.style.opacity = '0';
-            formElement.style.transform = 'translateY(-20px)';
-            
-            setTimeout(() => {
-                formElement.remove();
-                
-                const forms = container.querySelectorAll(`.form-${prefix}`);
-                forms.forEach((form, i) => {
-                    const inputs = form.querySelectorAll('input, select, textarea, label');
-                    inputs.forEach(el => {
-                        if (el.name) el.name = el.name.replace(/form-\d+-/, `form-${i}-`);
-                        if (el.id) el.id = el.id.replace(/form-\d+-/, `form-${i}-`);
-                        if (el.htmlFor) el.htmlFor = el.htmlFor.replace(/form-\d+-/, `form-${i}-`);
-                    });
-                });
-                
-                totalForms.value = forms.length;
-            }, 300);
-        }
-    
-        function bindRemoveButtons() {
-            const buttons = container.querySelectorAll(`.${removeButtonClass}`);
-            buttons.forEach(button => {
-                button.onclick = () => removeForm(button);
-            });
-        }
-    
-        function bindTurnoChange(form) {
-            const selectTurno = form.querySelector("select[name$='turno']");
-            if (!selectTurno) return;
-    
-            selectTurno.addEventListener('change', function () {
-                const valor = this.value;
-                form.querySelectorAll('.time-display').forEach(e => e.remove());
-    
-                let texto = '';
-                if (valor == "1") texto = '8:00 a 12:00';
-                else if (valor == "2") texto = '14:00 a 18:00';
-                else if (valor == "3") texto = '19:00 a 23:00';
-    
-                if (texto) {
-                    const div = document.createElement('div');
-                    div.className = 'time-display';
-                    div.innerHTML = `
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  console.log("SCRIPT CARGADO");
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('form-frecuencias');
+    const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+    const diasData = JSON.parse(document.getElementById('dias-data').textContent);
+    const turnosData = JSON.parse(document.getElementById('turnos-data').textContent);
+
+    function generateDiaOptions() {
+      let options = '<option value="">Seleccione un día...</option>';
+      diasData.forEach(d => options += `<option value="${d.value}">${d.label}</option>`);
+      return options;
+    }
+
+    function generateTurnoOptions() {
+      let options = '<option value="">Seleccione un turno...</option>';
+      turnosData.forEach(t => options += `<option value="${t.value}">${t.label}</option>`);
+      return options;
+    }
+
+    function populateSelects(form) {
+      const diaSelect = form.querySelector("select[name$='dia']");
+      const turnoSelect = form.querySelector("select[name$='turno']");
+      if (diaSelect) diaSelect.innerHTML = generateDiaOptions();
+      if (turnoSelect) turnoSelect.innerHTML = generateTurnoOptions();
+    }
+
+    function actualizarCartelVacio() {
+      const allForms = container.querySelectorAll('.form-card');
+      const visibleForms = Array.from(allForms).filter(form => {
+        const isDisplayNone = form.style.display === 'none';
+        const hasEliminadoClass = form.classList.contains('eliminado');
+        const deleteCheckbox = form.querySelector('input[type="checkbox"][name$="-DELETE"]');
+        const isMarkedForDeletion = deleteCheckbox && deleteCheckbox.checked;
+
+        // El formulario está visible si NO está oculto de ninguna manera
+        return !isDisplayNone && !hasEliminadoClass && !isMarkedForDeletion;
+      });
+
+      let cartelVacio = container.querySelector('.cartel-vacio');
+
+      if (visibleForms.length === 0) {
+        // Mostrar cartel si no hay formularios visibles
+        if (!cartelVacio) {
+          const cartelHTML = `
+                    <div class="col-12 text-center text-muted py-5 cartel-vacio">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="mb-3">
                             <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12,6 12,12 16,14"></polyline>
+                            <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
                         </svg>
-                        <span>${texto}</span>
-                    `;
-                    selectTurno.closest('.form-group').appendChild(div);
-                }
-            });
+                        <p class="mb-0">No hay frecuencias configuradas</p>
+                        <small class="text-muted">Haga clic en "Añadir Frecuencia" para comenzar</small>
+                    </div>
+                `;
+          container.insertAdjacentHTML('beforeend', cartelHTML);
         }
-    
-        document.querySelector(`.${addButtonClass}`).addEventListener('click', addForm);
-        document.querySelector('.btn-siguiente-vista')?.addEventListener('click', () => {
-            document.querySelector('.formset-form').submit();
-        });
-    
-        bindRemoveButtons();
-        if (isFrecuencia) {
-            document.querySelectorAll(`.form-${prefix}`).forEach(bindTurnoChange);
+      } else {
+        // Ocultar cartel si hay formularios visibles
+        if (cartelVacio) {
+          cartelVacio.remove();
         }
+      }
+    }
+
+    function bindRemove() {
+      // Remover listeners anteriores clonando elementos
+      document.querySelectorAll('.quitar-frecuencia').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+      });
+
+      // Agregar nuevos listeners
+      document.querySelectorAll('.quitar-frecuencia').forEach(btn =>
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          const card = btn.closest('.form-card');
+
+          // Agregar animación de salida
+          card.style.transition = 'all 0.3s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(-20px)';
+
+          setTimeout(() => {
+            const deleteCheckbox = card.querySelector('input[type="checkbox"][name$="-DELETE"]');
+
+            if (deleteCheckbox) {
+              // Formulario existente - marcarlo para eliminación
+              deleteCheckbox.checked = true;
+              card.style.display = 'none';
+              card.classList.add('eliminado');
+            } else {
+              // Formulario nuevo - removerlo completamente
+              card.remove();
+            }
+
+            actualizarCartelVacio(); // Llamar primero para verificar mensaje vacío
+          }, 300);
+        })
+      );
+    }
+
+    function bindTurnoChange(scope) {
+      const turnoSelect = scope.querySelector("select[name$='turno']");
+      if (!turnoSelect) return;
+      turnoSelect.addEventListener('change', () => {
+        const timeDisplay = scope.querySelector('.time-display');
+        const map = { 1: '8:00 a 12:00', 2: '14:00 a 18:00', 3: '19:00 a 23:00' };
+        const text = map[turnoSelect.value];
+        timeDisplay.innerHTML = text ? `
+                <small class="text-muted">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg> ${text}
+                </small>` : '';
+      });
+    }
+
+    // Botón agregar frecuencia
+    document.querySelector('.agregar-frecuencia').addEventListener('click', () => {
+      const idx = parseInt(totalForms.value);
+      const templateHTML = document.getElementById('empty-form-template').innerHTML.replace(/__prefix__/g, idx);
+      const temp = document.createElement('div');
+      temp.innerHTML = templateHTML.trim();
+      const newForm = temp.firstElementChild;
+      if (!newForm) return alert("Error al generar el formulario");
+
+      container.appendChild(newForm);
+      totalForms.value = idx + 1;
+      populateSelects(newForm);
+      bindTurnoChange(newForm);
+      bindRemove();
+      actualizarCartelVacio();
     });
+
+    // Inicialización
+    document.querySelectorAll('.form-card').forEach(bindTurnoChange);
+    bindRemove();
+    actualizarCartelVacio();
+
+    // Limpiar elementos __prefix__ al enviar el formulario
+    document.querySelector('form').addEventListener('submit', () => {
+      document.querySelectorAll('[id*="__prefix__"]').forEach(el => el.remove());
+    });
+  });
 </script>
 {% endblock %}

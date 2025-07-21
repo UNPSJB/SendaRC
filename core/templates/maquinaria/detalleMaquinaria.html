@@ -1,21 +1,125 @@
 {% load static %}
-{% block detalle %}
-<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
-<div class="container wrapper-detalles">
-    <div class="container-detalles">
-        <h1 class="titulo-detalle"><i class="bi bi-hammer"></i> Maquinaria: {{maquinaria.nombre}}</h1>
-        <div class="divisor"></div>
-        <p class="detalles">Modelo: {{maquinaria.modelo}}</p>
-        <p class="detalles">Marca: {{maquinaria.marca}}</p>
-        <p class="detalles">Cantidad: {{maquinaria.cantidad}}</p>
-        {% if maquinaria.activo %}
-            <p class="detalles">Activa: Sí</p>
-        {% else %}
-            <p class="detalles">Activa: No</p>
-        {% endif %}
-        <div class="divisor"></div>
-        <h1 class="titulo-detalle"><i class="bi bi-eyeglasses"></i> Observaciones:</h1>
-        <p class="detalles">{{maquinaria.observaciones}}</p>
+
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="d-flex align-items-center mb-4">
+        <div class="me-3">
+            <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center"
+                 style="width: 48px; height: 48px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                </svg>
+            </div>
+        </div>
+        <div>
+            <h4 class="mb-1">{{ maquinaria.nombre }}</h4>
+            <p class="text-muted mb-0">Maquinaria #{{ maquinaria.pk }}</p>
+        </div>
+    </div>
+
+    <!-- Información General -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" class="me-2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Información General
+            </h6>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Modelo</small>
+                            <span class="fw-medium">{{ maquinaria.modelo }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Marca</small>
+                            <span class="fw-medium">{{ maquinaria.marca }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Cantidad</small>
+                            <span class="fw-medium">{{ maquinaria.cantidad }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Estado</small>
+                            {% if maquinaria.activo %}
+                                <span class="badge bg-success">Activa</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactiva</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Observaciones</small>
+                            <span class="fw-medium">{{ maquinaria.observaciones|default:"—" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="d-flex gap-2 justify-content-end">
+        <a href="{% url 'modificarMaquinaria' maquinaria.pk %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Modificar
+        </a>
     </div>
 </div>
-{% endblock %}
+
+<script>
+function confirmarEliminacion(id, nombre) {
+    if (confirm(`¿Está seguro que desea eliminar la maquinaria "${nombre}"?`)) {
+        console.log('Eliminar maquinaria:', id);
+    }
+}
+</script>

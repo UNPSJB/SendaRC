@@ -1,49 +1,85 @@
-{% extends 'layouts/baseForm.html' %}
+{% extends 'layouts/baseGestion.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/detalleServicio.css' %}" rel="stylesheet" />
-{% endblock %}
-
+{% block titleNavegador %}SendaRC - Detalle de Servicio #{{ servicio.pk }}{% endblock %}
 {% block title %}
-<div class="page-header-detail">
+<div class="seccion-cabecera animate-fade-in">
     <div class="header-content">
-        <h1 class="titulo">Gestión de Servicios</h1>
-        <div class="breadcrumb-container">
-            <span class="breadcrumb-item">Servicio</span>
-            <span class="breadcrumb-separator">/</span>
-            <span class="breadcrumb-client">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
+        <div class="header-left">
+            <h1>Detalle del Servicio #{{ servicio.pk }}</h1>
+            <p>Información completa del servicio para {{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</p>
+        </div>
+        <div class="header-actions">
+            {% if servicio.getEstado == 'Presupuestado' %}
+            <span class="badge badge-presupuestado">
+              <span class="badge-with-icon">Presupuestado</span>
+            </span>
+            {% elif servicio.getEstado == 'En Curso' %}
+            <span class="badge badge-en-curso">
+              <span class="badge-with-icon">En Curso</span>
+            </span>
+            {% elif servicio.getEstado == 'Contratado' %}
+            <span class="badge badge-contratado">
+              <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+            </span>
+            {% elif servicio.getEstado == 'Finalizado' %}
+            <span class="badge badge-finalizado">
+              <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+            </span>
+            {% elif servicio.getEstado == 'Cancelado' %}
+            <span class="badge badge-cancelado">
+              <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+            </span>
+            {% else %}
+            <span class="badge badge-pendiente">
+              <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+            </span>
+            {% endif %}
+            <a href="{% url 'gestionServicios' %}" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15,18 9,12 15,6"></polyline>
+                </svg>
+                Volver a Servicios
+            </a>
         </div>
     </div>
-    <a href="{% url 'gestionServicios' %}" class="btn-back">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15,18 9,12 15,6"></polyline>
-        </svg>
-        Volver
-    </a>
 </div>
 {% endblock %}
 
-{% block formulario %}
-<div class="detail-container">
-    <!-- Panel de información -->
+{% block listado %}
+<div class="detail-layout">
+    <!-- Panel de información principal -->
     <div class="info-panel">
         <div class="card">
-            <div class="card-header">
-                <div class="header-left">
-                    <h3 class="card-title">Servicio #{{ servicio.pk }}</h3>
-                    <p class="card-subtitle">Fecha Emisión: {{servicio.fecha_emision}}</p>
+            <div class="card-body">
+                <!-- Header del Servicio -->
+                <div class="card-header-custom">
+                    <div class="service-meta">
+                        <div class="service-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="service-title">Servicio #{{ servicio.pk }}</h3>
+                            <p class="service-date">Fecha Emisión: <span
+                                    class="text-accent">{{servicio.fecha_emision}}</span></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="status-badge status-{{servicio.estado|lower}}">
-                    {{servicio.getEstado}}
-                </div>
-            </div>
 
-            <div class="card-content">
                 <!-- Información del Cliente -->
                 <div class="info-section">
                     <div class="section-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
                         <h4 class="section-title">Información del Cliente</h4>
                     </div>
                     <div class="info-grid">
@@ -66,11 +102,14 @@
                     </div>
                 </div>
 
-                <div class="divider"></div>
-
                 <!-- Información del Inmueble -->
                 <div class="info-section">
                     <div class="section-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
                         <h4 class="section-title">Información del Inmueble</h4>
                     </div>
                     <div class="info-grid">
@@ -89,13 +128,17 @@
                     </div>
                 </div>
 
-                <div class="divider"></div>
-
-                <!-- Información del Servicio -->
+                <!-- Información del Servicio con estructura mejorada -->
                 <div class="info-section">
                     <div class="section-header">
-                        <h4 class="section-title">Información del Servicio</h4>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <h4 class="section-title">Desglose Financiero del Servicio</h4>
                     </div>
+
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="info-label">Tipo de Servicio</span>
@@ -105,35 +148,84 @@
                             <span class="info-label">Plazo de Vigencia</span>
                             <span class="info-value">{{servicio.plazo_vigencia}}</span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Total Servicios</span>
-                            <span class="info-value">{{ servicio.getImporteTotalServicios }}</span>
+                    </div>
+
+                    <!-- Métricas financieras con estructura clara -->
+                    <div class="metrics-grid">
+                        <!-- Item informativo -->
+                        <div class="metric-item info-only">
+                            <span class="metric-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="display: inline; margin-right: 4px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                Total Servicios (Referencia)
+                            </span>
+                            <span class="metric-value info-value">{{ servicio.getImporteTotalServicios }}</span>
+                            <span class="metric-note">Solo informativo</span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Total Servicios × Frecuencias</span>
-                            <span class="info-value">{{ servicio.getSubtotalServiciosFrecuencias }}</span>
+
+                        <!-- Items que se suman al total -->
+                        <div class="metric-item calculation-item">
+                            <span class="metric-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="display: inline; margin-right: 4px;">
+                                    <polyline points="9,11 12,14 22,4"></polyline>
+                                    <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+                                </svg>
+                                Servicios × Frecuencias
+                            </span>
+                            <span class="metric-value calculation-value">{{ servicio.getSubtotalServiciosFrecuencias}}</span>
+                            <span class="metric-note calculation-note">Se suma al total</span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Mano de Obra</span>
-                            <span class="info-value">{{ servicio.getSubtotalEmpleados }}</span>
+
+                        <div class="metric-item calculation-item">
+                            <span class="metric-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="display: inline; margin-right: 4px;">
+                                    <polyline points="9,11 12,14 22,4"></polyline>
+                                    <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+                                </svg>
+                                Mano de Obra
+                            </span>
+                            <span class="metric-value calculation-value">{{ servicio.getSubtotalEmpleados }}</span>
+                            <span class="metric-note calculation-note">Se suma al total</span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Ganancia 15%</span>
-                            <span class="info-value">revisar este porcentaje</span>
+
+                        <div class="metric-item calculation-item">
+                            <span class="metric-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="display: inline; margin-right: 4px;">
+                                    <polyline points="9,11 12,14 22,4"></polyline>
+                                    <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+                                </svg>
+                                Ganancia 15%
+                            </span>
+                            <span class="metric-value calculation-value">{{ servicio.getPorcentajeGanancia }}</span>
+                            <span class="metric-note calculation-note">Se suma al total</span>
                         </div>
                     </div>
 
-                    <!-- Total Final -->
+                    <!-- Total Final con flujo de cálculo -->
                     <div class="total-section">
-                        <div class="total-item">
-                            <span class="total-label">
-                                {% if servicio.tipo == 1 %}
-                                Total Servicio Completo (ARS)
-                                {% else %}
-                                Total Servicio Mensual (ARS)
-                                {% endif %}
-                            </span>
-                            <span class="total-value">{{ servicio.getImporteTotalFormateado }}</span>
+                        <div class="total-calculation-flow">
+                            <div class="calculation-summary">
+                                <span class="calculation-text">
+                                    (Servicios × Frecuencias) + Mano de Obra + Ganancia 15%
+                                </span>
+                            </div>
+                            <div class="total-item">
+                                <span class="total-label">
+                                    {% if servicio.tipo == 1 %}
+                                    Total Servicio Completo (ARS)
+                                    {% else %}
+                                    Total Servicio Mensual (ARS)
+                                    {% endif %}
+                                </span>
+                                <span class="total-value">{{ servicio.getImporteTotalFormateado }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,21 +233,19 @@
         </div>
     </div>
 
-    <!-- Panel de tablas -->
-    <div class="tables-panel">
+    <!-- Panel de detalles -->
+    <div class="details-panel">
         <div class="card">
-            <div class="card-header">
-                <div class="header-left">
-                    <h3 class="card-title">Detalles del Servicio</h3>
-                    <p class="card-subtitle">Información detallada de servicios, frecuencias y empleados</p>
+            <div class="card-body">
+                <div class="card-header-custom">
+                    <h3 class="details-title">Detalles del Servicio</h3>
+                    <p class="details-subtitle">Información detallada de servicios, frecuencias y empleados</p>
                 </div>
-            </div>
 
-            <div class="card-content">
-                <!-- Tabs -->
+                <!-- Tabs Navigation -->
                 <div class="tabs-container">
                     <div class="tabs-list" id="opcionesDetalleServicio">
-                        <button class="tab-trigger" data-lista="tablaTiposServicios">
+                        <button class="tab-trigger active" data-lista="tablaTiposServicios">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <path d="M9 12l2 2 4-4"></path>
@@ -163,7 +253,7 @@
                                 <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
                             </svg>
                             Tipos de Servicios
-                            <span class="badge" id="servicios-badge">{{ tipoServicios|length }}</span>
+                            <span class="badge">{{ tipoServicios|length }}</span>
                         </button>
                         <button class="tab-trigger" data-lista="tablaFrecuencias">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -174,7 +264,7 @@
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                             Frecuencias
-                            <span class="badge" id="frecuencias-badge">{{ frecuencias|length }}</span>
+                            <span class="badge">{{ frecuencias|length }}</span>
                         </button>
                         {% if servicio.getEstado != "Presupuestado" %}
                         <button class="tab-trigger" data-lista="tablaEmpleados">
@@ -184,76 +274,506 @@
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             Empleados
-                            <span class="badge" id="empleados-badge">{{ empleados|length }}</span>
+                            <span class="badge">{{ empleados_con_frecuencias|length }}</span>
                         </button>
                         {% endif %}
                     </div>
                 </div>
 
-                <!-- Contenido de las tablas -->
-                <div class="table-container">
+                <!-- Tables Content -->
+                <div class="tables-content">
                     <!-- Tabla Tipos de Servicios -->
-                    <table class="data-table" id="tablaTiposServicios">
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Cantidad</th>
-                                <th>Precio Unitario</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for t in tipoServicios %}
-                            <tr>
-                                <td>{{ t.tipoServicio.descripcion }}</td>
-                                <td>{{ t.cantidad }}</td>
-                                <td>{{ t.tipoServicio.getPrecioFormateado }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper" id="tablaTiposServicios">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in tipoServicios %}
+                                <tr>
+                                    <td>{{ t.tipoServicio.descripcion }}</td>
+                                    <td>{{ t.cantidad }}</td>
+                                    <td class="price-cell">{{ t.tipoServicio.getPrecioFormateado }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
 
                     <!-- Tabla Frecuencias -->
-                    <table class="data-table" id="tablaFrecuencias" style="display: none;">
-                        <thead>
-                            <tr>
-                                <th>Día</th>
-                                <th>Turno</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for f in frecuencias %}
-                            <tr>
-                                <td>{{ f.getDia }}</td>
-                                <td>{{ f.getTurno }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper" id="tablaFrecuencias" style="display: none;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Día</th>
+                                    <th>Turno</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for f in frecuencias %}
+                                <tr>
+                                    <td>{{ f.getDia }}</td>
+                                    <td>{{ f.getTurno }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
 
-                    <!-- Tabla Empleados -->
                     {% if servicio.getEstado != "Presupuestado" %}
-                    <table class="data-table" id="tablaEmpleados" style="display: none;">
-                        <thead>
-                            <tr>
-                                <th>Nombre y Apellido</th>
-                                <th>Sueldo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for e in empleados %}
-                            <tr>
-                                <td>{{ e.nombre }} {{ e.apellido }}</td>
-                                <td>{{ e.getSueldoFormateado }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper" id="tablaEmpleados" style="display: none;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre y Apellido</th>
+                                    <th>Sueldo</th>
+                                    <th>Frecuencias Asignadas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in empleados_con_frecuencias %}
+                                <tr>
+                                    <td>{{ item.empleado.nombre }} {{ item.empleado.apellido }}</td>
+                                    <td class="price-cell">{{ item.empleado.getSueldoFormateado }}</td>
+                                    <td>
+                                        {% for f in item.frecuencias.all %}
+                                        {{ f.getDia }} - {{ f.getTurno }}<br>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     {% endif %}
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Estilos específicos para detalleServicio que complementan base-styles.css */
+
+    /* Layout principal */
+    .detail-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    /* Header personalizado */
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .header-left h1 {
+        margin-bottom: 0.5rem;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* Status badge */
+    .status-badge {
+        padding: 0.375rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-badge.status-presupuestado {
+        background: hsl(var(--warning) / 0.1);
+        color: hsl(var(--warning));
+        border: 1px solid hsl(var(--warning) / 0.2);
+    }
+
+    .status-badge.status-confirmado {
+        background: hsl(var(--success) / 0.1);
+        color: hsl(var(--success));
+        border: 1px solid hsl(var(--success) / 0.2);
+    }
+
+    .status-badge.status-cancelado {
+        background: hsl(var(--destructive) / 0.1);
+        color: hsl(var(--destructive));
+        border: 1px solid hsl(var(--destructive) / 0.2);
+    }
+
+    /* Card headers personalizados */
+    .card-header-custom {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .service-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .service-icon {
+        width: 48px;
+        height: 48px;
+        background: hsl(var(--accent) / 0.1);
+        color: hsl(var(--accent));
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .service-title,
+    .details-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+        margin: 0 0 0.25rem 0;
+    }
+
+    .service-date,
+    .details-subtitle {
+        color: hsl(var(--muted-foreground));
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    /* Secciones de información */
+    .info-section {
+        margin-bottom: 2rem;
+    }
+
+    .info-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid hsl(var(--border) / 0.5);
+    }
+
+    .section-header svg {
+        color: hsl(var(--accent));
+        flex-shrink: 0;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+        margin: 0;
+    }
+
+    /* Grid de información */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: hsl(var(--muted-foreground));
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .info-value {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: hsl(var(--foreground));
+    }
+
+    /* Métricas financieras - igual que presupuestarConfirmar */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .metric-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 1rem;
+        background: hsl(var(--muted) / 0.3);
+        border-radius: var(--radius-sm);
+        border: 1px solid hsl(var(--border) / 0.5);
+    }
+
+    .metric-item.info-only {
+        background: hsl(var(--muted) / 0.2);
+        border: 1px dashed hsl(var(--border));
+        position: relative;
+    }
+
+    .metric-item.calculation-item {
+        background: hsl(var(--accent) / 0.05);
+        border: 1px solid hsl(var(--accent) / 0.2);
+    }
+
+    .metric-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: hsl(var(--muted-foreground));
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+    }
+
+    .calculation-value {
+        color: hsl(var(--accent)) !important;
+    }
+
+    .metric-note {
+        font-size: 0.7rem;
+        font-weight: 400;
+        margin-top: 0.25rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: var(--radius-sm);
+        text-align: center;
+        background: hsl(var(--muted) / 0.5);
+        color: hsl(var(--muted-foreground));
+    }
+
+    .calculation-note {
+        background: hsl(var(--success) / 0.1);
+        color: hsl(var(--success));
+        border: 1px solid hsl(var(--success) / 0.2);
+    }
+
+    /* Sección de total con flujo de cálculo */
+    .total-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: hsl(var(--accent) / 0.1);
+        border: 1px solid hsl(var(--accent) / 0.2);
+        border-radius: var(--radius-sm);
+    }
+
+    .total-calculation-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .calculation-summary {
+        padding: 0.75rem 1rem;
+        background: hsl(var(--muted) / 0.3);
+        border: 1px solid hsl(var(--border) / 0.5);
+        border-radius: var(--radius-sm);
+        text-align: center;
+    }
+
+    .calculation-text {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: hsl(var(--muted-foreground));
+        font-style: italic;
+    }
+
+    .total-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-label {
+        font-size: 1rem;
+        font-weight: 600;
+        color: hsl(var(--accent));
+    }
+
+    .total-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: hsl(var(--accent));
+    }
+
+    /* Tabs */
+    .tabs-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .tabs-list {
+        display: flex;
+        gap: 0.25rem;
+        background: hsl(var(--muted) / 0.3);
+        padding: 0.25rem;
+        border-radius: var(--radius-sm);
+    }
+
+    .tab-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+    }
+
+    .tab-trigger:hover {
+        background: hsl(var(--muted));
+        color: hsl(var(--foreground));
+    }
+
+    .tab-trigger.active {
+        background: hsl(var(--background));
+        color: hsl(var(--foreground));
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    }
+
+    .tab-trigger svg {
+        flex-shrink: 0;
+    }
+
+    .badge {
+        background: hsl(var(--accent));
+        color: hsl(var(--accent-foreground));
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.125rem 0.375rem;
+        border-radius: 9999px;
+        min-width: 1.25rem;
+        text-align: center;
+    }
+
+    /* Tables */
+    .tables-content {
+        position: relative;
+    }
+
+    .table-wrapper {
+        animation: fadeIn 0.2s ease-out;
+    }
+
+    .table-wrapper table {
+        margin: 0;
+    }
+
+    .price-cell {
+        font-weight: 600;
+        color: hsl(var(--accent));
+    }
+
+    /* Animación sutil para elementos de cálculo */
+    .calculation-item {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .calculation-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, hsl(var(--accent)), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            left: -100%;
+        }
+
+        100% {
+            left: 100%;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .detail-layout {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .header-actions {
+            justify-content: space-between;
+        }
+
+        .info-grid,
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .tabs-list {
+            flex-direction: column;
+        }
+
+        .total-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .service-meta {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .calculation-summary {
+            padding: 0.5rem;
+        }
+
+        .calculation-text {
+            font-size: 0.75rem;
+        }
+
+        .metric-note {
+            font-size: 0.65rem;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block extrajs %}
@@ -267,7 +787,7 @@
             const tablaId = $(this).data('lista');
 
             // Ocultar todas las tablas y mostrar la seleccionada
-            $('.data-table').hide();
+            $('.table-wrapper').hide();
             $('#' + tablaId).show();
 
             // Actualizar estado activo de los tabs
@@ -276,13 +796,16 @@
         });
 
         // Activar el primer tab por defecto
-        $('.tab-trigger[data-lista="tablaTiposServicios"]').addClass('active').click();
+        $('.tab-trigger[data-lista="tablaTiposServicios"]').addClass('active');
+        $('#tablaTiposServicios').show();
 
-        // Animación de entrada
+        // Animación de entrada escalonada
         $('.card').each(function (index) {
-            $(this).css('animation-delay', (index * 0.1) + 's');
+            $(this).css({
+                'animation-delay': (index * 0.1) + 's',
+                'animation-fill-mode': 'both'
+            }).addClass('animate-fade-in');
         });
-
     });
 </script>
 {% endblock %}

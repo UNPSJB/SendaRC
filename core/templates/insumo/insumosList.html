@@ -1,15 +1,33 @@
 {% for insumo in insumos %}
-<tr class="fila-tabla">
-    <td scope="row">{{ insumo.pk }} </td>
-    <td scope="row">{{ insumo.descripcion }} </td>
-    <td scope="row">{{ insumo.marca }} </td>
-    <td scope="row">{{ insumo.getUni_Medida }} </td>
-    <td scope="row">{{ insumo.contenido_neto }} </td>
-    <td scope="row">{{ insumo.cantidad }} </td>
-    <td scope="row">{{ insumo.getEstado }} </td>
-    <td scope="row">      
-        <a href="{% url 'modificarInsumo' insumo.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-        <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-    </td>
+<tr>
+  <td>{{ insumo.pk }}</td>
+  <td>{{ insumo.descripcion }}</td>
+  <td>{{ insumo.marca }}</td>
+  <td>{{ insumo.getUni_Medida }}</td>
+  <td>{{ insumo.contenido_neto }}</td>
+  <td>{{ insumo.cantidad }}</td>
+  <td>
+    {% if insumo.activo %}
+    <i class="bi bi-check-circle-fill text-success"> Activo</i>
+    {% else %}
+    <i class="bi bi-x-circle-fill text-danger"> Inactivo</i>
+    {% endif %}
+  </td>
+  <td>
+    <a href="{% url 'modificarInsumo' insumo.pk %}" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar insumo">
+      <i class="bi bi-pencil-square"></i>
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td colspan="2" class="text-center text-muted">No hay resultados</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
 </tr>
 {% endfor %}

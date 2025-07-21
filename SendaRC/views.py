@@ -17,6 +17,12 @@ from core.models import Cliente, TipoServicio
 from servicio.models import Servicio
 from factura.models import Factura
 
+def formatear_importe(importe):
+    """
+    Formatea un importe numérico a formato moneda en español (ej: $ 1.234,56)
+    """
+    return "$ {:,.2f}".format(importe).replace(",", "X").replace(".", ",").replace("X", ".")
+
 # Diccionario de ciudades de Chubut con sus coordenadas aproximadas
 CIUDADES_CHUBUT = {
     'rawson': {'lat': -43.3002, 'lng': -65.1023, 'nombre': 'Rawson'},
@@ -149,6 +155,10 @@ def home(request):
         fechaPago__gte=inicio_mes,
         fechaPago__lte=hoy
     ).aggregate(total=Sum('importe'))['total'] or 0
+
+
+
+    ingresos_mes_formateado = formatear_importe(ingresos_mes)
     
     # Calcular ingresos del mes anterior para comparación
     mes_anterior = (inicio_mes - timedelta(days=1)).replace(day=1)
@@ -250,7 +260,7 @@ def home(request):
     servicios_ubicacion_exacta = obtener_servicios_ubicacion_exacta()
     
     context = {
-        'ingresos_mes': ingresos_mes,
+        'ingresos_mes_formateado': ingresos_mes_formateado,
         'cambio_ingresos': round(cambio_ingresos, 1),
         'servicios_activos': servicios_activos,
         'cambio_servicios': servicios_activos - servicios_mes_anterior,
@@ -308,3 +318,16 @@ def register(request):
                 form.add_error('password2', 'Las contraseñas no coinciden')
 
         return render(request, 'registration/register.html', {"form": form})
+
+def handler404(request, exception):
+    """
+    Vista personalizada para errores 404
+    """
+    return render(request, '404.html', status=404)
+
+def handler500(request):
+    """
+    Vista personalizada para errores 500
+    """
+    
+    return render(request, '500.html', status=500)

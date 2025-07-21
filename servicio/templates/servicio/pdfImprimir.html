@@ -11,7 +11,7 @@
         {% endif %}
     </title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
         * {
             margin: 0;
@@ -21,560 +21,717 @@
 
         body {
             font-family: 'Inter', Arial, sans-serif;
-            font-size: 13px;
-            line-height: 1.5;
-            color: #2d3748;
-            background-color: #ffffff;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #1a202c;
+            background: #f7fafc;
             margin: 0;
-            padding: 30px;
+            padding: 20px;
         }
 
         .document-container {
             max-width: 800px;
             margin: 0 auto;
-            background-color: #ffffff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-radius: 12px;
             overflow: hidden;
         }
 
-        .header-section {
+        /* Header con gradiente moderno */
+        .document-header {
+            position: relative;
             {% if servicio.estado == 1 or servicio.estado == 2 %}
-                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-                border-bottom: 3px solid #1da1f2;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             {% elif servicio.estado == 3 or servicio.estado == 4 %}
-                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-                border-bottom: 3px solid #22c55e;
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             {% elif servicio.estado == 5 %}
-                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                border-bottom: 3px solid #f59e0b;
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             {% elif servicio.estado == 6 %}
-                background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-                border-bottom: 3px solid #8b5cf6;
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             {% else %}
-                background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-                border-bottom: 3px solid #ef4444;
+                background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
             {% endif %}
-            padding: 25px 30px;
+            color: white;
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .header-table {
-            width: 100%;
-            border-collapse: collapse;
+        .document-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
         }
 
-        .header-table td {
-            border: none;
-            padding: 0;
-            vertical-align: middle;
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .document-title {
+            flex: 1;
+        }
+
+        .document-title h1 {
             font-size: 28px;
-            font-weight: 700;
-            color: #1a202c;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .document-number {
-            {% if servicio.estado == 1 or servicio.estado == 2 %}
-                color: #1da1f2;
-            {% elif servicio.estado == 3 or servicio.estado == 4 %}
-                color: #22c55e;
-            {% elif servicio.estado == 5 %}
-                color: #f59e0b;
-            {% elif servicio.estado == 6 %}
-                color: #8b5cf6;
-            {% else %}
-                color: #ef4444;
-            {% endif %}
-            font-weight: 800;
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 12px;
         }
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
+        .status-pill {
+            display: inline-block;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-top: 8px;
-            {% if servicio.estado == 1 %}
-                background-color: rgba(29, 161, 242, 0.1);
-                color: #1da1f2;
-                border: 1px solid rgba(29, 161, 242, 0.3);
-            {% elif servicio.estado == 2 %}
-                background-color: rgba(239, 68, 68, 0.1);
-                color: #ef4444;
-                border: 1px solid rgba(239, 68, 68, 0.3);
-            {% elif servicio.estado == 3 or servicio.estado == 4 %}
-                background-color: rgba(34, 197, 94, 0.1);
-                color: #22c55e;
-                border: 1px solid rgba(34, 197, 94, 0.3);
-            {% elif servicio.estado == 5 %}
-                background-color: rgba(245, 158, 11, 0.1);
-                color: #f59e0b;
-                border: 1px solid rgba(245, 158, 11, 0.3);
-            {% elif servicio.estado == 6 %}
-                background-color: rgba(139, 92, 246, 0.1);
-                color: #8b5cf6;
-                border: 1px solid rgba(139, 92, 246, 0.3);
-            {% else %}
-                background-color: rgba(239, 68, 68, 0.1);
-                color: #ef4444;
-                border: 1px solid rgba(239, 68, 68, 0.3);
-            {% endif %}
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        .logo-cell {
-            text-align: right;
+        .company-logo {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .logo-cell img {
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .company-logo img {
+            display: block;
         }
 
-        .company-info {
-            background-color: #f7fafc;
-            padding: 20px 30px;
+        /* Información de la empresa */
+        .company-details {
+            background: linear-gradient(to right, #f8fafc, #edf2f7);
+            padding: 25px 30px;
+            text-align: center;
             border-bottom: 1px solid #e2e8f0;
         }
 
-        .company-info h6 {
-            font-size: 12px;
-            color: #4a5568;
-            margin: 4px 0;
-            font-weight: 500;
+        .company-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .content-section {
+        .company-info {
+            font-size: 10px;
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .company-info strong {
+            color: #4a5568;
+        }
+
+        /* Contenido principal */
+        .main-content {
             padding: 30px;
         }
 
-        .section-title {
-            font-size: 18px;
+        /* Información del cliente y servicio */
+        .info-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                background: linear-gradient(135deg, #667eea, #764ba2);
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                background: linear-gradient(135deg, #11998e, #38ef7d);
+            {% elif servicio.estado == 5 %}
+                background: linear-gradient(135deg, #f093fb, #f5576c);
+            {% elif servicio.estado == 6 %}
+                background: linear-gradient(135deg, #4facfe, #00f2fe);
+            {% else %}
+                background: linear-gradient(135deg, #fa709a, #fee140);
+            {% endif %}
+            color: white;
+            padding: 15px 20px;
             font-weight: 600;
-            color: #2d3748;
-            margin: 25px 0 15px 0;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e2e8f0;
+            font-size: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .section-title:first-child {
-            margin-top: 0;
+        .card-body {
+            padding: 20px;
+            background: white;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 25px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .data-table th {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            color: #374151;
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 10px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 11px;
+            color: #2d3748;
             font-weight: 600;
-            font-size: 12px;
-            padding: 12px 10px;
+        }
+
+        /* Tabla de servicios moderna */
+        .services-section {
+            margin: 30px 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .services-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .services-table thead {
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                background: linear-gradient(135deg, #667eea, #764ba2);
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                background: linear-gradient(135deg, #11998e, #38ef7d);
+            {% elif servicio.estado == 5 %}
+                background: linear-gradient(135deg, #f093fb, #f5576c);
+            {% elif servicio.estado == 6 %}
+                background: linear-gradient(135deg, #4facfe, #00f2fe);
+            {% else %}
+                background: linear-gradient(135deg, #fa709a, #fee140);
+            {% endif %}
+        }
+
+        .services-table th {
+            color: white;
+            font-weight: 600;
+            padding: 15px 12px;
             text-align: center;
-            border-bottom: 2px solid #cbd5e0;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .data-table td {
-            padding: 12px 10px;
+        .services-table td {
+            padding: 12px;
             text-align: center;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 12px;
+            font-size: 11px;
+            color: #4a5568;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .services-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .services-table tr:hover {
+            background: #edf2f7;
+            transition: background 0.2s ease;
+        }
+
+        .service-description {
+            text-align: left !important;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .service-total {
+            font-weight: 700;
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                color: #667eea;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                color: #11998e;
+            {% elif servicio.estado == 5 %}
+                color: #f093fb;
+            {% elif servicio.estado == 6 %}
+                color: #4facfe;
+            {% else %}
+                color: #fa709a;
+            {% endif %}
+        }
+
+        /* Frecuencias con diseño de tags */
+        .frequencies-section {
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .frequency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .frequency-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                border-left-color: #667eea;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                border-left-color: #11998e;
+            {% elif servicio.estado == 5 %}
+                border-left-color: #f093fb;
+            {% elif servicio.estado == 6 %}
+                border-left-color: #4facfe;
+            {% else %}
+                border-left-color: #fa709a;
+            {% endif %}
+            font-size: 10px;
+            font-weight: 600;
             color: #4a5568;
         }
 
-        .data-table tr:nth-child(even) {
-            background-color: #f8fafc;
+        /* Empleados (solo para contratos) */
+        .employees-section {
+            margin: 30px 0;
         }
 
-        .totales-section {
-            margin-top: 30px;
+        .employees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .employee-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+        }
+
+        .employee-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .employee-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .employee-detail {
+            font-size: 10px;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        /* Desglose de cálculos mejorado */
+        .calculations-section {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 12px;
             padding: 25px;
-            {% if servicio.estado == 1 or servicio.estado == 2 %}
-                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-                border-left: 4px solid #1da1f2;
-            {% elif servicio.estado == 3 or servicio.estado == 4 %}
-                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-                border-left: 4px solid #22c55e;
-            {% elif servicio.estado == 5 %}
-                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                border-left: 4px solid #f59e0b;
-            {% elif servicio.estado == 6 %}
-                background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-                border-left: 4px solid #8b5cf6;
-            {% else %}
-                background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-                border-left: 4px solid #ef4444;
-            {% endif %}
-            border-radius: 8px;
+            margin: 30px 0;
+            border: 1px solid #e2e8f0;
         }
 
-        .total-item {
+        .calculations-title {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                color: #667eea;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                color: #11998e;
+            {% elif servicio.estado == 5 %}
+                color: #f093fb;
+            {% elif servicio.estado == 6 %}
+                color: #4facfe;
+            {% else %}
+                color: #fa709a;
+            {% endif %}
+        }
+
+        .calculation-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 10px 0;
-            padding: 8px 0;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 11px;
+        }
+
+        .calculation-item:last-child {
+            border-bottom: none;
+            border-top: 2px solid;
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                border-top-color: #667eea;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                border-top-color: #11998e;
+            {% elif servicio.estado == 5 %}
+                border-top-color: #f093fb;
+            {% elif servicio.estado == 6 %}
+                border-top-color: #4facfe;
+            {% else %}
+                border-top-color: #fa709a;
+            {% endif %}
+            padding-top: 15px;
+            margin-top: 10px;
             font-size: 14px;
+            font-weight: 700;
+            {% if servicio.estado == 1 or servicio.estado == 2 %}
+                color: #667eea;
+            {% elif servicio.estado == 3 or servicio.estado == 4 %}
+                color: #11998e;
+            {% elif servicio.estado == 5 %}
+                color: #f093fb;
+            {% elif servicio.estado == 6 %}
+                color: #4facfe;
+            {% else %}
+                color: #fa709a;
+            {% endif %}
+        }
+
+        .calc-label {
+            color: #4a5568;
             font-weight: 500;
         }
 
-        .total-item:last-child {
-            border-top: 2px solid #cbd5e0;
-            padding-top: 15px;
-            margin-top: 15px;
+        .calc-value {
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        /* Footer elegante */
+        .document-footer {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .footer-company {
             font-size: 16px;
             font-weight: 700;
-            color: #1a202c;
+            margin-bottom: 8px;
         }
 
-        .total-label {
-            color: #4a5568;
+        .footer-message {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-bottom: 5px;
         }
 
-        .total-value {
-            {% if servicio.estado == 1 or servicio.estado == 2 %}
-                color: #1da1f2;
-            {% elif servicio.estado == 3 or servicio.estado == 4 %}
-                color: #22c55e;
-            {% elif servicio.estado == 5 %}
-                color: #f59e0b;
-            {% elif servicio.estado == 6 %}
-                color: #8b5cf6;
-            {% else %}
-                color: #ef4444;
-            {% endif %}
-            font-weight: 600;
+        .footer-details {
+            font-size: 10px;
+            opacity: 0.8;
         }
 
-        .footer-section {
-            margin-top: 40px;
-            padding: 25px;
-            text-align: center;
-            background-color: #f7fafc;
-            border-top: 1px solid #e2e8f0;
-            border-radius: 0 0 8px 8px;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .frequency-grid,
+            .employees-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .footer-section p {
-            margin: 8px 0;
-            color: #4a5568;
-            font-size: 12px;
-        }
-
-        .footer-section strong {
-            color: #1a202c;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #cbd5e0, transparent);
-            margin: 20px 0;
-        }
-
-        /* Sección adicional para contratos */
-        .contract-info {
-            {% if servicio.estado == 3 or servicio.estado == 4 %}
-                background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-                border: 1px solid rgba(34, 197, 94, 0.2);
-            {% elif servicio.estado == 5 %}
-                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                border: 1px solid rgba(245, 158, 11, 0.2);
-            {% elif servicio.estado == 6 %}
-                background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-                border: 1px solid rgba(139, 92, 246, 0.2);
-            {% else %}
-                background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-                border: 1px solid rgba(239, 68, 68, 0.2);
-            {% endif %}
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-        }
-
-        /* Estilos específicos para impresión */
+        /* Print optimizations */
         @media print {
-            body {
-                margin: 0;
-                padding: 15px;
-                font-size: 11px;
+            body { 
+                padding: 0; 
+                font-size: 10px; 
+                background: white;
             }
-            
-            .document-container {
-                box-shadow: none;
+            .document-container { 
                 border-radius: 0;
+                box-shadow: none; 
             }
-            
-            .data-table {
-                box-shadow: none;
-            }
-            
-            .section-title {
-                page-break-after: avoid;
-            }
-            
-            .data-table {
+            .calculations-section,
+            .employee-card {
                 page-break-inside: avoid;
             }
-            
-            .totales-section {
-                page-break-inside: avoid;
-            }
-        }
-
-        /* Iconos usando CSS */
-        .icon-document::before {
-            content: "📄";
-            margin-right: 8px;
-        }
-
-        .icon-contract::before {
-            content: "📋";
-            margin-right: 8px;
-        }
-
-        .icon-user::before {
-            content: "👤";
-            margin-right: 8px;
-        }
-
-        .icon-service::before {
-            content: "⚙️";
-            margin-right: 8px;
-        }
-
-        .icon-list::before {
-            content: "📋";
-            margin-right: 8px;
-        }
-
-        .icon-calendar::before {
-            content: "📅";
-            margin-right: 8px;
-        }
-
-        .icon-employee::before {
-            content: "👷";
-            margin-right: 8px;
         }
     </style>
 </head>
 <body>
 
 <div class="document-container">
-    <div class="header-section">
-        <table class="header-table">
-            <tr>
-                <td>
-                    <h1 class="document-title">
-                        {% if servicio.estado == 1 or servicio.estado == 2 %}
-                            <span class="icon-document"></span>
-                            Presupuesto N° <span class="document-number">{{ servicio.pk }}</span>
-                        {% else %}
-                            <span class="icon-contract"></span>
-                            Contrato N° <span class="document-number">{{ servicio.pk }}</span>
-                        {% endif %}
-                    </h1>
-                    <div class="status-badge">
-                        {{ servicio.getEstado }}
-                    </div>
-                </td>
-                <td class="logo-cell">
-                    <img src="{{ img_url }}" width="150" alt="Logo de la empresa">
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="company-info">
-        <h6>📍 Velero Mimosa 152 Esq. Pje. Santiago del Estero - Tel (280)420866 - C.P. 9100 - Trelew Chubut</h6>
-        <h6>📍 Dante Brozzi 830 - (280)451069 - Esquel - 📧 senda@cpsarg.com - 🌐 www.sendaservicios.com.ar</h6>
-    </div>
-
-    <div class="content-section">
-        <h4 class="section-title icon-user">Datos del Cliente</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Cliente</th>
-                    <th>CUIL/CUIT</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
-                    <td>{{ servicio.cliente.cuil }}</td>
-                    <td>{{ servicio.cliente.telefono }}</td>
-                    <td>{{ servicio.cliente.email }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h4 class="section-title icon-service">Datos del Servicio</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>N° Servicio</th>
-                    <th>Fecha Emisión</th>
+    <!-- Header Principal -->
+    <div class="document-header">
+        <div class="header-content">
+            <div class="document-title">
+                <h1>
                     {% if servicio.estado == 1 or servicio.estado == 2 %}
-                        <th>Vigencia</th>
+                        PRESUPUESTO
                     {% else %}
-                        <th>Fecha Inicio</th>
-                        {% if servicio.tipo == 2 %}
-                            <th>Fecha Fin</th>
-                        {% endif %}
+                        CONTRATO
                     {% endif %}
-                    <th>Tipo</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ servicio.pk }}</td>
-                    <td>{{ servicio.fecha_emision|date:"d/m/Y" }}</td>
-                    {% if servicio.estado == 1 or servicio.estado == 2 %}
-                        <td>{{ servicio.plazo_vigencia|date:"d/m/Y" }}</td>
-                    {% else %}
-                        <td>{{ servicio.fecha_inicio|date:"d/m/Y" }}</td>
-                        {% if servicio.tipo == 2 %}
-                            <td>{{ servicio.fecha_finaliza|date:"d/m/Y" }}</td>
-                        {% endif %}
-                    {% endif %}
-                    <td>{{ servicio.getTipo }}</td>
-                    <td>{{ servicio.getEstado }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        {% if servicio.estado != 1 and servicio.estado != 2 and servicio.empleado.exists %}
-        <h4 class="section-title icon-employee">Empleados Asignados</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>CUIL</th>
-                    <th>Teléfono</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for empleado in servicio.empleado.all %}
-                <tr>
-                    <td>{{ empleado.nombre }}</td>
-                    <td>{{ empleado.apellido }}</td>
-                    <td>{{ empleado.cuil }}</td>
-                    <td>{{ empleado.telefono }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
-
-        <h4 class="section-title icon-list">Tipos de Servicio</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Descripción</th>
-                    <th>Cantidad</th>
-                    <th>Unidad de Medida</th>
-                    <th>Precio Unitario</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for tipoServicio in tipoServicios %}
-                <tr>
-                    <td>{{ tipoServicio.tipoServicio.descripcion }}</td>
-                    <td>{{ tipoServicio.cantidad }}</td>
-                    <td>{{ tipoServicio.tipoServicio.getUnidadMedida }}</td>
-                    <td>{{ tipoServicio.tipoServicio.getPrecioFormateado }}</td>
-                    <td>${{ tipoServicio.getPrecio }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <h4 class="section-title icon-calendar">Frecuencias</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Día</th>
-                    <th>Turno</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for frecuencia in frecuencias %}
-                <tr>
-                    <td>{{ frecuencia.getDia }}</td>
-                    <td>{{ frecuencia.getTurno }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="totales-section">
-            <div class="total-item">
-                <span class="total-label">Subtotal Tipos de Servicios:</span>
-                <span class="total-value">${{ subtotal }}</span>
+                </h1>
+                <div class="document-number">N° {{ servicio.pk }}</div>
+                <div class="status-pill">{{ servicio.getEstado }}</div>
             </div>
-            <div class="total-item">
-                <span class="total-label">
-                    {% if servicio.tipo == 2 %}
-                        {% if servicio.estado == 1 or servicio.estado == 2 %}
-                            Presupuesto Mensual:
-                        {% else %}
-                            Contrato Mensual:
-                        {% endif %}
-                    {% else %}
-                        {% if servicio.estado == 1 or servicio.estado == 2 %}
-                            Presupuesto Completo:
-                        {% else %}
-                            Contrato Completo:
-                        {% endif %}
-                    {% endif %}
-                </span>
-                <span class="total-value">{{ servicio.getImporteTotalFormateado }}</span>
+            <div class="company-logo">
+                <img src="{{ img_url }}" width="120" alt="Logo SENDA">
             </div>
         </div>
     </div>
 
-    <div class="footer-section">
-        <p>Saludamos a ustedes muy atentamente</p>
-        <p><strong>SENDA SRL</strong></p>
-        <div class="divider"></div>
+    <!-- Información de la Empresa -->
+    <div class="company-details">
+        <div class="company-name">SENDA SRL</div>
+        <div class="company-info">
+            <strong>Velero Mimosa 152 Esq. Pje. Santiago del Estero</strong> - Tel (280)420866 - Trelew, Chubut<br>
+            <strong>Dante Brozzi 830</strong> - (280)451069 - Esquel<br>
+            📧 senda@cpsarg.com | 🌐 www.sendaservicios.com.ar
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="main-content">
+        
+        <!-- Información del Cliente y Servicio -->
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="card-header">
+                    👤 INFORMACIÓN DEL CLIENTE
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="info-label">Nombre Completo:</span>
+                        <span class="info-value">{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">CUIL/CUIT:</span>
+                        <span class="info-value">{{ servicio.cliente.cuil }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Teléfono:</span>
+                        <span class="info-value">{{ servicio.cliente.telefono }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">{{ servicio.cliente.email }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="card-header">
+                    📋 DETALLES DEL SERVICIO
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="info-label">Fecha de Emisión:</span>
+                        <span class="info-value">{{ servicio.fecha_emision|date:"d/m/Y" }}</span>
+                    </div>
+                    {% if servicio.estado == 1 or servicio.estado == 2 %}
+                        <div class="info-row">
+                            <span class="info-label">Vigencia Hasta:</span>
+                            <span class="info-value">{{ servicio.plazo_vigencia|date:"d/m/Y" }}</span>
+                        </div>
+                    {% else %}
+                        <div class="info-row">
+                            <span class="info-label">Fecha de Inicio:</span>
+                            <span class="info-value">{{ servicio.fecha_inicio|date:"d/m/Y" }}</span>
+                        </div>
+                        {% if servicio.tipo == 2 and servicio.fecha_finaliza %}
+                            <div class="info-row">
+                                <span class="info-label">Fecha de Fin:</span>
+                                <span class="info-value">{{ servicio.fecha_finaliza|date:"d/m/Y" }}</span>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    <div class="info-row">
+                        <span class="info-label">Tipo de Contrato:</span>
+                        <span class="info-value">{{ servicio.getTipo }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Empleados Requeridos:</span>
+                        <span class="info-value">{{ servicio.cant_empleados }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Servicios -->
+        <div class="services-section">
+            <h3 class="section-title">
+                🛠️ SERVICIOS CONTRATADOS
+            </h3>
+            <table class="services-table">
+                <thead>
+                    <tr>
+                        <th>DESCRIPCIÓN DEL SERVICIO</th>
+                        <th>CANT.</th>
+                        <th>U.M.</th>
+                        <th>PRECIO UNITARIO</th>
+                        <th>IMPORTE TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tipoServicio in tipoServicios %}
+                    <tr>
+                        <td class="service-description">{{ tipoServicio.tipoServicio.descripcion }}</td>
+                        <td>{{ tipoServicio.cantidad }}</td>
+                        <td>{{ tipoServicio.tipoServicio.getUnidadMedida }}</td>
+                        <td>${{ tipoServicio.tipoServicio.getPrecioFormateado }}</td>
+                        <td class="service-total">${{ tipoServicio.getPrecio }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Frecuencias de Servicio -->
+        <div class="frequencies-section">
+            <h3 class="section-title">📅 FRECUENCIAS DE SERVICIO</h3>
+            <div class="frequency-grid">
+                {% for frecuencia in frecuencias %}
+                    <div class="frequency-card">
+                        {{ frecuencia.getDia }} - {{ frecuencia.getTurno }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Empleados Asignados (solo para contratos) -->
+        {% if servicio.estado != 1 and servicio.estado != 2 and servicio.empleado.exists %}
+        <div class="employees-section">
+            <h3 class="section-title">👷 EMPLEADOS ASIGNADOS</h3>
+            <div class="employees-grid">
+                {% for empleado in servicio.empleado.all %}
+                <div class="employee-card">
+                    <div class="employee-name">{{ empleado.nombre }} {{ empleado.apellido }}</div>
+                    <div class="employee-detail"><strong>DNI:</strong> {{ empleado.numDNI }}</div>
+                    <div class="employee-detail"><strong>Teléfono:</strong> {{ empleado.telefono }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Desglose de Cálculos -->
+        <div class="calculations-section">
+            <h3 class="calculations-title">💰 DESGLOSE DETALLADO DE CÁLCULOS</h3>
+            
+            <div class="calculation-item">
+                <span class="calc-label">Subtotal de Servicios (por turno):</span>
+                <span class="calc-value">${{ subtotal_formateado }}</span>
+            </div>
+            
+            <div class="calculation-item">
+                <span class="calc-label">Total Servicios ({{ frecuencias|length }} frecuencias):</span>
+                <span class="calc-value">${{ total_servicios_formateado }}</span>
+            </div>
+            
+            <div class="calculation-item">
+                <span class="calc-label">Empleados Totales Calculados:</span>
+                <span class="calc-value">{{ empleados_calculados }} empleados</span>
+            </div>
+            
+            <div class="calculation-item">
+                <span class="calc-label">Costo de Mano de Obra:</span>
+                <span class="calc-value">${{ mano_obra_formateado }}</span>
+            </div>
+            
+            <div class="calculation-item">
+                <span class="calc-label">Ganancia Empresarial (15%):</span>
+                <span class="calc-value">${{ ganancia_formateado }}</span>
+            </div>
+            
+            {% if servicio.porcentaje != 0 %}
+            <div class="calculation-item">
+                <span class="calc-label">Ajuste Aplicado ({{ servicio.porcentaje }}%):</span>
+                <span class="calc-value">${{ ajuste_formateado }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="calculation-item">
+                <span class="calc-label">
+                    {% if servicio.tipo == 2 %}
+                        💼 TOTAL MENSUAL FINAL:
+                    {% else %}
+                        💼 IMPORTE TOTAL FINAL:
+                    {% endif %}
+                </span>
+                <span class="calc-value">{{ servicio.getImporteTotalFormateado }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="document-footer">
+        <div class="footer-company">SENDA SRL</div>
+        <div class="footer-message">Saludamos a ustedes muy atentamente</div>
         {% if servicio.estado == 1 or servicio.estado == 2 %}
-            <p style="font-size: 10px; color: #718096;">
-                Este presupuesto tiene una validez hasta el {{ servicio.plazo_vigencia|date:"d/m/Y" }}
-            </p>
+            <div class="footer-details">Presupuesto válido hasta el {{ servicio.plazo_vigencia|date:"d/m/Y" }}</div>
         {% else %}
-            <p style="font-size: 10px; color: #718096;">
-                Contrato generado el {{ servicio.fecha_emision|date:"d/m/Y" }} - Estado: {{ servicio.getEstado }}
-            </p>
+            <div class="footer-details">Contrato generado el {{ servicio.fecha_emision|date:"d/m/Y" }} - Estado: {{ servicio.getEstado }}</div>
         {% endif %}
     </div>
 </div>

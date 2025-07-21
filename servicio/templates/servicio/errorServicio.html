@@ -1,16 +1,157 @@
-{% extends 'layouts/baseForm.html' %}
+{% extends 'layouts/baseGestion.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-{% endblock %}
+{% block titleNavegador %}SendaRC - Error en la contratación del servicio{% endblock %}
 {% block title %}
-    <h1 class="titulo">Contratar Servicio</h1>
-    <div class="container-info">
-        <h2 class="operacion">Confirmar Contratacion / Asignar Fechas</h2>
+<div class="seccion-cabecera animate-fade-in">
+    <div class="header-content">
+        <div class="header-left">
+            <h1>Contratar Servicio</h1>
+            <p>Error en la contratación del servicio</p>
+        </div>
+        <div class="header-actions">
+            <div class="error-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>Error</span>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
-{% block formulario %}
-    <h1>ERROR: {{error}}</h1>
-    <p>El servicio seleccionado ya esta contratado</p>
-    <a href="{% url 'gestionServicios' %}" class="btn-agregarEntidad">Volver al listado de Servicios</a>
+
+{% block listado %}
+<div class="error-layout">
+    <div class="error-container">
+        <div class="card">
+            <div class="card-body">
+                <div class="error-content">
+                    <div class="error-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    
+                    <div class="error-message">
+                        <h2 class="error-title">ERROR: {{error}}</h2>
+                        <p class="error-description">El servicio seleccionado ya está contratado</p>
+                    </div>
+                    
+                    <div class="error-actions">
+                        <a href="{% url 'gestionServicios' %}" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15,18 9,12 15,6"></polyline>
+                            </svg>
+                            Volver al listado de Servicios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos específicos para errorServicio que complementan base-styles.css */
+
+.error-layout {
+    margin-top: 1.5rem;
+}
+
+.error-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Header personalizado */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.header-left h1 {
+    margin-bottom: 0.5rem;
+}
+
+.error-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: hsl(var(--destructive) / 0.1);
+    color: hsl(var(--destructive));
+    border: 1px solid hsl(var(--destructive) / 0.2);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Contenido del error */
+.error-content {
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-icon {
+    margin-bottom: 1.5rem;
+}
+
+.error-icon svg {
+    color: hsl(var(--destructive));
+}
+
+.error-message {
+    margin-bottom: 2rem;
+}
+
+.error-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: hsl(var(--destructive));
+    margin: 0 0 0.5rem 0;
+}
+
+.error-description {
+    font-size: 1rem;
+    color: hsl(var(--muted-foreground));
+    margin: 0;
+}
+
+.error-actions {
+    display: flex;
+    justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .error-badge {
+        align-self: center;
+    }
+    
+    .error-content {
+        padding: 1.5rem;
+    }
+}
+</style>
+
+<script>
+$(function() {
+    // Animación de entrada
+    $('.card').addClass('animate-fade-in');
+});
+</script>
 {% endblock %}

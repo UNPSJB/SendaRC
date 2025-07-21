@@ -1,14 +1,40 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
-{% endblock %}
+{% block titleNavegador %}SendaRC - Alta de Localidad{% endblock %}
 {% block title %}
-<h1 class="titulo">Localidad <span class="operacion">> Alta Localidad</span></h1>
+<h1>Localidad</h1>
+<p>Alta de nueva localidad</p>
 {% endblock %}
+
 {% block formulario %}
-<div class="container container-form">
+<div class="animate-fade-in">
     {% crispy form %}
 </div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+$(document).ready(() => {
+    const requiredFields = 'input[required], select[required], textarea[required]';
+    $('form').on('submit', function (e) {
+        let isValid = true;
+        $(this).find(requiredFields).each(function () {
+            if (!$(this).val()) {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+        if (!isValid) {
+            e.preventDefault();
+            $('.is-invalid').first().focus();
+        }
+    });
+    $(requiredFields).on('input change', function () {
+        $(this).removeClass('is-invalid');
+    });
+});
+</script>
 {% endblock %}

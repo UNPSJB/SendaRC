@@ -1,88 +1,99 @@
-{% extends 'layouts/baseForm.html' %}
+{% extends 'layouts/baseGestion.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/cobroFactura.css' %}" rel="stylesheet" />
-{% endblock %}
+{% block titleNavegador %}SendaRC - Cobro de Factura Seña{% endblock %}
 {% block title %}
-<div class="page-header-payment">
+<div class="seccion-cabecera animate-fade-in">
     <div class="header-content">
-        <h1 class="titulo">Cobro de Factura Seña de Servicio</h1>
-        <div class="subtitle-container">
-            <span class="subtitle">Seleccionar tipo de pago - Cliente Ocasional</span>
+        <div class="header-left">
+            <h1>Cobro de Factura Seña de Servicio</h1>
+            <p>Seleccionar tipo de pago - Cliente Ocasional</p>
         </div>
     </div>
 </div>
 {% endblock %}
 
-{% block formulario %}
-<div class="payment-container">
+{% block listado %}
+<div class="payment-layout">
     <!-- Panel de información de factura -->
     <div class="invoice-panel">
         <div class="card">
-            <div class="card-header">
-                <div class="header-left">
-                    <h3 class="card-title">Detalles de la Factura</h3>
-                    <p class="card-subtitle">Seña de servicio #{{facturaSeña.pk}}</p>
-                </div>
-                <div class="invoice-badge">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                    </svg>
-                    <span>Factura Seña</span>
-                </div>
-            </div>
-            
-            <div class="card-content">
-                <!-- Información de la factura -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <h4 class="section-title">Información de la Factura</h4>
+            <div class="card-body">
+                <div class="card-header-custom">
+                    <div class="header-left">
+                        <h3 class="card-title">Detalles de la Factura</h3>
+                        <p class="card-subtitle">Seña de servicio #{{facturaSeña.pk}}</p>
                     </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Número de Factura</span>
-                            <span class="info-value">{{facturaSeña.pk}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Fecha de Emisión</span>
-                            <span class="info-value">{{facturaSeña.fechaEmision}}</span>
-                        </div>
+                    <div class="invoice-badge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                        <span>Factura Seña</span>
                     </div>
                 </div>
-
-                <div class="divider"></div>
-
-                <!-- Información del cliente -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <h4 class="section-title">Información del Cliente</h4>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Cliente</span>
-                            <span class="info-value">{{facturaSeña.cliente.apellido}} {{facturaSeña.cliente.nombre}}</span>
+                
+                <div class="card-content">
+                    <!-- Información de la factura -->
+                    <div class="info-section">
+                        <div class="section-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <h4 class="section-title">Información de la Factura</h4>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">CUIT/CUIL</span>
-                            <span class="info-value">{{facturaSeña.cliente.cuil}}</span>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Número de Factura</span>
+                                <span class="info-value">{{facturaSeña.pk}}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fecha de Emisión</span>
+                                <span class="info-value">{{facturaSeña.fechaEmision}}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="divider"></div>
-
-                <!-- Información del servicio -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <h4 class="section-title">Información del Servicio</h4>
+                    <!-- Información del cliente -->
+                    <div class="info-section">
+                        <div class="section-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <h4 class="section-title">Información del Cliente</h4>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Cliente</span>
+                                <span class="info-value">{{facturaSeña.cliente.apellido}} {{facturaSeña.cliente.nombre}}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">CUIT/CUIL</span>
+                                <span class="info-value">{{facturaSeña.cliente.cuil}}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Importe Total del Servicio</span>
-                            <span class="info-value">{{facturaSeña.servicio.getImporteTotalFormateado}}</span>
+
+                    <!-- Información del servicio -->
+                    <div class="info-section">
+                        <div class="section-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            </svg>
+                            <h4 class="section-title">Información del Servicio</h4>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Importe Total del Servicio</span>
+                                <span class="info-value">{{facturaSeña.servicio.getImporteTotalFormateado}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -93,35 +104,389 @@
     <!-- Panel de formulario de pago -->
     <div class="payment-form-panel">
         <div class="card">
-            <div class="card-header">
-                <div class="header-left">
-                    <h3 class="card-title">Realizar Pago</h3>
-                    <p class="card-subtitle">Seleccione el método de pago</p>
-                </div>
-            </div>
-            
-            <div class="card-content">
-                <div class="payment-amount">
-                    <span class="amount-label">Importe a Pagar:</span>
-                    <span class="amount-value">{{facturaSeña.getImporteFormateado}}</span>
+            <div class="card-body">
+                <div class="card-header-custom">
+                    <div class="header-left">
+                        <h3 class="card-title">Realizar Pago</h3>
+                        <p class="card-subtitle">Seleccione el método de pago</p>
+                    </div>
                 </div>
                 
-                <form method="POST" class="payment-form">
-                    {% csrf_token %}
-                    <div class="form-content">
-                        {{ form|crispy }}
+                <div class="card-content">
+                    <div class="payment-amount">
+                        <span class="amount-label">Importe a Pagar:</span>
+                        <span class="amount-value">{{facturaSeña.getImporteFormateado}}</span>
                     </div>
                     
-                    <button type="submit" class="payment-button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                            <line x1="1" y1="10" x2="23" y2="10"></line>
-                        </svg>
-                        Realizar Cobro
-                    </button>
-                </form>
+                    <form method="POST" class="payment-form" id="mi-form">
+                        {% csrf_token %}
+                        <div class="form-content">
+                            {{ form|crispy }}
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary payment-button" id="confirmar-pago">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                            <span class="button-text">Realizar Cobro</span>
+                            <div class="loading-spinner" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal de confirmación -->
+<div class="modal-overlay" id="confirmModal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirmar Pago</h3>
+        </div>
+        <div class="modal-body">
+            <div class="confirmation-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+            </div>
+            <p class="modal-text">¿Está seguro que desea procesar el pago de la factura seña #{{facturaSeña.pk}} por un importe de {{facturaSeña.getImporteFormateado}}?</p>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-outline-primary" id="cancelConfirm">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="proceedPayment">Confirmar Pago</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos específicos para CobroFacturaSeña que complementan base-styles.css */
+
+.payment-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+/* Header personalizado */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.header-left h1 {
+    margin-bottom: 0.5rem;
+}
+
+/* Card header personalizado */
+.card-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--border));
+    gap: 1rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin: 0 0 0.25rem 0;
+}
+
+.card-subtitle {
+    color: hsl(var(--muted-foreground));
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.invoice-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: hsl(var(--accent) / 0.1);
+    color: hsl(var(--accent));
+    border: 1px solid hsl(var(--accent) / 0.2);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Secciones de información */
+.info-section {
+    margin-bottom: 1.5rem;
+}
+
+.info-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.section-header svg {
+    color: hsl(var(--accent));
+    flex-shrink: 0;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin: 0;
+}
+
+/* Grid de información */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+}
+
+/* Panel de pago */
+.payment-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: hsl(var(--accent) / 0.1);
+    border: 1px solid hsl(var(--accent) / 0.2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+}
+
+.amount-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--accent));
+}
+
+.amount-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: hsl(var(--accent));
+}
+
+.form-content {
+    margin-bottom: 1.5rem;
+}
+
+.payment-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.loading-spinner svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    max-width: 400px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin: 0;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.confirmation-icon {
+    margin-bottom: 1rem;
+}
+
+.confirmation-icon svg {
+    color: hsl(var(--accent));
+}
+
+.modal-text {
+    color: hsl(var(--muted-foreground));
+    margin: 0;
+    line-height: 1.6;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.modal-actions .btn {
+    flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .payment-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .card-header-custom {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .invoice-badge {
+        align-self: center;
+    }
+    
+    .payment-amount {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+{% block extrajs %}
+<script>
+$(function() {
+    const confirmButton = $('#confirmar-pago');
+    const modal = $('#confirmModal');
+    const cancelButton = $('#cancelConfirm');
+    const proceedButton = $('#proceedPayment');
+    const form = $('#mi-form');
+    const buttonText = confirmButton.find('.button-text');
+    const loadingSpinner = confirmButton.find('.loading-spinner');
+
+    // Mostrar modal de confirmación
+    confirmButton.click(function(e) {
+        e.preventDefault();
+        
+        // Validar formulario antes de mostrar modal
+        if (form[0].checkValidity()) {
+            modal.fadeIn(200);
+        } else {
+            form[0].reportValidity();
+        }
+    });
+
+    // Cerrar modal
+    cancelButton.click(function() {
+        modal.fadeOut(200);
+    });
+
+    // Cerrar modal al hacer clic fuera
+    modal.click(function(e) {
+        if (e.target === this) {
+            modal.fadeOut(200);
+        }
+    });
+
+    // Procesar pago
+    proceedButton.click(function() {
+        modal.fadeOut(200);
+        
+        // Mostrar estado de carga
+        confirmButton.prop('disabled', true);
+        buttonText.hide();
+        loadingSpinner.show();
+        
+        // Enviar formulario
+        setTimeout(function() {
+            form.submit();
+        }, 500);
+    });
+
+    // Animación de entrada escalonada
+    $('.card').each(function(index) {
+        $(this).css({
+            'animation-delay': (index * 0.1) + 's',
+            'animation-fill-mode': 'both'
+        }).addClass('animate-fade-in');
+    });
+});
+</script>
 {% endblock %}

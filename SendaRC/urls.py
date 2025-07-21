@@ -20,6 +20,8 @@ urlpatterns = [
     path('', CustomLoginView, name='login'),
     path('logout/', logout, name='logout'),
     path('accounts/register/', register, name='register'),
+
+    
     
     path('reset_password/', 
         auth_views.PasswordResetView.as_view(
@@ -47,4 +49,9 @@ urlpatterns = [
              template_name="registration/password_reset_complete_custom.html",
          ),
          name='password_reset_complete'),
+
+
 ]
+
+handler404 = 'SendaRC.views.handler404'
+handler500 = 'SendaRC.views.handler500'

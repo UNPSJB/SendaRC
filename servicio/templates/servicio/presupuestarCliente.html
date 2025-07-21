@@ -1,37 +1,77 @@
 {% extends 'layouts/baseForm.html' %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-{% endblock %}
+{% load static crispy_forms_tags %}
+{% block titleNavegador %}SendaRC - Seleccionar Cliente{% endblock %}
 {% block title %}
-<h1 class="titulo">Presupuestar Servicio {% if cliente %}
-    <span class="operacion">> Cliente: {{ cliente.apellido }} {{ cliente.nombre }}</span>
-    <span class="operacion">| Cuil: {{ cliente.cuil }}</span>
-    {% else %}
-    <span class="operacion">> Agregar cliente / Datos de Presupuesto</span>
-    {% endif %}
-</h1>
+<h1>Presupuestar Servicio</h1>
+{% if cliente %}
+  <p>Cliente: {{ cliente.nombre }} {{ cliente.apellido }} <span class="text-muted-foreground mx-2">•</span> CUIL: {{ cliente.cuil }}</p>
+{% else %}
+  <p>Agregar cliente <span class="text-muted-foreground mx-2">•</span> Datos de Presupuesto</p>
+{% endif %}
 {% endblock %}
+
 {% block formulario %}
-<div class="container container-form">
+<div class="animate-fade-in">
+  <form method="POST" class="needs-validation" novalidate>
+    {% csrf_token %}
     {% crispy form %}
+  </form>
 </div>
 {% endblock %}
+
 {% block extrajs %}
 <script>
-
-    document.addEventListener("DOMContentLoaded", function () {
-        // Verifica si el campo cliente no está oculto
-        var clienteField = document.getElementById('id_cliente');
-        console.log(clienteField)
-        console.log(clienteField.closest('div').classList.contains('hidden'))
-        if (clienteField && clienteField.closest('div').classList.contains('hidden')) {
-            console.log("Entre a colocar selct2")
-            $("#id_cliente").select2({
-                allowClear: true,
-                placeholder: "Seleccione cliente",
-            });
+$(document).ready(function () {
+  // Select2 en el campo cliente (si no está oculto)
+  const clienteField = $('#id_cliente');
+  
+  // Verificar si el campo existe y NO está oculto (type="hidden")
+  if (clienteField.length && clienteField.attr('type') !== 'hidden') {
+    clienteField.select2({
+      placeholder: "Busque y seleccione un cliente...",
+      allowClear: true,
+      // Personalizar cómo se muestran las opciones
+      templateResult: function(cliente) {
+        if (cliente.loading) {
+          return cliente.text;
         }
+        // Si el texto ya contiene nombre y apellido, mostrarlo tal como está
+        return $('<span>' + cliente.text + '</span>');
+      },
+      templateSelection: function(cliente) {
+        return cliente.text || cliente.element.text;
+      }
     });
+  }
+
+  // Validación del formulario
+  $('form').on('submit', function (e) {
+    let isValid = true;
+    const requiredFields = $(this).find('input[required], select[required], textarea[required]');
+    
+    requiredFields.each(function () {
+      // Skip hidden fields in validation
+      if ($(this).attr('type') === 'hidden') {
+        return;
+      }
+      
+      if (!$(this).val() || ($(this).is('select') && $(this).val() === '')) {
+        $(this).addClass('is-invalid');
+        isValid = false;
+      } else {
+        $(this).removeClass('is-invalid');
+      }
+    });
+    
+    if (!isValid) {
+      e.preventDefault();
+      $('.is-invalid').first().focus();
+    }
+  });
+
+  $('input, select, textarea').on('input change', function () {
+    $(this).removeClass('is-invalid');
+  });
+});
 </script>
 {% endblock %}

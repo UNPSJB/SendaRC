@@ -1,21 +1,34 @@
 {% for maquinaria in maquinarias %}
-<tr class="fila-tabla">
-    <td scope="row">{{ maquinaria.nombre }}</td>
-    <td scope="row">{{ maquinaria.modelo }}</td>
-    <td scope="row">{{ maquinaria.marca }}</td>
-    <td scope="row">{{ maquinaria.cantidad }}</td>
+<tr>
+  <td>{{ maquinaria.nombre }}</td>
+  <td>{{ maquinaria.modelo }}</td>
+  <td>{{ maquinaria.marca }}</td>
+  <td>{{ maquinaria.cantidad }}</td>
+  <td>
     {% if maquinaria.activo %}
-        <td scope="row"><i class="bi bi-check-circle"></i></td>
+    <i class="bi bi-check-circle-fill text-success"> Activa</i>
     {% else %}
-        <td scope="row"><i class="bi bi-x-circle"></i></td>
+    <i class="bi bi-x-circle-fill text-danger"> Inactiva</i>
     {% endif %}
-    <td scope="row">
-        <button href="{% url 'detalleMaquinaria' maquinaria.pk %}" class="opcion" type="button" 
-            data-url="/gestionMaquinaria/{{maquinaria.pk}}"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasExample"
-            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-        <a href="{% url 'modificarMaquinaria' maquinaria.pk%}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-    </td>
+  </td>
+  <td>
+    <button class="btn btn-sm btn-outline-primary me-1 btn-detalle"
+      data-url="{% url 'detalleMaquinaria' maquinaria.pk %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles maquinaria">
+      <i class="bi bi-eye"></i>
+    </button>
+    <a href="{% url 'modificarMaquinaria' maquinaria.pk %}" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar maquinaria">
+      <i class="bi bi-pencil-square"></i>
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td></td>
+  <td></td>
+    <td colspan="2" class="text-center text-muted">No hay resultados</td>
+  <td></td>
+
+  <td></td>
+  <td></td>
 </tr>
 {% endfor %}

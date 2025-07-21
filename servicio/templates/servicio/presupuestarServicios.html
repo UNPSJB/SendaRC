@@ -1,190 +1,285 @@
 {% extends 'layouts/baseForm.html' %}
-{% load static %}
-{% load crispy_forms_tags %}
-
-{% block extracss %}{{ block.super }}
-<link href="{% static 'css/formset.css' %}" rel="stylesheet" />
-{% endblock %}
-
+{% load static crispy_forms_tags %}
+{% block titleNavegador %}SendaRC - Seleccionar Servicios{% endblock %}
 {% block title %}
-<div class="page-header">
-    <h1 class="page-title">Presupuestar Servicio ></h1>
-    <div class="page-subtitle">
-        <span class="client-info">{{presupuesto.cliente.nombre}} {{presupuesto.cliente.apellido}}</span>
-        <span class="operation-type">Agregar Servicio</span>
-    </div>
-</div>
+<h1>Presupuestar Servicio</h1>
+<p>
+  Cliente: {{ presupuesto.cliente.nombre }} {{ presupuesto.cliente.apellido }}<span
+    class="text-muted-foreground mx-2">•</span><span class="text-muted">Agregar Servicios</span>
+</p>
 {% endblock %}
 
 {% block formulario %}
-<div class="formset-container">
-    <form method="POST" class="formset-form">
-        {% csrf_token %}
-        {{ formset.management_form }}
+<div class="animate-fade-in">
+  <form method="POST" class="needs-validation" novalidate>
+    {% csrf_token %}
+    {{ formset.management_form }}
 
-        <div class="formset-header">
-            <h3 class="formset-title">Servicios</h3>
-            <button type="button" class="btn-add agregar-servicio">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                Añadir Servicio
+    <!-- Header con botón agregar -->
+    <div class="d-flex align-items-center justify-content-end mb-4">
+      <button type="button" class="btn btn-primary btn-sm agregar-servicio">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Añadir Servicio
+      </button>
+    </div>
+
+    <!-- Contenedor de formularios -->
+    <div id="form-servicios" class="row g-3">
+      {% for form in formset %}
+      <div class="col-12 form-card">
+        <div class="card">
+          <div class="card-body position-relative">
+            <!-- Botón eliminar -->
+            <button type="button"
+              class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2 quitar-servicio"
+              title="Quitar servicio">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
-        </div>
 
-        <div id="form-servicios" class="formset-grid">
-            {% for f in formset %}
-            <div class="form-card form-servicio">
-                <button type="button" class="btn-remove quitar-servicio quitar-form">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="form-content">
-                    {{ f|crispy }}
-                </div>
-            </div>
-            {% endfor %}
+            <!-- Usar crispy forms para renderizar el formulario -->
+            {% crispy form %}
+          </div>
         </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center text-muted py-5">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="mb-3">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+          <line x1="9" y1="9" x2="9.01" y2="9"></line>
+          <line x1="15" y1="9" x2="15.01" y2="9"></line>
+        </svg>
+        <p class="mb-0">No hay servicios agregados</p>
+        <small class="text-muted">Haga clic en "Añadir Servicio" para comenzar</small>
+      </div>
+      {% endfor %}
+    </div>
 
-        <div class="form-actions">
-            <a href="{% url 'presupuestarIdCliente' presupuesto.cliente.pk %}" class="btn btn-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"></polyline>
-                </svg>
-                Volver
-            </a>
-            <button type="submit" class="btn btn-primary btn-siguiente-vista">
-                Siguiente
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"></polyline>
-                </svg>
-            </button>
-        </div>
-    </form>
+    <!-- Botones de acción -->
+    <div class="d-flex gap-2 justify-content-end mt-4">
+      <a href="{% url 'presupuestarIdCliente' presupuesto.cliente.pk %}" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        Volver
+      </a>
+      <button type="submit" class="btn btn-primary">
+        Siguiente
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
 </div>
+
+<!-- Script con tipos de servicio -->
+<script id="tipos-servicio-data" type="application/json">
+  {{ tipos_servicio_json|safe }}
+</script>
 {% endblock %}
 
 {% block extrajs %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const isFrecuencia = document.getElementById('form-frecuencias') !== null;
-        const prefix = isFrecuencia ? 'frecuencia' : 'servicio';
-        const containerId = isFrecuencia ? 'form-frecuencias' : 'form-servicios';
-        const addButtonClass = isFrecuencia ? 'agregar-frecuencia' : 'agregar-servicio';
-        const removeButtonClass = isFrecuencia ? 'quitar-frecuencia' : 'quitar-servicio';
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('form-servicios');
+    const totalForms = document.getElementById('id_form-TOTAL_FORMS');
     
-        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
-        const container = document.getElementById(containerId);
-        const emptyFormTemplate = `{{ formset.empty_form|crispy|escapejs }}`;
+    // Obtener tipos de servicio del script JSON
+    const tiposServicioData = JSON.parse(document.getElementById('tipos-servicio-data').textContent);
     
-        function buildForm(index) {
-            const wrapper = document.createElement('div');
-            wrapper.className = `form-card form-${prefix}`;
-            wrapper.innerHTML = `
-                <button type="button" class="btn-remove ${removeButtonClass} quitar-form">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="form-content">
-                    ${emptyFormTemplate.replace(/__prefix__/g, index)}
-                </div>
-            `;
-            return wrapper;
-        }
-    
-        function addForm() {
-            const currentTotal = parseInt(totalForms.value);
-            const form = buildForm(currentTotal);
-            container.appendChild(form);
-            totalForms.value = currentTotal + 1;
-            bindRemoveButtons();
-            if (isFrecuencia) bindTurnoChange(form);
-            
-            // Animación de entrada
-            form.style.opacity = '0';
-            form.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                form.style.transition = 'all 0.3s ease';
-                form.style.opacity = '1';
-                form.style.transform = 'translateY(0)';
-            }, 10);
-        }
-    
-        function removeForm(button) {
-            const formElement = button.closest(`.form-${prefix}`);
-            if (!formElement) return;
-            
-            // Animación de salida
-            formElement.style.transition = 'all 0.3s ease';
-            formElement.style.opacity = '0';
-            formElement.style.transform = 'translateY(-20px)';
-            
-            setTimeout(() => {
-                formElement.remove();
-                
-                const forms = container.querySelectorAll(`.form-${prefix}`);
-                forms.forEach((form, i) => {
-                    const inputs = form.querySelectorAll('input, select, textarea, label');
-                    inputs.forEach(el => {
-                        if (el.name) el.name = el.name.replace(/form-\d+-/, `form-${i}-`);
-                        if (el.id) el.id = el.id.replace(/form-\d+-/, `form-${i}-`);
-                        if (el.htmlFor) el.htmlFor = el.htmlFor.replace(/form-\d+-/, `form-${i}-`);
-                    });
-                });
-                
-                totalForms.value = forms.length;
-            }, 300);
-        }
-    
-        function bindRemoveButtons() {
-            const buttons = container.querySelectorAll(`.${removeButtonClass}`);
-            buttons.forEach(button => {
-                button.onclick = () => removeForm(button);
-            });
-        }
-    
-        function bindTurnoChange(form) {
-            const selectTurno = form.querySelector("select[name$='turno']");
-            if (!selectTurno) return;
-    
-            selectTurno.addEventListener('change', function () {
-                const valor = this.value;
-                form.querySelectorAll('.time-display').forEach(e => e.remove());
-    
-                let texto = '';
-                if (valor == "1") texto = '8:00 a 12:00';
-                else if (valor == "2") texto = '14:00 a 18:00';
-                else if (valor == "3") texto = '19:00 a 23:00';
-    
-                if (texto) {
-                    const div = document.createElement('div');
-                    div.className = 'time-display';
-                    div.innerHTML = `
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12,6 12,12 16,14"></polyline>
-                        </svg>
-                        <span>${texto}</span>
-                    `;
-                    selectTurno.closest('.form-group').appendChild(div);
-                }
-            });
-        }
-    
-        document.querySelector(`.${addButtonClass}`).addEventListener('click', addForm);
-        document.querySelector('.btn-siguiente-vista')?.addEventListener('click', () => {
-            document.querySelector('.formset-form').submit();
-        });
-    
-        bindRemoveButtons();
-        if (isFrecuencia) {
-            document.querySelectorAll(`.form-${prefix}`).forEach(bindTurnoChange);
-        }
+    // Generar las opciones de select
+    const generateSelectOptions = () => {
+      let options = '<option value="">Seleccione un tipo de servicio...</option>';
+      tiposServicioData.forEach(tipo => {
+        options += `<option value="${tipo.id}">${tipo.descripcion} – ${tipo.unidad_medida}</option>`;
+      });
+      return options;
+    };
+
+    // Función para inicializar Select2
+    function initSelect2(selectElement) {
+      const $select = $(selectElement);
+
+      // Destruir Select2 existente si ya está inicializado
+      if ($select.hasClass('select2-hidden-accessible')) {
+        $select.select2('destroy');
+      }
+
+      // Inicializar Select2
+      $select.select2({
+        placeholder: 'Seleccione un tipo de servicio...',
+        allowClear: true,
+        width: '100%'
+      });
+    }
+
+    // Función para inicializar todos los Select2 existentes
+    function initAllSelect2() {
+      $('select.select2-tipo, select.form-select').each(function () {
+        initSelect2(this);
+      });
+    }
+
+    // Agregar nuevo formulario
+    document.querySelector('.agregar-servicio').addEventListener('click', () => {
+      const idx = parseInt(totalForms.value);
+      const selectOptions = generateSelectOptions();
+
+      // Crear HTML del nuevo formulario
+      const newFormHtml = `
+      <div class="col-12 form-card animate-fade-in">
+        <div class="card">
+          <div class="card-body position-relative">
+            <button type="button" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2 quitar-servicio" title="Quitar servicio">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label for="id_form-${idx}-tipo_servicio" class="form-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                  </svg>
+                  Tipo de Servicio
+                </label>
+                <select name="form-${idx}-tipo_servicio" id="id_form-${idx}-tipo_servicio" class="form-select select2-tipo" required>
+                  ${selectOptions}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="id_form-${idx}-cantidad" class="form-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <path d="M9 9h6v6H9z"></path>
+                  </svg>
+                  Cantidad
+                </label>
+                <input type="number" name="form-${idx}-cantidad" id="id_form-${idx}-cantidad" class="form-control" min="1" value="1" required placeholder="Cantidad">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+      // Insertar el nuevo formulario
+      container.insertAdjacentHTML('beforeend', newFormHtml);
+
+      // Actualizar contador
+      totalForms.value = idx + 1;
+
+      // Inicializar Select2 en el nuevo select específico
+      const newSelect = document.querySelector(`#id_form-${idx}-tipo_servicio`);
+      if (newSelect) {
+        // Esperar un momento para que el DOM se actualice completamente
+        setTimeout(() => {
+          initSelect2(newSelect);
+          console.log('Select2 inicializado para nuevo formulario:', idx);
+        }, 50);
+      }
+
+      // Bind eventos de eliminar
+      bindRemove();
     });
+
+    // Función para manejar la eliminación de formularios
+    function bindRemove() {
+      // Remover listeners existentes y agregar nuevos
+      document.querySelectorAll('.quitar-servicio').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+      });
+
+      document.querySelectorAll('.quitar-servicio').forEach(btn =>
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const card = btn.closest('.form-card');
+
+          // Destruir Select2 antes de eliminar el elemento
+          $(card).find('select').each(function () {
+            if ($(this).hasClass('select2-hidden-accessible')) {
+              $(this).select2('destroy');
+            }
+          });
+
+          // Animación de eliminación
+          card.style.transition = 'all 0.3s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(-20px)';
+
+          setTimeout(() => {
+            card.remove();
+            reindexForms();
+          }, 300);
+        })
+      );
+    }
+
+    // Función para reindexar formularios después de eliminar
+    function reindexForms() {
+      const forms = container.querySelectorAll('.form-card');
+
+      forms.forEach((card, index) => {
+        // Actualizar todos los atributos name, id, for
+        card.querySelectorAll('[name*="form-"], [id*="form-"], [for*="form-"]').forEach(el => {
+          ['name', 'id', 'for'].forEach(attr => {
+            if (el.hasAttribute(attr)) {
+              const value = el.getAttribute(attr);
+              const newValue = value.replace(/form-\d+-/, `form-${index}-`);
+              el.setAttribute(attr, newValue);
+            }
+          });
+        });
+      });
+
+      // Actualizar contador total
+      totalForms.value = forms.length;
+
+      // Reinicializar Select2 para todos los formularios después del reindex
+      setTimeout(() => {
+        initAllSelect2();
+        console.log('Select2 reinicializado después del reindex');
+      }, 100);
+    }
+
+    // Inicialización inicial
+    bindRemove();
+
+    // Esperar a que jQuery y Select2 estén disponibles
+    $(document).ready(function () {
+      // Dar tiempo para que el DOM se cargue completamente
+      setTimeout(() => {
+        initAllSelect2();
+        console.log('Select2 inicializado para formularios existentes');
+      }, 200);
+    });
+
+    // Alternativa: Si jQuery no está disponible inmediatamente
+    function waitForJQuery() {
+      if (typeof $ !== 'undefined') {
+        setTimeout(() => {
+          initAllSelect2();
+          console.log('Select2 inicializado (fallback)');
+        }, 300);
+      } else {
+        setTimeout(waitForJQuery, 100);
+      }
+    }
+
+    // Ejecutar el fallback también
+    waitForJQuery();
+  });
 </script>
 {% endblock %}

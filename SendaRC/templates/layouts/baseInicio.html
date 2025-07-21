@@ -1,31 +1,19 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/baseInicio.css' %}" rel="stylesheet" />
-{% endblock %}
-
 {% block container %}
 <div class="app-layout">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="brand-container">
-                <div class="brand-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 7h-9"></path>
-                        <path d="M14 17H5"></path>
-                        <circle cx="17" cy="17" r="3"></circle>
-                        <circle cx="7" cy="7" r="3"></circle>
-                    </svg>
-                </div>
-                <span class="brand-text">SendaRC</span>
+                <a href="{% url 'home' %}" class="brand-link" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <div class="brand-icon">
+                        <img src="{% static 'images/logo.png' %}" alt="SendaRC" width="38" height="38">
+                    </div>
+                    <span class="brand-text">SendaRC</span>
+                </a>
             </div>
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 12h18m-9-9l9 9-9 9"></path>
-                </svg>
-            </button>
         </div>
 
         <nav class="sidebar-nav">
@@ -112,7 +100,7 @@
                     <span class="section-title">Operaciones</span>
                 </li>
 
-                <li class="nav-item">
+                <!--<li class="nav-item">
                     <a href="#" class="nav-link">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 11H1l6-6 6 6z"></path>
@@ -147,7 +135,7 @@
                         </svg>
                         <span class="nav-text">Asistencias</span>
                     </a>
-                </li>
+                </li>-->
 
                 <li class="nav-item">
                     <a href="{% url 'gestionServicios' %}" class="nav-link {% if '/servicio/' in request.path %}active{% endif %}">
@@ -176,11 +164,7 @@
         <div class="sidebar-footer">
             {% if user.is_authenticated %}
             <div class="user-info">
-                <div class="user-avatar">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
+                <div class="user-avatar" style="background-image: url('{% static 'images/profile-picture.jpg' %}'); background-size: cover; background-position: center; ">
                 </div>
                 <div class="user-details">
                     <span class="user-name">{{ user.username }}</span>
@@ -190,25 +174,8 @@
             {% endif %}
 
             <div class="footer-actions">
-                <!--<button class="theme-toggle" id="themeToggle">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="theme-icon-dark">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="theme-icon-light" style="display: none;">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>-->
-
                 {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="logout-btn">
+                <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-primary" title="Cerrar sesión" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Cerrar sesión">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
@@ -226,57 +193,4 @@
         {% endblock %}
     </main>
 </div>
-{% endblock %}
-
-{% block extrajs %}
-<script>
-$(document).ready(function() {
-    // Sidebar toggle
-    $('#sidebarToggle').click(function() {
-        $('#sidebar').toggleClass('collapsed');
-        
-        // Rotar el icono
-        const icon = $(this).find('svg');
-        if ($('#sidebar').hasClass('collapsed')) {
-            icon.css('transform', 'rotate(180deg)');
-        } else {
-            icon.css('transform', 'rotate(0deg)');
-        }
-    });
-
-    // Theme toggle
-    $('#themeToggle').click(function() {
-        const body = $('body');
-        const darkIcon = $('.theme-icon-dark');
-        const lightIcon = $('.theme-icon-light');
-        
-        if (body.hasClass('light-theme')) {
-            body.removeClass('light-theme').addClass('dark-theme');
-            darkIcon.show();
-            lightIcon.hide();
-            localStorage.setItem('theme', 'dark');
-        } else {
-            body.removeClass('dark-theme').addClass('light-theme');
-            darkIcon.hide();
-            lightIcon.show();
-            localStorage.setItem('theme', 'light');
-        }
-    });
-
-    // Cargar tema guardado
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    if (savedTheme === 'light') {
-        $('body').addClass('light-theme');
-        $('.theme-icon-dark').hide();
-        $('.theme-icon-light').show();
-    } else {
-        $('body').addClass('dark-theme');
-    }
-
-    // Animación de entrada para los elementos del nav
-    $('.nav-item').each(function(index) {
-        $(this).css('animation-delay', (index * 0.05) + 's');
-    });
-});
-</script>
 {% endblock %}

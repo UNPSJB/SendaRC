@@ -1,26 +1,188 @@
 {% load static %}
-{% block detalle %}
-<link href="{%static 'css/detalles.css' %}" rel="stylesheet" />
-<div class="container wrapper-detalles">
-    <div class="container-detalles">
-        <h1 class="titulo-detalle"><i class="bi bi-truck"></i> Tipo de servicio: {{tipo.descripcion}}</h1>
-        <div class="divisor"></div>
-        <p class="detalles">Unidad de medida: {{tipo.getUnidadMedida}}</p>
-        <p class="detalles">Precio: {{tipo.getPrecioFormateado}}</p>
-        {% if tipo.activo %}
-            <p class="detalles">Activa: Sí</p>
-        {% else %}
-            <p class="detalles">Activa: No</p>
-        {% endif %}
-        <div class="divisor"></div>
-        <h1 class="titulo-detalle"><i class="bi bi-box2"></i> Insumos:</h1>
-        {% for insumo in insumos %}
-            <p class="detalles">&emsp;&emsp;- {{insumo.descripcion}} </p>
-        {% endfor %}
-        <h1 class="titulo-detalle"><i class="bi bi-hammer"></i> Maquinarias:</h1>
-        {% for maquinaria in maquinarias %}
-            <p class="detalles">&emsp;&emsp;- {{maquinaria.nombre}} </p>
-        {% endfor %}
+
+<div class="animate-fade-in">
+    <!-- Header del detalle -->
+    <div class="d-flex align-items-center mb-4">
+        <div class="me-3">
+            <div class="bg-accent text-accent-foreground rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+            </div>
+        </div>
+        <div>
+            <h4 class="mb-1">{{ tipo.descripcion }}</h4>
+            <p class="text-muted mb-0">Tipo de servicio #{{ tipo.pk }}</p>
+        </div>
+    </div>
+
+    <!-- Información básica -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Información General
+            </h6>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Unidad de Medida</small>
+                            <span class="fw-medium">{{ tipo.getUnidadMedida }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-success">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Precio</small>
+                            <span class="fw-medium text-success">{{ tipo.getPrecioFormateado }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="d-flex align-items-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-muted">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <div>
+                            <small class="text-muted d-block">Estado</small>
+                            {% if tipo.activo %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactivo</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insumos -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                Insumos Necesarios
+            </h6>
+            
+            {% if insumos %}
+                <div class="list-group list-group-flush">
+                    {% for insumo in insumos %}
+                    <div class="list-group-item d-flex align-items-center px-0">
+                        <div class="me-3">
+                            <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fw-medium">{{ insumo.descripcion }}</div>
+                            {% if insumo.marca %}
+                                <small class="text-muted">Marca: {{ insumo.marca }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-3">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted mb-2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                    <p class="text-muted mb-0">No hay insumos asociados</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Maquinarias -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                </svg>
+                Maquinarias Necesarias
+            </h6>
+            
+            {% if maquinarias %}
+                <div class="list-group list-group-flush">
+                    {% for maquinaria in maquinarias %}
+                    <div class="list-group-item d-flex align-items-center px-0">
+                        <div class="me-3">
+                            <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fw-medium">{{ maquinaria.nombre }}</div>
+                            {% if maquinaria.modelo %}
+                                <small class="text-muted">Modelo: {{ maquinaria.modelo }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-3">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted mb-2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                    <p class="text-muted mb-0">No hay maquinarias asociadas</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="d-flex gap-2 justify-content-end">
+        <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Modificar
+        </a>
     </div>
 </div>
-{% endblock %}
+
+<script>
+function confirmarEliminacion(id, descripcion) {
+    if (confirm(`¿Está seguro que desea eliminar el tipo de servicio "${descripcion}"?`)) {
+        // Aquí iría la lógica de eliminación
+        console.log('Eliminar tipo de servicio:', id);
+        // Ejemplo: window.location.href = `/eliminarTipoServicio/${id}/`;
+    }
+}
+</script>

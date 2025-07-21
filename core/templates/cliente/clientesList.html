@@ -1,21 +1,36 @@
 {% for cliente in clientes %}
-    <tr class="fila-tabla">
-        <td scope="row">{{ cliente.cuil }}</td>
-        <td scope="row">{{ cliente.nombre }}</td>
-        <td scope="row">{{ cliente.apellido }}</td>
-        <td scope="row">{{ cliente.getTipo }}</td>
-        <td scope="row">{{ cliente.getTipoPersona }}</td>
-        {% if cliente.activo %}
-        <td scope="row"><i class="bi bi-check-circle"></i></td>
-        {% else %}
-        <td scope="row"><i class="bi bi-x-circle"></i></td>
-        {% endif %}
-        <td scope="row">
-            <button href="{% url 'detalleCliente' cliente.pk %}" class="opcion" type="button"
-                data-url="/gestionClientes/{{cliente.pk}}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-                aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
-            <a href="{% url 'modificarCliente' cliente.pk %}" class="opcion"><i class="bi bi-pencil-square"></i></i></a>
-            <button href="#" class="opcion"><i class="bi bi-trash"></i></button>
-        </td>
-    </tr>
+<tr>
+  <td>{{ cliente.cuil }}</td>
+  <td>{{ cliente.nombre }}</td>
+  <td>{{ cliente.apellido }}</td>
+  <td>{{ cliente.getTipo }}</td>
+  <td>{{ cliente.getTipoPersona }}</td>
+  <td>
+    {% if cliente.activo %}
+      <i class="bi bi-check-circle-fill text-success"> Activo</i>
+    {% else %}
+      <i class="bi bi-x-circle-fill text-danger"> Inactivo</i>
+    {% endif %}
+  </td>
+  <td>
+    <button class="btn btn-sm btn-outline-primary me-1 btn-detalle"
+            data-url="{% url 'detalleCliente' cliente.pk %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles cliente">
+      <i class="bi bi-eye"></i>
+    </button>
+    <a href="{% url 'modificarCliente' cliente.pk %}"
+       class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar cliente">
+      <i class="bi bi-pencil-square"></i>
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td colspan="0" class="text-center text-muted">No hay resultados</td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
 {% endfor %}

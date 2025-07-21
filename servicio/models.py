@@ -24,7 +24,7 @@ class Servicio(models.Model):
     plazo_vigencia = models.DateField(auto_now=False, auto_now_add=False)
     direccion = models.CharField(max_length=90)
     metros2 = models.IntegerField()
-    observaciones = models.TextField()
+    observaciones = models.TextField(null=True, blank=True)
     porcentaje = models.IntegerField()
     cant_empleados = models.IntegerField()
     importe_total = models.IntegerField()

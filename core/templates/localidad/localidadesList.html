@@ -1,0 +1,17 @@
+{% for localidad in localidades %}
+<tr>
+  <td>{{ localidad.cp }}</td>
+  <td>{{ localidad.nombre }}</td>
+  <td>
+    <a href="{% url 'modificarLocalidad' localidad.pk %}" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar localidad">
+      <i class="bi bi-pencil-square"></i>
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="4" class="text-center text-muted">No hay resultados</td>
+  <td></td>
+  <td></td>
+</tr>
+{% endfor %}
