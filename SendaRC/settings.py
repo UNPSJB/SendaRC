@@ -76,7 +76,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://adminsenda.onrender.com"
+    "https://sendarc.onrender.com/",
+    "http://127.0.0.1/",
+    "http://localhost/"
 ]
 ROOT_URLCONF = 'SendaRC.urls'
 
@@ -142,12 +144,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = os.getenv("STATIC_URL", default="/static/")
+STATIC_ROOT = os.getenv("STATIC_ROOT", default=BASE_DIR / "staticfiles")
 
 
 # Default primary key field type
