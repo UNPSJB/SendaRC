@@ -192,7 +192,7 @@
                             <td>{{ factura.getPeriodoServicio }}</td>
                             <td>
                                 {% if factura.fechaPago %}
-                                    <span class="status-badge status-paid">
+                                    <span class="badge badge-pagada">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -200,7 +200,7 @@
                                         Pagada
                                     </span>
                                 {% elif factura.fecha_vencimiento and factura.fecha_vencimiento < today %}
-                                    <span class="status-badge status-overdue">
+                                    <span class="badge badge-vencida">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="12" cy="12" r="10"></circle>
                                             <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -209,7 +209,7 @@
                                         Vencida
                                     </span>
                                 {% else %}
-                                    <span class="status-badge status-pending">
+                                    <span class="badge badge-pendiente">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="12" cy="12" r="10"></circle>
                                             <polyline points="12 6 12 12 16 14"></polyline>
@@ -225,6 +225,9 @@
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                             <circle cx="12" cy="12" r="3"></circle>
                                         </svg>
+                                    </a>
+                                    <a target="_blank" href="{% url 'pdf_factura' factura.pk %}" class="btn btn-outline-primary btn-sm" title="Imprimir Factura" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <i class="bi bi-printer"></i>
                                     </a>
                                     {% if not factura.fechaPago %}
                                     <a href="{% url 'formaPago' factura.pk %}" class="btn btn-primary btn-sm" title="Registrar pago" data-bs-toggle="tooltip" data-bs-placement="top">
@@ -413,34 +416,6 @@
     color: hsl(var(--accent));
 }
 
-/* Status badges */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.status-paid {
-    background: hsl(var(--success) / 0.1);
-    color: hsl(var(--success));
-    border: 1px solid hsl(var(--success) / 0.2);
-}
-
-.status-pending {
-    background: hsl(var(--warning) / 0.1);
-    color: hsl(var(--warning));
-    border: 1px solid hsl(var(--warning) / 0.2);
-}
-
-.status-overdue {
-    background: hsl(var(--destructive) / 0.1);
-    color: hsl(var(--destructive));
-    border: 1px solid hsl(var(--destructive) / 0.2);
-}
 
 /* Row actions */
 .row-actions {
@@ -523,7 +498,7 @@
     }
     
     .table {
-        min-width: 800px;
+        min-width: 100%;
     }
 }
 

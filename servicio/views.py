@@ -884,45 +884,6 @@ def pdfImprimir(request, pk):
     tipo_servicios = CantServicioTipoServicio.objects.filter(servicio=servicio)
     frecuencias = Frecuencia.objects.filter(servicio=servicio)
 
-    # Calcular subtotal por turno
-    subtotal = sum(
-        [tipo.tipoServicio.getPrecio(tipo.cantidad) for tipo in tipo_servicios]
-    )
-
-    # Recrear los cálculos del presupuesto para mostrar el desglose
-    cant_frecuencias = len(frecuencias)
-    cant_empleados = servicio.cant_empleados
-
-    # Total de servicios (todos los turnos)
-    total_servicios = subtotal * cant_frecuencias
-
-    # Cálculo de empleados según tipo de contrato
-    if servicio.tipo == 2:  # Determinado
-        empleados_calculados = cant_frecuencias * cant_empleados * 4
-    else:  # Eventual
-        empleados_calculados = cant_frecuencias * cant_empleados
-
-    # Cálculo de mano de obra
-    try:
-        mano_obra_unitaria = Empleado.getSueldoBasico() / 24
-        total_mano_obra = mano_obra_unitaria * empleados_calculados
-    except:
-        # Valor por defecto si no se puede obtener el sueldo básico
-        mano_obra_unitaria = 120000 / 24  # Aproximado
-        total_mano_obra = mano_obra_unitaria * empleados_calculados
-
-    # Ganancia del 15%
-    ganancia = 0.15 * total_servicios
-
-    # Importe base (sin ajustes de porcentaje)
-    importe_base = 1.15 * total_servicios + total_mano_obra
-
-    # Cálculo del ajuste si hay porcentaje aplicado
-    if servicio.porcentaje != 0:
-        ajuste = (importe_base * servicio.porcentaje) / 100
-    else:
-        ajuste = 0
-
     # URL absoluta para la imagen
     img_url = request.build_absolute_uri(static("images/senda.png"))
 
@@ -930,17 +891,6 @@ def pdfImprimir(request, pk):
         "servicio": servicio,
         "tipoServicios": tipo_servicios,
         "frecuencias": frecuencias,
-        # Valores originales
-        "subtotal": subtotal,
-        # Valores formateados para mostrar
-        "subtotal_formateado": formato_moneda(subtotal),
-        "total_servicios_formateado": formato_moneda(total_servicios),
-        "mano_obra_formateado": formato_moneda(total_mano_obra),
-        "ganancia_formateado": formato_moneda(ganancia),
-        "ajuste_formateado": formato_moneda(ajuste) if ajuste != 0 else "No aplicado",
-        # Datos adicionales para el desglose
-        "empleados_calculados": empleados_calculados,
-        "cant_frecuencias": cant_frecuencias,
         "img_url": img_url,
     }
 

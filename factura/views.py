@@ -11,7 +11,16 @@ from django.utils.decorators import method_decorator
 from django.db.models import Q
 from .models import Factura
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from io import BytesIO
+from .models import Factura, Detalle_Servicios, Detalle_Empleados
+
+
+
+
 
 @login_required
 def facturas(request):
@@ -302,7 +311,7 @@ def crearFacturaSeña(request, pk):
         importe=mitad_importe,
         cliente=cliente,
         tipo=1,
-        fechaEmision=datetime.now()
+        fechaEmision=datetime.now(),
     )
 
     return redirect('detallesFacturaSeña', pk=factura_seña.pk)
@@ -345,3 +354,63 @@ def facturaPagada(request, pk):
         'factura_seña':factura_seña
     }
     return render(request, 'factura/facturaSeñaPagada.html', context)
+
+
+
+@login_required
+def generar_pdf_factura(request, factura_id):
+    factura = get_object_or_404(Factura, pk=factura_id)
+    servicio = factura.servicio
+    cliente = factura.cliente
+    detalle_servicios_qs = Detalle_Servicios.objects.filter(factura=factura)
+    detalle_empleados = Detalle_Empleados.objects.filter(factura=factura).first()
+    importe_total_servicios = 0
+    
+
+    if factura.tipo != 1:
+        detalle_servicios = []
+        for item in detalle_servicios_qs:
+            subtotal = item.precio_tipo_servicio * item.cantidad
+            subtotal_formateado = f"${subtotal:,.0f}".replace(",", ".")
+            precio_unitario_formateado = f"${item.precio_tipo_servicio:,.0f}".replace(",", ".")
+            
+            detalle_servicios.append({
+                "descripcion": item.tipo_servicio,
+                "unidad": item.tipo_servicio_Unit,
+                "precio_unitario": precio_unitario_formateado,
+                "cantidad": item.cantidad,
+                "subtotal": subtotal_formateado
+            })
+            importe_total_servicios += subtotal
+        
+        importe_total_servicios_formateado = f"${importe_total_servicios:,.0f}".replace(",", ".")
+
+    # Obtener facturas asociadas al mismo servicio, excluyendo la actual, y que estén pagadas
+    facturas_restantes = Factura.objects.filter(servicio=servicio).exclude(fechaPago__isnull=False)
+    print("facturas_restantes", facturas_restantes)
+    facturas_restantes_count = facturas_restantes.count()
+    print("facturas_restantes_count", facturas_restantes_count)
+
+
+    context = {
+        "factura": factura,
+        "cliente": cliente,
+        "servicio": servicio,
+        "detalle_servicios": detalle_servicios if factura.tipo != 1 else [],
+        "detalle_empleados": detalle_empleados if factura.tipo != 1 else [],
+        "subtotal":subtotal if factura.tipo != 1 else 0,
+        "importe_total_servicios": importe_total_servicios_formateado if factura.tipo != 1 else 0,
+        "facturas_restantes": facturas_restantes_count
+    }
+
+    template = get_template("factura/pdfFactura.html")
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'filename=factura_{factura.pk}.pdf'
+
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode("UTF-8")), dest=response, encoding="UTF-8")
+    if pisa_status.err:
+        return HttpResponse("Hubo un error al generar el PDF", status=500)
+    return response
+

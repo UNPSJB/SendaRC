@@ -17,5 +17,8 @@ urlpatterns = [
     path('generarFacturaSeña/servicio/<int:pk>', crearFacturaSeña, name = 'crearFacturaSeña'),
     path('realizarCobroFacturaSeña/<int:pk>', realizarCobroFacturaSeña, name = 'realizarCobroFacturaSeña'),
     path('facturaPagada/<int:pk>', facturaPagada, name = 'facturaPagada'),
+
+    # Generar PDF de factura
+    path("factura/<int:factura_id>/pdf/", generar_pdf_factura, name="pdf_factura"),
     
 ]

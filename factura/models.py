@@ -27,6 +27,7 @@ class Factura(models.Model):
     formaPago =  models.PositiveIntegerField(choices=FORMAPAGO, null=True)
     fechaPago = models.DateField(auto_now=False, auto_now_add=False, null=True)
     
+    
     def getImporteFormateado(self):
             return f"${self.importe:,.0f}".replace(",", ".")
     
@@ -62,6 +63,7 @@ class Detalle_Servicios(models.Model):
     tipo_servicio_Unit = models.CharField(max_length=50)
     precio_tipo_servicio = models.IntegerField()
     cantidad = models.IntegerField()
+
 
 class Detalle_Empleados(models.Model):
     factura = models.ForeignKey(Factura, on_delete=models.CASCADE)

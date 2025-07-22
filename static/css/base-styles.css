@@ -110,6 +110,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-feature-settings: "kern" 1;
   font-feature-settings: "kern" 1;
+  
 }
 
 /* ===== COMPONENTES BASE ===== */
@@ -794,7 +795,6 @@ body {
   gap: 0.5rem;
 }
 
-.theme-toggle,
 .logout-btn {
   width: 32px;
   height: 32px;
@@ -810,7 +810,6 @@ body {
   text-decoration: none;
 }
 
-.theme-toggle:hover,
 .logout-btn:hover {
   background: hsl(var(--accent));
   color: hsl(var(--accent-foreground));
@@ -1368,7 +1367,7 @@ body {
 /* Estados específicos de servicios */
 
 /* Presupuestado - Amarillo/Naranja */
-.badge.bg-warning,
+.badge.bg-warning,.badge-pendiente,
 .badge-presupuestado {
   background-color: hsl(var(--badge-presupuestado)) !important;
   color: hsl(var(--badge-presupuestado-fg)) !important;
@@ -1376,7 +1375,7 @@ body {
   box-shadow: 0 1px 2px hsl(var(--badge-presupuestado) / 0.1);
 }
 
-.badge.bg-warning:hover,
+.badge.bg-warning:hover,.badge-pendiente,
 .badge-presupuestado:hover {
   background-color: hsl(var(--badge-presupuestado) / 0.9) !important;
   transform: translateY(-1px);
@@ -1384,7 +1383,7 @@ body {
 }
 
 /* En Curso - Verde */
-.badge.bg-success,
+.badge.bg-success,.badge-pagada,
 .badge-en-curso {
   background-color: hsl(var(--badge-en-curso)) !important;
   color: hsl(var(--badge-en-curso-fg)) !important;
@@ -1392,7 +1391,7 @@ body {
   box-shadow: 0 1px 2px hsl(var(--badge-en-curso) / 0.1);
 }
 
-.badge.bg-success:hover,
+.badge.bg-success:hover,.badge-pagada,
 .badge-en-curso:hover {
   background-color: hsl(var(--badge-en-curso) / 0.9) !important;
   transform: translateY(-1px);
@@ -1446,7 +1445,7 @@ body {
 }
 
 /* Estado por defecto/pendiente - Gris */
-.badge-pendiente,
+
 .badge.bg-secondary {
   background-color: hsl(var(--badge-pendiente)) !important;
   color: hsl(var(--badge-pendiente-fg)) !important;
@@ -1454,7 +1453,7 @@ body {
   box-shadow: 0 1px 2px hsl(var(--badge-pendiente) / 0.1);
 }
 
-.badge-pendiente:hover,
+
 .badge.bg-secondary:hover {
   background-color: hsl(var(--badge-pendiente) / 0.9) !important;
   transform: translateY(-1px);

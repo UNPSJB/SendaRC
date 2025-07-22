@@ -10,7 +10,7 @@
             <p>{{factura.getTipo}} - Servicio #{{factura.servicio.pk}} - {{factura.servicio.getTipo}}</p>
         </div>
         <div class="header-actions">
-            <div class="status-badge {% if factura.fechaPago %}status-paid{% else %}status-pending{% endif %}">
+            <div class="badge {% if factura.fechaPago %}badge-pagada{% else %}badge-pendiente{% endif %}">
                 {% if factura.fechaPago %}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="20 6 9 17 4 12"></polyline>
@@ -30,14 +30,14 @@
                 </svg>
                 Volver a Facturas
             </a>
-            <button onclick="window.print(); return false;" class="btn btn-secondary">
+            <a target="_blank" href="{% url 'pdf_factura' factura.pk %}" class="btn btn-secondary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 6 2 18 2 18 9"></polyline>
                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                     <rect x="6" y="14" width="12" height="8"></rect>
                 </svg>
                 Imprimir Factura
-            </button>
+            </a>
         </div>
     </div>
 </div>

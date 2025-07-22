@@ -1,0 +1,481 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura #{{ factura.pk }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.3;
+            color: #333;
+            background: white;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .document-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        /* Header compacto */
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .company-section {
+            flex: 1;
+        }
+
+        .company-logo {
+            margin-bottom: 10px;
+            background-color: #2c5aa0;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .company-logo h1 {
+            color: #f0f8ff;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .company-details {
+            font-size: 9px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .document-info {
+            text-align: right;
+            min-width: 200px;
+        }
+
+        .document-type {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 5px;
+        }
+
+        .document-number {
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #f0f8ff;
+            color: #2c5aa0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: bold;
+            border: 1px solid #2c5aa0;
+        }
+
+        /* Información en formato moderno */
+        .info-section {
+            padding: 15px 20px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-block h4 {
+            font-size: 11px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+            font-size: 9px;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Sección de servicios */
+        .services-section {
+            padding: 15px 20px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .services-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 9px;
+        }
+
+        .services-table th {
+            background: #2c5aa0;
+            color: white;
+            padding: 8px 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
+        .services-table td {
+            padding: 6px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .services-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .service-description {
+            text-align: left !important;
+            font-weight: 500;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* Cálculos modernos */
+        .calculations-section {
+            padding: 15px 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .calc-block {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .calc-section-title {
+            font-size: 10px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .calc-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calc-table td {
+            padding: 4px 8px;
+            font-size: 9px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .calc-table .calc-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .calc-table .calc-value {
+            color: #333;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .calc-table .total-row {
+            border-top: 2px solid #2c5aa0;
+            font-weight: bold;
+            color: #2c5aa0;
+            font-size: 11px;
+            background: #f0f8ff;
+        }
+
+        /* Footer compacto */
+        .document-footer {
+            background: #2c5aa0;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        .footer-company {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .footer-contact {
+            font-size: 8px;
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .document-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print optimizations */
+        @media print {
+            body { 
+                padding: 0; 
+                font-size: 9px;
+            }
+            .document-container { 
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="document-container">
+    <!-- Header -->
+    <div class="document-header">
+        <div class="company-section">
+            <div class="company-logo">
+                <h1>Senda SRL</h1>
+            </div>
+            <div class="company-details">
+                <strong>Av. Siempre Viva</strong> - Trelew, Chubut<br>
+                📧 senda@cpsarg.com | 🌐 www.sendaservicios.com.ar
+            </div>
+        </div>
+        
+        <div class="document-info">
+            <div class="document-type">FACTURA</div>
+            <div class="document-number">
+                N° {{ factura.pk }} 
+                {% if factura.tipo == 1 %}
+                    <span class="status-badge">SEÑA</span>
+                {% endif %}
+            </div>
+            {% if facturas_restantes %}
+                <div class="status-badge">Pagos Restantes: {{ facturas_restantes }}</div>
+            {% else %}
+                <div class="status-badge">Ultimo Pago</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Información del cliente y factura -->
+    <div class="info-section">
+        <div class="info-grid">
+            <div class="info-block">
+                <h4>Información del Cliente</h4>
+                <div class="info-row">
+                    <span class="info-label">Cliente:</span>
+                    <span class="info-value">{{ cliente.nombre }} {{ cliente.apellido }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">CUIL/CUIT:</span>
+                    <span class="info-value">{{ cliente.cuil }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ cliente.email }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Teléfono:</span>
+                    <span class="info-value">{{ cliente.telefono }}</span>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <h4>Detalles de la Factura</h4>
+                <div class="info-row">
+                    <span class="info-label">Tipo de Factura:</span>
+                    <span class="info-value">{{ factura.getTipo }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Periodo del Servicio:</span>
+                    <span class="info-value">{{ factura.getPeriodoServicio }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha Emisión:</span>
+                    <span class="info-value">{{ factura.fechaEmision }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha Vencimiento:</span>
+                    <span class="info-value">{{ factura.fecha_vencimiento|default:"-" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Forma de Pago:</span>
+                    <span class="info-value">{% if factura.formaPago %}{{ factura.getFormaPago|default:"-" }}{% else %}-{% endif %}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha de Pago:</span>
+                    <span class="info-value">{{ factura.fechaPago|default:"-" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if factura.tipo != 1 %}
+    <!-- Detalles de servicios -->
+    <div class="services-section">
+        <h3 class="section-title">Detalles de Servicios</h3>
+        <table class="services-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>P. Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in detalle_servicios %}
+                <tr>
+                    <td class="service-description">{{ item.descripcion }}</td>
+                    <td class="text-right">{{ item.cantidad }}</td>
+                    <td>{{ item.unidad }}</td>
+                    <td class="text-right">{{ item.precio_unitario }}</td>
+                    <td class="text-right">{{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Cálculos -->
+    <div class="calculations-section">
+        <!-- Total Servicios -->
+        <div class="calc-block">
+            <div class="calc-section-title">Total Servicios</div>
+            <table class="calc-table">
+                {% if factura.tipo != 1 %}
+                <tr>
+                    <td class="calc-label">Importe Total Servicios x 1 Frecuencia:</td>
+                    <td class="calc-value">{{ importe_total_servicios }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td class="calc-label">Importe Servicio x {{ servicio.getCantidadFrecuencias }} Frecuencia/s:</td>
+                    <td class="calc-value">{{ servicio.getTotalServiciosFormateado }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {% if detalle_empleados %}
+        <!-- Costo de Mano de Obra -->
+        <div class="calc-block">
+            <div class="calc-section-title">Costo de Mano de Obra</div>
+            <table class="calc-table">
+                <tr>
+                    <td class="calc-label">Costo de Mano de Obra/u:</td>
+                    <td class="calc-value">{{ servicio.getManoObraUnitariaFormateado }}</td>
+                </tr>
+                <tr>
+                    <td class="calc-label">Cantidad de Empleados: {{ detalle_empleados.cantidad_empleados }}</td>
+                    <td class="calc-value">{{ detalle_empleados.getImporteManoObraFormateado }}</td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if servicio.porcentaje > 0 %}
+        <!-- Ajuste -->
+        <div class="calc-block">
+            <div class="calc-section-title">Ajuste</div>
+            <table class="calc-table">
+                <tr>
+                    <td class="calc-label">Ajuste ({{ servicio.porcentaje }}%):</td>
+                    <td class="calc-value">{{ servicio.getAjusteFormateado }}</td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- Ganancia -->
+        <div class="calc-block">
+            <div class="calc-section-title">Ganancia</div>
+            <table class="calc-table">
+                <tr>
+                    <td class="calc-label">Ganancia (15%):</td>
+                    <td class="calc-value">{{ servicio.getGananciaFormateado }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Servicio Total -->
+        <div class="calc-block">
+            <div class="calc-section-title">Servicio</div>
+            <table class="calc-table">
+                <tr>
+                    <td class="calc-label">Importe Total Contrato:</td>
+                    <td class="calc-value">{{ servicio.getImporteTotalFormateado }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Total Final -->
+        <div class="calc-block">
+            <div class="calc-section-title">Total</div>
+            <table class="calc-table">
+                <tr class="total-row">
+                    <td class="calc-label">
+                        Importe Total {% if factura.tipo == 1 %}Seña (50% de {{ servicio.getImporteTotalFormateado }}){% else %}Factura{% endif %}:
+                    </td>
+                    <td class="calc-value">{{ factura.getImporteFormateado }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="document-footer">
+        <div class="footer-company">SENDA SRL</div>
+        <div class="footer-contact">
+            Servicios de Limpieza y Mantenimiento
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
