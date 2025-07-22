@@ -74,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://sendarc.onrender.com/",
@@ -144,8 +145,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-STATIC_URL = os.getenv("STATIC_URL", default="/static/")
-STATIC_ROOT = os.getenv("STATIC_ROOT", default=BASE_DIR / "staticfiles")
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_URL = '/static/'
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Default primary key field type
