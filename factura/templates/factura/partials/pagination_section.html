@@ -1,0 +1,25 @@
+<!-- factura/partials/pagination_section.html -->
+{% if facturas.has_other_pages %}
+<div class="card">
+    <div class="card-body">
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Mostrando {{ facturas.start_index }} - {{ facturas.end_index }} de {{ facturas.paginator.count }} facturas
+            </div>
+            <div class="pagination-controls">
+                {% if facturas.has_previous %}
+                    <button type="button" class="btn btn-outline-primary btn-sm pagination-btn" data-page="1">Primera</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm pagination-btn" data-page="{{ facturas.previous_page_number }}">Anterior</button>
+                {% endif %}
+                
+                <span class="btn btn-primary btn-sm">{{ facturas.number }}</span>
+                
+                {% if facturas.has_next %}
+                    <button type="button" class="btn btn-outline-primary btn-sm pagination-btn" data-page="{{ facturas.next_page_number }}">Siguiente</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm pagination-btn" data-page="{{ facturas.paginator.num_pages }}">Última</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

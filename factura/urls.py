@@ -4,6 +4,7 @@ from factura.views import *
 urlpatterns = [
     path('', facturas, name = 'facturas'),
     path('verFacturas/', verFacturas, name='verFacturas'),
+    path('facturas/ajax/', get_facturas_ajax, name='facturas_ajax'),
     path('serviciosFacturar/', serviciosFacturar, name = 'serviciosFacturar'),
     path('serviciosFacturar/<int:pk>', generarFactura, name = 'generarFactura'),
     path('facturaRegistrada/<int:pk>', facturaRegistrada, name = 'facturaRegistrada'),

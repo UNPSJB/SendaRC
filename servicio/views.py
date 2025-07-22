@@ -1234,3 +1234,30 @@ def asignarEmpleados(request, pk):
         "servicio/asignarEmpleados.html",
         {"formset": formset, "servicio": servicio},
     )
+
+@login_required
+def cancelar_servicio(request, pk):
+    servicio = get_object_or_404(Servicio, pk=pk)
+
+    try:
+        # Eliminar detalles relacionados a las facturas del servicio
+        facturas = Factura.objects.filter(servicio=servicio)
+        for factura in facturas:
+            Detalle_Servicios.objects.filter(factura=factura).delete()
+            Detalle_Empleados.objects.filter(factura=factura).delete()
+        facturas.delete()
+
+        # Eliminar frecuencias
+        Frecuencia.objects.filter(servicio=servicio).delete()
+
+        # Eliminar tipos de servicio intermedios
+        CantServicioTipoServicio.objects.filter(servicio=servicio).delete()
+
+        # Finalmente, eliminar el servicio
+        servicio.delete()
+
+        print(request, "El servicio fue cancelado correctamente.")
+    except Exception as e:
+        print(request, f"Ocurrió un error al cancelar el servicio: {str(e)}")
+
+    return redirect("gestionServicios")  

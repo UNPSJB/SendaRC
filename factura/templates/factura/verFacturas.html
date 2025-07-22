@@ -22,74 +22,18 @@
 
 {% block listado %}
 <div class="facturas-list-layout">
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Cargando...</p>
+        </div>
+    </div>
+
     <!-- Estadísticas rápidas -->
     <div class="stats-section">
-        <div class="stats-grid">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-content">
-                        <div class="stat-icon total">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-value">{{ total_facturas }}</div>
-                            <div class="stat-label">Total Facturas</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-content">
-                        <div class="stat-icon paid">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-value">{{ facturas_pagadas }}</div>
-                            <div class="stat-label">Pagadas</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-content">
-                        <div class="stat-icon pending">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-value">{{ facturas_pendientes }}</div>
-                            <div class="stat-label">Pendientes</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-content">
-                        <div class="stat-icon overdue">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="16"></line>
-                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-value">{{ facturas_vencidas }}</div>
-                            <div class="stat-label">Vencidas</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="stats-container">
+            {% include 'factura/partials/stats_section.html' %}
         </div>
     </div>
 
@@ -97,15 +41,15 @@
     <div class="filters-section">
         <div class="card">
             <div class="card-body">
-                <form method="GET" class="filters-form">
+                <form id="filters-form" method="GET" class="filters-form">
                     <div class="filters-grid">
                         <div class="filter-group">
                             <label class="form-label">Buscar</label>
-                            <input type="text" name="search" class="form-control" placeholder="Cliente, servicio..." value="{{ request.GET.search }}">
+                            <input type="text" name="search" id="search" class="form-control" placeholder="Cliente, servicio..." value="{{ request.GET.search }}">
                         </div>
                         <div class="filter-group">
                             <label class="form-label">Tipo de Factura</label>
-                            <select name="tipo" class="form-control">
+                            <select name="tipo" id="tipo" class="form-control">
                                 <option value="">Todos los tipos</option>
                                 <option value="1" {% if request.GET.tipo == '1' %}selected{% endif %}>Seña</option>
                                 <option value="2" {% if request.GET.tipo == '2' %}selected{% endif %}>Única</option>
@@ -113,8 +57,27 @@
                             </select>
                         </div>
                         <div class="filter-group">
+                            <label class="form-label">Período Servicio</label>
+                            <select name="periodo_servicio" id="periodo_servicio" class="form-control">
+                                <option value="">Todos los períodos</option>
+                                <option value="1" {% if request.GET.periodo_servicio == '1' %}selected{% endif %}>Enero</option>
+                                <option value="2" {% if request.GET.periodo_servicio == '2' %}selected{% endif %}>Febrero</option>
+                                <option value="3" {% if request.GET.periodo_servicio == '3' %}selected{% endif %}>Marzo</option>
+                                <option value="4" {% if request.GET.periodo_servicio == '4' %}selected{% endif %}>Abril</option>
+                                <option value="5" {% if request.GET.periodo_servicio == '5' %}selected{% endif %}>Mayo</option>
+                                <option value="6" {% if request.GET.periodo_servicio == '6' %}selected{% endif %}>Junio</option>
+                                <option value="7" {% if request.GET.periodo_servicio == '7' %}selected{% endif %}>Julio</option>
+                                <option value="8" {% if request.GET.periodo_servicio == '8' %}selected{% endif %}>Agosto</option>
+                                <option value="9" {% if request.GET.periodo_servicio == '9' %}selected{% endif %}>Septiembre</option>
+                                <option value="10" {% if request.GET.periodo_servicio == '10' %}selected{% endif %}>Octubre</option>
+                                <option value="11" {% if request.GET.periodo_servicio == '11' %}selected{% endif %}>Noviembre</option>
+                                <option value="12" {% if request.GET.periodo_servicio == '12' %}selected{% endif %}>Diciembre</option>
+                                <option value="13" {% if request.GET.periodo_servicio == '13' %}selected{% endif %}>Un Día</option>
+                            </select>
+                        </div>                        
+                        <div class="filter-group">
                             <label class="form-label">Estado</label>
-                            <select name="estado" class="form-control">
+                            <select name="estado" id="estado" class="form-control">
                                 <option value="">Todos los estados</option>
                                 <option value="pagada" {% if request.GET.estado == 'pagada' %}selected{% endif %}>Pagada</option>
                                 <option value="pendiente" {% if request.GET.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
@@ -123,19 +86,19 @@
                         </div>
                         <div class="filter-group">
                             <label class="form-label">Fecha Emisión Desde</label>
-                            <input type="date" name="fecha_emision_desde" class="form-control" value="{{ request.GET.fecha_emision_desde }}">
+                            <input type="date" name="fecha_emision_desde" id="fecha_emision_desde" class="form-control" value="{{ request.GET.fecha_emision_desde }}">
                         </div>
                         <div class="filter-group">
                             <label class="form-label">Fecha Emisión Hasta</label>
-                            <input type="date" name="fecha_emision_hasta" class="form-control" value="{{ request.GET.fecha_emision_hasta }}">
+                            <input type="date" name="fecha_emision_hasta" id="fecha_emision_hasta" class="form-control" value="{{ request.GET.fecha_emision_hasta }}">
                         </div>
                         <div class="filter-group">
                             <label class="form-label">Fecha Vencimiento Desde</label>
-                            <input type="date" name="fecha_vencimiento_desde" class="form-control" value="{{ request.GET.fecha_vencimiento_desde }}">
+                            <input type="date" name="fecha_vencimiento_desde" id="fecha_vencimiento_desde" class="form-control" value="{{ request.GET.fecha_vencimiento_desde }}">
                         </div>
                         <div class="filter-group">
                             <label class="form-label">Fecha Vencimiento Hasta</label>
-                            <input type="date" name="fecha_vencimiento_hasta" class="form-control" value="{{ request.GET.fecha_vencimiento_hasta }}">
+                            <input type="date" name="fecha_vencimiento_hasta" id="fecha_vencimiento_hasta" class="form-control" value="{{ request.GET.fecha_vencimiento_hasta }}">
                         </div>
                         <div class="filter-group">
                             <button type="submit" class="btn btn-primary">
@@ -154,140 +117,15 @@
 
     <!-- Tabla de facturas -->
     <div class="table-section">
-        <div class="table-container">
-            {% if facturas %}
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID Factura</th>
-                            <th>Cliente</th>
-                            <th>Id Servicio</th>
-                            <th>Tipo</th>
-                            <th>Importe</th>
-                            <th>Fecha Emisión</th>
-                            <th>Fecha Vencimiento</th>
-                            <th>Período Servicio</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for factura in facturas %}
-                        <tr>
-                            <td>
-                                <strong>#{{ factura.id }}</strong>
-                            </td>
-                            <td>
-                                <div class="client-info">
-                                    <div class="client-name">{{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</div>
-                                </div>
-                            </td>
-                            <td>{{ factura.servicio.pk }}</td>
-                            <td>{{ factura.getTipo }}</td>
-                            <td>
-                                <strong class="amount-cell">{{ factura.getImporteFormateado }}</strong>
-                            </td>
-                            <td>{{ factura.fechaEmision|date:"d/m/Y" }}</td>
-                            <td>{{ factura.fecha_vencimiento|date:"d/m/Y" }}</td>
-                            <td>{{ factura.getPeriodoServicio }}</td>
-                            <td>
-                                {% if factura.fechaPago %}
-                                    <span class="badge badge-pagada">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                        </svg>
-                                        Pagada
-                                    </span>
-                                {% elif factura.fecha_vencimiento and factura.fecha_vencimiento < today %}
-                                    <span class="badge badge-vencida">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="12" y1="8" x2="12" y2="16"></line>
-                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                        </svg>
-                                        Vencida
-                                    </span>
-                                {% else %}
-                                    <span class="badge badge-pendiente">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        Pendiente
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="row-actions">
-                                    <a href="{% url 'detalleFactura' factura.pk %}"  class="btn btn-outline-primary btn-sm" title="Ver detalles Factura" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </a>
-                                    <a target="_blank" href="{% url 'pdf_factura' factura.pk %}" class="btn btn-outline-primary btn-sm" title="Imprimir Factura" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <i class="bi bi-printer"></i>
-                                    </a>
-                                    {% if not factura.fechaPago %}
-                                    <a href="{% url 'formaPago' factura.pk %}" class="btn btn-primary btn-sm" title="Registrar pago" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="2" y="6" width="20" height="12" rx="2" ry="2" />
-                                            <circle cx="12" cy="12" r="3" />
-                                            <path d="M2 9a3 3 0 0 0 3 3 3 3 0 0 1-3 3" />
-                                            <path d="M22 9a3 3 0 0 1-3 3 3 3 0 0 0 3 3" />
-                                        </svg>
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <div class="empty-state">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <h3>No se encontraron facturas</h3>
-                    <p>No hay facturas que coincidan con los criterios de búsqueda</p>
-                </div>
-            {% endif %}
+        <div class="table-container" id="table-container">
+            {% include 'factura/partials/table_section.html' %}
         </div>
     </div>
 
     <!-- Paginación -->
-    {% if facturas.has_other_pages %}
-    <div class="pagination-section">
-        <div class="card">
-            <div class="card-body">
-                <div class="pagination-container">
-                    <div class="pagination-info">
-                        Mostrando {{ facturas.start_index }} - {{ facturas.end_index }} de {{ facturas.paginator.count }} facturas
-                    </div>
-                    <div class="pagination-controls">
-                        {% if facturas.has_previous %}
-                            <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="btn btn-outline-primary btn-sm">Primera</a>
-                            <a href="?page={{ facturas.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="btn btn-outline-primary btn-sm">Anterior</a>
-                        {% endif %}
-                        
-                        <span class="btn btn-primary btn-sm">{{ facturas.number }}</span>
-                        
-                        {% if facturas.has_next %}
-                            <a href="?page={{ facturas.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="btn btn-outline-primary btn-sm">Siguiente</a>
-                            <a href="?page={{ facturas.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_desde %}&fecha_desde={{ request.GET.fecha_desde }}{% endif %}{% if request.GET.fecha_hasta %}&fecha_hasta={{ request.GET.fecha_hasta }}{% endif %}" class="btn btn-outline-primary btn-sm">Última</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="pagination-section" id="pagination-container">
+        {% include 'factura/partials/pagination_section.html' %}
     </div>
-    {% endif %}
 </div>
 
 <style>
@@ -298,6 +136,58 @@
     flex-direction: column;
     gap: 2rem;
     margin-top: 1.5rem;
+    position: relative;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: var(--radius-md);
+}
+
+.loading-spinner {
+    text-align: center;
+    color: hsl(var(--muted-foreground));
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid hsl(var(--border));
+    border-top: 4px solid hsl(var(--primary));
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animaciones */
+.fade-in-row {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Header */
@@ -416,7 +306,6 @@
     color: hsl(var(--accent));
 }
 
-
 /* Row actions */
 .row-actions {
     display: flex;
@@ -513,20 +402,295 @@
 }
 </style>
 {% endblock %}
+
 {% block extrajs %}
 <script>
-$(function() {
-    // Animación de entrada para las filas de la tabla
-    $('.table tbody tr').each(function(index) {
-        $(this).css('animation-delay', (index * 0.05) + 's');
-        $(this).addClass('animate-fade-in');
+$(document).ready(function() {
+    let searchTimeout;
+    let isLoading = false;
+    
+    // Función para mostrar/ocultar loading
+    function showLoading() {
+        if (!isLoading) {
+            isLoading = true;
+            $('#loading-overlay').fadeIn(200);
+        }
+    }
+    
+    function hideLoading() {
+        isLoading = false;
+        $('#loading-overlay').fadeOut(200);
+    }
+    
+    // Función para aplicar filtros via AJAX
+    function applyFilters(page = 1) {
+        if (isLoading) return;
+        
+        showLoading();
+        
+        const formData = new FormData(document.getElementById('filters-form'));
+        formData.append('page', page);
+        
+        const params = new URLSearchParams();
+        formData.forEach((value, key) => {
+        if (value.trim() !== "") {
+            params.append(key, value);
+        }
+        });
+        
+        $.ajax({
+            url: window.location.pathname,
+            method: 'GET',
+            data: params.toString(),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Actualizar estadísticas con animación
+                    $('#stats-container').fadeOut(200, function() {
+                        $(this).html(response.stats_html).fadeIn(200);
+                        animateStats();
+                    });
+                    
+                    // Actualizar tabla con animación
+                    $('#table-container').fadeOut(200, function() {
+                        $(this).html(response.table_html).fadeIn(200, function() {
+                            animateTableRows();
+                            initializeTooltips();
+                        });
+                    });
+                    
+                    // Actualizar paginación
+                    if (response.pagination_html.trim()) {
+                        $('#pagination-container').html(response.pagination_html);
+                        bindPaginationEvents();
+                    } else {
+                        $('#pagination-container').empty();
+                    }
+                    
+                    // Actualizar URL sin recargar la página
+                    const newUrl = window.location.pathname + '?' + params.toString();
+                    history.pushState({}, '', newUrl);
+                } else {
+                    console.error('Error en la respuesta:', response.error);
+                    showErrorMessage('Error al cargar los datos');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error AJAX:', error);
+                showErrorMessage('Error de conexión. Por favor, intente nuevamente.');
+            },
+            complete: function() {
+                hideLoading();
+            }
+        });
+    }
+    
+    // Función para animar estadísticas
+    function animateStats() {
+        $('.stat-card').each(function(index) {
+            $(this).css('animation-delay', (index * 0.1) + 's');
+            $(this).addClass('animate-fade-in');
+        });
+        
+        // Animar números de estadísticas
+        $('.stat-value').each(function() {
+            const $this = $(this);
+            const targetValue = parseInt($this.text()) || 0;
+            $this.text('0');
+            
+            $({ value: 0 }).animate({ value: targetValue }, {
+                duration: 800,
+                step: function() {
+                    $this.text(Math.ceil(this.value));
+                }
+            });
+        });
+    }
+    
+    // Función para animar filas de tabla
+    function animateTableRows() {
+        $('.fade-in-row').each(function(index) {
+            $(this).css({
+                'animation-delay': (index * 0.05) + 's',
+                'animation-fill-mode': 'both'
+            });
+        });
+    }
+    
+    // Función para inicializar tooltips
+    function initializeTooltips() {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+    }
+    
+    // Función para mostrar mensajes de error
+    function showErrorMessage(message) {
+        const errorHtml = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        $('.facturas-list-layout').prepend(errorHtml);
+        
+        // Auto-remover después de 5 segundos
+        setTimeout(function() {
+            $('.alert').fadeOut();
+        }, 5000);
+    }
+    
+    // Función para vincular eventos de paginación
+    function bindPaginationEvents() {
+        $('.pagination-btn').off('click').on('click', function(e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            applyFilters(page);
+            
+            // Scroll suave hacia arriba
+            $('html, body').animate({
+                scrollTop: $('.stats-section').offset().top - 100
+            }, 500);
+        });
+    }
+    
+    // Event listeners para filtros
+    
+    // Búsqueda con debounce
+    $('#search').on('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            applyFilters();
+        }, 500);
     });
     
-    // Animación para las stats
-    $('.stat-card').each(function(index) {
-        $(this).css('animation-delay', (index * 0.1) + 's');
-        $(this).addClass('animate-fade-in');
+    // Filtros selectores - aplicar inmediatamente
+    $('#tipo, #estado,#periodo_servicio').on('change', function() {
+        applyFilters();
     });
+    
+    // Filtros de fecha - aplicar inmediatamente
+    $('#fecha_emision_desde, #fecha_emision_hasta, #fecha_vencimiento_desde, #fecha_vencimiento_hasta').on('change', function() {
+        applyFilters();
+    });
+    
+    // Prevenir envío normal del formulario
+    $('#filters-form').on('submit', function(e) {
+        e.preventDefault();
+        applyFilters();
+    });
+    
+    // Inicialización
+    animateStats();
+    animateTableRows();
+    initializeTooltips();
+    bindPaginationEvents();
+    
+    // Manejar botón atrás del navegador
+    window.addEventListener('popstate', function(event) {
+        location.reload();
+    });
+    
+    // Limpiar filtros
+    function clearFilters() {
+        $('#filters-form')[0].reset();
+        applyFilters();
+    }
+    
+    // Añadir botón de limpiar filtros (opcional)
+    $('.filters-grid').append(`
+        <div class="filter-group">
+            <button type="button" class="btn btn-secondary" id="clear-filters">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="m19 6-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Limpiar
+            </button>
+        </div>
+    `);
+    
+    $('#clear-filters').on('click', clearFilters);
+    
+    // Función para exportar datos (opcional)
+    function exportData(format) {
+        const formData = new FormData(document.getElementById('filters-form'));
+        formData.append('export', format);
+        
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = window.location.pathname;
+        
+        for (let [key, value] of formData.entries()) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+    
+    // Atajos de teclado
+    $(document).on('keydown', function(e) {
+        // Ctrl + F para enfocar búsqueda
+        if (e.ctrlKey && e.key === 'f') {
+            e.preventDefault();
+            $('#search').focus();
+        }
+        
+        // Escape para limpiar filtros
+        if (e.key === 'Escape') {
+            clearFilters();
+        }
+    });
+    
+    // Indicador visual de filtros activos
+    function updateActiveFiltersIndicator() {
+        const form = document.getElementById('filters-form');
+        const formData = new FormData(form);
+        let activeFilters = 0;
+        
+        for (let [key, value] of formData.entries()) {
+            if (value && value.trim() !== '') {
+                activeFilters++;
+            }
+        }
+        
+        const indicator = $('#active-filters-indicator');
+        if (activeFilters > 0) {
+            if (indicator.length === 0) {
+                $('.filters-section .card-body').prepend(`
+                    <div id="active-filters-indicator" class="alert alert-info mb-3">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                        <span id="filter-count">${activeFilters}</span> filtro(s) activo(s)
+                    </div>
+                `);
+            } else {
+                $('#filter-count').text(activeFilters);
+            }
+        } else {
+            indicator.remove();
+        }
+    }
+    
+    // Actualizar indicador cuando cambien los filtros
+    $('#filters-form input, #filters-form select').on('input change', function() {
+        setTimeout(updateActiveFiltersIndicator, 100);
+    });
+    
+    updateActiveFiltersIndicator();
 });
 </script>
 {% endblock %}

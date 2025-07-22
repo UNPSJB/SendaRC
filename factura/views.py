@@ -8,15 +8,18 @@ from django.utils import timezone
 from datetime import timedelta, datetime
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.db.models import Q
+from django.db.models import Q, Count, Sum
 from .models import Factura
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from django.http import HttpResponse
 from xhtml2pdf import pisa
 from io import BytesIO
 from .models import Factura, Detalle_Servicios, Detalle_Empleados
+from django.http import JsonResponse
+import logging
+import traceback
 
 
 @login_required
@@ -57,82 +60,220 @@ def facturas(request):
     }
     return render(request, "factura/facturas.html", context)
 
-
 @login_required
 def verFacturas(request):
+    # Si es una petición AJAX, devolver JSON
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return get_facturas_ajax(request)
+    
+    
+    # Para la carga inicial de la página
+    context = get_facturas_context(request)
+    return render(request, "factura/verFacturas.html", context)
+
+def get_facturas_context(request):
+    """Función auxiliar para obtener el contexto de facturas"""
     # Obtener parámetros de los filtros
-    search_query = request.GET.get("search", "")
-    tipo = request.GET.get("tipo", "")
-    estado = request.GET.get("estado", "")
-    fecha_emision_desde = request.GET.get("fecha_emision_desde", "")
-    fecha_emision_hasta = request.GET.get("fecha_emision_hasta", "")
-    fecha_vencimiento_desde = request.GET.get("fecha_vencimiento_desde", "")
-    fecha_vencimiento_hasta = request.GET.get("fecha_vencimiento_hasta", "")
-
-    # Obtener todas las facturas
-    facturas = Factura.objects.all()
+    filters = {
+        'search_query': request.GET.get("search", "").strip(),
+        'tipo': request.GET.get("tipo", ""),
+        'estado': request.GET.get("estado", ""),
+        'fecha_emision_desde': request.GET.get("fecha_emision_desde", ""),
+        'fecha_emision_hasta': request.GET.get("fecha_emision_hasta", ""),
+        'fecha_vencimiento_desde': request.GET.get("fecha_vencimiento_desde", ""),
+        'fecha_vencimiento_hasta': request.GET.get("fecha_vencimiento_hasta", ""),
+        'periodo_servicio': request.GET.get("periodo_servicio", "").strip(),
+    }
+    
+    # Obtener todas las facturas con optimización de consultas
+    facturas = Factura.objects.select_related('cliente', 'servicio').all()
     today = timezone.now().date()
-
+    
     # Aplicar filtros
-    if search_query:
-        facturas = facturas.filter(
-            models.Q(cliente__nombre__icontains=search_query)
-            | models.Q(servicio__id__icontains=search_query)
-            | models.Q(cliente__apellido__icontains=search_query)
-        )
+    facturas = apply_filters(facturas, filters, today)
+    
+    # Calcular estadísticas (antes de la paginación)
+    stats = calculate_statistics(facturas, today)
 
-    if tipo:
-        facturas = facturas.filter(tipo=tipo)
-
-    if estado:
-        if estado == "pagada":
-            facturas = facturas.filter(fechaPago__isnull=False)
-        elif estado == "pendiente":
-            facturas = facturas.filter(
-                fechaPago__isnull=True, fecha_vencimiento__gte=today
-            )
-        elif estado == "vencida":
-            facturas = facturas.filter(
-                fechaPago__isnull=True, fecha_vencimiento__lt=today
-            )
-
-    if fecha_emision_desde:
-        facturas = facturas.filter(fechaEmision__gte=fecha_emision_desde)
-
-    if fecha_emision_hasta:
-        facturas = facturas.filter(fechaEmision__lte=fecha_emision_hasta)
-
-    if fecha_vencimiento_desde:
-        facturas = facturas.filter(fecha_vencimiento__gte=fecha_vencimiento_desde)
-
-    if fecha_vencimiento_hasta:
-        facturas = facturas.filter(fecha_vencimiento__lte=fecha_vencimiento_hasta)
-
-    # Estadísticas rápidas
-    total_facturas = facturas.count()
-    facturas_pagadas = facturas.filter(fechaPago__isnull=False).count()
-    facturas_pendientes = facturas.filter(
-        fechaPago__isnull=True, fecha_vencimiento__gte=today
-    ).count()
-    facturas_vencidas = facturas.filter(
-        fechaPago__isnull=True, fecha_vencimiento__lt=today
-    ).count()
-
+    
+    # Ordenamiento - solo si hay resultados
+    sort_by = request.GET.get('sort', '-fechaEmision')
+    if facturas.exists():  # Verificar que hay facturas antes de ordenar
+        if sort_by in ['-fechaEmision', 'fechaEmision', '-importe', 'importe', '-fecha_vencimiento', 'fecha_vencimiento']:
+            facturas = facturas.order_by(sort_by)
+        else:
+            facturas = facturas.order_by('-fechaEmision')
+    
     # Paginación
-    paginator = Paginator(facturas, 10)  # Mostrar 10 facturas por página
-    page_number = request.GET.get("page")
-    facturas_page = paginator.get_page(page_number)
-
+    per_page = min(int(request.GET.get('per_page', 10)), 100)  # Máximo 100 por página
+    paginator = Paginator(facturas, per_page)
+    page_number = request.GET.get("page", 1)
+    
+    try:
+        facturas_page = paginator.get_page(page_number)
+    except Exception as e:
+        # Si hay error en paginación, devolver página 1
+        facturas_page = paginator.get_page(1)
+    
     context = {
         "facturas": facturas_page,
-        "total_facturas": total_facturas,
-        "facturas_pagadas": facturas_pagadas,
-        "facturas_pendientes": facturas_pendientes,
-        "facturas_vencidas": facturas_vencidas,
         "today": today,
+        "filters": filters,
+        **stats
     }
+    
+    return context
 
-    return render(request, "factura/verFacturas.html", context)
+def apply_filters(facturas, filters, today):
+    """Aplicar todos los filtros a la queryset"""
+    try:
+        if filters['search_query']:
+            facturas = facturas.filter(
+                Q(cliente__nombre__icontains=filters['search_query']) |
+                Q(cliente__apellido__icontains=filters['search_query']) |
+                Q(servicio__id__icontains=filters['search_query']) |
+                Q(id__icontains=filters['search_query'])
+            )
+        if filters['periodo_servicio']:
+            facturas = facturas.filter(periodoServicio__icontains=filters['periodo_servicio'])
+
+        if filters['tipo']:
+            facturas = facturas.filter(tipo=filters['tipo'])
+        
+        if filters['estado']:
+            if filters['estado'] == "pagada":
+                facturas = facturas.filter(fechaPago__isnull=False)
+            elif filters['estado'] == "pendiente":
+                facturas = facturas.filter(
+                    fechaPago__isnull=True, 
+                    fecha_vencimiento__gte=today
+                )
+            elif filters['estado'] == "vencida":
+                facturas = facturas.filter(
+                    fechaPago__isnull=True, 
+                    fecha_vencimiento__lt=today
+                )
+        
+        # Filtros de fecha con validación
+        if filters['fecha_emision_desde']:
+            try:
+                fecha_desde = datetime.strptime(filters['fecha_emision_desde'], '%Y-%m-%d').date()
+                facturas = facturas.filter(fechaEmision__gte=fecha_desde)
+            except (ValueError, TypeError):
+                pass  # Ignorar fecha inválida
+        
+        if filters['fecha_emision_hasta']:
+            try:
+                fecha_hasta = datetime.strptime(filters['fecha_emision_hasta'], '%Y-%m-%d').date()
+                facturas = facturas.filter(fechaEmision__lte=fecha_hasta)
+            except (ValueError, TypeError):
+                pass  # Ignorar fecha inválida
+        
+        if filters['fecha_vencimiento_desde']:
+            try:
+                fecha_desde = datetime.strptime(filters['fecha_vencimiento_desde'], '%Y-%m-%d').date()
+                facturas = facturas.filter(fecha_vencimiento__gte=fecha_desde)
+            except (ValueError, TypeError):
+                pass  # Ignorar fecha inválida
+        
+        if filters['fecha_vencimiento_hasta']:
+            try:
+                fecha_hasta = datetime.strptime(filters['fecha_vencimiento_hasta'], '%Y-%m-%d').date()
+                facturas = facturas.filter(fecha_vencimiento__lte=fecha_hasta)
+            except (ValueError, TypeError):
+                pass  # Ignorar fecha inválida
+        
+    except Exception as e:
+        # Log del error para debugging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error aplicando filtros: {str(e)}")
+        # Devolver queryset vacío en caso de error
+        return Factura.objects.none()
+    
+    return facturas
+
+def calculate_statistics(facturas, today):
+    """Calcular estadísticas de las facturas filtradas"""
+    try:
+        # Usar agregaciones para mejor performance
+        stats = facturas.aggregate(
+            total_count=Count('id'),
+            total_amount=Sum('importe'),
+            pagadas_count=Count('id', filter=Q(fechaPago__isnull=False)),
+            pendientes_count=Count('id', filter=Q(fechaPago__isnull=True, fecha_vencimiento__gte=today)),
+            vencidas_count=Count('id', filter=Q(fechaPago__isnull=True, fecha_vencimiento__lt=today)),
+        )
+        
+        return {
+            'total_facturas': stats['total_count'] or 0,
+            'facturas_pagadas': stats['pagadas_count'] or 0,
+            'facturas_pendientes': stats['pendientes_count'] or 0,
+            'facturas_vencidas': stats['vencidas_count'] or 0,
+            'total_amount': stats['total_amount'] or 0,
+        }
+    except Exception as e:
+        # Log del error y devolver estadísticas vacías
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error calculando estadísticas: {str(e)}")
+        
+        return {
+            'total_facturas': 0,
+            'facturas_pagadas': 0,
+            'facturas_pendientes': 0,
+            'facturas_vencidas': 0,
+            'total_amount': 0,
+        }
+
+def get_facturas_ajax(request):
+    """Función para manejar peticiones AJAX"""
+    try:
+        context = get_facturas_context(request)
+        
+        # Renderizar solo las partes que necesitan actualizarse
+        try:
+            stats_html = render_to_string('factura/partials/stats_section.html', context, request=request)
+        except Exception as e:
+            stats_html = f'<div class="alert alert-warning">Error cargando estadísticas: {str(e)}</div>'
+        
+        try:
+            table_html = render_to_string('factura/partials/table_section.html', context, request=request)
+        except Exception as e:
+            table_html = '<div class="alert alert-warning">Error cargando tabla</div>'
+        
+        try:
+            pagination_html = render_to_string('factura/partials/pagination_section.html', context, request=request)
+        except Exception as e:
+            pagination_html = ''
+        
+        return JsonResponse({
+            'success': True,
+            'stats_html': stats_html,
+            'table_html': table_html,
+            'pagination_html': pagination_html,
+            'total_count': context['total_facturas'],
+            'stats': {
+                'total': context['total_facturas'],
+                'pagadas': context['facturas_pagadas'],
+                'pendientes': context['facturas_pendientes'],
+                'vencidas': context['facturas_vencidas'],
+                'total_amount': float(context['total_amount']) if context['total_amount'] else 0.0,
+            }
+        })
+    
+    except Exception as e:
+        # Log detallado del error
+        import logging
+        import traceback
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error en get_facturas_ajax: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        
+        return JsonResponse({
+            'success': False,
+            'error': f'Error interno del servidor: {str(e)}'
+        }, status=500)
 
 
 @login_required

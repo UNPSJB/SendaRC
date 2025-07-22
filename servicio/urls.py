@@ -22,5 +22,6 @@ urlpatterns = [
     path('error/', errorServicio.as_view(), name = 'errorServicio'),
     #Facturas
     path('factura/', include('factura.urls')),
+    path("cancelar-servicio/<int:pk>/", cancelar_servicio, name="cancelarServicio"),
 ]
  
