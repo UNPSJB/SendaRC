@@ -7,10 +7,13 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,date
 from calendar import month_name
 import json
 import re
+from django.http import JsonResponse
+import datetime
+
 
 # Importar los modelos necesarios
 from core.models import Cliente, TipoServicio
@@ -226,6 +229,14 @@ def home(request):
         
         ingresos_mensuales.append(float(ingreso_mes))  # Convertir a float para JSON
         labels_meses.append(month_name[inicio_mes_grafico.month])
+
+    primer_pago = Factura.objects.filter(fechaPago__isnull=False).order_by('fechaPago').first()
+    ultimo_pago = Factura.objects.filter(fechaPago__isnull=False).order_by('-fechaPago').first()
+
+    if primer_pago and ultimo_pago:
+        lista_anios = list(range(primer_pago.fechaPago.year, ultimo_pago.fechaPago.year + 1))
+    else:
+        lista_anios = [timezone.now().year]
     
     # Datos para gráfico de servicios por tipo
     servicios_por_tipo = []
@@ -242,6 +253,9 @@ def home(request):
                 'cantidad': cantidad
             })
     
+
+
+
     # Si no hay tipos de servicios con datos, usar datos de ejemplo
     if not servicios_por_tipo:
         servicios_por_tipo = [
@@ -272,7 +286,8 @@ def home(request):
         'labels_meses': json.dumps(labels_meses),
         'servicios_por_tipo': json.dumps(servicios_por_tipo),
         'facturas_estado': json.dumps(facturas_estado),
-        'servicios_ubicacion_exacta': json.dumps(servicios_ubicacion_exacta),   # Nuevos datos para el mapa
+        'servicios_ubicacion_exacta': json.dumps(servicios_ubicacion_exacta),   
+        'lista_anios': lista_anios
     }
     
     return render(request, 'home.html', context)
@@ -331,3 +346,64 @@ def handler500(request):
     """
     
     return render(request, '500.html', status=500)
+
+@login_required
+def ingresos_mensuales_api(request):
+    periodo = request.GET.get('periodo', '6')
+    hoy = date.today()
+    ingresos_mensuales = []
+    labels_meses = []
+
+    if periodo.startswith("year:"):
+        try:
+            year = int(periodo.split(":")[1])
+        except ValueError:
+            return JsonResponse({'labels': [], 'data': []})
+
+        for mes in range(1, 13):
+            inicio_mes = date(year, mes, 1)
+            siguiente_mes = (inicio_mes + timedelta(days=32)).replace(day=1)
+            fin_mes = siguiente_mes - timedelta(days=1)
+
+            ingreso_mes = Factura.objects.filter(
+                fechaPago__isnull=False,
+                fechaPago__gte=inicio_mes,
+                fechaPago__lte=fin_mes
+            ).aggregate(total=Sum('importe'))['total'] or 0
+
+            ingresos_mensuales.append(float(ingreso_mes))
+            labels_meses.append(month_name[mes])
+
+    else:
+        if periodo == 'all':
+            primera_factura = Factura.objects.filter(fechaPago__isnull=False).order_by('fechaPago').first()
+            if primera_factura:
+                meses = (hoy.year - primera_factura.fechaPago.year) * 12 + hoy.month - primera_factura.fechaPago.month + 1
+            else:
+                meses = 1
+        else:
+            try:
+                meses = int(periodo)
+            except ValueError:
+                meses = 6
+
+        for i in range(meses - 1, -1, -1):
+            fecha_mes = hoy - timedelta(days=30 * i)
+            inicio_mes = fecha_mes.replace(day=1)
+            siguiente_mes = (inicio_mes + timedelta(days=32)).replace(day=1)
+            fin_mes = siguiente_mes - timedelta(days=1)
+
+            ingreso_mes = Factura.objects.filter(
+                fechaPago__isnull=False,
+                fechaPago__gte=inicio_mes,
+                fechaPago__lte=fin_mes
+            ).aggregate(total=Sum('importe'))['total'] or 0
+
+            ingresos_mensuales.append(float(ingreso_mes))
+            labels_meses.append(f"{month_name[inicio_mes.month]} {inicio_mes.year}")
+    
+
+    return JsonResponse({
+        'labels': labels_meses,
+        'data': ingresos_mensuales,
+    })

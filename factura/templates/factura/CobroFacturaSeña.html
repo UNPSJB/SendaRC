@@ -22,7 +22,7 @@
                 <div class="card-header-custom">
                     <div class="header-left">
                         <h3 class="card-title">Detalles de la Factura</h3>
-                        <p class="card-subtitle">Seña de servicio #{{facturaSeña.pk}}</p>
+                        <p class="card-subtitle">Seña de servicio</p>
                     </div>
                     <div class="invoice-badge">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -48,12 +48,12 @@
                         </div>
                         <div class="info-grid">
                             <div class="info-item">
-                                <span class="info-label">Número de Factura</span>
-                                <span class="info-value">{{facturaSeña.pk}}</span>
-                            </div>
-                            <div class="info-item">
                                 <span class="info-label">Fecha de Emisión</span>
                                 <span class="info-value">{{facturaSeña.fechaEmision}}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Servicio</span>
+                                <span class="info-value">#{{servicio.pk}}</span>
                             </div>
                         </div>
                     </div>

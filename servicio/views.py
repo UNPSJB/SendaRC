@@ -1151,67 +1151,86 @@ class errorServicio(TemplateView):
 @login_required
 def asignarEmpleados(request, pk):
     if request.method == "POST":
-        formset = formset_factory(FormAsignarEmpleados)
-        formset = formset(request.POST)
+        formset_factory_cls = formset_factory(FormAsignarEmpleados)
+        formset = formset_factory_cls(request.POST)
         servicio = Servicio.objects.get(pk=pk)
+
         if formset.is_valid():
+            hay_errores = False
             for form in formset:
                 frecuencia = form.cleaned_data["frecuencia"]
                 empleados = form.cleaned_data["empleados"]
                 if empleados.count() != servicio.cant_empleados:
                     form.add_error(
                         "empleados",
-                        "Se necesitan "
-                        + str(servicio.cant_empleados)
-                        + " empleados por turno",
+                        f"Se necesitan {servicio.cant_empleados} empleados por turno",
                     )
                     form.fields["empleados"].choices = [
-                        (empleado.pk, empleado.nombre + " " + empleado.apellido)
+                        (empleado.pk, f"{empleado.nombre} {empleado.apellido}")
                         for empleado in form.fields["empleados"].queryset
                     ]
-                    return render(
-                        request,
-                        "servicio/asignarEmpleados.html",
-                        {"formset": formset, "servicio": servicio},
-                    )
+                    hay_errores = True
+
+            if hay_errores:
+                return render(
+                    request,
+                    "servicio/asignarEmpleados.html",
+                    {"formset": formset, "servicio": servicio},
+                )
+
+            # Si no hay errores, guardar datos
+            for form in formset:
+                frecuencia = form.cleaned_data["frecuencia"]
+                empleados = form.cleaned_data["empleados"]
                 frecuencia = Frecuencia.objects.get(pk=frecuencia.pk)
                 for empleado in empleados:
                     frecuencia.empleados.add(empleado.pk)
                     servicio.empleado.add(empleado.pk)
                 frecuencia.save()
-                servicio.save()
+
+            servicio.save()
             if servicio.cliente.tipo == 2:
                 servicio.estado = 3
                 servicio.save()
                 return redirect("contratarServicioCorrecto", pk)
-            return redirect("crearFacturaSeña", pk)
-    else:
-        servicio = Servicio.objects.get(pk=pk)
-        frecuencias = Frecuencia.objects.filter(servicio=servicio)
-        formset_inicial = formset_factory(FormAsignarEmpleados, extra=len(frecuencias))
-        formset = formset_inicial()
-        for form, frecuencia in zip(formset, frecuencias):
-            form.fields["frecuencia"].choices = [
-                (
-                    frecuencia.pk,
-                    frecuencia.get_dia_display()
-                    + " - "
-                    + frecuencia.get_turno_display(),
-                )
-            ]
-            form.fields["frecuencia"].initial = frecuencia.pk
-            form.fields["empleados"].queryset = Empleado.habilitados.disponibles(
-                servicio.fecha_inicio,
-                servicio.fecha_finaliza,
-                frecuencia.dia,
-                frecuencia.turno,
+            
+
+            return redirect("realizarCobroFacturaSeña", pk)
+
+        # Si el formset no es válido (errores de validación base)
+        return render(
+            request,
+            "servicio/asignarEmpleados.html",
+            {"formset": formset, "servicio": servicio},
+        )
+
+    # GET request
+    servicio = Servicio.objects.get(pk=pk)
+    frecuencias = Frecuencia.objects.filter(servicio=servicio)
+    formset_cls = formset_factory(FormAsignarEmpleados, extra=len(frecuencias))
+    formset = formset_cls()
+
+    for form, frecuencia in zip(formset, frecuencias):
+        form.fields["frecuencia"].choices = [
+            (
+                frecuencia.pk,
+                f"{frecuencia.get_dia_display()} - {frecuencia.get_turno_display()}",
             )
-            form.fields["empleados"].choices = [
-                (empleado.pk, empleado.nombre + " " + empleado.apellido)
-                for empleado in form.fields["empleados"].queryset
-            ]
-        context = {
-            "formset": formset,
-            "servicio": servicio,
-        }
-        return render(request, "servicio/asignarEmpleados.html", context)
+        ]
+        form.fields["frecuencia"].initial = frecuencia.pk
+        form.fields["empleados"].queryset = Empleado.habilitados.disponibles(
+            servicio.fecha_inicio,
+            servicio.fecha_finaliza,
+            frecuencia.dia,
+            frecuencia.turno,
+        )
+        form.fields["empleados"].choices = [
+            (empleado.pk, f"{empleado.nombre} {empleado.apellido}")
+            for empleado in form.fields["empleados"].queryset
+        ]
+
+    return render(
+        request,
+        "servicio/asignarEmpleados.html",
+        {"formset": formset, "servicio": servicio},
+    )

@@ -240,10 +240,18 @@
                 <div class="chart-header">
                     <h3>Ingresos Mensuales</h3>
                     <div class="chart-controls">
-                        <select class="form-select form-select-sm chart-period">
+                        <select class="form-select form-select-sm chart-period" id="periodoIngreso">
+                            <option value="1">Último mes</option>
+                            <option value="3">Últimos 3 meses</option>
                             <option value="6">Últimos 6 meses</option>
+                            <option value="9">Últimos 9 meses</option>
                             <option value="12">Último año</option>
-                        </select>
+                            <option value="all">Todo</option>
+                            <option disabled>────────────</option>
+                            {% for y in lista_anios %}
+                                <option value="year:{{ y }}">{{ y }}</option>
+                            {% endfor %}
+                        </select>                                                                     
                     </div>
                 </div>
                 <div class="chart-container">
@@ -789,6 +797,26 @@
         $('.action-card').each(function (index) {
             $(this).css('animation-delay', (index * 0.1 + 0.3) + 's');
         });
+        
+        $('#periodoIngreso').on('change', function () {
+            const periodo = $(this).val();
+
+            $.ajax({
+                url: '/api/ingresos-mensuales/',
+                type: 'GET',
+                data: { periodo: periodo },
+                success: function (response) {
+                    // Actualizar los datos del gráfico
+                    revenueChart.data.labels = response.labels;
+                    revenueChart.data.datasets[0].data = response.data;
+                    revenueChart.update();
+                },
+                error: function () {
+                    alert('Error al cargar los datos de ingresos.');
+                }
+            });
+        });
+
     });
 </script>
 {% endblock %}

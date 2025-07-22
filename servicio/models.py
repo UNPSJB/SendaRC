@@ -197,6 +197,9 @@ class Frecuencia(models.Model):
     )
     empleados = models.ManyToManyField(Empleado, related_name="frecuencias", null=True)
 
+    def __str__(self):
+        return f"{self.getDia()} - {self.getTurno()}"
+
     def getDia(self):
         return dict(self.DIA)[self.dia]
 

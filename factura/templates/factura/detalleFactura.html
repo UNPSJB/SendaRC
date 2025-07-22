@@ -81,10 +81,12 @@
                             <span class="info-label">Fecha de Emisión</span>
                             <span class="info-value">{{factura.fechaEmision|date:"d/m/Y"}}</span>
                         </div>
+                        {% if factura.tipo != 1 %}
                         <div class="info-item">
-                            <span class="info-label">Período de Servicio</span>
+                            <span class="info-label">Mes de Servicio</span>
                             <span class="info-value">{{factura.getPeriodoServicio}}</span>
                         </div>
+                        {% endif %}
                         <div class="info-item">
                             <span class="info-label">Fecha de Vencimiento</span>
                             <span class="info-value">
@@ -212,6 +214,7 @@
     </div>
 
     <!-- Panel de detalles -->
+    {% if factura.tipo != 1 %}
     <div class="details-panel">
         <div class="card">
             <div class="card-body">
@@ -220,7 +223,7 @@
                     <p class="details-subtitle">Información detallada de servicios y empleados</p>
                 </div>
 
-                {% if factura.tipo != 1 %}
+                
                 <!-- Detalle de servicios -->
                 <div class="info-section">
                     <div class="section-header">
@@ -250,9 +253,9 @@
                                 <tr>
                                     <td><strong>{{ detalle_servicio.tipo_servicio }}</strong></td>
                                     <td>{{ detalle_servicio.tipo_servicio_Unit }}</td>
-                                    <td class="price-cell">${{ detalle_servicio.precio_tipo_servicio|floatformat:0 }}</td>
+                                    <td class="price-cell">{{ detalle_servicio.precio_tipo_servicio_formateado }}</td>
                                     <td>{{ detalle_servicio.cantidad }}</td>
-                                    <td><strong class="price-cell">${{ detalle_servicio.subtotal|floatformat:0 }}</strong></td>
+                                    <td><strong class="price-cell">{{ detalle_servicio.subtotal_formateado }}</strong></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -318,10 +321,10 @@
                     </div>
                     {% endif %}
                 </div>
-                {% endif %}
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <style>

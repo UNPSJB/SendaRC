@@ -50,6 +50,9 @@ urlpatterns = [
          ),
          name='password_reset_complete'),
 
+        
+    path('api/ingresos-mensuales/', ingresos_mensuales_api, name='ingresos_mensuales_api'),
+
 
 ]
 
