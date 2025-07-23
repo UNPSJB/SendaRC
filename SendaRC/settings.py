@@ -15,6 +15,13 @@ from django.urls import reverse_lazy
 import os
 import dj_database_url 
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://sendarc.onrender.com/",
+    "https://sendarc.onrender.com",
+    "http://0.0.0.0/",
+    "http://localhost/"
+]
+
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,11 +83,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-CSRF_TRUSTED_ORIGINS = [
-    "https://sendarc.onrender.com/",
-    "http://127.0.0.1/",
-    "http://localhost/"
-]
+
+
 ROOT_URLCONF = 'SendaRC.urls'
 
 TEMPLATES = [
