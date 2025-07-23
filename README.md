@@ -60,3 +60,6 @@ python manage.py runserver
 - Agustin Bowen<br> 
 - Sergio Pereyra<br> 
 
+
+exec(open(r'C:\Users\hayley777\Desktop\SendaRC\fakerScript.py', encoding='utf-8').read())
+
