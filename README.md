@@ -10,9 +10,11 @@ El proyecto busca desarrollar un software para la empresa Senda, permitiendo la 
 
 ### Listados
 
-#### Altas, Bajas, Modificaciones y Eliminaciónes
+### Estadisticas
 
-### Generar Presupuestos
+#### Altas, Bajas, Modificaciones
+
+### Gestionar Presupuestos/Contratos y sus respectivas Facturas
 
 
 # Instalar 🧑‍💻
