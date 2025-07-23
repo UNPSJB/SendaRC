@@ -24,35 +24,27 @@
 {% endblock %}
 
 {% block listado %}
-<div class="error-layout">
-    <div class="error-container">
-        <div class="card">
-            <div class="card-body">
-                <div class="error-content">
-                    <div class="error-icon">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="16"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                    </div>
-                    
-                    <div class="error-message">
-                        <h2 class="error-title">ERROR: {{error}}</h2>
-                        <p class="error-description">El servicio seleccionado ya está contratado</p>
-                    </div>
-                    
-                    <div class="error-actions">
-                        <a href="{% url 'gestionServicios' %}" class="btn btn-primary">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="15,18 9,12 15,6"></polyline>
-                            </svg>
-                            Volver al listado de Servicios
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="error-content">
+    <div class="error-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+    </div>
+    
+    <div class="error-message">
+        <h2 class="error-title">ERROR: {{error}}</h2>
+        <p class="error-description">El servicio seleccionado ya está contratado</p>
+    </div>
+    
+    <div class="error-actions">
+        <a href="{% url 'gestionServicios' %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15,18 9,12 15,6"></polyline>
+            </svg>
+            Volver al listado de Servicios
+        </a>
     </div>
 </div>
 

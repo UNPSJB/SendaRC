@@ -80,13 +80,6 @@
                 <line x1="12" y1="22.08" x2="12" y2="12"></line>
             </svg>
             <h4 class="section-title">Servicio</h4>
-            <div class="cost-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="1" x2="12" y2="23"></line>
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                <span>{{ servicio.getImporteTotalFormateado }}</span>
-            </div>
         </div>
         <div class="info-grid">
             <div class="info-item">
@@ -101,6 +94,16 @@
                 <span class="info-label">Dirección</span>
                 <span class="info-value">{{ servicio.direccion }}</span>
             </div>
+            <div class="info-item">
+                <span class="info-label">Días habilitados</span>
+                <span class="info-value">
+                    {{ servicio.getDiasHabilitados|join:", " }}
+                </span>
+            </div>            
+        </div>
+        <div class="cost-badge mt-3">
+            <span>Total:</span>
+            <span>{{ servicio.getImporteTotalFormateado }}</span>
         </div>
     </div>
 
@@ -390,30 +393,17 @@
 {% endblock %}
 {% block extrajs %}
 <script>
-    $(function () {
-        $('.btn-contratar').click(function () {
-            $(this).addClass('loading').prop('disabled', true);
-            $(".mi-form").attr('method', 'POST').submit();
-        });
+$(function () {
+    const $boton = $('.btn-contratar');
 
-        // Validación en tiempo real
-        $('.date-form input').on('change', function () {
-            validateDates();
-        });
-
-        function validateDates() {
-            const hasValidDates = $('.date-form input[type="date"]').filter(function () {
-                return $(this).val() !== '';
-            }).length > 0;
-
-            $('.btn-contratar').prop('disabled', !hasValidDates);
-        }
-
-        // Validación inicial
-        validateDates();
-
-        // Animación de entrada
-        $('.card').addClass('animate-fade-in');
+    // Click del botón
+    $boton.click(function () {
+        $(".mi-form").attr('method', 'POST').submit();
     });
+
+    // Animación
+    $('.card').addClass('animate-fade-in');
+});
+
 </script>
 {% endblock %}

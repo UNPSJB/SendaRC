@@ -159,6 +159,11 @@ class Servicio(models.Model):
         """Método legacy - usar getTotalManoObraFormateado()"""
         return self.getTotalManoObraFormateado()
 
+    def getDiasHabilitados(self):
+        dias_numeros = self.frecuencias.values_list("dia", flat=True).distinct()
+        return [dict(Frecuencia.DIA)[dia] for dia in dias_numeros]
+
+
 
 class CantServicioTipoServicio(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)

@@ -22,6 +22,7 @@ from django.forms import (
 from datetime import datetime
 from core.models import *
 from .models import *
+import datetime
 
 
 class FiltrosServiciosForm(forms.Form):
@@ -482,23 +483,50 @@ class FormContratarServicio(forms.ModelForm):
         cleaned_data = super().clean()
         fecha_inicio = cleaned_data.get("fecha_inicio")
         fecha_finaliza = cleaned_data.get("fecha_finaliza")
+
         if self.instance.tipo == 1:
-            # Si servicio es eventual, fecha finaliza sera igual al inicio
-            fecha_finaliza = fecha_inicio
+            # Si es eventual, la fecha finaliza es la misma que inicio
+            cleaned_data["fecha_finaliza"] = fecha_inicio
         else:
             if fecha_inicio and fecha_finaliza:
                 if fecha_inicio >= fecha_finaliza:
                     self.add_error(
                         "fecha_finaliza",
-                        "La fecha de finalización no puede ser anterior o igual a la de fecha de inicio",
+                        "La fecha de finalización no puede ser anterior o igual a la fecha de inicio.",
                     )
-        if fecha_inicio < self.instance.fecha_emision:
-            # Verificacion entre fecha de inicio y fecha de emision
-            self.add_error(
-                "fecha_inicio",
-                "La fecha de inicio no puede ser anterior a la fecha de emisión",
-            )
+
+        # Validar que la fecha de inicio no sea antes que la de emisión
+        if fecha_inicio and self.instance.fecha_emision:
+            if fecha_inicio < self.instance.fecha_emision:
+                self.add_error(
+                    "fecha_inicio",
+                    "La fecha de inicio no puede ser anterior a la fecha de emisión.",
+                )
+
+        # Obtener días válidos desde las frecuencias
+        dias_validos = list(self.instance.frecuencias.values_list("dia", flat=True).distinct())
+        dias_texto = [dict(Frecuencia.DIA).get(d) for d in dias_validos]
+
+        # Validar que fecha_inicio esté en un día válido
+        if fecha_inicio:
+            dia_inicio = fecha_inicio.weekday() + 1  # weekday: lunes=0 → +1 → lunes=1
+            if dia_inicio not in dias_validos:
+                self.add_error(
+                    "fecha_inicio",
+                    f"La fecha de inicio debe coincidir con un día habilitado del servicio: {', '.join(dias_texto)}.",
+                )
+
+        # Validar que fecha_finaliza esté en un día válido (si es determinado)
+        if fecha_finaliza:
+            dia_final = fecha_finaliza.weekday() + 1
+            if dia_final not in dias_validos:
+                self.add_error(
+                    "fecha_finaliza",
+                    f"La fecha de finalización debe coincidir con un día habilitado del servicio: {', '.join(dias_texto)}.",
+                )
+
         return cleaned_data
+
 
     def save(self, commit=True):
         servicio = super().save(commit=False)
