@@ -62,6 +62,7 @@ class Servicio(models.Model):
             return self.localidad.nombre
         return "No asignada"
 
+
     # MÉTODOS PARA EL DESGLOSE DETALLADO DEL PDF
 
     def getSubtotalPorTurno(self):
