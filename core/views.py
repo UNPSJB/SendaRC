@@ -308,23 +308,24 @@ class updateTipoServicio(UpdateView):
         return kwargs
 
     def form_valid(self, form):
-        # Verifica si el elemento está asociado con OtroModelo
         tiposervicio = form.save(commit=False)
+        # Verifica si se intenta desactivar un tipoServicio usado por un servicio en curso
         if (
             form.cleaned_data["activo"] == False
             and CantServicioTipoServicio.objects.filter(
-                tipoServicio=tiposervicio, servicio=Servicio.estado.en_curso
+                tipoServicio=tiposervicio,
+                servicio=Servicio.estado.en_curso  # ⚠️ Ver abajo
             ).exists()
         ):
-            # Logica de si quiere desactivar
             form.add_error(
                 "activo",
-                "No puedes desactivar el tipo de servicio, porque un servicio en curso lo esta utilizando.",
+                "No puedes desactivar el tipo de servicio, porque un servicio en curso lo está utilizando.",
             )
             return self.form_invalid(form)
         else:
-            insumo.save()
+            tiposervicio.save()
             return super().form_valid(form)
+
 
 
 @method_decorator(login_required, name="dispatch")
