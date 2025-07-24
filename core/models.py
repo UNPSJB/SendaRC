@@ -68,7 +68,7 @@ class Insumo(models.Model):
         return self.insumo.descripcion
 
     def __str__(self):
-        return self.descripcion
+        return f"{self.descripcion} - ({self.marca})"
 
     def getEstado(self):
         if self.activo == True:
@@ -115,6 +115,7 @@ class TipoServicio(models.Model):
 
     def getPrecio(self, cantidad):
         return self.precio * cantidad
+    
 
 
 class CantInsumoServicio(models.Model):

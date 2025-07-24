@@ -107,7 +107,7 @@
                                 {% if item.cantidad <= item.insumo.cantidad %}
                                     <small class="text-success">Cantidad necesaria: {{ item.cantidad }}</small><br>
                                 {% else %}
-                                    <small class="text-danger">Cantidad necesaria: {{ item.cantidad }}</small><br>
+                                    <small class="text-danger">Cantidad necesaria: {% if item.cantidad == none %}0{% else %}{{ item.cantidad }}{% endif %}</small><br>
                                 {% endif %}                                                                                 
                                 <small class="text-muted">
                                     {% if item.insumo.cantidad == 0 %}
