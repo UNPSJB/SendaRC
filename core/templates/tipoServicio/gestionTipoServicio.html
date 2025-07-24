@@ -170,27 +170,28 @@
 
 <!-- Toast mejorado con estilo shadcn -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="toastExito" class="toast toast-shadcn toast-success" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header-shadcn">
-        <div class="toast-icon toast-icon-success">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <div class="toast-content">
-          <div class="toast-title">Éxito</div>
-          <div class="toast-message">Cantidades de insumos actualizadas correctamente.</div>
-        </div>
-        <button type="button" class="toast-close" data-bs-dismiss="toast" aria-label="Cerrar">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+  <!-- Toast Éxito -->
+  <div id="toastExito" class="toast toast-shadcn toast-success" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header-shadcn">
+      <div class="toast-icon toast-icon-success">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
       </div>
+      <div class="toast-content">
+        <div class="toast-title">Éxito</div>
+        <div class="toast-message">Cantidades de insumos actualizadas correctamente.</div>
+      </div>
+      <button type="button" class="toast-close" data-bs-dismiss="toast" aria-label="Cerrar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
   </div>
 
+  
   <style>
     /* Modal Container */
     .modal-content-shadcn {
@@ -453,6 +454,16 @@
     background: hsl(var(--success) / 0.1);
     color: hsl(var(--success));
     }
+
+    .toast-danger {
+      border-left: 4px solid hsl(var(--destructive)) !important;
+    }
+
+    .toast-icon-error {
+      background: hsl(var(--destructive) / 0.1);
+      color: hsl(var(--destructive));
+    }
+
 
     .toast-content {
     flex: 1;

@@ -331,17 +331,31 @@ def editar_cant_insumos_servicio(request, pk):
     insumos_servicio = CantInsumoServicio.objects.filter(tipoServicio=tipo_servicio).select_related('insumo')
 
     if request.method == "POST":
+        errores = {}
+
         for insumo in insumos_servicio:
             nueva_cantidad = request.POST.get(f"cantidad_{insumo.pk}")
-            if nueva_cantidad:
-                insumo.cantidad = int(nueva_cantidad)
-                insumo.save()
-        return JsonResponse({'success': True})
+            try:
+                cantidad_int = int(nueva_cantidad)
+                if cantidad_int < 1:
+                    errores[f"cantidad_{insumo.pk}"] = f"La cantidad para '{insumo.insumo.descripcion}' debe ser mayor o igual a 1."
+                else:
+                    insumo.cantidad = cantidad_int
+                    insumo.save()
+            except (TypeError, ValueError):
+                errores[f"cantidad_{insumo.pk}"] = f"Cantidad inválida para '{insumo.insumo.descripcion}'."
 
+        if errores:
+            return JsonResponse({"success": False, "errores": errores}, status=400)
+
+        return JsonResponse({"success": True})
+
+    # Esto es lo que se ejecuta en GET para mostrar el modal
     return render(request, 'tipoServicio/editarCantInsumos.html', {
         'tipo_servicio': tipo_servicio,
         'insumos_servicio': insumos_servicio
     })
+
 
 
 @method_decorator(login_required, name="dispatch")

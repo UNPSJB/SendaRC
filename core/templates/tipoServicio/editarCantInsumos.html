@@ -1,4 +1,4 @@
-<form method="post" id="formEditarCantInsumos">
+<form method="post" id="formEditarCantInsumos"id="formEditarCantInsumos" action="{% url 'editarCantInsumosServicio' tipo_servicio.pk %}">
     {% csrf_token %}
     <table class="table">
       <thead>
@@ -14,7 +14,7 @@
           <td>{{ ci.insumo.descripcion }}</td>
           <td>{{ ci.insumo.getUni_Medida }}</td>
           <td>
-            <input type="number" name="cantidad_{{ ci.pk }}" class="form-control" value="{{ ci.cantidad }}">
+            <input type="number"  name="cantidad_{{ ci.pk }}" class="form-control" value="{{ ci.cantidad }}">
           </td>
         </tr>
         {% endfor %}
@@ -24,30 +24,43 @@
       <button type="submit" class="btn btn-primary">Guardar Cambios</button>
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
     </div>
-  </form>
+</form>
   
 <script>
-    $("#formEditarCantInsumos").on("submit", function (e) {
-    e.preventDefault();
-    const form = $(this);
-    $.ajax({
-        url: "{% url 'editarCantInsumosServicio' tipo_servicio.pk %}",
-        type: "POST",
-        data: form.serialize(),
-        success: function () {
-        const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarInsumos"));
-        modal.hide();
+$("#formEditarCantInsumos").on("submit", function (e) {
+  e.preventDefault();
 
-        // Mostrar toast
-        const toastEl = document.getElementById("toastExito");
-        const toast = new bootstrap.Toast(toastEl);
-        toast.show();
+  const form = $(this);
 
-        },
-        error: function () {
-        alert("Error al guardar los cambios.");
-        },
-    });
-    });
+  // Limpiar errores anteriores
+  form.find(".is-invalid").removeClass("is-invalid");
+  form.find(".invalid-feedback").remove();
+
+  $.ajax({
+    url: form.attr("action"),
+    type: "POST",
+    data: form.serialize(),
+    success: function () {
+      const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarInsumos"));
+      modal.hide();
+
+      const toastEl = document.getElementById("toastExito");
+      new bootstrap.Toast(toastEl).show();
+    },
+    error: function (xhr) {
+      const data = xhr.responseJSON;
+      if (data && data.errores) {
+        for (const campo in data.errores) {
+          const mensaje = data.errores[campo];
+          const input = form.find(`[name="${campo}"]`);
+
+          input.addClass("is-invalid");
+          input.after(`<div class="invalid-feedback">${mensaje}</div>`);
+        }
+      }
+    }
+  });
+});
+
 </script>
   
