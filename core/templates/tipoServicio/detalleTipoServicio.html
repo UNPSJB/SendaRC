@@ -89,23 +89,37 @@
             
             {% if insumos %}
                 <div class="list-group list-group-flush">
-                    {% for insumo in insumos %}
-                    <div class="list-group-item d-flex align-items-center px-0">
-                        <div class="me-3">
-                            <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                </svg>
+                    {% for item in insumos %}
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <div class="me-3">
+                                <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="fw-medium">{{ item.insumo.descripcion }}</div>
+                                {% if item.insumo.marca %}
+                                    <small class="text-muted">Marca: {{ item.insumo.marca }}</small><br>
+                                {% endif %}
+
+                                {% if item.cantidad <= item.insumo.cantidad %}
+                                    <small class="text-success">Cantidad necesaria: {{ item.cantidad }}</small><br>
+                                {% else %}
+                                    <small class="text-danger">Cantidad necesaria: {{ item.cantidad }}</small><br>
+                                {% endif %}                                                                                 
+                                <small class="text-muted">
+                                    {% if item.insumo.cantidad == 0 %}
+                                        <small class="badge bg-danger">no hay stock</small>
+                                    {% else %}
+                                        Stock:
+                                        {{ item.insumo.cantidad }}
+                                    {% endif %}
+                                </small>
                             </div>
                         </div>
-                        <div>
-                            <div class="fw-medium">{{ insumo.descripcion }}</div>
-                            {% if insumo.marca %}
-                                <small class="text-muted">Marca: {{ insumo.marca }}</small>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endfor %}
+                    {% endfor %}                
                 </div>
             {% else %}
                 <div class="text-center py-3">

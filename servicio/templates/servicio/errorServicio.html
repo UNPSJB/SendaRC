@@ -32,12 +32,25 @@
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
     </div>
-    
+
     <div class="error-message">
-        <h2 class="error-title">ERROR: {{error}}</h2>
-        <p class="error-description">El servicio seleccionado ya está contratado</p>
+        {% if error %}
+            <h2 class="error-title">ERROR: {{error}}</h2>
+        {% else %}
+            <h2 class="error-title">El servicio ya esta contratado.</h2>
+        {% endif %}
     </div>
     
+    {% if detalle_errores %}
+        <div class="alert alert-danger text-start mt-3" style="background-color: hsl(var(--destructive) / 0.05); border: 1px solid hsl(var(--destructive) / 0.2); border-radius: var(--radius); padding: 1rem;">
+            <h5 class="fw-bold text-danger mb-2">Detalle de errores:</h5>
+            <ul class="mb-0" style="padding-left: 1.2rem; color: hsl(var(--destructive));">
+                {% for error in detalle_errores %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
     <div class="error-actions">
         <a href="{% url 'gestionServicios' %}" class="btn btn-primary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

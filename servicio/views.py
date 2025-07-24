@@ -919,16 +919,60 @@ class contratarServicio(UpdateView):
     model = Servicio
     form_class = FormContratarServicio
     template_name = "servicio/contratarServicio.html"
-    success_url = reverse_lazy("asignarEmpleados", kwargs={"pk": model.pk})
 
     def get_success_url(self):
         return reverse_lazy("asignarEmpleados", kwargs={"pk": self.object.pk})
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         self.object = self.get_object()
+
         if self.object.estado != 1:
             return redirect("errorServicio")
+
+        # Verificación de stock acumulado - CORREGIDO
+        cant_serv_tipo = CantServicioTipoServicio.objects.filter(servicio=self.object)
+
+        # Agrupar insumos necesarios por insumo
+        insumos_requeridos = {}  # {insumo_id: cantidad_total_necesaria}
+
+        for csts in cant_serv_tipo:
+            tipo_servicio = csts.tipoServicio
+            cantidad_tipo = csts.cantidad  # cuántas veces se requiere ese tipo
+
+            # Busco todos los insumos necesarios para ese tipo de servicio
+            insumos_necesarios = CantInsumoServicio.objects.filter(tipoServicio=tipo_servicio)
+
+            for insumo_req in insumos_necesarios:
+                insumo = insumo_req.insumo
+                cantidad_unidad = insumo_req.cantidad  # cuánto necesita por 1 tipoServicio
+                cantidad_total = cantidad_unidad * cantidad_tipo  # total necesaria para este tipo de servicio
+
+                # Acumular la cantidad necesaria para este insumo
+                if insumo.id in insumos_requeridos:
+                    insumos_requeridos[insumo.id] += cantidad_total
+                else:
+                    insumos_requeridos[insumo.id] = cantidad_total
+
+        # Verificar stock disponible para cada insumo
+        errores_stock = []
+        for insumo_id, cantidad_total_necesaria in insumos_requeridos.items():
+            insumo = Insumo.objects.get(id=insumo_id)
+            stock_disponible = insumo.cantidad or 0
+
+            if stock_disponible < cantidad_total_necesaria:
+                errores_stock.append(
+                    f"Insumo '{insumo.descripcion}' insuficiente. "
+                    f"Se necesitan {cantidad_total_necesaria}, hay {stock_disponible}"
+                )
+
+        if errores_stock:
+            return render(request, "servicio/errorServicio.html", {
+                "error": "No hay stock suficiente para contratar este servicio.",
+                "detalle_errores": errores_stock
+            })
+
         return super().get(request, *args, **kwargs)
+
 
 
 @login_required
@@ -936,6 +980,7 @@ def contratarServicioCorrecto(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     cliente = servicio.cliente
     fecha_actual = timezone.now().date()
+    cantInsumosServicios = CantInsumoServicio.objects.filter(tipoServicio__in=servicio.tipoServicios.all())
 
     if fecha_actual.month == 12:
         primer_dia_next_mes = fecha_actual.replace(
@@ -1139,6 +1184,41 @@ def contratarServicioCorrecto(request, pk):
     # Cambiar estado del servicio a contratado
     servicio.estado = 3
     servicio.save()
+
+    # DESCUENTO DE STOCK CORREGIDO - Agrupar por insumo
+    cant_serv_tipo = CantServicioTipoServicio.objects.filter(servicio=servicio)
+    
+    # Agrupar insumos necesarios por insumo
+    insumos_a_descontar = {}  # {insumo_id: cantidad_total_a_descontar}
+
+    for csts in cant_serv_tipo:
+        tipo_servicio = csts.tipoServicio
+        cantidad_tipo = csts.cantidad
+
+        # Busco todos los insumos necesarios para ese tipo de servicio
+        insumos_necesarios = CantInsumoServicio.objects.filter(tipoServicio=tipo_servicio)
+
+        for insumo_req in insumos_necesarios:
+            insumo = insumo_req.insumo
+            cantidad_unidad = insumo_req.cantidad
+            cantidad_total = cantidad_unidad * cantidad_tipo
+
+            # Acumular la cantidad a descontar para este insumo
+            if insumo.id in insumos_a_descontar:
+                insumos_a_descontar[insumo.id] += cantidad_total
+            else:
+                insumos_a_descontar[insumo.id] = cantidad_total
+
+    # Realizar el descuento de stock una sola vez por insumo
+    for insumo_id, cantidad_total_a_descontar in insumos_a_descontar.items():
+        insumo = Insumo.objects.get(id=insumo_id)
+        insumo.cantidad -= cantidad_total_a_descontar
+        
+        if insumo.cantidad <= 0:
+            insumo.cantidad = 0
+            insumo.activo = False
+        
+        insumo.save()
 
     return render(request, "servicio/contratarOpciones.html", {"servicio": servicio})
 

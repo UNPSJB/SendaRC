@@ -141,7 +141,7 @@ class altaInsumo(CreateView):
                 "contenido_neto", "El contenido neto ingresado es incorrecto."
             )
             return self.form_invalid(form)
-        elif form.cleaned_data["cantidad"] <= 0:
+        elif form.cleaned_data["cantidad"] < 0:
             form.add_error("cantidad", "La cantidad ingresada es incorrecta.")
             return self.form_invalid(form)
         else:
@@ -214,7 +214,7 @@ class updateInsumo(UpdateView):
                 "contenido_neto", "El contenido neto ingresado es incorrecto."
             )
             return self.form_invalid(form)
-        elif form.cleaned_data["cantidad"] <= 0:
+        elif form.cleaned_data["cantidad"] < 0:
             form.add_error("cantidad", "La cantidad ingresada es incorrecta.")
             return self.form_invalid(form)
         else:
@@ -266,23 +266,25 @@ class gestionTipoServicio(ListView):
             print(f"Error al renderizar la respuesta: {e}")
             return super().render_to_response(context, **response_kwargs)
 
-
 @login_required
 def tipoServicioDetalles(request, pk):
     tipo = TipoServicio.objects.get(id=pk)
-    insumos = CantInsumoServicio.objects.filter(tipoServicio=pk)
-    maquinarias = TipoServicio.maquinarias.through.objects.filter(tiposervicio_id=pk)
-    listInsumos = []
-    listMaquinarias = []
-    for insumo in insumos:
-        listInsumos.append(Insumo.habilitados.get(id=insumo.insumo_id))
-    for maquinaria in maquinarias:
-        listMaquinarias.append(Maquinaria.objects.get(id=maquinaria.maquinaria_id))
+    insumos_qs = CantInsumoServicio.objects.filter(tipoServicio=pk).select_related("insumo")
+    maquinarias_qs = tipo.maquinarias.all()
+
+    listInsumos = [{"insumo": cis.insumo, "cantidad": cis.cantidad} for cis in insumos_qs]
+    listMaquinarias = list(maquinarias_qs)
+
     return render(
         request,
         "tipoServicio/detalleTipoServicio.html",
-        {"tipo": tipo, "insumos": listInsumos, "maquinarias": listMaquinarias},
+        {
+            "tipo": tipo,
+            "insumos": listInsumos,
+            "maquinarias": listMaquinarias,
+        },
     )
+
 
 
 @login_required
