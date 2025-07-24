@@ -1,0 +1,53 @@
+<form method="post" id="formEditarCantInsumos">
+    {% csrf_token %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Insumo</th>
+          <th>Unidad</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ci in insumos_servicio %}
+        <tr>
+          <td>{{ ci.insumo.descripcion }}</td>
+          <td>{{ ci.insumo.getUni_Medida }}</td>
+          <td>
+            <input type="number" name="cantidad_{{ ci.pk }}" class="form-control" value="{{ ci.cantidad }}">
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    </div>
+  </form>
+  
+<script>
+    $("#formEditarCantInsumos").on("submit", function (e) {
+    e.preventDefault();
+    const form = $(this);
+    $.ajax({
+        url: "{% url 'editarCantInsumosServicio' tipo_servicio.pk %}",
+        type: "POST",
+        data: form.serialize(),
+        success: function () {
+        const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarInsumos"));
+        modal.hide();
+
+        // Mostrar toast
+        const toastEl = document.getElementById("toastExito");
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+
+        },
+        error: function () {
+        alert("Error al guardar los cambios.");
+        },
+    });
+    });
+</script>
+  

@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from factura.models import Factura
 import re
 from django.template.loader import render_to_string
-
+from django.shortcuts import render, get_object_or_404
 
 @method_decorator(login_required, name="dispatch")
 class altaCliente(CreateView):
@@ -326,6 +326,22 @@ class updateTipoServicio(UpdateView):
             tiposervicio.save()
             return super().form_valid(form)
 
+def editar_cant_insumos_servicio(request, pk):
+    tipo_servicio = get_object_or_404(TipoServicio, pk=pk)
+    insumos_servicio = CantInsumoServicio.objects.filter(tipoServicio=tipo_servicio).select_related('insumo')
+
+    if request.method == "POST":
+        for insumo in insumos_servicio:
+            nueva_cantidad = request.POST.get(f"cantidad_{insumo.pk}")
+            if nueva_cantidad:
+                insumo.cantidad = int(nueva_cantidad)
+                insumo.save()
+        return JsonResponse({'success': True})
+
+    return render(request, 'tipoServicio/editarCantInsumos.html', {
+        'tipo_servicio': tipo_servicio,
+        'insumos_servicio': insumos_servicio
+    })
 
 
 @method_decorator(login_required, name="dispatch")

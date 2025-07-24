@@ -18,6 +18,13 @@
     <a href="{% url 'modificarTipoServicio' tipo.pk %}" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar tipo de servicio">
       <i class="bi bi-pencil-square"></i>
     </a>
+    <button class="btn btn-sm btn-outline-primary me-1 btn-editar-insumos"
+        data-url="{% url 'editarCantInsumosServicio' tipo.pk %}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+          title="Modificar cantidad de insumos">
+      <i class="bi bi-sliders"></i>
+    </button>
   </td>
 </tr>
 {% empty %}

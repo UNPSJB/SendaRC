@@ -131,6 +131,398 @@
         </div>
     </div>
 </div>
+<!--MODAL DE MODIFICAR LA CANTIDAD DE INSUMOS NECESARIOS PARA UN TIPO DE SERVICIO-->
+<div class="modal fade" id="modalEditarInsumos" tabindex="-1" aria-labelledby="modalEditarInsumosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+      <div class="modal-content modal-content-shadcn">
+        <div class="modal-header modal-header-shadcn">
+          <div class="modal-title-container">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-icon">
+              <path d="M3 6h18l-2 13H5L3 6z"></path>
+              <path d="M3 6L2 2H1"></path>
+            </svg>
+            <h5 class="modal-title modal-title-shadcn" id="modalEditarInsumosLabel">
+              Modificar Cantidades de Insumos
+            </h5>
+          </div>
+          <button type="button" class="btn-close btn-close-shadcn" data-bs-dismiss="modal" aria-label="Cerrar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body modal-body-shadcn" id="contenidoModalEditarInsumos">
+          <!-- Se cargará dinámicamente con AJAX -->
+          <div class="loading-container">
+            <div class="loading-spinner">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-spin">
+                <path d="M21 12a9 9 0 11-6.219-8.56"/>
+              </svg>
+            </div>
+            <span class="loading-text">Cargando...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<!-- Toast mejorado con estilo shadcn -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastExito" class="toast toast-shadcn toast-success" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header-shadcn">
+        <div class="toast-icon toast-icon-success">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">Éxito</div>
+          <div class="toast-message">Cantidades de insumos actualizadas correctamente.</div>
+        </div>
+        <button type="button" class="toast-close" data-bs-dismiss="toast" aria-label="Cerrar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Modal Container */
+    .modal-content-shadcn {
+      background: var(--background) !important;
+      border: 1px solid hsl(var(--border)) !important;
+      border-radius: var(--radius-lg) !important;
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25) !important;
+      overflow: hidden;
+    }
+    
+    /* Modal Header */
+    .modal-header-shadcn {
+      background: hsl(var(--background)) !important;
+      border-bottom: 1px solid hsl(var(--border)) !important;
+      padding: 1.5rem !important;
+      border-radius: 0 !important;
+    }
+    
+    .modal-title-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .modal-icon {
+      color: hsl(var(--accent));
+      flex-shrink: 0;
+    }
+    
+    .modal-title-shadcn {
+      color: hsl(var(--foreground)) !important;
+      font-size: 1.125rem !important;
+      font-weight: 600 !important;
+      margin: 0 !important;
+      letter-spacing: -0.025em;
+    }
+    
+    /* Close Button */
+    .btn-close-shadcn {
+      background: none !important;
+      border: none !important;
+      padding: 0.5rem !important;
+      border-radius: var(--radius-sm) !important;
+      color: hsl(var(--muted-foreground)) !important;
+      transition: var(--transition) !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      opacity: 1 !important;
+    }
+    
+    .btn-close-shadcn:hover {
+      background-color: hsl(var(--muted)) !important;
+      color: hsl(var(--foreground)) !important;
+      transform: none !important;
+    }
+    
+    .btn-close-shadcn:focus {
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
+      outline: none !important;
+    }
+    
+    /* Modal Body */
+    .modal-body-shadcn {
+      background-color: hsl(var(--background)) ;
+      padding: 1.5rem !important;
+    }
+    
+    /* Loading State */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+      gap: 1rem;
+    }
+    
+    .loading-spinner {
+      color: hsl(var(--accent));
+    }
+    
+    .loading-text {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    /* Animación de spin */
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Estilos para el contenido dinámico del modal */
+    .modal-body-shadcn .card {
+      background: hsl(var(--background)) !important;
+      border: 1px solid hsl(var(--border)) !important;
+      border-radius: var(--radius) !important;
+      box-shadow: none !important;
+      margin-bottom: 1rem;
+    }
+    
+    .modal-body-shadcn .form-control {
+      background-color: hsl(var(--background)) !important;
+      border: 1px solid hsl(var(--border)) !important;
+      border-radius: var(--radius-sm) !important;
+      color: hsl(var(--foreground)) !important;
+      font-size: 0.875rem !important;
+      height: 2.25rem !important;
+      transition: var(--transition) !important;
+    }
+    
+    .modal-body-shadcn .form-control:focus {
+      border-color: hsl(var(--ring)) !important;
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
+      outline: none !important;
+    }
+    
+    .modal-body-shadcn .form-label {
+      color: hsl(var(--foreground)) !important;
+      font-weight: 500 !important;
+      font-size: 0.875rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    
+    
+    .modal-body-shadcn .table {
+      background-color: transparent !important;
+      border-radius: var(--radius) !important;
+      overflow: hidden;
+    }
+    
+    .modal-body-shadcn .table th {
+      background-color: hsl(var(--muted)) !important;
+      color: hsl(var(--muted-foreground)) !important;
+      border-color: hsl(var(--border)) !important;
+      font-weight: 600 !important;
+      font-size: 0.875rem !important;
+      padding: 0.75rem !important;
+    }
+    
+    .modal-body-shadcn .table td {
+      border-color: hsl(var(--border)) !important;
+      padding: 0.75rem !important;
+      vertical-align: middle !important;
+    }
+    
+    .modal-body-shadcn .table-hover tbody tr:hover {
+      background-color: hsl(var(--muted) / 0.5) !important;
+    }
+    
+    /* Alert styles dentro del modal */
+    .modal-body-shadcn .alert {
+      border: none !important;
+      border-radius: var(--radius) !important;
+      padding: 1rem !important;
+      margin-bottom: 1rem !important;
+    }
+    
+    .modal-body-shadcn .alert-danger {
+      background: hsl(var(--destructive) / 0.1) !important;
+      color: hsl(var(--destructive)) !important;
+      border-left: 4px solid hsl(var(--destructive)) !important;
+    }
+    
+    .modal-body-shadcn .alert-success {
+      background: hsl(var(--success) / 0.1) !important;
+      color: hsl(var(--success)) !important;
+      border-left: 4px solid hsl(var(--success)) !important;
+    }
+    
+    /* Input groups */
+    .modal-body-shadcn .input-group {
+      border-radius: var(--radius-sm) !important;
+      overflow: hidden;
+    }
+    
+    .modal-body-shadcn .input-group-text {
+      background-color: hsl(var(--muted)) !important;
+      border: 1px solid hsl(var(--border)) !important;
+      color: hsl(var(--muted-foreground)) !important;
+      font-size: 0.875rem !important;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .modal-dialog {
+        margin: 1rem !important;
+      }
+      
+      .modal-header-shadcn {
+        padding: 1rem !important;
+      }
+      
+      .modal-body-shadcn {
+        padding: 1rem !important;
+      }
+      
+      .modal-title-shadcn {
+        font-size: 1rem !important;
+      }
+    }
+    
+    /* Animation for modal appearance */
+    .modal.fade .modal-dialog {
+      transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+      transform: translate(0, -25px) scale(0.95);
+    }
+    
+    .modal.show .modal-dialog {
+      transform: translate(0, 0) scale(1);
+    }
+    /* Toast Container */
+    .toast-shadcn {
+    background: var(--glass-bg) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    min-width: 350px;
+    border-left: none !important;
+    }
+
+    .toast-success {
+    border-left: 4px solid hsl(var(--success)) !important;
+    }
+
+    .toast-header-shadcn {
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 1rem !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    }
+
+    .toast-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    }
+
+    .toast-icon-success {
+    background: hsl(var(--success) / 0.1);
+    color: hsl(var(--success));
+    }
+
+    .toast-content {
+    flex: 1;
+    min-width: 0;
+    }
+
+    .toast-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: hsl(var(--foreground));
+    margin-bottom: 0.25rem;
+    }
+
+    .toast-message {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.4;
+    }
+
+    .toast-close {
+    background: none !important;
+    border: none !important;
+    padding: 0.25rem !important;
+    border-radius: var(--radius-sm) !important;
+    color: hsl(var(--muted-foreground)) !important;
+    transition: var(--transition) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    }
+
+    .toast-close:hover {
+    background-color: hsl(var(--muted)) !important;
+    color: hsl(var(--foreground)) !important;
+    }
+
+    /* Animation */
+    .toast.showing {
+    animation: toastSlideIn 0.3s ease-out;
+    }
+
+    .toast.hide {
+    animation: toastSlideOut 0.2s ease-in;
+    }
+
+    @keyframes toastSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    }
+
+    @keyframes toastSlideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    }
+    </style>
 {% endblock %}
 
 {% block extrajs %}
@@ -225,6 +617,33 @@
                 $('#contenidoDetalleTipoServicio').empty();
             });
         }
+    });
+
+    $(document).on("click", ".btn-editar-insumos", function () {
+        const url = $(this).data("url");
+
+        const modal = new bootstrap.Modal(document.getElementById("modalEditarInsumos"));
+        $("#contenidoModalEditarInsumos").html(`
+            <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            </div>
+        `);
+        modal.show();
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (data) {
+            $("#contenidoModalEditarInsumos").html(data);
+            },
+            error: function () {
+            $("#contenidoModalEditarInsumos").html(`
+                <div class="alert alert-danger">Error al cargar el formulario</div>
+            `);
+            },
+        });
     });
 </script>
 {% endblock %}
