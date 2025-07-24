@@ -22,15 +22,7 @@
         Se produjo un error inesperado en nuestros servidores. 
         Nuestro equipo técnico ha sido notificado y está trabajando para resolverlo.
       </p>
-
-      <!-- ID del incidente -->
-      <div class="alert alert-warning" role="alert">
-        <small>
-          <strong>ID del incidente:</strong> 
-          {{ request.META.REQUEST_ID|default:"SRC-"|add:request.session.session_key|slice:":8"|upper }}
-        </small>
-      </div>
-
+      <img src="{% static 'images/500Error.jpg' %}" alt="Error" class="img-fluid" style="width: 50%; height: auto;">
       <!-- Botones -->
       <div class="d-grid gap-2">
         <a href="{% url 'home' %}" class="btn btn-primary login-button">
