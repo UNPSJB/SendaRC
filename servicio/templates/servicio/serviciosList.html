@@ -43,36 +43,64 @@
   <td>{{ servicio.fecha_inicio|date:"d-m-Y" }}</td>
   <td>{{ servicio.fecha_finaliza|date:"d-m-Y" }}</td>
   <td>{{ servicio.getImporteTotalFormateado }}</td>
-  <td>
-    <button class="btn btn-sm btn-outline-primary me-1 btn-detalle" style="margin-bottom: 4px;"
-      data-url="{% url 'canvasServicio' servicio.pk %}" data-bs-toggle="tooltip" data-bs-placement="top"
-      title="Ver detalles del servicio">
+  <td class="actions-column">
+    <!-- Botón Ver Detalle -->
+    <button class="action-btn action-btn-view  btn-detalle btn btn-outline-primary" 
+            data-url="{% url 'canvasServicio' servicio.pk %}" 
+            data-bs-toggle="tooltip" 
+            data-bs-placement="top"
+            title="Ver detalles del servicio">
       <i class="bi bi-eye"></i>
     </button>
-
-    {% if servicio.getEstado == 'Presupuestado' %}
-    <a href="{% url 'modificarPresupuesto' servicio.pk %}" style="margin-bottom: 4px;"
-      class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-      title="Modificar presupuesto">
-      <i class="bi bi-pencil-square"></i>
-    </a>
-
-    <a href="{% url 'contratarServicio' servicio.pk %}" style="margin-bottom: 4px;"
-      class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-      title="Contratar servicio">
-      <i class="bi bi-file-earmark-check-fill"></i>
-    </a>
-
-    <button style="margin-bottom: 4px;" data-bs-toggle="tooltip" data-bs-placement="top"
-    title="Eliminar Presupuesto" type="button" class="btn btn-sm btn-outline-primary me-1" onclick="mostrarModalCancelacion({{ servicio.pk }})">
-      <i class="bi bi-trash"></i>
-    </button>  
-    {% endif %}
-
-    <a target="_blank" href="{% url 'pdfImprimir' servicio.pk %}" style="margin-bottom: 4px;"
-      class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir">
-      <i class="bi bi-printer"></i>
-    </a>
+  
+    <!-- Dropdown de Opciones -->
+    <div class="action-dropdown">
+      <button class="action-btn action-btn-dropdown btn-detalle btn btn-outline-primary" 
+              type="button" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false"
+              data-bs-placement="bottom-end"
+              data-bs-placement="top"
+              title="Opciones">
+        <i class="bi bi-three-dots-vertical" data-bs-toggle="tooltip" data-bs-placement="top" title="Opciones"></i>
+      </button>
+      
+      <ul class="dropdown-menu dropdown-menu-end">
+        {% if servicio.getEstado == 'Presupuestado' %}
+          <li>
+            <a class="dropdown-item" href="{% url 'modificarPresupuesto' servicio.pk %}">
+              <i class="bi bi-pencil-square"></i>
+              <span>Modificar presupuesto</span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{% url 'contratarServicio' servicio.pk %}">
+              <i class="bi bi-file-earmark-check-fill"></i>
+              <span>Contratar servicio</span>
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <button class="dropdown-item dropdown-item-danger" 
+                    type="button" 
+                    onclick="mostrarModalCancelacion({{ servicio.pk }})">
+              <i class="bi bi-trash"></i>
+              <span>Eliminar presupuesto</span>
+            </button>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+        {% endif %}
+        
+        <li>
+          <a class="dropdown-item" 
+             target="_blank" 
+             href="{% url 'pdfImprimir' servicio.pk %}">
+            <i class="bi bi-printer"></i>
+            <span>Imprimir</span>
+          </a>
+        </li>
+      </ul>
+    </div>
   </td>
 </tr>
 {% empty %}

@@ -961,7 +961,7 @@ class contratarServicio(UpdateView):
 
             if stock_disponible < cantidad_total_necesaria:
                 errores_stock.append(
-                    f"Insumo '{insumo.descripcion}' insuficiente. "
+                    f"Insumo '{insumo.descripcion} ({insumo.marca})' insuficiente. "
                     f"Se necesitan {cantidad_total_necesaria}, hay {stock_disponible}"
                 )
 
