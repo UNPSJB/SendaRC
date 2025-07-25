@@ -135,7 +135,7 @@ def apply_filters(facturas, filters, today):
                 Q(id__icontains=filters['search_query'])
             )
         if filters['periodo_servicio']:
-            facturas = facturas.filter(periodoServicio__icontains=filters['periodo_servicio'])
+            facturas = facturas.filter(periodoServicio=int(filters['periodo_servicio']))
 
         if filters['tipo']:
             facturas = facturas.filter(tipo=filters['tipo'])
