@@ -55,7 +55,7 @@
   
     <!-- Dropdown de Opciones -->
     <div class="action-dropdown">
-      <button class="action-btn action-btn-dropdown btn-detalle btn btn-outline-primary" 
+      <button class="action-btn action-btn-dropdown btn btn-outline-primary" 
               type="button" 
               data-bs-toggle="dropdown" 
               aria-expanded="false"
@@ -143,10 +143,10 @@
             <p class="modal-text" id="cancelModalText">¿Está seguro que desea eliminar este presupuesto?</p>
         </div>
         <div class="modal-actions">
-            <button type="button" class="btn btn-sm  btn-outline-primary me-1" onclick="cerrarModalCancelacion()">Cancelar</button>
+            <button type="button" class="btn btn-sm  btn-outline-primary me-1 closeModalConfirmacion" onclick="cerrarModalConfirmacion()">Cancelar</button>
             <form method="POST" id="formEliminarPresupuesto">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-danger me-1" style="padding-inline: 30px;">Confirmar Eliminación</button>
+                <button type="submit" class="btn btn-sm btn-success me-1" style="padding-inline: 30px;">Confirmar Eliminación</button>
             </form>
         </div>
     </div>
@@ -169,10 +169,10 @@
           <p class="modal-text" id="cancelModalText">¿Está seguro que desea cancelar este servicio?</p>
       </div>
       <div class="modal-actions">
-          <button type="button" class="btn btn-sm  btn-outline-primary me-1" onclick="cerrarModalCancelacion()">Cancelar</button>
+          <button type="button" class="btn btn-sm  btn-outline-primary me-1 closeModalConfirmacion" onclick="cerrarModalConfirmacion()">Cancelar</button>
           <form method="POST" id="formCancelarServicio">
               {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-danger me-1" style="padding-inline: 30px;">Confirmar Cancelación</button>
+              <button type="submit" class="btn btn-sm btn-success me-1" style="padding-inline: 30px;">Confirmar Cancelación</button>
           </form>
       </div>
   </div>
@@ -198,15 +198,23 @@
         modal.style.display = 'flex';
     }
     
-    function cerrarModalCancelacion() {
-        const modal = document.getElementById('cancelModal');
-        modal.style.display = 'none';
+    function cerrarModalConfirmacion() {
+    // Cierra todos los modales abiertos
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            }
+        });
     }
-    
-    // Cerrar modal al hacer clic fuera
-    document.getElementById('cancelModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.style.display = 'none';
-        }
+     
+    // Cerrar el modal si se hace clic fuera del contenido
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', function (e) {
+            // Si se hace clic directamente sobre el overlay (y no el contenido interno)
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
     });
+
 </script>
