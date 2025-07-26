@@ -22,6 +22,8 @@ from dateutil.relativedelta import relativedelta
 from .forms import FormBaseFrecuencia
 import json
 from .models import Frecuencia
+from django.contrib import messages
+from django.utils.timezone import now
 
 dias_json = json.dumps([{"value": d[0], "label": d[1]} for d in Frecuencia.DIA])
 turnos_json = json.dumps([{"value": t[0], "label": t[1]} for t in Frecuencia.TURNO])
@@ -940,12 +942,18 @@ class contratarServicio(UpdateView):
             cantidad_tipo = csts.cantidad  # cuántas veces se requiere ese tipo
 
             # Busco todos los insumos necesarios para ese tipo de servicio
-            insumos_necesarios = CantInsumoServicio.objects.filter(tipoServicio=tipo_servicio)
+            insumos_necesarios = CantInsumoServicio.objects.filter(
+                tipoServicio=tipo_servicio
+            )
 
             for insumo_req in insumos_necesarios:
                 insumo = insumo_req.insumo
-                cantidad_unidad = insumo_req.cantidad  # cuánto necesita por 1 tipoServicio
-                cantidad_total = cantidad_unidad * cantidad_tipo  # total necesaria para este tipo de servicio
+                cantidad_unidad = (
+                    insumo_req.cantidad
+                )  # cuánto necesita por 1 tipoServicio
+                cantidad_total = (
+                    cantidad_unidad * cantidad_tipo
+                )  # total necesaria para este tipo de servicio
 
                 # Acumular la cantidad necesaria para este insumo
                 if insumo.id in insumos_requeridos:
@@ -966,13 +974,16 @@ class contratarServicio(UpdateView):
                 )
 
         if errores_stock:
-            return render(request, "servicio/errorServicio.html", {
-                "error": "No hay stock suficiente para contratar este servicio.",
-                "detalle_errores": errores_stock
-            })
+            return render(
+                request,
+                "servicio/errorServicio.html",
+                {
+                    "error": "No hay stock suficiente para contratar este servicio.",
+                    "detalle_errores": errores_stock,
+                },
+            )
 
         return super().get(request, *args, **kwargs)
-
 
 
 @login_required
@@ -980,7 +991,9 @@ def contratarServicioCorrecto(request, pk):
     servicio = Servicio.objects.get(pk=pk)
     cliente = servicio.cliente
     fecha_actual = timezone.now().date()
-    cantInsumosServicios = CantInsumoServicio.objects.filter(tipoServicio__in=servicio.tipoServicios.all())
+    cantInsumosServicios = CantInsumoServicio.objects.filter(
+        tipoServicio__in=servicio.tipoServicios.all()
+    )
 
     if fecha_actual.month == 12:
         primer_dia_next_mes = fecha_actual.replace(
@@ -1136,10 +1149,13 @@ def contratarServicioCorrecto(request, pk):
 
             while fecha <= fecha_fin:
                 vencimiento = (fecha + relativedelta(months=1)).replace(day=10)
-
+                periodo_str = fecha.strftime("%Y-%m")
                 # Evitar duplicados
+                
                 if not Factura.objects.filter(
-                    servicio=servicio, tipo=3, periodoServicio=fecha.month
+                    servicio=servicio,
+                    tipo=3,
+                    periodo=periodo_str
                 ).exists():
                     factura = Factura.objects.create(
                         fecha_vencimiento=vencimiento,
@@ -1147,8 +1163,10 @@ def contratarServicioCorrecto(request, pk):
                         servicio=servicio,
                         tipo=3,  # Mensual
                         periodoServicio=fecha.month,
+                        periodo=periodo_str,
                         importe=importe_mensual,
                     )
+
 
                     # Detalles de servicios
                     servicio_tipos_servicios = CantServicioTipoServicio.objects.filter(
@@ -1187,7 +1205,7 @@ def contratarServicioCorrecto(request, pk):
 
     # DESCUENTO DE STOCK CORREGIDO - Agrupar por insumo
     cant_serv_tipo = CantServicioTipoServicio.objects.filter(servicio=servicio)
-    
+
     # Agrupar insumos necesarios por insumo
     insumos_a_descontar = {}  # {insumo_id: cantidad_total_a_descontar}
 
@@ -1196,7 +1214,9 @@ def contratarServicioCorrecto(request, pk):
         cantidad_tipo = csts.cantidad
 
         # Busco todos los insumos necesarios para ese tipo de servicio
-        insumos_necesarios = CantInsumoServicio.objects.filter(tipoServicio=tipo_servicio)
+        insumos_necesarios = CantInsumoServicio.objects.filter(
+            tipoServicio=tipo_servicio
+        )
 
         for insumo_req in insumos_necesarios:
             insumo = insumo_req.insumo
@@ -1213,11 +1233,11 @@ def contratarServicioCorrecto(request, pk):
     for insumo_id, cantidad_total_a_descontar in insumos_a_descontar.items():
         insumo = Insumo.objects.get(id=insumo_id)
         insumo.cantidad -= cantidad_total_a_descontar
-        
+
         if insumo.cantidad <= 0:
             insumo.cantidad = 0
             insumo.activo = False
-        
+
         insumo.save()
 
     return render(request, "servicio/contratarOpciones.html", {"servicio": servicio})
@@ -1273,7 +1293,6 @@ def asignarEmpleados(request, pk):
                 servicio.estado = 3
                 servicio.save()
                 return redirect("contratarServicioCorrecto", pk)
-            
 
             return redirect("realizarCobroFacturaSeña", pk)
 
@@ -1315,18 +1334,12 @@ def asignarEmpleados(request, pk):
         {"formset": formset, "servicio": servicio},
     )
 
+
 @login_required
-def cancelar_servicio(request, pk):
+def eliminar_presupuesto(request, pk):
     servicio = get_object_or_404(Servicio, pk=pk)
 
     try:
-        # Eliminar detalles relacionados a las facturas del servicio
-        facturas = Factura.objects.filter(servicio=servicio)
-        for factura in facturas:
-            Detalle_Servicios.objects.filter(factura=factura).delete()
-            Detalle_Empleados.objects.filter(factura=factura).delete()
-        facturas.delete()
-
         # Eliminar frecuencias
         Frecuencia.objects.filter(servicio=servicio).delete()
 
@@ -1336,8 +1349,87 @@ def cancelar_servicio(request, pk):
         # Finalmente, eliminar el servicio
         servicio.delete()
 
-        print(request, "El servicio fue cancelado correctamente.")
+        print(request, "El presupuesto fue eliminado correctamente.")
     except Exception as e:
-        print(request, f"Ocurrió un error al cancelar el servicio: {str(e)}")
+        print(request, f"Ocurrió un error al eliminar el presupuesto: {str(e)}")
 
-    return redirect("gestionServicios")  
+    return redirect("gestionServicios")
+
+
+@login_required
+def cancelar_servicio(request, pk):
+    servicio = get_object_or_404(Servicio, pk=pk)
+    cliente = servicio.cliente
+    hoy = now().date()
+    periodo_actual = hoy.strftime("%Y-%m")
+
+    # -------------------------------
+    # SERVICIO EVENTUAL
+    # -------------------------------
+    if servicio.tipo == 1:
+        # Deben estar pagas todas las facturas
+        facturas_impagas = Factura.objects.filter(
+            servicio=servicio,
+            formaPago__isnull=True
+        )
+        if facturas_impagas.exists():
+            messages.error(request, "No se puede cancelar: existen facturas impagas.")
+            return redirect("gestionServicios")
+
+        # Si todas están pagas, cancelar
+        servicio.estado = 7
+        servicio.fecha_cancelada = hoy
+        servicio.save()
+        messages.success(request, "El servicio fue cancelado correctamente.")
+        return redirect("gestionServicios")
+
+    # -------------------------------
+    # SERVICIO DETERMINADO
+    # -------------------------------
+    if cliente.tipo == 1:  # Cliente OCASIONAL
+        # Solo eliminar si NO tiene facturas restantes (impagas)
+        facturas_restantes = Factura.objects.filter(
+            servicio=servicio,
+            tipo=2,
+            formaPago__isnull=True
+        )
+        
+        if facturas_restantes.exists():
+            messages.error(request, "No se puede cancelar: existen facturas restantes (impagas).")
+            return redirect("gestionServicios")
+        # Si no hay facturas restantes, continuar con la cancelación
+
+    elif cliente.tipo == 2:  # Cliente HABITUAL
+        # Verificar facturas impagas hasta el mes actual
+        facturas_impagas = Factura.objects.filter(
+            servicio=servicio,
+            tipo=3,
+            formaPago__isnull=True,
+            periodo__lte=periodo_actual
+        )
+        if facturas_impagas.exists():
+            messages.error(request, "No se puede cancelar: existen facturas impagas hasta el mes actual.")
+            return redirect("gestionServicios")
+
+        # Eliminar futuras facturas
+        Factura.objects.filter(
+            servicio=servicio,
+            tipo=3,
+            periodo__gt=periodo_actual
+        ).delete()
+
+    # Desvincular empleados de las frecuencias del servicio
+    for frecuencia in servicio.frecuencias.all():
+        frecuencia.empleados.clear()
+
+    # Desvincular empleados directamente del servicio
+    servicio.empleado.clear()
+
+    # -------------------------------
+    # Marcar como cancelado
+    # -------------------------------
+    servicio.estado = 7
+    servicio.fecha_cancelada = hoy
+    servicio.save()
+    messages.success(request, "El servicio fue cancelado correctamente.")
+    return redirect("gestionServicios")

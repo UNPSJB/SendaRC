@@ -23,5 +23,6 @@ urlpatterns = [
     #Facturas
     path('factura/', include('factura.urls')),
     path("cancelar-servicio/<int:pk>/", cancelar_servicio, name="cancelarServicio"),
+    path("eliminar-presupuesto/<int:pk>/", eliminar_presupuesto, name="eliminarPresupuesto"),
 ]
  

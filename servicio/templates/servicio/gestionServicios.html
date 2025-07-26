@@ -17,6 +17,34 @@
 {% endblock %}
 
 {% block listado %}
+{% if messages %}
+  <div class="mt-2">
+    {% for message in messages %}
+      {% if 'success' in message.tags %}
+        <div class="alert alert-success alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% elif 'error' in message.tags or 'danger' in message.tags %}
+        <div class="alert alert-danger alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% elif 'warning' in message.tags %}
+        <div class="alert alert-warning alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% else %}
+        <div class="alert alert-info alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
+
 <div class="animate-fade-in">
     <h5 class="card-title mb-3">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

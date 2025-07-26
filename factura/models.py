@@ -23,6 +23,7 @@ class Factura(models.Model):
     periodoServicio = models.IntegerField(null=True)
     cliente = models.ForeignKey(Cliente,on_delete=models.DO_NOTHING)
     servicio = models.ForeignKey(Servicio,on_delete=models.DO_NOTHING)
+    periodo = models.CharField(max_length=7, null=True)
     # Atributos para el pago
     formaPago =  models.PositiveIntegerField(choices=FORMAPAGO, null=True)
     fechaPago = models.DateField(auto_now=False, auto_now_add=False, null=True)

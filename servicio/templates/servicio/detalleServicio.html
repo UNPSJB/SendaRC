@@ -88,6 +88,10 @@
                             <span class="info-value">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
                         </div>
                         <div class="info-item">
+                            <span class="info-label">Tipo de Cliente</span>
+                            <span class="info-value">{{servicio.cliente.getTipo}}</span>
+                        </div>
+                        <div class="info-item">
                             <span class="info-label">CUIT/CUIL</span>
                             <span class="info-value">{{servicio.cliente.cuil}}</span>
                         </div>
@@ -280,7 +284,7 @@
                             Frecuencias
                             <span class="badge">{{ frecuencias|length }}</span>
                         </button>
-                        {% if servicio.getEstado != "Presupuestado" %}
+                        {% if servicio.getEstado != "Presupuestado" and servicio.getEstado != "Cancelado" %}
                         <button class="tab-trigger" data-lista="tablaEmpleados">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">

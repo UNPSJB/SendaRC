@@ -90,7 +90,16 @@
           </li>
           <li><hr class="dropdown-divider"></li>
         {% endif %}
-        
+        {% if servicio.getEstado == 'En Curso' %}
+        <li>
+          <button class="dropdown-item dropdown-item-danger" 
+                  type="button" 
+                  onclick="mostrarModalCancelacionServicio({{ servicio.pk }})">
+            <i class="bi bi-x-circle"></i>
+            <span>Cancelar servicio</span>
+          </button>
+        </li>
+        {% endif %}
         <li>
           <a class="dropdown-item" 
              target="_blank" 
@@ -117,8 +126,8 @@
 </tr>
 {% endfor %}
 
-<!-- Modal de confirmación de cancelación -->
-<div class="modal-overlay" id="cancelModal" style="display: none;">
+<!-- Modal de confirmación de eliminacion de presupuesto -->
+<div class="modal-overlay" id="eliminarPresupuestoModal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title">Eliminar Presupuesto</h3>
@@ -135,7 +144,7 @@
         </div>
         <div class="modal-actions">
             <button type="button" class="btn btn-sm  btn-outline-primary me-1" onclick="cerrarModalCancelacion()">Cancelar</button>
-            <form method="POST" id="formCancelarServicio">
+            <form method="POST" id="formEliminarPresupuesto">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-danger me-1" style="padding-inline: 30px;">Confirmar Eliminación</button>
             </form>
@@ -143,10 +152,48 @@
     </div>
 </div>
 
+<!-- Modal de confirmación de cancelación de servicio -->
+<div class="modal-overlay" id="cancelModal" style="display: none;">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h3 class="modal-title">Cancelar Servicio</h3>
+      </div>
+      <div class="modal-body">
+          <div class="confirmation-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+          </div>
+          <p class="modal-text" id="cancelModalText">¿Está seguro que desea cancelar este servicio?</p>
+      </div>
+      <div class="modal-actions">
+          <button type="button" class="btn btn-sm  btn-outline-primary me-1" onclick="cerrarModalCancelacion()">Cancelar</button>
+          <form method="POST" id="formCancelarServicio">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger me-1" style="padding-inline: 30px;">Confirmar Cancelación</button>
+          </form>
+      </div>
+  </div>
+</div>
+
 <script>
     function mostrarModalCancelacion(servicioId) {
+        const modal = document.getElementById('eliminarPresupuestoModal');
+        const form = document.getElementById('formEliminarPresupuesto');
+        form.action = "{% url 'eliminarPresupuesto' 0 %}".replace("0", servicioId);
+        modal.style.display = 'flex';
+    }
+
+    function mostrarModalCancelacionServicio(servicioId) {
         const modal = document.getElementById('cancelModal');
         const form = document.getElementById('formCancelarServicio');
+
+        // Cambiar el texto del modal según el contexto
+        document.getElementById('cancelModalText').innerText = "¿Está seguro que desea cancelar este servicio?";
+        modal.querySelector('.modal-title').innerText = "Cancelar Servicio";
+
         form.action = "{% url 'cancelarServicio' 0 %}".replace("0", servicioId);
         modal.style.display = 'flex';
     }
