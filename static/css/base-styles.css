@@ -1792,3 +1792,110 @@ table.dataTable {
 .bs-tooltip-end .tooltip-arrow::before {
   border-right-color: hsl(var(--border)) !important;
 }
+
+/* Botón hamburger para móvil */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary));
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  color: hsl(var(--primary-foreground));
+}
+
+.mobile-menu-toggle:hover {
+  background: hsl(var(--primary));
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-menu-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .sidebar {
+      transform: translateX(-100%);
+      width: 280px;
+  }
+  
+  .sidebar.active {
+      transform: translateX(0);
+  }
+  
+  .main-content {
+      margin-left: 0;
+  }
+  
+  .mobile-menu-toggle {
+      display: block;
+  }
+  
+  /* Ajustar el contenido principal en móvil */
+  .seccion-cabecera {
+      padding-top: 3rem; /* Espacio para el botón hamburger */
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+      width: 100%;
+  }
+  
+  .mobile-menu-toggle {
+      top: 15px;
+      left: 330px;
+  }
+}
+
+/* Estilos adicionales para mejorar la UX */
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-nav {
+  padding: 20px 0;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Animaciones suaves */
+.sidebar,
+.main-content{
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mejorar la visibilidad del botón en diferentes fondos */
+.mobile-menu-toggle {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Estilos para cuando la sidebar está activa en móvil */
+body.sidebar-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  body.sidebar-open {
+      display: block;
+  }
+
+  .btn-primary{
+    font-size: 0.7rem;
+  }
+}

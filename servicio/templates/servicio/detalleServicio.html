@@ -47,328 +47,332 @@
 {% endblock %}
 
 {% block listado %}
-<div class="detail-layout">
-    <!-- Panel de información principal -->
-    <div class="info-panel">
-        <div class="card">
-            <div class="card-body">
-                <!-- Header del Servicio -->
-                <div class="card-header-custom">
-                    <div class="service-meta">
-                        <div class="service-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="service-title">Servicio #{{ servicio.pk }}</h3>
-                            <p class="service-date">Fecha Emisión: <span
-                                    class="text-accent">{{servicio.fecha_emision}}</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Información del Cliente -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <h4 class="section-title">Información del Cliente</h4>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Cliente</span>
-                            <span class="info-value">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Tipo de Cliente</span>
-                            <span class="info-value">{{servicio.cliente.getTipo}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">CUIT/CUIL</span>
-                            <span class="info-value">{{servicio.cliente.cuil}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Email</span>
-                            <span class="info-value">{{servicio.cliente.email}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Teléfono</span>
-                            <span class="info-value">{{servicio.cliente.telefono}}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Información del Inmueble -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
-                        <h4 class="section-title">Información del Inmueble</h4>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Localidad</span>
-                            <span class="info-value">{{servicio.getLocalidad}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Dirección</span>
-                            <span class="info-value">{{servicio.direccion}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Metros cuadrados</span>
-                            <span class="info-value">{{servicio.metros2}}m²</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Información del Servicio con estructura mejorada -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                        <h4 class="section-title">Desglose Financiero del Servicio</h4>
-                    </div>
-
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Tipo de Servicio</span>
-                            <span class="info-value">{{servicio.getTipo}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Plazo de Vigencia</span>
-                            <span class="info-value">{{servicio.plazo_vigencia}}</span>
-                        </div>
-                    </div>
-
-                    <!-- Métricas financieras con estructura clara -->
-                    <div class="metrics-grid">
-                        <!-- Item informativo -->
-                        <div class="metric-item info-only">
-                            <span class="metric-label">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" style="display: inline; margin-right: 4px;">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                </svg>
-                                Total Servicios (Referencia)
-                            </span>
-                            <span class="metric-value info-value">{{ servicio.getSubtotalPorTurnoFormateado }}</span>
-                            <span class="metric-note">Solo informativo</span>
-                        </div>
-
-                        <!-- Items que se suman al total -->
-                        <div class="metric-item calculation-item">
-                            <span class="metric-label">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" style="display: inline; margin-right: 4px;">
-                                    <polyline points="9,11 12,14 22,4"></polyline>
-                                    <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
-                                </svg>
-                                Servicios × Frecuencias
-                            </span>
-                            <span class="metric-value calculation-value">{{ servicio.getSubtotalServiciosFrecuencias}}</span>
-                            <span class="metric-note calculation-note">Se suma al total</span>
-                        </div>
-
-                        <div class="metric-item calculation-item">
-                            <span class="metric-label">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" style="display: inline; margin-right: 4px;">
-                                    <polyline points="9,11 12,14 22,4"></polyline>
-                                    <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
-                                </svg>
-                                Mano de Obra
-                            </span>
-                            <span class="metric-value calculation-value">{{ servicio.getSubtotalEmpleados }}</span>
-                            <span class="metric-note calculation-note">Se suma al total</span>
-                        </div>
-
-                        <div class="metric-item calculation-item">
-                            <span class="metric-label">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" style="display: inline; margin-right: 4px;">
-                                    <polyline points="9,11 12,14 22,4"></polyline>
-                                    <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
-                                </svg>
-                                Ganancia 15%
-                            </span>
-                            <span class="metric-value calculation-value">{{ servicio.getGananciaFormateado }}</span>
-                            <span class="metric-note calculation-note">Se suma al total</span>
-                        </div>
-                        {% if servicio.porcentaje != 0 %}
-                            <div class="metric-item calculation-item">
-                                <span class="metric-label">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" style="display: inline; margin-right: 4px;">
-                                        <polyline points="9,11 12,14 22,4"></polyline>
-                                        <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+<div class="row justify-content-center">
+    <div class="col-12 col-xl-10 d-flex justify-content-center" style="width: 100%;">
+        <div class="detail-layout" >
+            <!-- Panel de información principal -->
+            <div class="info-panel">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Header del Servicio -->
+                        <div class="card-header-custom">
+                            <div class="service-meta">
+                                <div class="service-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
                                     </svg>
-                                    Ajuste {{ servicio.porcentaje }}%
-                                </span>
-                                <span class="metric-value calculation-value">{{ servicio.getAjusteFormateado }}</span>
-                                <span class="metric-note calculation-note">Se suma al total</span>
+                                </div>
+                                <div>
+                                    <h3 class="service-title">Servicio #{{ servicio.pk }}</h3>
+                                    <p class="service-date">Fecha Emisión: <span
+                                            class="text-accent">{{servicio.fecha_emision}}</span></p>
+                                </div>
                             </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Total Final con flujo de cálculo -->
-                    <div class="total-section">
-                        <div class="total-calculation-flow">
-                            <div class="calculation-summary">
-                                <span class="calculation-text">
-                                    (Servicios × Frecuencias) + Mano de Obra + Ganancia 15%
-                                </span>
+                        </div>
+        
+                        <!-- Información del Cliente -->
+                        <div class="info-section">
+                            <div class="section-header">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <h4 class="section-title">Información del Cliente</h4>
                             </div>
-                            <div class="total-item">
-                                <span class="total-label">
-                                    {% if servicio.tipo == 1 %}
-                                    Total Servicio Completo (ARS)
-                                    {% else %}
-                                    Total Servicio Mensual (ARS)
-                                    {% endif %}
-                                </span>
-                                <span class="total-value">{{ servicio.getImporteTotalFormateado }}</span>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Cliente</span>
+                                    <span class="info-value">{{servicio.cliente.nombre}} {{servicio.cliente.apellido}}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Tipo de Cliente</span>
+                                    <span class="info-value">{{servicio.cliente.getTipo}}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">CUIT/CUIL</span>
+                                    <span class="info-value">{{servicio.cliente.cuil}}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email</span>
+                                    <span class="info-value">{{servicio.cliente.email}}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Teléfono</span>
+                                    <span class="info-value">{{servicio.cliente.telefono}}</span>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Información del Inmueble -->
+                        <div class="info-section">
+                            <div class="section-header">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                <h4 class="section-title">Información del Inmueble</h4>
+                            </div>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Localidad</span>
+                                    <span class="info-value">{{servicio.getLocalidad}}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Dirección</span>
+                                    <span class="info-value">{{servicio.direccion}}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Metros cuadrados</span>
+                                    <span class="info-value">{{servicio.metros2}}m²</span>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Información del Servicio con estructura mejorada -->
+                        <div class="info-section">
+                            <div class="section-header">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                                <h4 class="section-title">Desglose Financiero del Servicio</h4>
+                            </div>
+        
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Tipo de Servicio</span>
+                                    <span class="info-value">{{servicio.getTipo}}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Plazo de Vigencia</span>
+                                    <span class="info-value">{{servicio.plazo_vigencia}}</span>
+                                </div>
+                            </div>
+        
+                            <!-- Métricas financieras con estructura clara -->
+                            <div class="metrics-grid">
+                                <!-- Item informativo -->
+                                <div class="metric-item info-only">
+                                    <span class="metric-label">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" style="display: inline; margin-right: 4px;">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                        </svg>
+                                        Total Servicios (Referencia)
+                                    </span>
+                                    <span class="metric-value info-value">{{ servicio.getSubtotalPorTurnoFormateado }}</span>
+                                    <span class="metric-note">Solo informativo</span>
+                                </div>
+        
+                                <!-- Items que se suman al total -->
+                                <div class="metric-item calculation-item">
+                                    <span class="metric-label">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" style="display: inline; margin-right: 4px;">
+                                            <polyline points="9,11 12,14 22,4"></polyline>
+                                            <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+                                        </svg>
+                                        Servicios × Frecuencias
+                                    </span>
+                                    <span class="metric-value calculation-value">{{ servicio.getSubtotalServiciosFrecuencias}}</span>
+                                    <span class="metric-note calculation-note">Se suma al total</span>
+                                </div>
+        
+                                <div class="metric-item calculation-item">
+                                    <span class="metric-label">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" style="display: inline; margin-right: 4px;">
+                                            <polyline points="9,11 12,14 22,4"></polyline>
+                                            <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+                                        </svg>
+                                        Mano de Obra
+                                    </span>
+                                    <span class="metric-value calculation-value">{{ servicio.getSubtotalEmpleados }}</span>
+                                    <span class="metric-note calculation-note">Se suma al total</span>
+                                </div>
+        
+                                <div class="metric-item calculation-item">
+                                    <span class="metric-label">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" style="display: inline; margin-right: 4px;">
+                                            <polyline points="9,11 12,14 22,4"></polyline>
+                                            <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+                                        </svg>
+                                        Ganancia 15%
+                                    </span>
+                                    <span class="metric-value calculation-value">{{ servicio.getGananciaFormateado }}</span>
+                                    <span class="metric-note calculation-note">Se suma al total</span>
+                                </div>
+                                {% if servicio.porcentaje != 0 %}
+                                    <div class="metric-item calculation-item">
+                                        <span class="metric-label">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" style="display: inline; margin-right: 4px;">
+                                                <polyline points="9,11 12,14 22,4"></polyline>
+                                                <path d="M21,12v7a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2V5a2,2 0,0 1,2,-2h11"></path>
+                                            </svg>
+                                            Ajuste {{ servicio.porcentaje }}%
+                                        </span>
+                                        <span class="metric-value calculation-value">{{ servicio.getAjusteFormateado }}</span>
+                                        <span class="metric-note calculation-note">Se suma al total</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+        
+                            <!-- Total Final con flujo de cálculo -->
+                            <div class="total-section">
+                                <div class="total-calculation-flow">
+                                    <div class="calculation-summary">
+                                        <span class="calculation-text">
+                                            (Servicios × Frecuencias) + Mano de Obra + Ganancia 15%
+                                        </span>
+                                    </div>
+                                    <div class="total-item">
+                                        <span class="total-label">
+                                            {% if servicio.tipo == 1 %}
+                                            Total Servicio Completo (ARS)
+                                            {% else %}
+                                            Total Servicio Mensual (ARS)
+                                            {% endif %}
+                                        </span>
+                                        <span class="total-value">{{ servicio.getImporteTotalFormateado }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Panel de detalles -->
-    <div class="details-panel">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header-custom">
-                    <h3 class="details-title">Detalles del Servicio</h3>
-                    <p class="details-subtitle">Información detallada de servicios, frecuencias y empleados</p>
-                </div>
-
-                <!-- Tabs Navigation -->
-                <div class="tabs-container">
-                    <div class="tabs-list" id="opcionesDetalleServicio">
-                        <button class="tab-trigger active" data-lista="tablaTiposServicios">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M9 12l2 2 4-4"></path>
-                                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
-                                <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
-                            </svg>
-                            Tipos de Servicios
-                            <span class="badge">{{ tipoServicios|length }}</span>
-                        </button>
-                        <button class="tab-trigger" data-lista="tablaFrecuencias">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            Frecuencias
-                            <span class="badge">{{ frecuencias|length }}</span>
-                        </button>
-                        {% if servicio.getEstado != "Presupuestado" and servicio.getEstado != "Cancelado" %}
-                        <button class="tab-trigger" data-lista="tablaEmpleados">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            Empleados
-                            <span class="badge">{{ empleados_con_frecuencias|length }}</span>
-                        </button>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Tables Content -->
-                <div class="tables-content">
-                    <!-- Tabla Tipos de Servicios -->
-                    <div class="table-wrapper" id="tablaTiposServicios">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Descripción</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio Unitario</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for t in tipoServicios %}
-                                <tr>
-                                    <td>{{ t.tipoServicio.descripcion }}</td>
-                                    <td>{{ t.cantidad }}</td>
-                                    <td class="price-cell">{{ t.tipoServicio.getPrecioFormateado }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Tabla Frecuencias -->
-                    <div class="table-wrapper" id="tablaFrecuencias" style="display: none;">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Día</th>
-                                    <th>Turno</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for f in frecuencias %}
-                                <tr>
-                                    <td>{{ f.getDia }}</td>
-                                    <td>{{ f.getTurno }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {% if servicio.getEstado != "Presupuestado" %}
-                    <div class="table-wrapper" id="tablaEmpleados" style="display: none;">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Nombre y Apellido</th>
-                                    <th>Sueldo</th>
-                                    <th>Frecuencias Asignadas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in empleados_con_frecuencias %}
-                                <tr>
-                                    <td>{{ item.empleado.nombre }} {{ item.empleado.apellido }}</td>
-                                    <td class="price-cell">{{ item.empleado.getSueldoFormateado }}</td>
-                                    <td>
-                                        {% for f in item.frecuencias.all %}
-                                        {{ f.getDia }} - {{ f.getTurno }}<br>
+        
+            <!-- Panel de detalles -->
+            <div class="details-panel">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-header-custom">
+                            <h3 class="details-title">Detalles del Servicio</h3>
+                            <p class="details-subtitle">Información detallada de servicios, frecuencias y empleados</p>
+                        </div>
+        
+                        <!-- Tabs Navigation -->
+                        <div class="tabs-container">
+                            <div class="tabs-list" id="opcionesDetalleServicio">
+                                <button class="tab-trigger active" data-lista="tablaTiposServicios">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M9 12l2 2 4-4"></path>
+                                        <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+                                        <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+                                    </svg>
+                                    Tipos de Servicios
+                                    <span class="badge">{{ tipoServicios|length }}</span>
+                                </button>
+                                <button class="tab-trigger" data-lista="tablaFrecuencias">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    Frecuencias
+                                    <span class="badge">{{ frecuencias|length }}</span>
+                                </button>
+                                {% if servicio.getEstado != "Presupuestado" and servicio.getEstado != "Cancelado" %}
+                                <button class="tab-trigger" data-lista="tablaEmpleados">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    Empleados
+                                    <span class="badge">{{ empleados_con_frecuencias|length }}</span>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+        
+                        <!-- Tables Content -->
+                        <div class="tables-content">
+                            <!-- Tabla Tipos de Servicios -->
+                            <div class="table-wrapper" id="tablaTiposServicios">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Descripción</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio Unitario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for t in tipoServicios %}
+                                        <tr>
+                                            <td>{{ t.tipoServicio.descripcion }}</td>
+                                            <td>{{ t.cantidad }}</td>
+                                            <td class="price-cell">{{ t.tipoServicio.getPrecioFormateado }}</td>
+                                        </tr>
                                         {% endfor %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+        
+                            <!-- Tabla Frecuencias -->
+                            <div class="table-wrapper" id="tablaFrecuencias" style="display: none;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Día</th>
+                                            <th>Turno</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for f in frecuencias %}
+                                        <tr>
+                                            <td>{{ f.getDia }}</td>
+                                            <td>{{ f.getTurno }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+        
+                            {% if servicio.getEstado != "Presupuestado" %}
+                            <div class="table-wrapper" id="tablaEmpleados" style="display: none;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre y Apellido</th>
+                                            <th>Sueldo</th>
+                                            <th>Frecuencias Asignadas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in empleados_con_frecuencias %}
+                                        <tr>
+                                            <td>{{ item.empleado.nombre }} {{ item.empleado.apellido }}</td>
+                                            <td class="price-cell">{{ item.empleado.getSueldoFormateado }}</td>
+                                            <td>
+                                                {% for f in item.frecuencias.all %}
+                                                {{ f.getDia }} - {{ f.getTurno }}<br>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% endif %}
+        
+                        </div>
                     </div>
-                    {% endif %}
-
                 </div>
             </div>
         </div>

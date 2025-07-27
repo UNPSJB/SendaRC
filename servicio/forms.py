@@ -49,22 +49,23 @@ class FiltrosServiciosForm(forms.Form):
         self.helper.form_method = "get"
         self.helper.layout = Layout(
             Div(
-                Field(
-                    "estado", css_class="form-select form-select-sm form-select-filter"
+                Div(
+                    Field("estado", css_class="form-select form-select-sm form-select-filter"),
+                    css_class="col-12 col-md"
                 ),
-                Field(
-                    "tipo",
-                    css_class="form-select form-select-sm form-select-filter mb-0",
+                Div(
+                    Field("tipo", css_class="form-select form-select-sm form-select-filter mb-0"),
+                    css_class="col-12 col-md"
                 ),
-                Field(
-                    "fecha_inicio",
-                    css_class="form-control form-control-sm form-select-filter",
+                Div(
+                    Field("fecha_inicio", css_class="form-control form-control-sm form-select-filter"),
+                    css_class="col-12 col-md"
                 ),
-                Field(
-                    "fecha_finaliza",
-                    css_class="form-control form-control-sm form-select-filter",
+                Div(
+                    Field("fecha_finaliza", css_class="form-control form-control-sm form-select-filter"),
+                    css_class="col-12 col-md"
                 ),
-                css_class="d-flex gap-2",
+                css_class="row g-2"  # grid responsive con gutters
             )
         )
 
@@ -312,12 +313,14 @@ label_tipo_servicio = """
 
 label_cantidad = """
 <label class="form-label">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-       style="margin-right:.4rem; vertical-align:text-bottom;">
-    <line x1="12" y1="1" x2="12" y2="23"></line>
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="me-2" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+    <line x1="3" y1="9" x2="21" y2="9"></line>
+    <line x1="9" y1="21" x2="9" y2="9"></line>
   </svg>
-  Cantidad
+  Superficie en m² del área a limpiar
 </label>
 """
 

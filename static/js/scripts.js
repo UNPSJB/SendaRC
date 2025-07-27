@@ -67,3 +67,94 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// Funcionalidad de sidebar responsive
+document.addEventListener('DOMContentLoaded', function() {
+  // Crear el botón hamburger
+  const mobileToggle = document.createElement('button');
+  mobileToggle.className = 'mobile-menu-toggle';
+  mobileToggle.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+  `;
+  
+  // Crear el overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'sidebar-overlay';
+  
+  // Insertar elementos en el DOM
+  document.body.appendChild(mobileToggle);
+  document.body.appendChild(overlay);
+  
+  const sidebar = document.getElementById('sidebar');
+  
+  // Función para abrir sidebar
+  function openSidebar() {
+      sidebar.classList.add('active');
+      overlay.classList.add('active');
+      document.body.classList.add('sidebar-open');
+      
+      // Cambiar icono a X
+      mobileToggle.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+      `;
+  }
+  
+  // Función para cerrar sidebar
+  function closeSidebar() {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.classList.remove('sidebar-open');
+      
+      // Cambiar icono a hamburger
+      mobileToggle.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+      `;
+  }
+  
+  // Toggle sidebar
+  function toggleSidebar() {
+      if (sidebar.classList.contains('active')) {
+          closeSidebar();
+      } else {
+          openSidebar();
+      }
+  }
+  
+  // Event listeners
+  mobileToggle.addEventListener('click', toggleSidebar);
+  overlay.addEventListener('click', closeSidebar);
+  
+  // Cerrar sidebar al hacer clic en un enlace (opcional)
+  const navLinks = sidebar.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+              closeSidebar();
+          }
+      });
+  });
+  
+  // Cerrar sidebar al redimensionar ventana
+  window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+          closeSidebar();
+      }
+  });
+  
+  // Manejar tecla Escape
+  document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+          closeSidebar();
+      }
+  });
+});

@@ -1000,18 +1000,16 @@ class FiltroClientesForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = "get"
-        self.helper.form_class = "w-100"               # ensure the form never overflows
+        self.helper.form_class = "w-100"
         self.helper.layout = Layout(
             Div(
-                Field("estado",
-                      css_class="form-select form-select-sm form-select-filter mb-2"),
-                Field("tipo_persona",
-                      css_class="form-select form-select-sm form-select-filter mb-2"),
-                Field("tipo",
-                      css_class="form-select form-select-sm form-select-filter"),
-                css_class="d-flex gap-2",        # vertical stack
+                Div(Field("estado", css_class="form-select form-select-sm form-select-filter"), css_class="col-12 col-md"),
+                Div(Field("tipo_persona", css_class="form-select form-select-sm form-select-filter"), css_class="col-12 col-md"),
+                Div(Field("tipo", css_class="form-select form-select-sm form-select-filter"), css_class="col-12 col-md"),
+                css_class="row g-2"
             )
         )
+
 
 
 class FiltroActivoForm(forms.Form):
@@ -1026,8 +1024,8 @@ class FiltroActivoForm(forms.Form):
         self.helper.form_class = "w-100"
         self.helper.layout = Layout(
             Div(
-                Field("estado",
-                      css_class="form-select form-select-sm form-select-filter"),
-                css_class="d-flex gap-2",
+                Div(Field("estado", css_class="form-select form-select-sm form-select-filter"), css_class="col-12 col-md-6"),
+                css_class="row g-2"
             )
         )
+

@@ -26,10 +26,11 @@
     {% csrf_token %}
     {{ formset.management_form }}
 
-    <!-- Header con botón agregar -->
-    <div class="d-flex align-items-center justify-content-between mb-4">
-      <h5 class="fw-semibold mb-0">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+    <!-- Header con botón agregar (responsivo) -->
+    <div class="d-flex flex-column flex-md-row align-items-end align-items-md-center justify-content-between gap-2 mb-4">
+      <h5 class="fw-semibold mb-0 d-flex align-items-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-2">
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12,6 12,12 16,14"></polyline>
         </svg>
@@ -37,7 +38,8 @@
       </h5>
 
       <button type="button" class="btn btn-primary btn-sm agregar-frecuencia">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-1">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>

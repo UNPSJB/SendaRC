@@ -15,10 +15,21 @@
     {% csrf_token %}
     {{ formset.management_form }}
 
-    <!-- Header con botón agregar -->
-    <div class="d-flex align-items-center justify-content-end mb-4">
+    <!-- Header con botón agregar (responsivo) -->
+    <div class="d-flex flex-column flex-md-row align-items-end align-items-md-center justify-content-between gap-2 mb-4">
+      <h5 class="fw-semibold mb-0 d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="me-2" viewBox="0 0 24 24">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22" x2="12" y2="12"/>
+        </svg>
+        Servicios del Presupuesto
+      </h5>
       <button type="button" class="btn btn-primary btn-sm agregar-servicio">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-1">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
