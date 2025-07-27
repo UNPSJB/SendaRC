@@ -618,6 +618,7 @@
     /* Tabs - igual que detalleServicio */
     .tabs-container {
         margin-bottom: 1.5rem;
+        overflow: hidden; /* Previene scroll vertical innecesario */
     }
 
     .tabs-list {
@@ -626,6 +627,8 @@
         background: hsl(var(--muted) / 0.3);
         padding: 0.25rem;
         border-radius: var(--radius-sm);
+        /* En desktop mantiene el comportamiento actual */
+        flex-wrap: nowrap;
     }
 
     .tab-trigger {
@@ -644,6 +647,11 @@
         white-space: nowrap;
         flex: 1;
         justify-content: center;
+        /* Evita que el texto se rompa */
+        text-overflow: ellipsis;
+        overflow: hidden;
+        /* Ancho mínimo para mantener legibilidad */
+        min-width: fit-content;
     }
 
     .tab-trigger:hover {
@@ -670,6 +678,7 @@
         border-radius: 9999px;
         min-width: 1.25rem;
         text-align: center;
+        flex-shrink: 0; /* Evita que el badge se comprima */
     }
 
     /* Tables */
@@ -726,6 +735,87 @@
         .service-meta {
             flex-direction: column;
             text-align: center;
+        }
+    }
+    /* Responsive mejorado */
+    @media (max-width: 768px) {
+        .tabs-container {
+            /* Permite scroll horizontal en móvil */
+            overflow-x: auto;
+            overflow-y: hidden;
+            /* Oculta la scrollbar en webkit browsers */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE y Edge */
+        }
+        
+        .tabs-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari y Opera */
+        }
+        
+        .tabs-list {
+            /* Ancho fijo para cada tab en móvil */
+            min-width: max-content;
+            flex-wrap: nowrap;
+            padding: 0.25rem 0.5rem; /* Padding extra en los lados */
+        }
+        
+        .tab-trigger {
+            /* Ancho fijo para cada tab en móvil */
+            flex: none;
+            min-width: 140px; /* Ancho mínimo fijo */
+            max-width: 160px; /* Ancho máximo para consistencia */
+            padding: 0.75rem 1rem; /* Padding más generoso para touch */
+            font-size: 0.8rem; /* Ligeramente más pequeño */
+            justify-content: center;
+            
+            /* Mejora la experiencia táctil */
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .tab-trigger svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.3rem;
+            min-width: 1rem;
+        }
+    }
+
+    /* Para tablets y pantallas medianas */
+    @media (max-width: 1024px) and (min-width: 769px) {
+        .tab-trigger {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    /* Animación suave para el scroll */
+    .tabs-container {
+        scroll-behavior: smooth;
+    }
+
+    /* Indicador visual sutil de que se puede hacer scroll (opcional) */
+    @media (max-width: 768px) {
+        .tabs-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(to left, hsl(var(--background)), transparent);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .tabs-container.scrollable::after {
+            opacity: 1;
         }
     }
 </style>
@@ -879,5 +969,73 @@
             }).addClass('animate-fade-in');
         });
     });
+    // Agregar este código dentro del $(document).ready() existente
+
+// Función para detectar si las tabs necesitan scroll
+function checkTabsScroll() {
+    const tabsContainer = $('.tabs-container');
+    const tabsList = $('.tabs-list');
+    
+    if (window.innerWidth <= 768) {
+        // En móvil, verificar si el contenido es más ancho que el contenedor
+        if (tabsList[0].scrollWidth > tabsContainer[0].clientWidth) {
+            tabsContainer.addClass('scrollable');
+        } else {
+            tabsContainer.removeClass('scrollable');
+        }
+    } else {
+        tabsContainer.removeClass('scrollable');
+    }
+}
+
+// Función para centrar el tab activo al hacer clic
+function centerActiveTab() {
+    if (window.innerWidth <= 768) {
+        const activeTab = $('.tab-trigger.active');
+        const tabsContainer = $('.tabs-container');
+        
+        if (activeTab.length && tabsContainer.length) {
+            const containerWidth = tabsContainer.width();
+            const tabPosition = activeTab.position().left;
+            const tabWidth = activeTab.outerWidth();
+            const scrollLeft = tabPosition - (containerWidth / 2) + (tabWidth / 2);
+            
+            tabsContainer.animate({
+                scrollLeft: scrollLeft
+            }, 300);
+        }
+    }
+}
+
+    // Mejorar el manejo de tabs existente
+    $('#opcionesDetallePresupuesto .tab-trigger').off('click').on('click', function (e) {
+        e.preventDefault();
+
+        // Obtener el id de la tabla correspondiente
+        const tablaId = $(this).data('lista');
+
+        // Ocultar todas las tablas y mostrar la seleccionada
+        $('.table-wrapper').hide();
+        $('#' + tablaId).show();
+
+        // Actualizar estado activo de los tabs
+        $('.tab-trigger').removeClass('active');
+        $(this).addClass('active');
+        
+        // Centrar el tab activo en móvil
+        centerActiveTab();
+    });
+
+    // Verificar scroll al cargar y redimensionar
+    checkTabsScroll();
+    $(window).on('resize', function() {
+        checkTabsScroll();
+        // Centrar tab activo después del resize si es necesario
+        setTimeout(centerActiveTab, 100);
+    });
+
+    // Activar el primer tab por defecto (mantener el código existente)
+    $('.tab-trigger[data-lista="tablaTiposServicios"]').addClass('active');
+    $('#tablaTiposServicios').show();
 </script>
 {% endblock %}
