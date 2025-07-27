@@ -66,6 +66,10 @@
                                 {{presupuesto.cliente.apellido}}</span>
                         </div>
                         <div class="info-item">
+                            <span class="info-label">Tipo de Cliente</span>
+                            <span class="info-value">{{presupuesto.cliente.getTipo}}</span>
+                        </div>
+                        <div class="info-item">
                             <span class="info-label">CUIT/CUIL</span>
                             <span class="info-value">{{presupuesto.cliente.cuil}}</span>
                         </div>
@@ -298,526 +302,555 @@
 </div>
 
 <style>
-    .metric-item.info-only {
-        background: hsl(var(--muted) / 0.2);
-        border: 1px dashed hsl(var(--border));
-        position: relative;
-    }
+/* Layout principal - igual que detalleServicio */
+.detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    align-items: start; /* NUEVO: Evita que las cards se estiren */
+}
 
-    .metric-item.calculation-item {
-        background: hsl(var(--accent) / 0.05);
-        border: 1px solid hsl(var(--accent) / 0.2);
-    }
+/* NUEVO: Contenedor de cards con altura fija */
+.card {
+    height: fit-content;
+    min-height: 400px; /* Altura mínima para consistencia */
+}
 
+.details-panel .card {
+    min-height: 500px; /* Altura mínima específica para el panel de detalles */
+}
 
-    .calculation-value {
-        color: hsl(var(--accent)) !important;
-    }
+/* Header personalizado */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
 
-    .metric-note {
-        font-size: 0.7rem;
-        font-weight: 400;
-        margin-top: 0.25rem;
-        padding: 0.125rem 0.375rem;
-        border-radius: var(--radius-sm);
-        text-align: center;
-    }
+.header-left h1 {
+    margin-bottom: 0.5rem;
+}
 
-    .metric-note {
-        background: hsl(var(--muted) / 0.5);
-        color: hsl(var(--muted-foreground));
-    }
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
-    .calculation-note {
-        background: hsl(var(--success) / 0.1);
-        color: hsl(var(--success));
-        border: 1px solid hsl(var(--success) / 0.2);
-    }
+/* Card headers personalizados */
+.card-header-custom {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--border));
+}
 
-    .total-calculation-flow {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+.service-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
-    .calculation-summary {
-        padding: 0.75rem 1rem;
-        background: hsl(var(--muted) / 0.3);
-        border: 1px solid hsl(var(--border) / 0.5);
-        border-radius: var(--radius-sm);
-        text-align: center;
-    }
+.service-icon {
+    width: 48px;
+    height: 48px;
+    background: hsl(var(--accent) / 0.1);
+    color: hsl(var(--accent));
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .calculation-text {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: hsl(var(--muted-foreground));
-        font-style: italic;
-    }
+.service-title,
+.details-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin: 0 0 0.25rem 0;
+}
 
-    /* Animación sutil para elementos de cálculo */
-    .calculation-item {
-        position: relative;
-        overflow: hidden;
-    }
+.service-date,
+.details-subtitle {
+    color: hsl(var(--muted-foreground));
+    margin: 0;
+    font-size: 0.875rem;
+}
 
-    .calculation-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
+/* Secciones de información - igual que detalleServicio */
+.info-section {
+    margin-bottom: 2rem;
+}
+
+.info-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.section-header svg {
+    color: hsl(var(--accent));
+    flex-shrink: 0;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin: 0;
+}
+
+/* Grid de información */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    word-break: break-word; /* NUEVO: Previene desbordamiento de texto largo */
+}
+
+/* Métricas específicas para presupuesto */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem;
+    background: hsl(var(--muted) / 0.3);
+    border-radius: var(--radius-sm);
+    border: 1px solid hsl(var(--border) / 0.5);
+}
+
+.metric-item.info-only {
+    background: hsl(var(--muted) / 0.2);
+    border: 1px dashed hsl(var(--border));
+    position: relative;
+}
+
+.metric-item.calculation-item {
+    background: hsl(var(--accent) / 0.05);
+    border: 1px solid hsl(var(--accent) / 0.2);
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+}
+
+.calculation-value {
+    color: hsl(var(--accent)) !important;
+}
+
+.metric-note {
+    font-size: 0.7rem;
+    font-weight: 400;
+    margin-top: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    background: hsl(var(--muted) / 0.5);
+    color: hsl(var(--muted-foreground));
+}
+
+.calculation-note {
+    background: hsl(var(--success) / 0.1);
+    color: hsl(var(--success));
+    border: 1px solid hsl(var(--success) / 0.2);
+}
+
+/* Sección de total */
+.total-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: hsl(var(--accent) / 0.1);
+    border: 1px solid hsl(var(--accent) / 0.2);
+    border-radius: var(--radius-sm);
+}
+
+.total-calculation-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.calculation-summary {
+    padding: 0.75rem 1rem;
+    background: hsl(var(--muted) / 0.3);
+    border: 1px solid hsl(var(--border) / 0.5);
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+
+.calculation-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    font-style: italic;
+}
+
+.total-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.total-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--accent));
+}
+
+.total-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: hsl(var(--accent));
+}
+
+.adjustment-badge {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.adjustment-badge .badge {
+    background: hsl(var(--success) / 0.1);
+    color: hsl(var(--success));
+    border: 1px solid hsl(var(--success) / 0.2);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Formulario de ajustes */
+.adjustment-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid hsl(var(--border));
+}
+
+.form-container {
+    background: hsl(var(--muted) / 0.3);
+    padding: 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid hsl(var(--border) / 0.5);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+/* Tabs - igual que detalleServicio */
+.tabs-container {
+    margin-bottom: 1.5rem;
+}
+
+.tabs-list {
+    display: flex;
+    gap: 0.25rem;
+    background: hsl(var(--muted) / 0.3);
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+}
+
+.tab-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+    flex: 1;
+    justify-content: center;
+}
+
+.tab-trigger:hover {
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+}
+
+.tab-trigger.active {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.tab-trigger svg {
+    flex-shrink: 0;
+}
+
+.badge {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.125rem 0.375rem;
+    border-radius: 9999px;
+    min-width: 1.25rem;
+    text-align: center;
+}
+
+/* NUEVO: Contenedor de tablas con altura fija y scroll */
+.tables-content {
+    position: relative;
+    min-height: 300px; /* Altura mínima fija para evitar cambios de tamaño */
+    max-height: 400px; /* Altura máxima para tablas grandes */
+}
+
+.table-wrapper {
+    animation: fadeIn 0.2s ease-out;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-x: auto; /* NUEVO: Scroll horizontal para tablas anchas */
+    overflow-y: auto; /* NUEVO: Scroll vertical para tablas altas */
+}
+
+.table-wrapper table {
+    margin: 0;
+    min-width: 100%; /* NUEVO: Asegura que la tabla ocupe todo el ancho disponible */
+    table-layout: auto; /* NUEVO: Permite que las columnas se ajusten automáticamente */
+}
+
+/* NUEVO: Estilos específicos para celdas de tabla */
+.table-wrapper table th,
+.table-wrapper table td {
+    white-space: nowrap; /* Previene que el texto se divida en múltiples líneas */
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+.table-wrapper table td {
+    max-width: 200px; /* Ancho máximo para celdas */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Añade "..." si el texto es muy largo */
+}
+
+/* NUEVO: Para contenido largo en celdas específicas */
+.table-wrapper table td.description-cell {
+    max-width: 300px;
+    white-space: normal; /* Permite salto de línea en descripciones */
+    word-wrap: break-word;
+}
+
+.price-cell {
+    font-weight: 600;
+    color: hsl(var(--accent));
+    text-align: right; /* NUEVO: Alineación a la derecha para precios */
+}
+
+/* Animación sutil para elementos de cálculo */
+.calculation-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.calculation-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, hsl(var(--accent)), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
         left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, hsl(var(--accent)), transparent);
-        animation: shimmer 2s infinite;
     }
-
-    @keyframes shimmer {
-        0% {
-            left: -100%;
-        }
-
-        100% {
-            left: 100%;
-        }
+    100% {
+        left: 100%;
     }
+}
 
-    /* Responsive ajustes */
-    @media (max-width: 768px) {
-        .calculation-summary {
-            padding: 0.5rem;
-        }
+/* NUEVO: Indicador de scroll para tablas */
+.table-wrapper::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
 
-        .calculation-text {
-            font-size: 0.75rem;
-        }
+.table-wrapper::-webkit-scrollbar-track {
+    background: hsl(var(--muted) / 0.3);
+    border-radius: 3px;
+}
 
-        .metric-note {
-            font-size: 0.65rem;
-        }
-    }
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 3px;
+}
 
-    /* Layout principal - igual que detalleServicio */
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.7);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
     .detail-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        margin-top: 1.5rem;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
+    
+    /* NUEVO: Ajustes de altura para móvil */
+    .card {
+        min-height: auto;
+    }
+    
+    .details-panel .card {
+        min-height: auto;
+    }
+}
 
-    /* Header personalizado */
+@media (max-width: 768px) {
     .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .header-left h1 {
-        margin-bottom: 0.5rem;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+        justify-content: end;
     }
 
-    /* Card headers personalizados */
-    .card-header-custom {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid hsl(var(--border));
-    }
-
-    .service-meta {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .service-icon {
-        width: 48px;
-        height: 48px;
-        background: hsl(var(--accent) / 0.1);
-        color: hsl(var(--accent));
-        border-radius: var(--radius-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .service-title,
-    .details-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: hsl(var(--foreground));
-        margin: 0 0 0.25rem 0;
-    }
-
-    .service-date,
-    .details-subtitle {
-        color: hsl(var(--muted-foreground));
-        margin: 0;
-        font-size: 0.875rem;
-    }
-
-    /* Secciones de información - igual que detalleServicio */
-    .info-section {
-        margin-bottom: 2rem;
-    }
-
-    .info-section:last-child {
-        margin-bottom: 0;
-    }
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid hsl(var(--border) / 0.5);
-    }
-
-    .section-header svg {
-        color: hsl(var(--accent));
-        flex-shrink: 0;
-    }
-
-    .section-title {
-        font-size: 1rem;
-        font-weight: 600;
-        color: hsl(var(--foreground));
-        margin: 0;
-    }
-
-    /* Grid de información */
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-
-    .info-item {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-
-    .info-label {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: hsl(var(--muted-foreground));
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .info-value {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: hsl(var(--foreground));
-    }
-
-    /* Métricas específicas para presupuesto */
+    .info-grid,
     .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .metric-item {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        padding: 1rem;
-        background: hsl(var(--muted) / 0.3);
-        border-radius: var(--radius-sm);
-        border: 1px solid hsl(var(--border) / 0.5);
-    }
-
-    .metric-label {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: hsl(var(--muted-foreground));
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .metric-value {
-        font-size: 1rem;
-        font-weight: 600;
-        color: hsl(var(--foreground));
-    }
-
-    /* Sección de total */
-    .total-section {
-        margin-top: 2rem;
-        padding: 1.5rem;
-        background: hsl(var(--accent) / 0.1);
-        border: 1px solid hsl(var(--accent) / 0.2);
-        border-radius: var(--radius-sm);
-    }
-
-    .total-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .total-label {
-        font-size: 1rem;
-        font-weight: 600;
-        color: hsl(var(--accent));
-    }
-
-    .total-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: hsl(var(--accent));
-    }
-
-    .adjustment-badge {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .adjustment-badge .badge {
-        background: hsl(var(--success) / 0.1);
-        color: hsl(var(--success));
-        border: 1px solid hsl(var(--success) / 0.2);
-        padding: 0.25rem 0.5rem;
-        border-radius: var(--radius-sm);
-        font-size: 0.75rem;
-        font-weight: 500;
-    }
-
-    /* Formulario de ajustes */
-    .adjustment-section {
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid hsl(var(--border));
-    }
-
-    .form-container {
-        background: hsl(var(--muted) / 0.3);
-        padding: 1.5rem;
-        border-radius: var(--radius-sm);
-        border: 1px solid hsl(var(--border) / 0.5);
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 1rem;
-    }
-
-    /* Tabs - igual que detalleServicio */
-    .tabs-container {
-        margin-bottom: 1.5rem;
-        overflow: hidden; /* Previene scroll vertical innecesario */
+        grid-template-columns: 1fr;
     }
 
     .tabs-list {
-        display: flex;
-        gap: 0.25rem;
-        background: hsl(var(--muted) / 0.3);
-        padding: 0.25rem;
-        border-radius: var(--radius-sm);
-        /* En desktop mantiene el comportamiento actual */
-        flex-wrap: nowrap;
+        flex-direction: column;
     }
 
-    .tab-trigger {
-        display: flex;
-        align-items: center;
+    .total-item {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border: none;
-        background: transparent;
-        color: hsl(var(--muted-foreground));
-        border-radius: var(--radius-sm);
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: var(--transition);
-        white-space: nowrap;
-        flex: 1;
-        justify-content: center;
-        /* Evita que el texto se rompa */
-        text-overflow: ellipsis;
-        overflow: hidden;
-        /* Ancho mínimo para mantener legibilidad */
-        min-width: fit-content;
     }
 
-    .tab-trigger:hover {
-        background: hsl(var(--muted));
-        color: hsl(var(--foreground));
-    }
-
-    .tab-trigger.active {
-        background: hsl(var(--background));
-        color: hsl(var(--foreground));
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-    }
-
-    .tab-trigger svg {
-        flex-shrink: 0;
-    }
-
-    .badge {
-        background: hsl(var(--accent));
-        color: hsl(var(--accent-foreground));
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.125rem 0.375rem;
-        border-radius: 9999px;
-        min-width: 1.25rem;
+    .service-meta {
+        flex-direction: column;
         text-align: center;
-        flex-shrink: 0; /* Evita que el badge se comprima */
     }
-
-    /* Tables */
+    
+    /* NUEVO: Ajustes específicos para tablas en móvil */
     .tables-content {
-        position: relative;
+        min-height: 250px;
+        max-height: 350px;
+    }
+    
+    .table-wrapper table th,
+    .table-wrapper table td {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .table-wrapper table td {
+        max-width: 150px;
+    }
+    
+    .table-wrapper table td.description-cell {
+        max-width: 200px;
+    }
+    
+    /* NUEVO: Stack vertical para métricas en móvil */
+    .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .metric-item {
+        padding: 0.75rem;
+    }
+    
+    /* Responsive ajustes */
+    .calculation-summary {
+        padding: 0.5rem;
     }
 
-    .table-wrapper {
-        animation: fadeIn 0.2s ease-out;
+    .calculation-text {
+        font-size: 0.75rem;
     }
 
+    .metric-note {
+        font-size: 0.65rem;
+    }
+}
+
+/* NUEVO: Estilos adicionales para mejorar la experiencia */
+@media (max-width: 480px) {
     .table-wrapper table {
-        margin: 0;
+        font-size: 0.8rem;
     }
-
-    .price-cell {
-        font-weight: 600;
-        color: hsl(var(--accent));
+    
+    .table-wrapper table th,
+    .table-wrapper table td {
+        padding: 0.375rem 0.5rem;
     }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-        .detail-layout {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
+    
+    .tab-trigger {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8rem;
     }
-
-    @media (max-width: 768px) {
-        .header-content {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .header-actions {
-            justify-content: end;
-        }
-
-        .info-grid,
-        .metrics-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .tabs-list {
-            flex-direction: column;
-        }
-
-        .total-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        .service-meta {
-            flex-direction: column;
-            text-align: center;
-        }
+    
+    .tables-content {
+        min-height: 200px;
+        max-height: 300px;
     }
-    /* Responsive mejorado */
-    @media (max-width: 768px) {
-        .tabs-container {
-            /* Permite scroll horizontal en móvil */
-            overflow-x: auto;
-            overflow-y: hidden;
-            /* Oculta la scrollbar en webkit browsers */
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE y Edge */
-        }
-        
-        .tabs-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari y Opera */
-        }
-        
-        .tabs-list {
-            /* Ancho fijo para cada tab en móvil */
-            min-width: max-content;
-            flex-wrap: nowrap;
-            padding: 0.25rem 0.5rem; /* Padding extra en los lados */
-        }
-        
-        .tab-trigger {
-            /* Ancho fijo para cada tab en móvil */
-            flex: none;
-            min-width: 140px; /* Ancho mínimo fijo */
-            max-width: 160px; /* Ancho máximo para consistencia */
-            padding: 0.75rem 1rem; /* Padding más generoso para touch */
-            font-size: 0.8rem; /* Ligeramente más pequeño */
-            justify-content: center;
-            
-            /* Mejora la experiencia táctil */
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .tab-trigger svg {
-            width: 14px;
-            height: 14px;
-        }
-        
-        .badge {
-            font-size: 0.7rem;
-            padding: 0.1rem 0.3rem;
-            min-width: 1rem;
-        }
-    }
-
-    /* Para tablets y pantallas medianas */
-    @media (max-width: 1024px) and (min-width: 769px) {
-        .tab-trigger {
-            padding: 0.6rem 0.8rem;
-            font-size: 0.85rem;
-        }
-    }
-
-    /* Animación suave para el scroll */
-    .tabs-container {
-        scroll-behavior: smooth;
-    }
-
-    /* Indicador visual sutil de que se puede hacer scroll (opcional) */
-    @media (max-width: 768px) {
-        .tabs-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 20px;
-            height: 100%;
-            background: linear-gradient(to left, hsl(var(--background)), transparent);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .tabs-container.scrollable::after {
-            opacity: 1;
-        }
-    }
+}
 </style>
 
 {% endblock %}
@@ -969,73 +1002,5 @@
             }).addClass('animate-fade-in');
         });
     });
-    // Agregar este código dentro del $(document).ready() existente
-
-// Función para detectar si las tabs necesitan scroll
-function checkTabsScroll() {
-    const tabsContainer = $('.tabs-container');
-    const tabsList = $('.tabs-list');
-    
-    if (window.innerWidth <= 768) {
-        // En móvil, verificar si el contenido es más ancho que el contenedor
-        if (tabsList[0].scrollWidth > tabsContainer[0].clientWidth) {
-            tabsContainer.addClass('scrollable');
-        } else {
-            tabsContainer.removeClass('scrollable');
-        }
-    } else {
-        tabsContainer.removeClass('scrollable');
-    }
-}
-
-// Función para centrar el tab activo al hacer clic
-function centerActiveTab() {
-    if (window.innerWidth <= 768) {
-        const activeTab = $('.tab-trigger.active');
-        const tabsContainer = $('.tabs-container');
-        
-        if (activeTab.length && tabsContainer.length) {
-            const containerWidth = tabsContainer.width();
-            const tabPosition = activeTab.position().left;
-            const tabWidth = activeTab.outerWidth();
-            const scrollLeft = tabPosition - (containerWidth / 2) + (tabWidth / 2);
-            
-            tabsContainer.animate({
-                scrollLeft: scrollLeft
-            }, 300);
-        }
-    }
-}
-
-    // Mejorar el manejo de tabs existente
-    $('#opcionesDetallePresupuesto .tab-trigger').off('click').on('click', function (e) {
-        e.preventDefault();
-
-        // Obtener el id de la tabla correspondiente
-        const tablaId = $(this).data('lista');
-
-        // Ocultar todas las tablas y mostrar la seleccionada
-        $('.table-wrapper').hide();
-        $('#' + tablaId).show();
-
-        // Actualizar estado activo de los tabs
-        $('.tab-trigger').removeClass('active');
-        $(this).addClass('active');
-        
-        // Centrar el tab activo en móvil
-        centerActiveTab();
-    });
-
-    // Verificar scroll al cargar y redimensionar
-    checkTabsScroll();
-    $(window).on('resize', function() {
-        checkTabsScroll();
-        // Centrar tab activo después del resize si es necesario
-        setTimeout(centerActiveTab, 100);
-    });
-
-    // Activar el primer tab por defecto (mantener el código existente)
-    $('.tab-trigger[data-lista="tablaTiposServicios"]').addClass('active');
-    $('#tablaTiposServicios').show();
 </script>
 {% endblock %}

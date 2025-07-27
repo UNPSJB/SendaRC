@@ -320,7 +320,7 @@ label_cantidad = """
     <line x1="3" y1="9" x2="21" y2="9"></line>
     <line x1="9" y1="21" x2="9" y2="9"></line>
   </svg>
-  Superficie en m² del área a limpiar
+  Cantidad (unidades) o Superficie (m²)
 </label>
 """
 
