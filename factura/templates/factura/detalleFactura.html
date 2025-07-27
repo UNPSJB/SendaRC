@@ -4,135 +4,157 @@
 {% block titleNavegador %}SendaRC - Detalle de Factura #{{factura.pk}}{% endblock %}
 {% block title %}
 <div class="seccion-cabecera animate-fade-in">
-    <div class="header-content">
-        <div class="header-left">
-            <h1>Detalle de Factura #{{factura.pk}}</h1>
-            <p>{{factura.getTipo}} - Servicio #{{factura.servicio.pk}} - {{factura.servicio.getTipo}}</p>
-        </div>
-        <div class="header-actions">
-            <div class="badge {% if factura.fechaPago %}badge-pagada{% else %}badge-pendiente{% endif %}">
-                {% if factura.fechaPago %}
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>Pagada</span>
-                {% else %}
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span>Pendiente</span>
-                {% endif %}
+    <div class="container-fluid px-0">
+        <div class="row align-items-start">
+            <div class="col-lg-8 col-md-7">
+                <h1>Detalle de Factura #{{factura.pk}}</h1>
+                <p class="mb-0">{{factura.getTipo}} - Servicio #{{factura.servicio.pk}} - {{factura.servicio.getTipo}}</p>
             </div>
-            <a href="javascript:history.back()" class="btn btn-primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"></polyline>
-                </svg>
-                Volver a Facturas
-            </a>
-            <a target="_blank" href="{% url 'pdf_factura' factura.pk %}" class="btn btn-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                    <rect x="6" y="14" width="12" height="8"></rect>
-                </svg>
-                Imprimir Factura
-            </a>
+            <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
+                <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                    <div class="badge {% if factura.fechaPago %}badge-pagada{% else %}badge-pendiente{% endif %} d-flex align-items-center">
+                        {% if factura.fechaPago %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Pagada</span>
+                        {% else %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>Pendiente</span>
+                        {% endif %}
+                    </div>
+                    <a href="javascript:history.back()" class="btn btn-primary btn-sm d-flex align-items-center">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                            <polyline points="15,18 9,12 15,6"></polyline>
+                        </svg>
+                        Volver
+                    </a>
+                    <a target="_blank" href="{% url 'pdf_factura' factura.pk %}" class="btn btn-secondary btn-sm d-flex align-items-center">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        PDF
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block listado %}
-<div class="detail-layout">
-    <!-- Panel de información principal -->
-    <div class="info-panel">
-        <div class="card">
-            <div class="card-body">
-                <!-- Información de la factura -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                        </svg>
-                        <h4 class="section-title">Información de la Factura</h4>
+<div class="container-fluid px-0">
+    <div class="row g-3">
+        <!-- Panel de información principal -->
+        <div class="col-xl-7 col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <!-- Información de la factura -->
+                    <div class="info-section mb-4">
+                        <div class="section-header d-flex align-items-center mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-primary">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <h5 class="mb-0 fw-semibold">Información de la Factura</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Número de Factura</small>
+                                    <div class="fw-medium">#{{factura.pk}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Número de servicio</small>
+                                    <div class="fw-medium">#{{factura.servicio.pk}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Tipo de Factura</small>
+                                    <div class="fw-medium">{{factura.getTipo}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Tipo de Servicio</small>
+                                    <div class="fw-medium">{{factura.servicio.getTipo}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Fecha de Emisión</small>
+                                    <div class="fw-medium">{{factura.fechaEmision|date:"d/m/Y"}}</div>
+                                </div>
+                            </div>
+                            {% if factura.tipo != 1 %}
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Mes de Servicio</small>
+                                    <div class="fw-medium">{{factura.getPeriodoServicio}}</div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Fecha de Vencimiento</small>
+                                    <div class="fw-medium">
+                                        {% if factura.fecha_vencimiento %}
+                                            {{factura.fecha_vencimiento|date:"d/m/Y"}}
+                                        {% else %}
+                                            Sin vencimiento
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Estado de Pago</small>
+                                    <div class="fw-medium">
+                                        {% if factura.fechaPago %}
+                                            <span class="text-success">Pagada el {{factura.fechaPago|date:"d/m/Y"}}</span>
+                                        {% else %}
+                                            <span class="text-warning">Pendiente de pago</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Forma de Pago</small>
+                                    <div class="fw-medium">
+                                        {% if factura.formaPago %}
+                                            {{factura.getFormaPago}}
+                                        {% else %}
+                                            No especificada
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Número de Factura</span>
-                            <span class="info-value">#{{factura.pk}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Número de servicio</span>
-                            <span class="info-value">#{{factura.servicio.pk}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Tipo de Factura</span>
-                            <span class="info-value">{{factura.getTipo}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Tipo de Servicio</span>
-                            <span class="info-value">{{factura.servicio.getTipo}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Fecha de Emisión</span>
-                            <span class="info-value">{{factura.fechaEmision|date:"d/m/Y"}}</span>
-                        </div>
-                        {% if factura.tipo != 1 %}
-                        <div class="info-item">
-                            <span class="info-label">Mes de Servicio</span>
-                            <span class="info-value">{{factura.getPeriodoServicio}}</span>
-                        </div>
-                        {% endif %}
-                        <div class="info-item">
-                            <span class="info-label">Fecha de Vencimiento</span>
-                            <span class="info-value">
-                                {% if factura.fecha_vencimiento %}
-                                    {{factura.fecha_vencimiento|date:"d/m/Y"}}
-                                {% else %}
-                                    Sin vencimiento
-                                {% endif %}
-                            </span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Estado de Pago</span>
-                            <span class="info-value">
-                                {% if factura.fechaPago %}
-                                    Pagada el {{factura.fechaPago|date:"d/m/Y"}}
-                                {% else %}
-                                    Pendiente de pago
-                                {% endif %}
-                            </span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Forma de Pago</span>
-                            <span class="info-value">
-                                {% if factura.formaPago %}
-                                    {{factura.getFormaPago}}
-                                {% else %}
-                                    No especificada
-                                {% endif %}
-                            </span>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Importe -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                        <h4 class="section-title">Importe Total</h4>
-                    </div>
-                    
-                    <div class="total-section">
-                        <div class="total-item">
-                            <span class="total-label">
+                    <!-- Importe -->
+                    <div class="info-section mb-4">
+                        <div class="section-header d-flex align-items-center mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-primary">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            <h5 class="mb-0 fw-semibold">Importe Total</h5>
+                        </div>
+                        
+                        <div class="alert alert-primary d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold">
                                 {% if factura.servicio.tipo == 1 and factura.cliente.tipo == 1 and factura.tipo == 1 %}
                                     Seña del servicio eventual
                                 {% elif factura.servicio.tipo == 1 and factura.cliente.tipo == 1 and factura.tipo == 2 %}
@@ -147,433 +169,296 @@
                                     Importe de la factura
                                 {% endif %}
                             </span>
-                            <span class="total-value">{{factura.getImporteFormateado}}</span>
+                            <span class="fs-4 fw-bold text-primary">{{factura.getImporteFormateado}}</span>
+                        </div>
+                        
+                        <div class="alert alert-info d-flex align-items-center">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <small>Este importe incluye un 15% de ganancia para SendaRC</small>
                         </div>
                     </div>
-                    
-                    <div class="note-container">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <span>Este importe incluye un 15% de ganancia para SendaRC</span>
+
+                    <!-- Información del cliente y servicio -->
+                    <div class="info-section">
+                        <div class="section-header d-flex align-items-center mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-primary">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <h5 class="mb-0 fw-semibold">Cliente y Servicio</h5>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Nombre Completo</small>
+                                    <div class="fw-medium">{{factura.cliente.nombre}} {{factura.cliente.apellido}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">CUIT/CUIL</small>
+                                    <div class="fw-medium">{{factura.cliente.cuil}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Tipo de Cliente</small>
+                                    <div class="fw-medium">{{factura.cliente.getTipo}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Número de Servicio</small>
+                                    <div class="fw-medium">#{{factura.servicio.pk}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Tipo de Servicio</small>
+                                    <div class="fw-medium">{{factura.servicio.getTipo}}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Período del Servicio</small>
+                                    <div class="fw-medium">
+                                        {% if factura.servicio.tipo == 2 %}
+                                            {{factura.servicio.fecha_inicio|date:"d/m/Y"}} - {{factura.servicio.fecha_finaliza|date:"d/m/Y"}}
+                                        {% else %}
+                                            {{factura.servicio.fecha_inicio|date:"d/m/Y"}}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% if factura.servicio.descripcion %}
+                            <div class="col-12">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Descripción</small>
+                                    <div class="fw-medium">{{factura.servicio.descripcion}}</div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Información del cliente y servicio -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <h4 class="section-title">Cliente y Servicio</h4>
+        <!-- Panel de detalles -->
+        {% if factura.tipo != 1 %}
+        <div class="col-xl-5 col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="card-title fw-semibold">Detalles de la Factura</h5>
+                        <p class="card-text text-muted small">Información detallada de servicios y empleados</p>
                     </div>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Nombre Completo</span>
-                            <span class="info-value">{{factura.cliente.nombre}} {{factura.cliente.apellido}}</span>
+
+                    <!-- Detalle de servicios -->
+                    <div class="info-section mb-4">
+                        <div class="section-header d-flex align-items-center mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-primary">
+                                <path d="M9 11H1l6-6 6 6z"></path>
+                                <path d="M9 17l3 3 3-3"></path>
+                                <path d="M22 18h-7"></path>
+                                <path d="M22 6h-7"></path>
+                            </svg>
+                            <h6 class="mb-0 fw-semibold">Servicios Incluidos</h6>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">CUIT/CUIL</span>
-                            <span class="info-value">{{factura.cliente.cuil}}</span>
+                        
+                        {% if detalles_servicios %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="small">Servicio</th>
+                                        <th class="small text-center">Unidad</th>
+                                        <th class="small text-end">Precio</th>
+                                        <th class="small text-center">Cant.</th>
+                                        <th class="small text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detalle_servicio in detalles_servicios %}
+                                    <tr>
+                                        <td class="small fw-medium">{{ detalle_servicio.tipo_servicio }}</td>
+                                        <td class="small text-center">{{ detalle_servicio.tipo_servicio_Unit }}</td>
+                                        <td class="small text-end text-primary">{{ detalle_servicio.precio_tipo_servicio_formateado }}</td>
+                                        <td class="small text-center">{{ detalle_servicio.cantidad }}</td>
+                                        <td class="small text-end fw-bold text-primary">{{ detalle_servicio.subtotal_formateado }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Tipo de Cliente</span>
-                            <span class="info-value">{{factura.cliente.getTipo}}</span>
+                        {% else %}
+                        <div class="alert alert-warning d-flex align-items-center">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <small>No hay detalles de servicios específicos para esta factura</small>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Número de Servicio</span>
-                            <span class="info-value">#{{factura.servicio.pk}}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Datos de empleados -->
+                    <div class="info-section">
+                        <div class="section-header d-flex align-items-center mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2 text-primary">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            <h6 class="mb-0 fw-semibold">Información de Mano de Obra</h6>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Tipo de Servicio</span>
-                            <span class="info-value">{{factura.servicio.getTipo}}</span>
+                        
+                        {% if detalle_empleado %}
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Cantidad de Empleados</small>
+                                    <div class="fw-medium">{{detalle_empleado.cantidad_empleados}} empleado{{ detalle_empleado.cantidad_empleados|pluralize }}</div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-item">
+                                    <small class="text-muted text-uppercase fw-medium">Costo de Mano de Obra</small>
+                                    <div class="fw-bold text-primary fs-5">{{detalle_empleado.getImporteManoObraFormateado}}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Período del Servicio</span>
-                            <span class="info-value">
-                                {% if factura.servicio.tipo == 2 %}
-                                    {{factura.servicio.fecha_inicio|date:"d/m/Y"}} - {{factura.servicio.fecha_finaliza|date:"d/m/Y"}}
-                                {% else %}
-                                    {{factura.servicio.fecha_inicio|date:"d/m/Y"}}
-                                {% endif %}
-                            </span>
-                        </div>
-                        {% if factura.servicio.descripcion %}
-                        <div class="info-item">
-                            <span class="info-label">Descripción</span>
-                            <span class="info-value">{{factura.servicio.descripcion}}</span>
+                        {% else %}
+                        <div class="alert alert-warning d-flex align-items-center">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <small>No hay información de empleados para esta factura</small>
                         </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
-
-    <!-- Panel de detalles -->
-    {% if factura.tipo != 1 %}
-    <div class="details-panel">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header-custom">
-                    <h3 class="details-title">Detalles de la Factura</h3>
-                    <p class="details-subtitle">Información detallada de servicios y empleados</p>
-                </div>
-
-                
-                <!-- Detalle de servicios -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 11H1l6-6 6 6z"></path>
-                            <path d="M9 17l3 3 3-3"></path>
-                            <path d="M22 18h-7"></path>
-                            <path d="M22 6h-7"></path>
-                        </svg>
-                        <h4 class="section-title">Servicios Incluidos</h4>
-                    </div>
-                    
-                    {% if detalles_servicios %}
-                    <div class="table-wrapper">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Tipo de Servicio</th>
-                                    <th>Unidad de Medida</th>
-                                    <th>Precio por Unidad</th>
-                                    <th>Cantidad</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for detalle_servicio in detalles_servicios %}
-                                <tr>
-                                    <td><strong>{{ detalle_servicio.tipo_servicio }}</strong></td>
-                                    <td>{{ detalle_servicio.tipo_servicio_Unit }}</td>
-                                    <td class="price-cell">{{ detalle_servicio.precio_tipo_servicio_formateado }}</td>
-                                    <td>{{ detalle_servicio.cantidad }}</td>
-                                    <td><strong class="price-cell">{{ detalle_servicio.subtotal_formateado }}</strong></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% else %}
-                    <div class="note-container">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <span>No hay detalles de servicios específicos para esta factura</span>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- Datos de empleados -->
-                <div class="info-section">
-                    <div class="section-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <h4 class="section-title">Información de Mano de Obra</h4>
-                    </div>
-                    
-                    {% if detalle_empleado %}
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Cantidad de Empleados</span>
-                            <span class="info-value">{{detalle_empleado.cantidad_empleados}} empleado{{ detalle_empleado.cantidad_empleados|pluralize }}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Costo de Mano de Obra</span>
-                            <span class="info-value">{{detalle_empleado.getImporteManoObraFormateado}}</span>
-                        </div>
-                    </div>
-                    <div class="note-container">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <span>
-                            {% if factura.servicio.tipo == 1 %}
-                                Este es el costo total de mano de obra para el servicio eventual
-                            {% else %}
-                                Este es el costo mensual de mano de obra para el servicio determinado
-                            {% endif %}
-                        </span>
-                    </div>
-                    {% else %}
-                    <div class="note-container">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <span>No hay información de empleados para esta factura</span>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <style>
-/* Estilos específicos para detalleFactura - reutilizando los de detalleServicio */
-
-/* Layout principal */
-.detail-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-top: 1.5rem;
-}
-
-/* Header personalizado */
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.header-left h1 {
-    margin-bottom: 0.5rem;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* Status badge */
-.status-badge {
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
+/* Estilos personalizados para complementar Bootstrap */
+.badge-pagada {
+    background-color: var(--bs-success-bg-subtle);
+    color: var(--bs-success);
+    border: 1px solid var(--bs-success-border-subtle);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
     font-size: 0.75rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
-.status-badge.status-paid {
-    background: hsl(var(--success) / 0.1);
-    color: hsl(var(--success));
-    border: 1px solid hsl(var(--success) / 0.2);
-}
-
-.status-badge.status-pending {
-    background: hsl(var(--warning) / 0.1);
-    color: hsl(var(--warning));
-    border: 1px solid hsl(var(--warning) / 0.2);
-}
-
-/* Card headers personalizados */
-.card-header-custom {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid hsl(var(--border));
-}
-
-.details-title {
-    font-size: 1.25rem;
+.badge-pendiente {
+    background-color: var(--bs-warning-bg-subtle);
+    color: var(--bs-warning);
+    border: 1px solid var(--bs-warning-border-subtle);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: hsl(var(--foreground));
-    margin: 0 0 0.25rem 0;
-}
-
-.details-subtitle {
-    color: hsl(var(--muted-foreground));
-    margin: 0;
-    font-size: 0.875rem;
-}
-
-/* Secciones de información */
-.info-section {
-    margin-bottom: 2rem;
-}
-
-.info-section:last-child {
-    margin-bottom: 0;
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid hsl(var(--border) / 0.5);
-}
-
-.section-header svg {
-    color: hsl(var(--accent));
-    flex-shrink: 0;
-}
-
-.section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: hsl(var(--foreground));
-    margin: 0;
-}
-
-/* Grid de información */
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
 }
 
 .info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    margin-bottom: 1rem;
 }
 
-.info-label {
+.info-item small {
+    display: block;
+    margin-bottom: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 500;
-    color: hsl(var(--muted-foreground));
-    text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.info-value {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: hsl(var(--foreground));
+.section-header {
+    border-bottom: 1px solid var(--bs-border-color-translucent);
+    padding-bottom: 0.5rem;
 }
 
-/* Sección de total */
-.total-section {
-    margin-top: 1.5rem;
-    padding: 1.5rem;
-    background: hsl(var(--accent) / 0.1);
-    border: 1px solid hsl(var(--accent) / 0.2);
-    border-radius: var(--radius-sm);
-}
-
-.total-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.total-label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: hsl(var(--accent));
-}
-
-.total-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: hsl(var(--accent));
-}
-
-/* Note container */
-.note-container {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    background: hsl(var(--warning) / 0.1);
-    border: 1px solid hsl(var(--warning) / 0.2);
-    border-radius: var(--radius-sm);
-    margin-top: 1rem;
-}
-
-.note-container svg {
-    color: hsl(var(--warning));
-    flex-shrink: 0;
-}
-
-.note-container span {
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-}
-
-/* Tables */
-.table-wrapper {
-    margin-top: 1rem;
-}
-
-.table-wrapper table {
-    margin: 0;
-}
-
-.price-cell {
-    font-weight: 600;
-    color: hsl(var(--accent));
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-    .detail-layout {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        align-items: stretch;
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .badge-pagada,
+    .badge-pendiente {
+        font-size: 0.7rem;
+        padding: 0.375rem 0.5rem;
     }
     
-    .header-actions {
-        justify-content: space-between;
-        flex-wrap: wrap;
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.5rem;
     }
     
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .total-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
+    .fs-4 {
+        font-size: 1.1rem !important;
     }
 }
 
-/* Estilos para impresión */
+/* Print styles */
 @media print {
-    .header-actions {
-        display: none;
+    .btn,
+    .badge-pagada,
+    .badge-pendiente {
+        display: none !important;
     }
     
     .card {
-        box-shadow: none;
-        border: 1px solid #000;
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+    
+    .col-xl-7,
+    .col-xl-5 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
     }
 }
 </style>
 
 <script>
 $(function () {
-    // Animación de entrada escalonada
+    // Animación de entrada escalonada para las cards
     $('.card').each(function (index) {
         $(this).css({
             'animation-delay': (index * 0.1) + 's',
             'animation-fill-mode': 'both'
         }).addClass('animate-fade-in');
     });
+    
+    // Tooltips para botones pequeños en móviles
+    if (window.innerWidth <= 576) {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+    }
 });
 </script>
 {% endblock %}
