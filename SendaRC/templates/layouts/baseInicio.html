@@ -3,6 +3,17 @@
 
 {% block container %}
 <div class="app-layout">
+    <!-- Botón Hamburguesa -->
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+        <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+
+
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -156,4 +167,68 @@
         {% endblock %}
     </main>
 </div>
+
+<!-- JavaScript para el botón hamburguesa -->
+<script>
+// Variables principales
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const sidebar = document.getElementById('sidebar');
+const body = document.body;
+
+// Función para abrir/cerrar sidebar
+function toggleSidebar() {
+    const isOpen = sidebar.classList.contains('show');
+    
+    if (isOpen) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
+
+// Función para abrir sidebar
+function openSidebar() {
+    sidebar.classList.add('show');
+    hamburgerBtn.classList.add('active');
+    
+    // Prevenir scroll en móvil cuando sidebar está abierta
+    if (window.innerWidth <= 768) {
+        body.classList.add('sidebar-open');
+    }
+}
+
+// Función para cerrar sidebar
+function closeSidebar() {
+    sidebar.classList.remove('show');
+    hamburgerBtn.classList.remove('active');
+    body.classList.remove('sidebar-open');
+}
+
+// Event Listeners
+hamburgerBtn.addEventListener('click', toggleSidebar);
+
+// Cerrar sidebar con tecla Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+        closeSidebar();
+    }
+});
+
+// Manejar resize de ventana
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+        closeSidebar();
+    }
+});
+
+// Cerrar sidebar al hacer click en enlaces en móvil
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth <= 768) {
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeSidebar);
+        });
+    }
+});
+</script>
 {% endblock %}

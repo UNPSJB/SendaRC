@@ -1,94 +1,104 @@
 <!-- factura/partials/table_section.html -->
 {% if facturas %}
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>ID Factura</th>
-                <th>Cliente</th>
-                <th>Id Servicio</th>
-                <th>Tipo</th>
-                <th>Importe</th>
-                <th>Fecha Emisión</th>
-                <th>Fecha Vencimiento</th>
-                <th>Período Servicio</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for factura in facturas %}
-            <tr class="fade-in-row">
-                <td>
-                    <strong>#{{ factura.id }}</strong>
-                </td>
-                <td>
-                    <div class="client-info">
-                        <div class="client-name">{{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</div>
-                    </div>
-                </td>
-                <td>{{ factura.servicio.pk }}</td>
-                <td>{{ factura.getTipo }}</td>
-                <td>
-                    <strong class="amount-cell">{{ factura.getImporteFormateado }}</strong>
-                </td>
-                <td>{{ factura.fechaEmision|date:"d/m/Y" }}</td>
-                <td>{{ factura.fecha_vencimiento|date:"d/m/Y" }}</td>
-                <td>{{ factura.getPeriodoServicio }}</td>
-                <td>
-                    {% if factura.fechaPago %}
-                        <span class="badge badge-pagada">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                            </svg>
-                            Pagada
-                        </span>
-                    {% elif factura.fecha_vencimiento and factura.fecha_vencimiento < today %}
-                        <span class="badge badge-vencida">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="16"></line>
-                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                            </svg>
-                            Vencida
-                        </span>
-                    {% else %}
-                        <span class="badge badge-pendiente">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                            Pendiente
-                        </span>
-                    {% endif %}
-                </td>
-                <td>
-                    <div class="row-actions">
-                        <a href="{% url 'detalleFactura' factura.pk %}" class="btn btn-outline-primary btn-sm" title="Ver detalles Factura" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </a>
-                        <a target="_blank" href="{% url 'pdf_factura' factura.pk %}" class="btn btn-outline-primary btn-sm" title="Imprimir Factura" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <i class="bi bi-printer"></i>
-                        </a>
-                        {% if not factura.fechaPago %}
-                        <a href="{% url 'formaPago' factura.pk %}" class="btn btn-primary btn-sm" title="Registrar pago" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="6" width="20" height="12" rx="2" ry="2" />
-                                <circle cx="12" cy="12" r="3" />
-                                <path d="M2 9a3 3 0 0 0 3 3 3 3 0 0 1-3 3" />
-                                <path d="M22 9a3 3 0 0 1-3 3 3 3 0 0 0 3 3" />
-                            </svg>
-                        </a>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="th-id">ID Factura</th>
+                    <th class="th-cliente">Cliente</th>
+                    <th class="th-servicio">Id Servicio</th>
+                    <th class="th-importe">Importe</th>
+                    <th class="th-tipo">Tipo</th>
+                    <th class="th-estado">Estado</th>
+                    <th class="th-emision">Fecha Emisión</th>
+                    <th class="th-vencimiento">Fecha Vencimiento</th>
+                    <th class="th-periodo">Período Servicio</th>
+                    <th class="th-acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for factura in facturas %}
+                <tr class="fade-in-row">
+                    <td class="td-id">
+                        <strong>#{{ factura.id }}</strong>
+                    </td>
+                    <td class="td-cliente">
+                        <div class="client-info">
+                            <div class="client-name">{{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</div>
+                        </div>
+                    </td>
+                    <td class="td-servicio">{{ factura.servicio.pk }}</td>
+                    <td class="td-importe">
+                        <strong class="amount-cell">{{ factura.getImporteFormateado }}</strong>
+                    </td>
+                    <td class="td-tipo">
+                        <span class="tipo-badge">{{ factura.getTipo }}</span>
+                    </td>
+                    <td class="td-estado">
+                        {% if factura.fechaPago %}
+                            <span class="badge badge-pagada">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <span class="badge-text">Pagada</span>
+                            </span>
+                        {% elif factura.fecha_vencimiento and factura.fecha_vencimiento < today %}
+                            <span class="badge badge-vencida">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                <span class="badge-text">Vencida</span>
+                            </span>
+                        {% else %}
+                            <span class="badge badge-pendiente">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span class="badge-text">Pendiente</span>
+                            </span>
                         {% endif %}
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                    <td class="td-emision">
+                        <span class="fecha-text">{{ factura.fechaEmision|date:"d/m/Y" }}</span>
+                    </td>
+                    <td class="td-vencimiento">
+                        <span class="fecha-text">{{ factura.fecha_vencimiento|date:"d/m/Y" }}</span>
+                    </td>
+                    <td class="td-periodo">
+                        <span class="periodo-text">{{ factura.getPeriodoServicio }}</span>
+                    </td>
+                    <td class="td-acciones">
+                        <div class="row-actions">
+                            <a href="{% url 'detalleFactura' factura.pk %}" class="btn btn-outline-primary btn-sm" title="Ver detalles Factura" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </a>
+                            <a target="_blank" href="{% url 'pdf_factura' factura.pk %}" class="btn btn-outline-primary btn-sm" title="Imprimir Factura" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <i class="bi bi-printer"></i>
+                            </a>
+                            {% if not factura.fechaPago %}
+                            <a href="{% url 'formaPago' factura.pk %}" class="btn btn-primary btn-sm" title="Registrar pago" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="6" width="20" height="12" rx="2" ry="2" />
+                                    <circle cx="12" cy="12" r="3" />
+                                    <path d="M2 9a3 3 0 0 0 3 3 3 3 0 0 1-3 3" />
+                                    <path d="M22 9a3 3 0 0 1-3 3 3 3 0 0 0 3 3" />
+                                </svg>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% else %}
     <div class="empty-state">
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -102,3 +112,223 @@
         <p>No hay facturas que coincidan con los criterios de búsqueda</p>
     </div>
 {% endif %}
+
+<style>
+/* Estilos para tabla responsive */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    min-width: 1200px; /* Ancho mínimo para mantener legibilidad */
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+/* Anchos específicos para columnas */
+.th-id, .td-id { width: 80px; min-width: 80px; }
+.th-cliente, .td-cliente { width: 180px; min-width: 180px; }
+.th-servicio, .td-servicio { width: 90px; min-width: 90px; }
+.th-tipo, .td-tipo { width: 100px; min-width: 100px; }
+.th-importe, .td-importe { width: 120px; min-width: 120px; }
+.th-emision, .td-emision { width: 110px; min-width: 110px; }
+.th-vencimiento, .td-vencimiento { width: 110px; min-width: 110px; }
+.th-periodo, .td-periodo { width: 130px; min-width: 130px; }
+.th-estado, .td-estado { width: 110px; min-width: 110px; }
+.th-acciones, .td-acciones { width: 140px; min-width: 140px; }
+
+/* Estilos para elementos dentro de las celdas */
+.client-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.client-name {
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+}
+
+.tipo-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: hsl(var(--muted));
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.fecha-text, .periodo-text {
+    font-size: 0.875rem;
+}
+
+.amount-cell {
+    color: hsl(var(--accent));
+    font-weight: 600;
+}
+
+/* Badges de estado */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.badge-pagada {
+    background: hsl(var(--success) / 0.1);
+    color: hsl(var(--success));
+    border: 1px solid hsl(var(--success) / 0.2);
+}
+
+.badge-vencida {
+    background: hsl(var(--destructive) / 0.1);
+    color: hsl(var(--destructive));
+    border: 1px solid hsl(var(--destructive) / 0.2);
+}
+
+.badge-pendiente {
+    background: hsl(var(--warning) / 0.1);
+    color: hsl(var(--warning));
+    border: 1px solid hsl(var(--warning) / 0.2);
+}
+
+/* Acciones */
+.row-actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-start;
+}
+
+.btn-sm {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive específico para móviles */
+@media (max-width: 768px) {
+    .table-responsive {
+        margin: 0 -15px; /* Compensar padding del contenedor */
+        border-radius: 0;
+    }
+    
+    .table {
+        min-width: 1000px; /* Reducir un poco en móviles */
+    }
+    
+    /* Hacer badges más compactos en móviles */
+    .badge-text {
+        display: none;
+    }
+    
+    .badge {
+        padding: 4px 6px;
+        min-width: 24px;
+        justify-content: center;
+    }
+    
+    /* Hacer acciones más compactas */
+    .row-actions {
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .btn-sm {
+        padding: 4px 6px;
+        min-width: 28px;
+    }
+    
+    /* Texto más pequeño en móviles */
+    .client-name {
+        font-size: 0.875rem;
+        max-width: 140px;
+    }
+    
+    .fecha-text, .periodo-text {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .table {
+        min-width: 900px; /* Aún más compacto para pantallas muy pequeñas */
+        font-size: 0.85rem;
+    }
+    
+    .th-cliente, .td-cliente { width: 150px; min-width: 150px; }
+    .th-periodo, .td-periodo { width: 100px; min-width: 100px; }
+    
+    .client-name {
+        max-width: 120px;
+    }
+}
+
+/* Indicador de scroll horizontal */
+.table-responsive::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(45deg, transparent 40%, hsl(var(--muted-foreground) / 0.3) 60%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.table-responsive:hover::after {
+    opacity: 1;
+}
+
+/* Mejoras visuales */
+.table thead th {
+    background: hsl(var(--muted) / 0.5);
+    border-bottom: 2px solid hsl(var(--border));
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 12px 8px;
+}
+
+.table tbody td {
+    padding: 12px 8px;
+    vertical-align: middle;
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.table tbody tr:hover {
+    background: hsl(var(--muted) / 0.3);
+}
+
+/* Loading state para filas */
+.fade-in-row {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
