@@ -128,7 +128,7 @@
                                     <div class="fw-medium">
                                         {% if factura.fechaPago %}
                                             <span class="text-success">Pagada el {{factura.fechaPago|date:"d/m/Y"}}</span>
-                                        {% elif %}
+                                        {% else %}
                                             <span class="text-warning">Pendiente de pago</span>
                                         {% endif %}
                                     </div>
