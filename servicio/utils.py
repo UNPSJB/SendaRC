@@ -84,6 +84,10 @@ def actualizar_estados_servicios():
     iniciados_ids = []
     
     for servicio in servicios_a_iniciar:
+        if servicio.fecha_inicio != hoy:
+            continue
+        print("servicio.fecha_inicio:", servicio.fecha_inicio)
+        print("hoy:", hoy)
         hora_inicio = get_primer_horario_inicio(servicio)
         
         if hora_inicio and timezone.now() >= hora_inicio:
