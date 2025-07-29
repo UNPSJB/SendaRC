@@ -138,7 +138,7 @@ def actualizar_estados_servicios():
     
     logger.info("Finalizada la actualización de estados de servicios")
     return {
-        'iniciados': count_iniciados,
+        'iniciados': len(iniciados_ids),
         'finalizados': len(finalizados_ids),
         'vencidos': len(vencidos_ids)
     }
