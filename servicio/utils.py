@@ -4,7 +4,7 @@ from django.db.models import Q
 from servicio.models import Servicio
 from factura.models import Factura
 import logging
-from django.utils.timezone import get_current_timezone, is_naive, make_aware
+from django.utils.timezone import get_current_timezone, is_naive, make_aware,localtime
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ def get_primer_horario_inicio(servicio):
 
     if is_naive(dt_inicio):
         dt_inicio = make_aware(dt_inicio, get_current_timezone())
+    print("dt_inicio:", dt_inicio)
 
     logger.debug(f"[Servicio {servicio.id}] Hora de inicio calculada: {dt_inicio.isoformat()}")
     return dt_inicio
@@ -78,6 +79,9 @@ def desvincular_empleados_servicio(servicio):
 def actualizar_estados_servicios():
     hoy = timezone.now().date()
     logger.info(f"Iniciando actualización de estados de servicios para fecha: {hoy}")
+    logger.info(f"Fecha de ejecución (UTC): {timezone.now().isoformat()}")
+    logger.info(f"Fecha local (Argentina): {localtime(timezone.now()).isoformat()}")
+
     
     # Iniciar servicios contratados
     servicios_a_iniciar = Servicio.objects.filter(estado=3)
@@ -86,11 +90,17 @@ def actualizar_estados_servicios():
     for servicio in servicios_a_iniciar:
         if servicio.fecha_inicio != hoy:
             continue
+
         print("servicio.fecha_inicio:", servicio.fecha_inicio)
         print("hoy:", hoy)
+
         hora_inicio = get_primer_horario_inicio(servicio)
-        
-        if hora_inicio and timezone.now() >= hora_inicio:
+        ahora_local = localtime(timezone.now())
+
+        print("hora_inicio:", hora_inicio)
+        print("ahora_local:", ahora_local)
+
+        if hora_inicio and ahora_local >= hora_inicio:
             servicio.estado = 4
             servicio.save()
             iniciados_ids.append(servicio.id)
@@ -103,9 +113,18 @@ def actualizar_estados_servicios():
     finalizados_ids = []
 
     for servicio in servicios_a_finalizar:
+        if servicio.fecha_finaliza != hoy:
+            continue
+
+        print("servicio.fecha_finaliza:", servicio.fecha_finaliza)
+        print("hoy:", hoy)
+
         hora_fin = get_ultimo_horario_finalizacion(servicio)
-        
-        if hora_fin and timezone.now() >= hora_fin:
+        ahora_local = localtime(timezone.now())
+        print("hora_fin:", hora_fin)
+        print("ahora_local:", ahora_local)
+
+        if hora_fin and ahora_local >= hora_fin:
             servicio.estado = 6
             servicio.save()
             finalizados_ids.append(servicio.id)
