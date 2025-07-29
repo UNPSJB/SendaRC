@@ -4,32 +4,31 @@ from django.db.models import Q
 from servicio.models import Servicio
 from factura.models import Factura
 import logging
-from django.utils.timezone import make_aware
+from django.utils.timezone import is_naive, make_aware
 
 
 logger = logging.getLogger(__name__)
 
 
-
 def get_ultimo_horario_finalizacion(servicio):
     """
-    Devuelve el datetime exacto en que se deben liberar los empleados del servicio,
-    que corresponde al fin del turno más alto del último día.
+    Devuelve un datetime aware que indica la hora exacta de finalización del servicio.
     """
     if not servicio.fecha_finaliza:
         return None
-    
-    # Obtener la frecuencia con el turno más alto
+
     frecuencia_max_turno = servicio.frecuencias.order_by('-turno').first()
     if not frecuencia_max_turno:
         return None
-    
-    # Obtener hora fin del turno usando su método
-    hora_fin_turno = frecuencia_max_turno.getHoraFin()
-    
-    # Combinar con la fecha de finalización real del servicio
-    dt_final = datetime.combine(servicio.fecha_finaliza, hora_fin_turno.timetz())
-    return make_aware(dt_final)
+        
+    hora_fin = frecuencia_max_turno.getHoraFin().time()  
+
+    dt_naive = datetime.combine(servicio.fecha_finaliza, hora_fin)
+
+    if is_naive(dt_naive):
+        return make_aware(dt_naive)
+    return dt_naive
+
 
 
 def desvincular_empleados_servicio(servicio):
