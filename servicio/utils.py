@@ -4,8 +4,33 @@ from django.db.models import Q
 from servicio.models import Servicio
 from factura.models import Factura
 import logging
+from django.utils.timezone import make_aware
+
 
 logger = logging.getLogger(__name__)
+
+
+
+def get_ultimo_horario_finalizacion(servicio):
+    """
+    Devuelve el datetime exacto en que se deben liberar los empleados del servicio,
+    que corresponde al fin del turno más alto del último día.
+    """
+    if not servicio.fecha_finaliza:
+        return None
+    
+    # Obtener la frecuencia con el turno más alto
+    frecuencia_max_turno = servicio.frecuencias.order_by('-turno').first()
+    if not frecuencia_max_turno:
+        return None
+    
+    # Obtener hora fin del turno usando su método
+    hora_fin_turno = frecuencia_max_turno.getHoraFin()
+    
+    # Combinar con la fecha de finalización real del servicio
+    dt_final = datetime.combine(servicio.fecha_finaliza, hora_fin_turno.timetz())
+    return make_aware(dt_final)
+
 
 def desvincular_empleados_servicio(servicio):
     """
@@ -32,16 +57,20 @@ def actualizar_estados_servicios():
         logger.info(f"Se iniciaron {count_iniciados} servicios (Contratado -> En Curso): {iniciados_ids}")
     
     # Finalizar servicios en curso
-    servicios_a_finalizar = Servicio.objects.filter(estado=4, fecha_finaliza=hoy)
+    servicios_a_finalizar = Servicio.objects.filter(estado=4)
     finalizados_ids = []
+
     for servicio in servicios_a_finalizar:
-        if not Factura.objects.filter(servicio=servicio, fechaPago__isnull=True).exists():
+        hora_fin = get_ultimo_horario_finalizacion(servicio)
+        
+        if hora_fin and timezone.now() >= hora_fin:
             servicio.estado = 6
             servicio.save()
             finalizados_ids.append(servicio.id)
-            
+
             # Desvincular empleados del servicio finalizado
             desvincular_empleados_servicio(servicio)
+
     
     if finalizados_ids:
         logger.info(f"Se finalizaron {len(finalizados_ids)} servicios (En Curso -> Finalizado): {finalizados_ids}")

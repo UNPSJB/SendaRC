@@ -220,7 +220,7 @@ class Frecuencia(models.Model):
         elif self.turno == 3:  # Noche
             return timezone.now().replace(hour=19, minute=00, second=0, microsecond=0)
 
-    def getHoraFin():
+    def getHoraFin(self):
         if self.turno == 1:  # Mañana
             return timezone.now().replace(hour=12, minute=0, second=0, microsecond=0)
         elif self.turno == 2:  # Tarde
