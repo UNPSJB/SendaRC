@@ -19,7 +19,7 @@ def run_crons():
             actualizar_estados_servicios()
         except Exception as e:
             print(f"❌ Error al ejecutar el cron: {e}")
-        time.sleep(3600)  # Espera de 1 hora (3600 segundos)
+        time.sleep(300)  # Espera de 5 minutos (300 segundos)
 
 
 def main():

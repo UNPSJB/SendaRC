@@ -113,24 +113,24 @@ def actualizar_estados_servicios():
     finalizados_ids = []
 
     for servicio in servicios_a_finalizar:
-        if servicio.fecha_finaliza != hoy:
+        if servicio.fecha_finaliza != hoy or servicio.fecha_finaliza > hoy:
             continue
+        elif servicio.fecha_finaliza <= hoy:
+            print("servicio.fecha_finaliza:", servicio.fecha_finaliza)
+            print("hoy:", hoy)
 
-        print("servicio.fecha_finaliza:", servicio.fecha_finaliza)
-        print("hoy:", hoy)
+            hora_fin = get_ultimo_horario_finalizacion(servicio)
+            ahora_local = localtime(timezone.now())
+            print("hora_fin:", hora_fin)
+            print("ahora_local:", ahora_local)
 
-        hora_fin = get_ultimo_horario_finalizacion(servicio)
-        ahora_local = localtime(timezone.now())
-        print("hora_fin:", hora_fin)
-        print("ahora_local:", ahora_local)
+            if hora_fin and ahora_local >= hora_fin:
+                servicio.estado = 6
+                servicio.save()
+                finalizados_ids.append(servicio.id)
 
-        if hora_fin and ahora_local >= hora_fin:
-            servicio.estado = 6
-            servicio.save()
-            finalizados_ids.append(servicio.id)
-
-            # Desvincular empleados del servicio finalizado
-            desvincular_empleados_servicio(servicio)
+                # Desvincular empleados del servicio finalizado
+                desvincular_empleados_servicio(servicio)
 
     
     if finalizados_ids:
