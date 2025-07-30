@@ -80,6 +80,16 @@
                 </div>
             </div>
             <div class="modal-footer modal-footer-shadcn">
+                <button type="button" class="btn btn-primary btn-shadcn" id="btnAgregarCalendario">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <path d="M8 14h8M8 18h8"></path>
+                    </svg>
+                    Agregar a Calendario
+                </button>
                 <button type="button" class="btn btn-secondary btn-shadcn" data-bs-dismiss="modal">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
                         <path d="M18 6L6 18M6 6l12 12"/>
@@ -186,6 +196,18 @@
     padding: 0 1rem !important;
 }
 
+/* Botón primario */
+.btn-primary.btn-shadcn {
+    background-color: hsl(var(--primary)) !important;
+    border-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+}
+
+.btn-primary.btn-shadcn:hover {
+    background-color: hsl(var(--primary) / 0.9) !important;
+    border-color: hsl(var(--primary) / 0.9) !important;
+}
+
 /* ===== ESTILOS PARA EL CONTENIDO DEL MODAL ===== */
 
 /* Cards dentro del modal */
@@ -288,6 +310,25 @@
     opacity: 1;
 }
 
+/* Estilos para modal de opciones */
+.opcion-calendario {
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: var(--radius) !important;
+    padding: 1rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.opcion-calendario:hover {
+    background-color: hsl(var(--accent)) !important;
+    border-color: hsl(var(--primary)) !important;
+    transform: translateY(-1px);
+}
+
+.opcion-calendario:focus {
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
+    outline: none !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .modal-dialog {
@@ -313,6 +354,15 @@
     .details-grid {
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
+    }
+    
+    .opcion-calendario {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .opcion-calendario small {
+        font-size: 0.8rem !important;
     }
 }
 
@@ -608,7 +658,6 @@
         padding: 0.05rem 0.1rem !important;
     }
     
-
 }
 
 /* ===== MEJORAS PARA VISTA DE LISTA EN MÓVIL ===== */
@@ -746,9 +795,9 @@ document.addEventListener('DOMContentLoaded', function() {
             info.el.style.transform = 'translateY(0)';
         },
         height: 'auto',
-        contentHeight: 'auto', // Cambiar de 600 a 'auto'
-        aspectRatio: window.innerWidth < 768 ? 1.2 : 1.8, // Ratio dinámico
-        responsive: true, // Si FullCalendar lo soporta
+        contentHeight: 'auto',
+        aspectRatio: window.innerWidth < 768 ? 1.2 : 1.8,
+        responsive: true,
         nowIndicator: true,
         businessHours: [
             {
@@ -772,47 +821,305 @@ document.addEventListener('DOMContentLoaded', function() {
     
     calendar.render();
     
+    // Variable global para almacenar el evento actual
+    let eventoActual = null;
+    
+    // Función para generar archivo .ics
+    function generarArchivoICS(evento) {
+        const props = evento.extendedProps;
+        const inicio = new Date(evento.start);
+        const fin = new Date(evento.end);
+        
+        // Formatear fechas para ICS (formato UTC)
+        function formatearFechaICS(fecha) {
+            return fecha.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+        
+        // Generar UID único
+        const uid = `evento-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@tudominio.com`;
+        
+        // Formatear descripción
+        const descripcion = [
+            `Cliente: ${props.cliente || 'No especificado'}`,
+            `Dirección: ${props.direccion || 'No especificada'}`,
+            `Turno: ${props.turno || 'No especificado'}`,
+            `Tipo: ${props.tipo || 'No definido'}`,
+            `Superficie: ${props.metros2 || 'No especificada'} m²`,
+            `Estado: ${props.estado || 'No definido'}`
+        ].join('\\n');
+        
+        // Contenido del archivo ICS
+        const contenidoICS = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//Tu Empresa//Calendario de Servicios//ES',
+            'CALSCALE:GREGORIAN',
+            'METHOD:PUBLISH',
+            'BEGIN:VEVENT',
+            `DTSTART:${formatearFechaICS(inicio)}`,
+            `DTEND:${formatearFechaICS(fin)}`,
+            `DTSTAMP:${formatearFechaICS(new Date())}`,
+            `UID:${uid}`,
+            `SUMMARY:${evento.title}`,
+            `DESCRIPTION:${descripcion}`,
+            `LOCATION:${props.direccion || ''}`,
+            'STATUS:CONFIRMED',
+            'TRANSP:OPAQUE',
+            'BEGIN:VALARM',
+            'TRIGGER:-PT15M',
+            'ACTION:DISPLAY',
+            'DESCRIPTION:Recordatorio de servicio',
+            'END:VALARM',
+            'END:VEVENT',
+            'END:VCALENDAR'
+        ].join('\r\n');
+        
+        return contenidoICS;
+    }
+    
+    // Función para descargar archivo ICS
+    function descargarArchivoICS(contenido, nombreArchivo) {
+        const blob = new Blob([contenido], { type: 'text/calendar;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nombreArchivo;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    }
+    
+    // Función para generar URL de Google Calendar
+    function generarURLGoogleCalendar(evento) {
+        const props = evento.extendedProps;
+        const inicio = new Date(evento.start);
+        const fin = new Date(evento.end);
+        
+        // Formatear fechas para Google Calendar
+        function formatearFechaGoogle(fecha) {
+            return fecha.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+        
+        const descripcion = [
+            `Cliente: ${props.cliente || 'No especificado'}`,
+            `Dirección: ${props.direccion || 'No especificada'}`,
+            `Turno: ${props.turno || 'No especificado'}`,
+            `Tipo: ${props.tipo || 'No definido'}`,
+            `Superficie: ${props.metros2 || 'No especificada'} m²`,
+            `Estado: ${props.estado || 'No definido'}`
+        ].join('\n');
+        
+        const params = new URLSearchParams({
+            action: 'TEMPLATE',
+            text: evento.title,
+            dates: `${formatearFechaGoogle(inicio)}/${formatearFechaGoogle(fin)}`,
+            details: descripcion,
+            location: props.direccion || '',
+            trp: 'false'
+        });
+        
+        return `https://calendar.google.com/calendar/render?${params.toString()}`;
+    }
+    
+    // Función para generar URL de Outlook
+    function generarURLOutlook(evento) {
+        const props = evento.extendedProps;
+        const inicio = new Date(evento.start);
+        const fin = new Date(evento.end);
+        
+        const descripcion = [
+            `Cliente: ${props.cliente || 'No especificado'}`,
+            `Dirección: ${props.direccion || 'No especificada'}`,
+            `Turno: ${props.turno || 'No especificado'}`,
+            `Tipo: ${props.tipo || 'No definido'}`,
+            `Superficie: ${props.metros2 || 'No especificada'} m²`,
+            `Estado: ${props.estado || 'No definido'}`
+        ].join('\n');
+        
+        const params = new URLSearchParams({
+            path: '/calendar/action/compose',
+            rru: 'addevent',
+            subject: evento.title,
+            startdt: inicio.toISOString(),
+            enddt: fin.toISOString(),
+            body: descripcion,
+            location: props.direccion || ''
+        });
+        
+        return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
+    }
+    
+    // Función para detectar el tipo de dispositivo
+    function detectarDispositivo() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isIOS = /ipad|iphone|ipod/.test(userAgent);
+        const isAndroid = /android/.test(userAgent);
+        const isMobile = isIOS || isAndroid;
+        const isOutlook = /outlook/.test(userAgent);
+        
+        return { isIOS, isAndroid, isMobile, isOutlook };
+    }
+    
+    // Función principal para agregar al calendario
+    function agregarACalendarioDispositivo(evento) {
+        const dispositivo = detectarDispositivo();
+        const props = evento.extendedProps;
+        const inicio = new Date(evento.start);
+        const nombreArchivo = `servicio-${inicio.getFullYear()}-${(inicio.getMonth() + 1).toString().padStart(2, '0')}-${inicio.getDate().toString().padStart(2, '0')}.ics`;
+        
+        // Mostrar opciones al usuario
+        const opciones = [];
+        
+        // Siempre mostrar opción de descarga ICS (compatible con todos)
+        opciones.push({
+            texto: '📅 Descargar archivo de calendario (.ics)',
+            descripcion: 'Compatible con Outlook, Apple Calendar, Google Calendar, etc.',
+            accion: () => {
+                const contenidoICS = generarArchivoICS(evento);
+                descargarArchivoICS(contenidoICS, nombreArchivo);
+            }
+        });
+        
+        // Google Calendar (web)
+        opciones.push({
+            texto: '🔗 Abrir en Google Calendar',
+            descripcion: 'Se abre en una nueva pestaña',
+            accion: () => {
+                window.open(generarURLGoogleCalendar(evento), '_blank');
+            }
+        });
+        
+        // Outlook (web)
+        opciones.push({
+            texto: '📧 Abrir en Outlook Calendar',
+            descripcion: 'Se abre en una nueva pestaña',
+            accion: () => {
+                window.open(generarURLOutlook(evento), '_blank');
+            }
+        });
+        
+        // Crear modal de opciones
+        mostrarModalOpciones(opciones, evento.title);
+    }
+    
+    // Función para mostrar modal con opciones
+    function mostrarModalOpciones(opciones, tituloEvento) {
+        // Crear modal dinámicamente
+        const modalHTML = `
+            <div class="modal fade" id="opcionesCalendarioModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-content-shadcn">
+                        <div class="modal-header modal-header-shadcn">
+                            <div class="modal-title-container">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-icon">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <h5 class="modal-title modal-title-shadcn">
+                                    Agregar a Calendario
+                                </h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-shadcn" data-bs-dismiss="modal">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body modal-body-shadcn">
+                            <p class="mb-3">
+                                <strong>${tituloEvento}</strong><br>
+                                <small class="text-muted">Selecciona cómo quieres agregar este evento:</small>
+                            </p>
+                            <div class="d-grid gap-2">
+                                ${opciones.map((opcion, index) => `
+                                    <button type="button" class="btn btn-outline-primary text-start opcion-calendario" data-index="${index}">
+                                        <div>
+                                            <div class="fw-semibold">${opcion.texto}</div>
+                                            <small class="text-muted">${opcion.descripcion}</small>
+                                        </div>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="modal-footer modal-footer-shadcn">
+                            <button type="button" class="btn btn-secondary btn-shadcn" data-bs-dismiss="modal">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Eliminar modal anterior si existe
+        const modalAnterior = document.getElementById('opcionesCalendarioModal');
+        if (modalAnterior) {
+            modalAnterior.remove();
+        }
+        
+        // Agregar modal al DOM
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Agregar event listeners
+        const botonesOpcion = document.querySelectorAll('.opcion-calendario');
+        botonesOpcion.forEach(boton => {
+            boton.addEventListener('click', function() {
+                const index = parseInt(this.dataset.index);
+                opciones[index].accion();
+                
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('opcionesCalendarioModal'));
+                modal.hide();
+            });
+        });
+        
+        // Mostrar modal
+        const modal = new bootstrap.Modal(document.getElementById('opcionesCalendarioModal'));
+        modal.show();
+        
+        // Limpiar al cerrar
+        document.getElementById('opcionesCalendarioModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+        });
+    }
+    
     function mostrarDetallesEvento(event) {
+        // Guardar el evento actual
+        eventoActual = event;
+        
         const props = event.extendedProps;
         const inicio = new Date(event.start);
         const fin = new Date(event.end);
-
-        const fechaInicioICS = inicio.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-        const fechaFinICS = fin.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-
-        const icsContent = `BEGIN:VCALENDAR
-        VERSION:2.0
-        BEGIN:VEVENT
-        SUMMARY:${event.title}
-        DESCRIPTION:${props.cliente || ''} - ${props.direccion || ''}
-        DTSTART:${fechaInicioICS}
-        DTEND:${fechaFinICS}
-        LOCATION:${props.direccion || ''}
-        END:VEVENT
-        END:VCALENDAR`;
-
-        const blob = new Blob([icsContent], { type: 'text/calendar' });
-        const url = URL.createObjectURL(blob);
-
+        
         const detallesHTML = `
             <div class="row">
                 <div class="col-md-6">
                     <h6><i class="bi bi-building"></i> Cliente</h6>
                     <p>${props.cliente || 'No especificado'}</p>
+                    
                     <h6><i class="bi bi-geo-alt"></i> Dirección</h6>
                     <p>${props.direccion || 'No especificada'}</p>
+                    
                     <h6><i class="bi bi-clock"></i> Horario</h6>
                     <p>${props.turno || 'No especificado'}: ${inicio.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'})} - ${fin.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'})}</p>
+                    
                     <h6><i class="bi bi-calendar-day"></i> Día de la semana</h6>
                     <p>${props.dia || 'No especificado'}</p>
                 </div>
                 <div class="col-md-6">
                     <h6><i class="bi bi-info-circle"></i> Estado del Servicio</h6>
                     <span class="badge bg-secondary">${props.estado || 'No definido'}</span>
+                    
                     <h6 class="mt-2"><i class="bi bi-tag"></i> Tipo</h6>
                     <span class="badge bg-primary">${props.tipo || 'No definido'}</span>
+                    
                     <h6 class="mt-2"><i class="bi bi-rulers"></i> Superficie</h6>
                     <p>${props.metros2 || 'No especificada'} m²</p>
+                    
                     <h6><i class="bi bi-calendar-range"></i> Duración del servicio</h6>
                     <p><strong>Inicio:</strong> ${props.fecha_inicio_servicio || 'No definida'}</p>
                     <p><strong>Fin:</strong> ${props.fecha_fin_servicio || 'No definida'}</p>
@@ -821,7 +1128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-12">
                     <h6><i class="bi bi-calendar-event"></i> Fecha específica de este evento</h6>
                     <p>${inicio.toLocaleDateString('es-AR', {
                         weekday: 'long',
@@ -830,20 +1137,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         day: 'numeric'
                     })}</p>
                 </div>
-                <div class="col-md-6 text-end">
-                    <a href="${url}" download="evento.ics" class="btn btn-sm btn-success">
-                        <i class="bi bi-calendar-plus me-1"></i> Agregar a mi Calendario
-                    </a>
-                </div>
             </div>
         `;
-
+        
         document.getElementById('eventoDetalles').innerHTML = detallesHTML;
         document.getElementById('eventoModalLabel').textContent = event.title;
-
-        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('eventoModal'));
+        
+        // Mostrar modal
+        const modalElement = document.getElementById('eventoModal');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
         modal.show();
     }
+    
+    // Event listener para el botón de agregar al calendario
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'btnAgregarCalendario' || e.target.closest('#btnAgregarCalendario')) {
+            if (eventoActual) {
+                agregarACalendarioDispositivo(eventoActual);
+            }
+        }
+    });
 });
 </script>
 {% endblock %}
