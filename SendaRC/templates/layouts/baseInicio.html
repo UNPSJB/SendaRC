@@ -29,6 +29,7 @@
 
         <nav class="sidebar-nav">
             <ul class="nav-list">
+                
                 <li class="nav-item">
                     <a href="{% url 'home' %}" class="nav-link {% if request.path == '/home/' %}active{% endif %}">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -38,108 +39,123 @@
                         <span class="nav-text">Home</span>
                     </a>
                 </li>
+                {% if request.user.is_superuser %}
+                    <li class="nav-section">
+                        <span class="section-title">Gestión</span>
+                    </li>
 
-                <li class="nav-section">
-                    <span class="section-title">Gestión</span>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'gestionLocalidad' %}" class="nav-link {% if '/gestionLocalidad/' in request.path or '/altaLocalidad/' in request.path or '/modificarLocalidad/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span class="nav-text">Localidades</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'gestionEmpleado' %}" class="nav-link {% if '/gestionEmpleado/' in request.path or '/altaEmpleado/' in request.path or '/modificarEmpleado/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            <span class="nav-text">Empleados</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="{% url 'gestionLocalidad' %}" class="nav-link {% if '/gestionLocalidad/' in request.path or '/altaLocalidad/' in request.path or '/modificarLocalidad/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
-                        <span class="nav-text">Localidades</span>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'gestionMaquinaria' %}" class="nav-link {% if '/gestionMaquinaria/' in request.path or '/altaMaquinaria/' in request.path or '/modificarMaquinaria/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                            </svg>
+                            <span class="nav-text">Maquinarias</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="{% url 'gestionEmpleado' %}" class="nav-link {% if '/gestionEmpleado/' in request.path or '/altaEmpleado/' in request.path or '/modificarEmpleado/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <span class="nav-text">Empleados</span>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'gestionTipoServicio' %}" class="nav-link {% if '/gestionTipoServicio/' in request.path or '/altaTipoServicio/' in request.path or '/modificarTipoServicio/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                            <span class="nav-text">Tipos de Servicios</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="{% url 'gestionMaquinaria' %}" class="nav-link {% if '/gestionMaquinaria/' in request.path or '/altaMaquinaria/' in request.path or '/modificarMaquinaria/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                        </svg>
-                        <span class="nav-text">Maquinarias</span>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'gestionInsumos' %}" class="nav-link {% if '/gestionInsumos/' in request.path or '/altaInsumo/' in request.path or '/modificarInsumo/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            </svg>
+                            <span class="nav-text">Insumos</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="{% url 'gestionTipoServicio' %}" class="nav-link {% if '/gestionTipoServicio/' in request.path or '/altaTipoServicio/' in request.path or '/modificarTipoServicio/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="1" y="3" width="15" height="13"></rect>
-                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                        </svg>
-                        <span class="nav-text">Tipos de Servicios</span>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'gestionClientes' %}" class="nav-link {% if '/gestionClientes/' in request.path or '/altaCliente/' in request.path or '/modificarCliente/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span class="nav-text">Clientes</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="{% url 'gestionInsumos' %}" class="nav-link {% if '/gestionInsumos/' in request.path or '/altaInsumo/' in request.path or '/modificarInsumo/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                        <span class="nav-text">Insumos</span>
-                    </a>
-                </li>
+                    <li class="nav-section">
+                        <span class="section-title">Operaciones</span>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="{% url 'gestionClientes' %}" class="nav-link {% if '/gestionClientes/' in request.path or '/altaCliente/' in request.path or '/modificarCliente/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <span class="nav-text">Clientes</span>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'gestionServicios' %}" class="nav-link {% if '/servicio/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            <span class="nav-text">Servicios</span>
+                        </a>
+                    </li>
 
-                <li class="nav-section">
-                    <span class="section-title">Operaciones</span>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{% url 'gestionServicios' %}" class="nav-link {% if '/servicio/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                        <span class="nav-text">Servicios</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{% url 'facturas' %}" class="nav-link {% if '/factura/' in request.path %}active{% endif %}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                        </svg>
-                        <span class="nav-text">Facturas</span>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'facturas' %}" class="nav-link {% if '/factura/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <span class="nav-text">Facturas</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'calendario' %}" class="nav-link {% if '/calendario/' in request.path %}active{% endif %}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span class="nav-text">Calendario</span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
 
         <div class="sidebar-footer">
             {% if user.is_authenticated %}
             <div class="user-info">
-                <div class="user-avatar" style="background-image: url('{% static 'images/profile-picture.jpg' %}'); background-size: cover; background-position: center; ">
-                </div>
+                {% if request.user.is_superuser %}
+                    <div class="user-avatar" style="background-image: url('{% static 'images/profile-picture.jpg' %}'); background-size: cover; background-position: center; "></div>
+                {% else %}
+                    <div class="user-avatar" style="background-image: url('{% static 'images/profile-picture-empleado.png' %}'); background-size: cover; background-position: center; "></div>
+                {% endif %}
                 <div class="user-details">
                     <span class="user-name">{{ user.username }}</span>
                     <span class="user-role">Administrador</span>

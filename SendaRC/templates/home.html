@@ -140,15 +140,28 @@
             <div class="row align-items-center gy-3">
                 <!-- Avatar + Greeting -->
                 <div class="col-12 col-md-8 d-flex flex-column flex-md-row align-items-center">
-                    <div class="user-avatar me-md-3 mb-3 mb-md-0"
-                         style="width: 64px; height: 64px; border-radius: 50%;
-                                background-image: url('{% static 'images/profile-picture.jpg' %}');
+                    {% if request.user.is_superuser %}
+                        <div class="user-avatar me-md-3 mb-3 mb-md-0"
+                            style="width: 64px; height: 64px; border-radius: 50%;
+                                    background-image: url('{% static 'images/profile-picture.jpg' %}');
+                                    background-size: cover;
+                                    background-position: center;">
+                        </div>
+                    {% else %}
+                        <div class="user-avatar me-md-3 mb-3 mb-md-0"
+                        style="width: 64px; height: 64px; border-radius: 50%;
+                                background-image: url('{% static 'images/profile-picture-empleado.png' %}');
                                 background-size: cover;
                                 background-position: center;">
-                    </div>
+                        </div>
+                    {% endif %}
                     <div class="greeting-text text-center text-md-start">
                         <h1 class="h5 mb-1">Bienvenido, {{ user.username }}</h1>
-                        <p class="mb-0">Gestiona tu empresa de limpieza con elegancia y eficiencia</p>
+                        {% if request.user.is_superuser %}
+                            <p class="mb-0">Gestiona tu empresa de limpieza con elegancia y eficiencia</p>
+                        {% else %}
+                            <p class="mb-0">Bienvenido al sistema: donde todo brilla, excepto los que llegan tarde 😄</p>
+                        {% endif %}
                     </div>
                 </div>
     
@@ -169,264 +182,265 @@
         </div>
     </header>
     
-
-    <!-- Métricas Principales -->
-    <section class="metrics-section animate-fade-in">
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-icon success">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                </div>
-                <div class="metric-content">
-                    <h3>Ingresos del Mes</h3>
-                    <p class="metric-value">{{ ingresos_mes_formateado }}</p>
-                    <span class="metric-change {% if cambio_ingresos >= 0 %}positive{% else %}negative{% endif %}">
-                        {% if cambio_ingresos >= 0 %}+{% endif %}{{ cambio_ingresos }}%
-                    </span>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-icon primary">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                </div>
-                <div class="metric-content">
-                    <h3>Servicios Activos</h3>
-                    <p class="metric-value">{{ servicios_activos }}</p>
-                    <span class="metric-change {% if cambio_servicios >= 0 %}positive{% else %}negative{% endif %}">
-                        {% if cambio_servicios >= 0 %}+{% endif %}{{ cambio_servicios }}
-                    </span>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-icon warning">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                    </svg>
-                </div>
-                <div class="metric-content">
-                    <h3>Facturas Pendientes</h3>
-                    <p class="metric-value">{{ facturas_pendientes }}</p>
-                    <span class="metric-change {% if cambio_facturas >= 0 %}positive{% else %}negative{% endif %}">
-                        {% if cambio_facturas >= 0 %}+{{ cambio_facturas }}{% else %}{{ cambio_facturas }}{% endif %}
-                    </span>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-icon info">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </div>
-                <div class="metric-content">
-                    <h3>Clientes Activos</h3>
-                    <p class="metric-value">{{ clientes_activos }}</p>
-                    <span class="metric-change {% if cambio_clientes >= 0 %}positive{% else %}negative{% endif %}">
-                        {% if cambio_clientes >= 0 %}+{% endif %}{{ cambio_clientes }}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gráficos y Accesos Rápidos -->
-    <div class="dashboard-grid animate-fade-in">
-        <!-- Gráficos -->
-        <section class="charts-section">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Ingresos Mensuales</h3>
-                    <div class="chart-controls">
-                        <select class="form-select form-select-sm chart-period" id="periodoIngreso">
-                            <option value="1">Último mes</option>
-                            <option value="3">Últimos 3 meses</option>
-                            <option value="6">Últimos 6 meses</option>
-                            <option value="9">Últimos 9 meses</option>
-                            <option value="12">Último año</option>
-                            <option value="all">Todo</option>
-                            <option disabled>────────────</option>
-                            {% for y in lista_anios %}
-                                <option value="year:{{ y }}">{{ y }}</option>
-                            {% endfor %}
-                        </select>                                                                     
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="revenueChart"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Servicios por Tipo</h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="servicesChart"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Estado de Facturas</h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="scatterChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Mapa de Servicios por Ubicación -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Ubicación de Servicios - Chubut</h3>
-                    <div class="chart-controls">
-                        <span style="font-size: 12px; color: hsl(var(--muted-foreground));">Ubicación exacta de cada servicio</span>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <div id="servicesMap" class="map-container"></div>
-                    <div class="map-info">
-                        <strong>Total de ubicaciones:</strong> <span id="totalCiudades">0</span><br>
-                        <strong>Total de servicios:</strong> <span id="totalServicios">0</span>
-                        <div id="estadisticasEstados"
-                            style="margin-top: 10px; font-size: 12px; border-top: 1px solid hsl(var(--border)); padding-top: 8px;">
-                        </div>
-                    </div>
-                </div>
-                <div class="map-legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #3b82f6;"></div>
-                        <span>📋 Presupuestado</span>
-                    </div>
-                    <!--<div class="legend-item">
-                        <div class="legend-color" style="background-color: #ef4444;"></div>
-                        <span>⏰ Vencido</span>
-                    </div>-->
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #f59e0b;"></div>
-                        <span>📝 Contratado</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #10b981;"></div>
-                        <span>🔧 En Curso</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #6b7280;"></div>
-                        <span>✅ Finalizado</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #dc2626;"></div>
-                        <span>❌ Cancelado</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Accesos Rápidos -->
-        <section class="quick-actions">
-            <h3>Acciones Rápidas</h3>
-            <div class="actions-grid">
-                <a href="{% url 'presupuestarCliente' %}" class="action-card">
-                    <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                    </div>
-                    <div class="action-content">
-                        <h4>Presupuestar Servicio</h4>
-                        <p>Crear presupuestos de manera eficiente</p>
-                    </div>
-                    <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-
-                <a href="{% url 'gestionServicios'%}" class="action-card">
-                    <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M9 11H1l6-6 6 6z"></path>
-                            <path d="M9 17l3 3 3-3"></path>
-                            <path d="M22 18h-7"></path>
-                            <path d="M22 6h-7"></path>
-                        </svg>
-                    </div>
-                    <div class="action-content">
-                        <h4>Contratar Servicio</h4>
-                        <p>Gestionar contrataciones y asignaciones</p>
-                    </div>
-                    <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-
-                <a href="{% url 'verFacturas' %}" class="action-card">
-                    <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
+    {% if request.user.is_superuser %}
+        <!-- Métricas Principales -->
+        <section class="metrics-section animate-fade-in">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon success">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="1" x2="12" y2="23"></line>
                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                         </svg>
                     </div>
-                    <div class="action-content">
-                        <h4>Cobrar Servicio</h4>
-                        <p>Gestionar cobranzas y facturación</p>
+                    <div class="metric-content">
+                        <h3>Ingresos del Mes</h3>
+                        <p class="metric-value">{{ ingresos_mes_formateado }}</p>
+                        <span class="metric-change {% if cambio_ingresos >= 0 %}positive{% else %}negative{% endif %}">
+                            {% if cambio_ingresos >= 0 %}+{% endif %}{{ cambio_ingresos }}%
+                        </span>
                     </div>
-                    <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
+                </div>
 
-                <a href="{% url 'gestionClientes' %}" class="action-card">
-                    <div class="action-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <div class="metric-card">
+                    <div class="metric-icon primary">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                     </div>
-                    <div class="action-content">
-                        <h4>Gestionar Clientes</h4>
-                        <p>Administrar base de datos de clientes</p>
+                    <div class="metric-content">
+                        <h3>Servicios Activos</h3>
+                        <p class="metric-value">{{ servicios_activos }}</p>
+                        <span class="metric-change {% if cambio_servicios >= 0 %}positive{% else %}negative{% endif %}">
+                            {% if cambio_servicios >= 0 %}+{% endif %}{{ cambio_servicios }}
+                        </span>
                     </div>
-                    <div class="action-arrow">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon warning">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
                         </svg>
                     </div>
-                </a>
+                    <div class="metric-content">
+                        <h3>Facturas Pendientes</h3>
+                        <p class="metric-value">{{ facturas_pendientes }}</p>
+                        <span class="metric-change {% if cambio_facturas >= 0 %}positive{% else %}negative{% endif %}">
+                            {% if cambio_facturas >= 0 %}+{{ cambio_facturas }}{% else %}{{ cambio_facturas }}{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon info">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Clientes Activos</h3>
+                        <p class="metric-value">{{ clientes_activos }}</p>
+                        <span class="metric-change {% if cambio_clientes >= 0 %}positive{% else %}negative{% endif %}">
+                            {% if cambio_clientes >= 0 %}+{% endif %}{{ cambio_clientes }}
+                        </span>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <!-- Gráficos y Accesos Rápidos -->
+        <div class="dashboard-grid animate-fade-in">
+            <!-- Gráficos -->
+            <section class="charts-section">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Ingresos Mensuales</h3>
+                        <div class="chart-controls">
+                            <select class="form-select form-select-sm chart-period" id="periodoIngreso">
+                                <option value="1">Último mes</option>
+                                <option value="3">Últimos 3 meses</option>
+                                <option value="6">Últimos 6 meses</option>
+                                <option value="9">Últimos 9 meses</option>
+                                <option value="12">Último año</option>
+                                <option value="all">Todo</option>
+                                <option disabled>────────────</option>
+                                {% for y in lista_anios %}
+                                    <option value="year:{{ y }}">{{ y }}</option>
+                                {% endfor %}
+                            </select>                                                                     
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Servicios por Tipo</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="servicesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Estado de Facturas</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scatterChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Mapa de Servicios por Ubicación -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Ubicación de Servicios - Chubut</h3>
+                        <div class="chart-controls">
+                            <span style="font-size: 12px; color: hsl(var(--muted-foreground));">Ubicación exacta de cada servicio</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div id="servicesMap" class="map-container"></div>
+                        <div class="map-info">
+                            <strong>Total de ubicaciones:</strong> <span id="totalCiudades">0</span><br>
+                            <strong>Total de servicios:</strong> <span id="totalServicios">0</span>
+                            <div id="estadisticasEstados"
+                                style="margin-top: 10px; font-size: 12px; border-top: 1px solid hsl(var(--border)); padding-top: 8px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #3b82f6;"></div>
+                            <span>📋 Presupuestado</span>
+                        </div>
+                        <!--<div class="legend-item">
+                            <div class="legend-color" style="background-color: #ef4444;"></div>
+                            <span>⏰ Vencido</span>
+                        </div>-->
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #f59e0b;"></div>
+                            <span>📝 Contratado</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #10b981;"></div>
+                            <span>🔧 En Curso</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #6b7280;"></div>
+                            <span>✅ Finalizado</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #dc2626;"></div>
+                            <span>❌ Cancelado</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Accesos Rápidos -->
+            <section class="quick-actions">
+                <h3>Acciones Rápidas</h3>
+                <div class="actions-grid">
+                    <a href="{% url 'presupuestarCliente' %}" class="action-card">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="action-content">
+                            <h4>Presupuestar Servicio</h4>
+                            <p>Crear presupuestos de manera eficiente</p>
+                        </div>
+                        <div class="action-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'gestionServicios'%}" class="action-card">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 11H1l6-6 6 6z"></path>
+                                <path d="M9 17l3 3 3-3"></path>
+                                <path d="M22 18h-7"></path>
+                                <path d="M22 6h-7"></path>
+                            </svg>
+                        </div>
+                        <div class="action-content">
+                            <h4>Contratar Servicio</h4>
+                            <p>Gestionar contrataciones y asignaciones</p>
+                        </div>
+                        <div class="action-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'verFacturas' %}" class="action-card">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div class="action-content">
+                            <h4>Cobrar Servicio</h4>
+                            <p>Gestionar cobranzas y facturación</p>
+                        </div>
+                        <div class="action-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'gestionClientes' %}" class="action-card">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div class="action-content">
+                            <h4>Gestionar Clientes</h4>
+                            <p>Administrar base de datos de clientes</p>
+                        </div>
+                        <div class="action-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        {% endif %}
     </div>
 </div>
 

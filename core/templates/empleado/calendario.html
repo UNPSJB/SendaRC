@@ -1,0 +1,839 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+
+{% block title %}
+<h1><i class="bi bi-calendar3"></i> Calendario de Servicios</h1>
+<p>Visualiza tus frecuencias de trabajo asignadas</p>
+{% endblock %}
+
+{% block listado %}
+<!-- Información del empleado -->
+{% if empleado %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-primary">
+            <h5><i class="bi bi-person-circle"></i> {{ empleado.nombre }} {{ empleado.apellido }}</h5>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Leyenda de colores -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h6>Leyenda de turnos:</h6>
+                <div class="d-flex flex-wrap gap-3">
+                    <span class="badge" style="background-color: #28a745; color: white;">
+                        <i class="bi bi-sun"></i> Mañana (8:00 - 12:00)
+                    </span>
+                    <span class="badge" style="background-color: #ffc107; color: black;">
+                        <i class="bi bi-sun-fill"></i> Tarde (14:00 - 18:00)
+                    </span>
+                    <span class="badge" style="background-color: #dc3545; color: white;">
+                        <i class="bi bi-moon"></i> Noche (19:00 - 23:00)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendario -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para detalles del evento - Estilo shadcn -->
+<div class="modal fade" id="eventoModal" tabindex="-1" aria-labelledby="eventoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content modal-content-shadcn">
+            <div class="modal-header modal-header-shadcn">
+                <div class="modal-title-container">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-icon">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <h5 class="modal-title modal-title-shadcn" id="eventoModalLabel">
+                        Detalles del Servicio
+                    </h5>
+                </div>
+                <button type="button" class="btn-close btn-close-shadcn" data-bs-dismiss="modal" aria-label="Cerrar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body modal-body-shadcn">
+                <div id="eventoDetalles">
+                    <!-- Los detalles se cargarán aquí -->
+                </div>
+            </div>
+            <div class="modal-footer modal-footer-shadcn">
+                <button type="button" class="btn btn-secondary btn-shadcn" data-bs-dismiss="modal">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ===== ESTILOS SHADCN PARA EL MODAL DEL CALENDARIO ===== */
+
+/* Modal Container */
+.modal-content-shadcn {
+    background: var(--background) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25) !important;
+    overflow: hidden;
+}
+
+/* Modal Header */
+.modal-header-shadcn {
+    background: hsl(var(--background)) !important;
+    border-bottom: 1px solid hsl(var(--border)) !important;
+    padding: 1.5rem !important;
+    border-radius: 0 !important;
+}
+
+.modal-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.modal-icon {
+    color: hsl(var(--accent));
+    flex-shrink: 0;
+}
+
+.modal-title-shadcn {
+    color: hsl(var(--foreground)) !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    letter-spacing: -0.025em;
+}
+
+/* Close Button */
+.btn-close-shadcn {
+    background: none !important;
+    border: none !important;
+    padding: 0.5rem !important;
+    border-radius: var(--radius-sm) !important;
+    color: hsl(var(--muted-foreground)) !important;
+    transition: var(--transition) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    opacity: 1 !important;
+}
+
+.btn-close-shadcn:hover {
+    background-color: hsl(var(--muted)) !important;
+    color: hsl(var(--foreground)) !important;
+    transform: none !important;
+}
+
+.btn-close-shadcn:focus {
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
+    outline: none !important;
+}
+
+/* Modal Body */
+.modal-body-shadcn {
+    background-color: hsl(var(--background));
+    padding: 1.5rem !important;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Modal Footer */
+.modal-footer-shadcn {
+    background: hsl(var(--background)) !important;
+    border-top: 1px solid hsl(var(--border)) !important;
+    padding: 1.5rem !important;
+    border-radius: 0 !important;
+}
+
+/* Botón shadcn */
+.btn-shadcn {
+    border-radius: var(--radius-sm) !important;
+    font-weight: 500 !important;
+    transition: var(--transition) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.875rem !important;
+    height: 2.25rem !important;
+    padding: 0 1rem !important;
+}
+
+/* ===== ESTILOS PARA EL CONTENIDO DEL MODAL ===== */
+
+/* Cards dentro del modal */
+.modal-body-shadcn .detail-card {
+    background: hsl(var(--muted) / 0.3) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: var(--radius) !important;
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.modal-body-shadcn .detail-section {
+    margin-bottom: 1.5rem;
+}
+
+.modal-body-shadcn .detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.modal-body-shadcn .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: hsl(var(--foreground)) !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.modal-body-shadcn .detail-title svg {
+    color: hsl(var(--accent));
+    width: 16px;
+    height: 16px;
+}
+
+.modal-body-shadcn .detail-content {
+    color: hsl(var(--muted-foreground)) !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5;
+    margin: 0 !important;
+}
+
+.modal-body-shadcn .badge {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.75rem !important;
+    border-radius: var(--radius-sm) !important;
+    font-weight: 500 !important;
+}
+
+/* Separador */
+.modal-body-shadcn .detail-separator {
+    height: 1px;
+    background: hsl(var(--border));
+    margin: 1.5rem 0;
+    border: none;
+}
+
+/* Grid para detalles */
+.modal-body-shadcn .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Estilos para el contenido legacy (Bootstrap icons) */
+.modal-body-shadcn h6 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: hsl(var(--foreground)) !important;
+    margin-bottom: 0.5rem !important;
+    margin-top: 1rem !important;
+}
+
+.modal-body-shadcn h6:first-child {
+    margin-top: 0 !important;
+}
+
+.modal-body-shadcn h6 i {
+    color: hsl(var(--accent));
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.modal-body-shadcn p {
+    color: hsl(var(--muted-foreground)) !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5;
+    margin: 0 0 0.5rem 0 !important;
+}
+
+.modal-body-shadcn hr {
+    height: 1px;
+    background: hsl(var(--border));
+    margin: 1.5rem 0;
+    border: none;
+    opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 1rem !important;
+    }
+    
+    .modal-header-shadcn {
+        padding: 1rem !important;
+    }
+    
+    .modal-body-shadcn {
+        padding: 1rem !important;
+    }
+    
+    .modal-footer-shadcn {
+        padding: 1rem !important;
+    }
+    
+    .modal-title-shadcn {
+        font-size: 1rem !important;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+}
+
+/* Animation for modal appearance */
+.modal.fade .modal-dialog {
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+    transform: translate(0, -25px) scale(0.95);
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0) scale(1);
+}
+
+/* ===== MEJORAS PARA FULLCALENDAR ===== */
+.fc-theme-standard .fc-scrollgrid {
+    border-radius: var(--radius) !important;
+    border-color: hsl(var(--border)) !important;
+}
+
+.fc-theme-standard .fc-scrollgrid-section > * {
+    border-color: hsl(var(--border)) !important;
+}
+
+.fc-theme-standard th {
+    background: hsl(var(--muted)) !important;
+    color: hsl(var(--muted-foreground)) !important;
+    border-color: hsl(var(--border)) !important;
+}
+
+.fc-theme-standard td {
+    border-color: hsl(var(--border)) !important;
+}
+
+.fc-button-primary {
+    background-color: hsl(var(--primary)) !important;
+    border-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+}
+
+.fc-button-primary:hover {
+    background-color: hsl(var(--primary) / 0.9) !important;
+    border-color: hsl(var(--primary) / 0.9) !important;
+}
+
+.fc-event {
+    border-radius: var(--radius-sm) !important;
+    border: none !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
+}
+
+.fc-event:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== RESPONSIVIDAD MEJORADA PARA FULLCALENDAR ===== */
+
+/* Contenedor del calendario */
+#calendar {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Ajustes generales del calendario */
+.fc {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.fc-view-harness {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Grid del calendario responsive */
+.fc-scrollgrid {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.fc-scrollgrid-section {
+    width: 100% !important;
+}
+
+/* Toolbar responsive */
+.fc-toolbar {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    justify-content: space-between !important;
+}
+
+.fc-toolbar-chunk {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+}
+
+/* Botones del toolbar */
+.fc-button-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.25rem !important;
+}
+
+.fc-button {
+    font-size: 0.875rem !important;
+    padding: 0.375rem 0.75rem !important;
+    white-space: nowrap !important;
+}
+
+/* Título responsive */
+.fc-toolbar-title {
+    font-size: 1.25rem !important;
+    margin: 0 !important;
+    text-align: center !important;
+}
+
+/* Eventos responsive */
+.fc-event {
+    font-size: 0.75rem !important;
+    padding: 0.125rem 0.25rem !important;
+    margin: 0.125rem 0 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+.fc-event-title {
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+}
+
+.fc-event-time {
+    font-weight: 400 !important;
+    opacity: 0.9 !important;
+}
+
+/* Headers de días */
+.fc-col-header-cell {
+    padding: 0.5rem 0.25rem !important;
+}
+
+.fc-col-header-cell-cushion {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    padding: 0.25rem !important;
+}
+
+/* Celdas de días */
+.fc-daygrid-day {
+    min-height: 80px !important;
+}
+
+.fc-daygrid-day-number {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.25rem !important;
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+    .fc-toolbar {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .fc-toolbar-chunk {
+        justify-content: center !important;
+    }
+    
+    .fc-toolbar-title {
+        font-size: 1.125rem !important;
+        order: -1 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .fc-button {
+        font-size: 0.8rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+    
+    .fc-daygrid-day {
+        min-height: 70px !important;
+    }
+    
+    .fc-event {
+        font-size: 0.7rem !important;
+        padding: 0.1rem 0.2rem !important;
+    }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+    /* Card del calendario sin padding extra */
+    .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    /* Toolbar más compacto */
+    .fc-toolbar {
+        padding: 0.5rem 0 !important;
+    }
+    
+    .fc-toolbar-title {
+        font-size: 1rem !important;
+    }
+    
+    .fc-button {
+        font-size: 0.75rem !important;
+        padding: 0.25rem 0.4rem !important;
+        min-width: auto !important;
+    }
+    
+    .fc-button-group .fc-button {
+        border-radius: 0.25rem !important;
+        margin: 0 0.1rem !important;
+    }
+    
+    /* Días más compactos */
+    .fc-daygrid-day {
+        min-height: 60px !important;
+    }
+    
+    .fc-daygrid-day-number {
+        font-size: 0.8rem !important;
+        padding: 0.2rem !important;
+    }
+    
+    .fc-col-header-cell-cushion {
+        font-size: 0.8rem !important;
+        padding: 0.2rem !important;
+    }
+    
+    /* Eventos más pequeños */
+    .fc-event {
+        font-size: 0.65rem !important;
+        padding: 0.1rem 0.15rem !important;
+        line-height: 1.1 !important;
+        margin: 0.05rem 0 !important;
+    }
+    
+    .fc-event-title {
+        line-height: 1.1 !important;
+    }
+    
+    /* Ocultar tiempo en eventos si es muy pequeño */
+    .fc-event-time {
+        display: none !important;
+    }
+    
+    /* Vista de lista más legible en móvil */
+    .fc-list-event {
+        padding: 0.5rem !important;
+    }
+    
+    .fc-list-event-title {
+        font-size: 0.875rem !important;
+    }
+    
+    .fc-list-event-time {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 480px) {
+    .fc-toolbar-title {
+        font-size: 0.9rem !important;
+    }
+    
+    .fc-button {
+        font-size: 0.7rem !important;
+        padding: 0.2rem 0.3rem !important;
+    }
+    
+    .fc-daygrid-day {
+        min-height: 50px !important;
+    }
+    
+    .fc-daygrid-day-number {
+        font-size: 0.75rem !important;
+    }
+    
+    .fc-col-header-cell-cushion {
+        font-size: 0.75rem !important;
+    }
+    
+    .fc-event {
+        font-size: 0.6rem !important;
+        padding: 0.05rem 0.1rem !important;
+    }
+    
+    /* En pantallas muy pequeñas, forzar vista de lista */
+    .fc-dayGridMonth-button,
+    .fc-dayGridWeek-button {
+        display: none !important;
+    }
+}
+
+/* ===== MEJORAS PARA VISTA DE LISTA EN MÓVIL ===== */
+@media (max-width: 768px) {
+    .fc-list-table {
+        font-size: 0.875rem !important;
+    }
+    
+    .fc-list-day-cushion {
+        padding: 0.5rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .fc-list-event-dot {
+        width: 8px !important;
+        height: 8px !important;
+    }
+    
+    .fc-list-event-title {
+        padding: 0.25rem !important;
+    }
+}
+
+/* ===== SCROLL HORIZONTAL PARA PANTALLAS MUY PEQUEÑAS ===== */
+@media (max-width: 400px) {
+    .card-body {
+        padding: 0.5rem !important;
+        overflow-x: auto !important;
+    }
+    
+    #calendar {
+        min-width: 320px !important;
+    }
+}
+
+/* ===== MEJORAS PARA TOUCH DEVICES ===== */
+@media (hover: none) and (pointer: coarse) {
+    .fc-event {
+        min-height: 24px !important;
+        touch-action: manipulation !important;
+    }
+    
+    .fc-button {
+        min-height: 32px !important;
+        touch-action: manipulation !important;
+    }
+    
+    .fc-daygrid-day {
+        touch-action: manipulation !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridWeek',
+        locale: 'es',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,dayGridWeek,listWeek'
+        },
+        buttonText: {
+            today: 'Hoy',
+            month: 'Mes',
+            week: 'Semana',
+            list: 'Lista'
+        },
+        dayHeaderContent: function(args) {
+            const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            return days[args.date.getDay()];
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+            const url = '{% url "eventos_calendario" %}';
+            console.log('Cargando eventos desde:', url);
+            
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return response.text().then(text => {
+                    console.log('Response text:', text);
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        console.error('Raw response:', text);
+                        throw new Error('Invalid JSON response');
+                    }
+                });
+            })
+            .then(data => {
+                console.log('Parsed data:', data);
+                if (Array.isArray(data)) {
+                    successCallback(data);
+                } else if (data.error) {
+                    throw new Error(data.error);
+                } else {
+                    throw new Error('Unexpected response format');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                failureCallback(error);
+                alert('Error al cargar eventos: ' + error.message);
+            });
+        },
+        eventClick: function(info) {
+            mostrarDetallesEvento(info.event);
+        },
+        eventMouseEnter: function(info) {
+            info.el.style.cursor = 'pointer';
+            info.el.style.opacity = '0.8';
+            info.el.style.transform = 'translateY(-1px)';
+        },
+        eventMouseLeave: function(info) {
+            info.el.style.opacity = '1';
+            info.el.style.transform = 'translateY(0)';
+        },
+        height: 'auto',
+        contentHeight: 'auto', // Cambiar de 600 a 'auto'
+        aspectRatio: window.innerWidth < 768 ? 1.2 : 1.8, // Ratio dinámico
+        responsive: true, // Si FullCalendar lo soporta
+        nowIndicator: true,
+        businessHours: [
+            {
+                daysOfWeek: [1, 2, 3, 4, 5, 6],
+                startTime: '08:00',
+                endTime: '23:00'
+            }
+        ],
+        slotMinTime: '07:00:00',
+        slotMaxTime: '24:00:00',
+        weekends: true,
+        eventDisplay: 'block',
+        displayEventTime: true,
+        eventTextColor: 'white',
+        eventTimeFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }
+    });
+    
+    calendar.render();
+    
+    function mostrarDetallesEvento(event) {
+        const props = event.extendedProps;
+        const inicio = new Date(event.start);
+        const fin = new Date(event.end);
+        
+        const detallesHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="bi bi-building"></i> Cliente</h6>
+                    <p>${props.cliente || 'No especificado'}</p>
+                    
+                    <h6><i class="bi bi-geo-alt"></i> Dirección</h6>
+                    <p>${props.direccion || 'No especificada'}</p>
+                    
+                    <h6><i class="bi bi-clock"></i> Horario</h6>
+                    <p>${props.turno || 'No especificado'}: ${inicio.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'})} - ${fin.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'})}</p>
+                    
+                    <h6><i class="bi bi-calendar-day"></i> Día de la semana</h6>
+                    <p>${props.dia || 'No especificado'}</p>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="bi bi-info-circle"></i> Estado del Servicio</h6>
+                    <span class="badge bg-secondary">${props.estado || 'No definido'}</span>
+                    
+                    <h6 class="mt-2"><i class="bi bi-tag"></i> Tipo</h6>
+                    <span class="badge bg-primary">${props.tipo || 'No definido'}</span>
+                    
+                    <h6 class="mt-2"><i class="bi bi-rulers"></i> Superficie</h6>
+                    <p>${props.metros2 || 'No especificada'} m²</p>
+                    
+                    <h6><i class="bi bi-calendar-range"></i> Duración del servicio</h6>
+                    <p><strong>Inicio:</strong> ${props.fecha_inicio_servicio || 'No definida'}</p>
+                    <p><strong>Fin:</strong> ${props.fecha_fin_servicio || 'No definida'}</p>
+                    <p><strong>Duración:</strong> ${props.duracion_servicio || 'No calculable'}</p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12">
+                    <h6><i class="bi bi-calendar-event"></i> Fecha específica de este evento</h6>
+                    <p>${inicio.toLocaleDateString('es-AR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })}</p>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('eventoDetalles').innerHTML = detallesHTML;
+        document.getElementById('eventoModalLabel').textContent = event.title;
+        
+        // Usar el método nativo de Bootstrap sin instancia personalizada
+        const modalElement = document.getElementById('eventoModal');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modal.show();
+    }
+});
+</script>
+{% endblock %}

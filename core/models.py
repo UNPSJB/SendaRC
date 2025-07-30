@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 def formato_moneda(valor):
@@ -196,6 +197,7 @@ class Empleado(models.Model):
     objects = EmpleadoManager()
     habilitados = EmpleadoManager(True)
     deshabilitados = EmpleadoManager(False)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
 
 
     def save(self, *args, **kwargs):
