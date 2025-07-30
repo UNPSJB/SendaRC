@@ -608,11 +608,7 @@
         padding: 0.05rem 0.1rem !important;
     }
     
-    /* En pantallas muy pequeñas, forzar vista de lista */
-    .fc-dayGridMonth-button,
-    .fc-dayGridWeek-button {
-        display: none !important;
-    }
+
 }
 
 /* ===== MEJORAS PARA VISTA DE LISTA EN MÓVIL ===== */
@@ -780,32 +776,43 @@ document.addEventListener('DOMContentLoaded', function() {
         const props = event.extendedProps;
         const inicio = new Date(event.start);
         const fin = new Date(event.end);
-        
+
+        const fechaInicioICS = inicio.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+        const fechaFinICS = fin.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+
+        const icsContent = `BEGIN:VCALENDAR
+        VERSION:2.0
+        BEGIN:VEVENT
+        SUMMARY:${event.title}
+        DESCRIPTION:${props.cliente || ''} - ${props.direccion || ''}
+        DTSTART:${fechaInicioICS}
+        DTEND:${fechaFinICS}
+        LOCATION:${props.direccion || ''}
+        END:VEVENT
+        END:VCALENDAR`;
+
+        const blob = new Blob([icsContent], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+
         const detallesHTML = `
             <div class="row">
                 <div class="col-md-6">
                     <h6><i class="bi bi-building"></i> Cliente</h6>
                     <p>${props.cliente || 'No especificado'}</p>
-                    
                     <h6><i class="bi bi-geo-alt"></i> Dirección</h6>
                     <p>${props.direccion || 'No especificada'}</p>
-                    
                     <h6><i class="bi bi-clock"></i> Horario</h6>
                     <p>${props.turno || 'No especificado'}: ${inicio.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'})} - ${fin.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'})}</p>
-                    
                     <h6><i class="bi bi-calendar-day"></i> Día de la semana</h6>
                     <p>${props.dia || 'No especificado'}</p>
                 </div>
                 <div class="col-md-6">
                     <h6><i class="bi bi-info-circle"></i> Estado del Servicio</h6>
                     <span class="badge bg-secondary">${props.estado || 'No definido'}</span>
-                    
                     <h6 class="mt-2"><i class="bi bi-tag"></i> Tipo</h6>
                     <span class="badge bg-primary">${props.tipo || 'No definido'}</span>
-                    
                     <h6 class="mt-2"><i class="bi bi-rulers"></i> Superficie</h6>
                     <p>${props.metros2 || 'No especificada'} m²</p>
-                    
                     <h6><i class="bi bi-calendar-range"></i> Duración del servicio</h6>
                     <p><strong>Inicio:</strong> ${props.fecha_inicio_servicio || 'No definida'}</p>
                     <p><strong>Fin:</strong> ${props.fecha_fin_servicio || 'No definida'}</p>
@@ -814,7 +821,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <hr>
             <div class="row">
-                <div class="col-12">
+                <div class="col-md-6">
                     <h6><i class="bi bi-calendar-event"></i> Fecha específica de este evento</h6>
                     <p>${inicio.toLocaleDateString('es-AR', {
                         weekday: 'long',
@@ -823,15 +830,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         day: 'numeric'
                     })}</p>
                 </div>
+                <div class="col-md-6 text-end">
+                    <a href="${url}" download="evento.ics" class="btn btn-sm btn-success">
+                        <i class="bi bi-calendar-plus me-1"></i> Agregar a mi Calendario
+                    </a>
+                </div>
             </div>
         `;
-        
+
         document.getElementById('eventoDetalles').innerHTML = detallesHTML;
         document.getElementById('eventoModalLabel').textContent = event.title;
-        
-        // Usar el método nativo de Bootstrap sin instancia personalizada
-        const modalElement = document.getElementById('eventoModal');
-        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('eventoModal'));
         modal.show();
     }
 });
