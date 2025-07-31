@@ -23,6 +23,7 @@ from .forms import FormBaseFrecuencia
 import json
 from .models import Frecuencia
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.utils.timezone import now
 
 dias_json = json.dumps([{"value": d[0], "label": d[1]} for d in Frecuencia.DIA])
@@ -1278,7 +1279,7 @@ def asignarEmpleados(request, pk):
                     {"formset": formset, "servicio": servicio},
                 )
 
-            # Si no hay errores, guardar datos
+            # Si no hay errores, guardar datos y enviar emails
             for form in formset:
                 frecuencia = form.cleaned_data["frecuencia"]
                 empleados = form.cleaned_data["empleados"]
@@ -1289,6 +1290,33 @@ def asignarEmpleados(request, pk):
                 frecuencia.save()
 
             servicio.save()
+
+            # --- Aquí avisás por mail a los empleados asignados ---
+            asunto = f"Nuevo servicio asignado - Inicio: {servicio.fecha_inicio.strftime('%d/%m/%Y')}"
+            from_email = 'SendaRC <sendarccontacto@gmail.com>'
+
+            # Emails únicos (evitar duplicados si un empleado aparece varias veces)
+            empleados_asignados = set()
+            for frecuencia in Frecuencia.objects.filter(servicio=servicio):
+                empleados_asignados.update(frecuencia.empleados.all())
+
+            for empleado in empleados_asignados:
+                if empleado.usuario and empleado.usuario.email:
+                    mensaje = (
+                        f"Hola {empleado.nombre},\n\n"
+                        f"Se te ha asignado un nuevo servicio con fecha de inicio {servicio.fecha_inicio.strftime('%d/%m/%Y')}.\n"
+                        "Por favor, revisá el sistema para más detalles.\n\n"
+                        "Saludos,\n"
+                        "Equipo SendaRC"
+                    )
+                    send_mail(
+                        asunto,
+                        mensaje,
+                        from_email,
+                        [empleado.usuario.email],
+                        fail_silently=True,
+                    )
+
             if servicio.cliente.tipo == 2:
                 servicio.estado = 3
                 servicio.save()
@@ -1367,7 +1395,6 @@ def cancelar_servicio(request, pk):
     # SERVICIO EVENTUAL
     # -------------------------------
     if servicio.tipo == 1:
-        # Deben estar pagas todas las facturas
         facturas_impagas = Factura.objects.filter(
             servicio=servicio,
             formaPago__isnull=True
@@ -1387,17 +1414,16 @@ def cancelar_servicio(request, pk):
     # SERVICIO DETERMINADO
     # -------------------------------
     if cliente.tipo == 1:  # Cliente OCASIONAL
-        # Solo eliminar si NO tiene facturas restantes (impagas)
+        # Solo eliminar si NO tiene facturas restantes (impagas) y el servicio no esta contratado
         facturas_restantes = Factura.objects.filter(
             servicio=servicio,
             tipo=2,
             formaPago__isnull=True
         )
-        
+            
         if facturas_restantes.exists():
             messages.error(request, "No se puede cancelar: existen facturas restantes (impagas).")
             return redirect("gestionServicios")
-        # Si no hay facturas restantes, continuar con la cancelación
 
     elif cliente.tipo == 2:  # Cliente HABITUAL
         # Verificar facturas impagas hasta el mes actual

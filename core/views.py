@@ -20,6 +20,7 @@ from django.utils.crypto import get_random_string
 from django.utils import timezone
 from datetime import datetime, timedelta
 import json
+from django.core.mail import EmailMultiAlternatives
 
 @method_decorator(login_required, name="dispatch")
 class altaCliente(CreateView):
@@ -491,6 +492,7 @@ class altaEmpleado(CreateView):
 
     def form_valid(self, form):
         empleado = form.save(commit=False)
+
         if form.cleaned_data["sueldo"] <= 0:
             form.add_error("sueldo", "El sueldo ingresado es incorrecto.")
             return self.form_invalid(form)
@@ -502,7 +504,7 @@ class altaEmpleado(CreateView):
             return self.form_invalid(form)
         else:
             # Crear usuario automáticamente
-            password = "1234" #get_random_string(10)
+            password = get_random_string(10)
             user = User.objects.create_user(
                 username=empleado.email,
                 email=empleado.email,
@@ -510,20 +512,56 @@ class altaEmpleado(CreateView):
                 first_name=empleado.nombre,
                 last_name=empleado.apellido,
             )
-            # Asignar grupo "Empleado"
             grupo_empleado = Group.objects.get(name='Empleado')
             user.groups.add(grupo_empleado)
             empleado.usuario = user
             empleado.save()
-            # Enviar credenciales por correo
-            send_mail(
-                'Tus credenciales de acceso',
-                f'Usuario: {empleado.email}\nContraseña: {password}',
-                'no-reply@tusistema.com',
-                [empleado.email],
-                fail_silently=False,
-            )
+
+            subject = 'Bienvenido a SendaRC - Tus credenciales de acceso'
+            from_email = 'SendaRC <sendarccontacto@gmail.com>'
+            to = [empleado.email]
+
+            # Texto de respaldo
+            text_content = f'''
+            Hola {empleado.nombre},
+
+            Tu usuario ha sido creado correctamente.
+
+            Usuario: {empleado.email}
+            Contraseña: {password}
+
+            Accedé al sistema en: https://sendarc.onrender.com/
+
+            ¡Bienvenido al equipo!
+            '''
+
+            # HTML
+            html_content = f'''
+            <!DOCTYPE html>
+            <html>
+            <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+                <div style="max-width: 600px; margin: auto; background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+                <h2 style="color: #007bff;">¡Bienvenido a SendaRC, {empleado.nombre}!</h2>
+                <p>Tu cuenta fue creada correctamente. A continuación te compartimos tus credenciales de acceso:</p>
+                <ul>
+                    <li><strong>Usuario:</strong> {empleado.email}</li>
+                    <li><strong>Contraseña:</strong> {password}</li>
+                </ul>
+                <p>Podés ingresar al sistema desde el siguiente enlace:</p>
+                <p><a href="https://sendarc.onrender.com/" style="background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Ingresar al sistema</a></p>
+                <hr>
+                <p style="font-size: 12px; color: #6c757d;">Este correo fue generado automáticamente. Por favor, no respondas al mismo.</p>
+                </div>
+            </body>
+            </html>
+            '''
+
+            msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
             return super().form_valid(form)
+
 
 
 @method_decorator(login_required, name="dispatch")
@@ -539,36 +577,87 @@ class updateEmpleado(UpdateView):
         return kwargs
 
     def form_valid(self, form):
-        # Verifica si el elemento está asociado con OtroModelo
         empleado = form.save(commit=False)
-        frecuencias_empleado = Frecuencia.objects.filter(empleados=empleado)
-        activo = False
-        for frecuencia in frecuencias_empleado:
-            servicio_frecuencia = Servicio.objects.get(pk=frecuencia.servicio.pk)
-            fecha_actual = timezone.now().date()
-            if servicio_frecuencia.fecha_finaliza >= fecha_actual:
-                activo = True
-                break
 
-        if form.cleaned_data["activo"] == False and activo == True:
-            # Logica de si quiere desactivar
-            form.add_error(
-                "activo",
-                "No puedes dar de baja al empleado, porque esta activo en un servicio.",
-            )
+        # Verificar si está activo en algún servicio
+        frecuencias_empleado = Frecuencia.objects.filter(empleados=empleado)
+        activo = any(
+            Servicio.objects.get(pk=f.servicio.pk).fecha_finaliza >= timezone.now().date()
+            for f in frecuencias_empleado
+        )
+
+        if not form.cleaned_data["activo"] and activo:
+            form.add_error("activo", "No puedes dar de baja al empleado, porque está activo en un servicio.")
             return self.form_invalid(form)
-        elif form.cleaned_data["sueldo"] <= 0:
+
+        if form.cleaned_data["sueldo"] <= 0:
             form.add_error("sueldo", "El sueldo ingresado es incorrecto.")
             return self.form_invalid(form)
-        elif not re.match("^[A-Za-z]+$", form.cleaned_data["nombre"]):
-            form.add_error("nombre", "Solo se permite letras para el nombre.")
+
+        if not re.match("^[A-Za-z]+$", form.cleaned_data["nombre"]):
+            form.add_error("nombre", "Solo se permiten letras para el nombre.")
             return self.form_invalid(form)
-        elif not re.match("^[A-Za-z]+$", form.cleaned_data["apellido"]):
-            form.add_error("apellido", "Solo se permite letras para el apellido.")
+
+        if not re.match("^[A-Za-z]+$", form.cleaned_data["apellido"]):
+            form.add_error("apellido", "Solo se permiten letras para el apellido.")
             return self.form_invalid(form)
-        else:
-            empleado.save()
-            return super().form_valid(form)
+
+        # Verificar si se cambió el email (username)
+        if form.cleaned_data["email"] != empleado.usuario.email:
+            # Eliminar el usuario anterior si querés:
+            if empleado.usuario:
+                empleado.usuario.delete()
+
+            # Crear nuevo usuario
+            password = get_random_string(10)
+            user = User.objects.create_user(
+                username=form.cleaned_data["email"],
+                email=form.cleaned_data["email"],
+                password=password,
+                first_name=form.cleaned_data["nombre"],
+                last_name=form.cleaned_data["apellido"],
+            )
+            grupo_empleado = Group.objects.get(name="Empleado")
+            user.groups.add(grupo_empleado)
+            empleado.usuario = user
+
+            # Enviar email con credenciales nuevas
+            subject = '🆕 Tus nuevas credenciales - SendaRC'
+            from_email = 'SendaRC <sendarccontacto@gmail.com>'
+            to = [user.email]
+
+            text_content = f'''
+    Hola {user.first_name},
+
+    Se actualizó tu dirección de correo en el sistema y se ha generado un nuevo acceso.
+
+    Usuario: {user.email}
+    Contraseña: {password}
+
+    Ingresá al sistema: https://sendarc.onrender.com/
+
+    Por seguridad, se desactivó tu cuenta anterior.
+    '''
+
+            html_content = f'''
+    <html><body>
+    <h3>Hola {user.first_name},</h3>
+    <p>Se actualizó tu dirección de correo en el sistema y se ha generado un nuevo acceso:</p>
+    <ul>
+    <li><strong>Usuario:</strong> {user.email}</li>
+    <li><strong>Contraseña:</strong> {password}</li>
+    </ul>
+    <p><a href="https://sendarc.onrender.com" style="background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Ingresar al sistema</a></p>
+    <p style="font-size:12px;color:#888">Recomendamos cambiar la contraseña al primer ingreso.</p>
+    </body></html>
+    '''
+
+            msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+        empleado.save()
+        return super().form_valid(form)
 
 
 @method_decorator(login_required, name="dispatch")
