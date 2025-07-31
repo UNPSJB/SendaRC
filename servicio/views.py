@@ -1338,6 +1338,18 @@ def asignarEmpleados(request, pk):
     formset = formset_cls()
 
     for form, frecuencia in zip(formset, frecuencias):
+        disponibles = Empleado.habilitados.disponibles(
+            servicio.fecha_inicio,
+            servicio.fecha_finaliza,
+            frecuencia.dia,
+            frecuencia.turno,
+        )
+        print(f"\n=== Frecuencia: {frecuencia.get_dia_display()} - {frecuencia.get_turno_display()} ===")
+        print(f"Servicio desde: {servicio.fecha_inicio} hasta {servicio.fecha_finaliza}")
+        print("Empleados disponibles:")
+        for e in disponibles:
+            print(f"- {e.nombre} {e.apellido} (id={e.id})")
+
         form.fields["frecuencia"].choices = [
             (
                 frecuencia.pk,
@@ -1345,15 +1357,10 @@ def asignarEmpleados(request, pk):
             )
         ]
         form.fields["frecuencia"].initial = frecuencia.pk
-        form.fields["empleados"].queryset = Empleado.habilitados.disponibles(
-            servicio.fecha_inicio,
-            servicio.fecha_finaliza,
-            frecuencia.dia,
-            frecuencia.turno,
-        )
+        form.fields["empleados"].queryset = disponibles
         form.fields["empleados"].choices = [
             (empleado.pk, f"{empleado.nombre} {empleado.apellido}")
-            for empleado in form.fields["empleados"].queryset
+            for empleado in disponibles
         ]
 
     return render(

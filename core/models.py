@@ -177,11 +177,23 @@ class EmpleadoManager(models.Manager):
         qinicio = models.Q(frecuencias__servicio__fecha_inicio__gt=hasta)
         qdia = models.Q(frecuencias__dia=dia)
         qturno = models.Q(frecuencias__turno=turno)
-        return self.get_queryset().exclude(
-            (qdia & qturno & (~qfin & ~qinicio)) | (~qdia & ~qturno & (qfin & qinicio))
-        )
-        # return self.get_queryset().exclude((qdia & qturno & ~qdesde) | (~qdia & ~qturno & qdesde))
-        # return self.get_queryset().filter((qdia & qturno & qdesde) | (~qdia & ~qturno))
+
+        empleados = self.get_queryset()
+
+        # Esto te muestra qué empleados están ocupados en el mismo día y turno
+        ocupados = empleados.filter(
+            frecuencias__dia=dia,
+            frecuencias__turno=turno,
+            frecuencias__servicio__fecha_inicio__lte=hasta,
+            frecuencias__servicio__fecha_finaliza__gte=desde,
+        ).distinct()
+
+        print("\n--- EMPLEADOS OCUPADOS en misma frecuencia ---")
+        for o in ocupados:
+            print(f"{o.nombre} {o.apellido} (id={o.id})")
+
+        disponibles = empleados.exclude(id__in=ocupados)
+        return disponibles
 
 
 class Empleado(models.Model):
