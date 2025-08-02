@@ -113,24 +113,31 @@ def actualizar_estados_servicios():
     finalizados_ids = []
 
     for servicio in servicios_a_finalizar:
-        if servicio.fecha_finaliza != hoy or servicio.fecha_finaliza > hoy:
+        if servicio.fecha_finaliza > hoy:
             continue
-        elif servicio.fecha_finaliza <= hoy:
-            print("servicio.fecha_finaliza:", servicio.fecha_finaliza)
-            print("hoy:", hoy)
 
-            hora_fin = get_ultimo_horario_finalizacion(servicio)
-            ahora_local = localtime(timezone.now())
-            print("hora_fin:", hora_fin)
-            print("ahora_local:", ahora_local)
+        print(f"[Servicio {servicio.id}] Fecha finaliza: {servicio.fecha_finaliza}, Hoy: {hoy}")
 
-            if hora_fin and ahora_local >= hora_fin:
-                servicio.estado = 6
-                servicio.save()
-                finalizados_ids.append(servicio.id)
+        hora_fin = get_ultimo_horario_finalizacion(servicio)
+        ahora_local = localtime(timezone.now())
+        print(f"[Servicio {servicio.id}] Hora fin calculada: {hora_fin}, Hora actual: {ahora_local}")
 
-                # Desvincular empleados del servicio finalizado
-                desvincular_empleados_servicio(servicio)
+        if not hora_fin:
+            logger.warning(f"[Servicio {servicio.id}] No se pudo determinar la hora de finalización. Posible falta de turnos.")
+            continue
+
+        if ahora_local >= hora_fin:
+            servicio.estado = 6
+            servicio.save()
+            finalizados_ids.append(servicio.id)
+
+            logger.info(f"[Servicio {servicio.id}] Marcado como FINALIZADO automáticamente.")
+
+            # Desvincular empleados del servicio finalizado
+            desvincular_empleados_servicio(servicio)
+        else:
+            logger.info(f"[Servicio {servicio.id}] No finalizado aún. Hora actual ({ahora_local}) es menor que hora fin ({hora_fin}).")
+
 
     
     if finalizados_ids:
