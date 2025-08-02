@@ -2,7 +2,7 @@
 <tr>
   <td>{{ servicio.pk }}</td>
   <td>{{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }}</td>
-  <td>{{ servicio.metros2 }} m²</td>
+  <!--<td>{{ servicio.metros2 }} m²</td>-->
   <td>
     {% if servicio.getTipo == 'Determinado' %} 
     <span class="badge badge-determinado">
@@ -120,9 +120,8 @@
 <tr>
   <td></td>
   <td></td>
+  <td colspan="4" class="text-center text-muted">No hay resultados</td>
   <td></td>
-  <td></td>
-  <td colspan="0" class="text-center text-muted">No hay resultados</td>
   <td></td>
   <td></td>
   <td></td>

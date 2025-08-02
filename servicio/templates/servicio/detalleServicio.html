@@ -75,12 +75,59 @@
                             </div>
                             <div class="flex-grow-1 min-w-0">
                                 <h3 class="service-title">Servicio #{{ servicio.pk }}</h3>
-                                <p class="service-date">Fecha Emisión: <span
-                                        class="text-accent">{{servicio.fecha_emision}}</span></p>
                             </div>
                         </div>
                     </div>
-
+                    <div class="info-section">
+                        <div class="section-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <h4 class="section-title">Información del Servicio</h4>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <div class="info-item">
+                                    <span class="info-label">Estado</span>
+                                    <span class="info-value">{{servicio.getEstado}}</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="info-item">
+                                    <span class="info-label">Tipo de Servicio</span>
+                                    <span class="info-value">{{servicio.getTipo}}</span>
+                                </div>
+                            </div>
+                            {% if servicio.getEstado != 'Presupuestado' %}
+                            <div class="col-12 col-sm-6">
+                                <div class="info-item">
+                                    <span class="info-label">Fecha de Inicio</span>
+                                    <span class="info-value">{{servicio.fecha_inicio}}</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="info-item">
+                                    <span class="info-label">Fecha de Finalización</span>
+                                    <span class="info-value">{{servicio.fecha_finaliza}}</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-12 col-sm-6">
+                                <div class="info-item">
+                                    <span class="info-label">Fecha de Emisión</span>
+                                    <span class="info-value">{{servicio.fecha_emision}}</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="info-item">
+                                    <span class="info-label">Plazo de Vigencia</span>
+                                    <span class="info-value">{{servicio.plazo_vigencia}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Información del Cliente -->
                     <div class="info-section">
                         <div class="section-header">
@@ -166,21 +213,6 @@
                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                             </svg>
                             <h4 class="section-title">Desglose Financiero del Servicio</h4>
-                        </div>
-
-                        <div class="row g-3 mb-4">
-                            <div class="col-12 col-sm-6">
-                                <div class="info-item">
-                                    <span class="info-label">Tipo de Servicio</span>
-                                    <span class="info-value">{{servicio.getTipo}}</span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <div class="info-item">
-                                    <span class="info-label">Plazo de Vigencia</span>
-                                    <span class="info-value">{{servicio.plazo_vigencia}}</span>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Métricas financieras con bootstrap grid -->
