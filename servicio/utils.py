@@ -86,19 +86,14 @@ def actualizar_estados_servicios():
     # Iniciar servicios contratados
     servicios_a_iniciar = Servicio.objects.filter(estado=3)
     iniciados_ids = []
-    
-    for servicio in servicios_a_iniciar:
-        if servicio.fecha_inicio != hoy:
-            continue
 
-        print("servicio.fecha_inicio:", servicio.fecha_inicio)
-        print("hoy:", hoy)
+    for servicio in servicios_a_iniciar:
+        # Validar que fecha_inicio no sea futura
+        if servicio.fecha_inicio > hoy:
+            continue
 
         hora_inicio = get_primer_horario_inicio(servicio)
         ahora_local = localtime(timezone.now())
-
-        print("hora_inicio:", hora_inicio)
-        print("ahora_local:", ahora_local)
 
         if hora_inicio and ahora_local >= hora_inicio:
             servicio.estado = 4
@@ -107,20 +102,19 @@ def actualizar_estados_servicios():
 
     if iniciados_ids:
         logger.info(f"Se iniciaron {len(iniciados_ids)} servicios (Contratado -> En Curso): {iniciados_ids}")
+
     
     # Finalizar servicios en curso
     servicios_a_finalizar = Servicio.objects.filter(estado=4)
     finalizados_ids = []
 
     for servicio in servicios_a_finalizar:
+        # Validar que fecha_finaliza no sea futura
         if servicio.fecha_finaliza > hoy:
             continue
 
-        print(f"[Servicio {servicio.id}] Fecha finaliza: {servicio.fecha_finaliza}, Hoy: {hoy}")
-
         hora_fin = get_ultimo_horario_finalizacion(servicio)
         ahora_local = localtime(timezone.now())
-        print(f"[Servicio {servicio.id}] Hora fin calculada: {hora_fin}, Hora actual: {ahora_local}")
 
         if not hora_fin:
             logger.warning(f"[Servicio {servicio.id}] No se pudo determinar la hora de finalización. Posible falta de turnos.")
@@ -132,16 +126,13 @@ def actualizar_estados_servicios():
             finalizados_ids.append(servicio.id)
 
             logger.info(f"[Servicio {servicio.id}] Marcado como FINALIZADO automáticamente.")
-
-            # Desvincular empleados del servicio finalizado
             desvincular_empleados_servicio(servicio)
         else:
             logger.info(f"[Servicio {servicio.id}] No finalizado aún. Hora actual ({ahora_local}) es menor que hora fin ({hora_fin}).")
 
-
-    
     if finalizados_ids:
         logger.info(f"Se finalizaron {len(finalizados_ids)} servicios (En Curso -> Finalizado): {finalizados_ids}")
+
     
     # Marcar servicios como vencidos
     fecha_limite = hoy - timedelta(days=30)
