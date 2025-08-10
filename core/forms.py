@@ -73,6 +73,14 @@ class FormEmpleado(forms.ModelForm):
             "localidad": forms.Select(attrs={"class": "form-select"}),
             "activo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
+        
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        # Si estamos modificando, hay que excluir el propio empleado
+        empleado_id = self.instance.pk
+        if User.objects.filter(email=email).exclude(empleado__pk=empleado_id).exists():
+            raise forms.ValidationError("Este email ya está en uso.")
+        return email
 
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop("is_modificar", False)
