@@ -12,38 +12,67 @@ from .models import *
 class FormSancion(forms.ModelForm):
     class Meta:
         model = Sancion
-        fields = ["tipo", "nroSancion", "empleado"]
+        fields = ['tipo', 'diasSuspension', 'empleado', 'descripcion']
 
     def __init__(self, *args, **kwargs):
-        is_modificar = kwargs.pop("is_modificar", False)
+        is_modificar = kwargs.pop('is_modificar', False)
         if is_modificar:
-            mensaje = "Modificar una sancion aquí. Dale click en guardar al terminar"
+            mensaje = 'Modificar una sancion aquí. Dale click en guardar al terminar'
         else:
-            mensaje = "Agregar una sancion aquí. Dale click en guardar al terminar"
+            mensaje = 'Agregar una sancion aquí. Dale click en guardar al terminar'
         super(FormSancion, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
-                HTML('<p class="info-formulario">{}</p>'.format(mensaje)),
+                HTML(f'<p class="info-formulario">{mensaje}</p>'),
                 Fieldset(
-                    Div(),
                     Div(
-                        FloatingField("tipo"),
-                        FloatingField("nroSancion"),
-                        FloatingField("empleado"),
-                        css_class="container-inputs-form",
+
+                    ),
+                    Div(
+                        FloatingField('tipo'),
+                        Div(
+                            FloatingField('diasSuspension', 
+                                 id="dias_suspension_field",
+                                 style="display: none;",
+                                 wrapper_class="dias-suspension-wrapper"),
+                            css_class='dias-suspension-container',
+                        ),
+                        FloatingField('empleado'),
+                        Field('fecha_sancion'),
+                        FloatingField('descripcion'),
+                        css_class='container-inputs-form'
                     ),
                 ),
                 Div(
-                    HTML(
-                        '<a href="{% url "gestionSanciones" %}" class="btn-Cancelar">Cancelar</a>'
-                    ),
-                    Submit("submit", "Guardar", css_class="btn-Guardar"),
-                    css_class="input-group mb-3 operaciones",
+                HTML(
+                    '<a href="{% url "gestionSanciones" %}" class="btn btn-secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> Cancelar</a>'
                 ),
-                css_class="container-forms",
+                Submit("submit", "Guardar Sancion", css_class="btn btn-primary"),
+                css_class="d-flex gap-2 justify-content-end mt-4",
             )
         )
+        )
+        self.fields['empleado'].queryset = Empleado.habilitados.all()
+        self.helper.form_id = 'sancion-form'
+        self.helper.form_show_labels = False
+
+        if self.instance.pk and self.instance.tipo == 2:
+            self.fields['diasSuspension'].widget.attrs['style'] = 'display: block;'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo = cleaned_data.get('tipo')
+        empleado = cleaned_data.get('empleado')
+        
+        if tipo == 1 and empleado and (empleado.correccionesAnuales() >= 3):
+            self.add_error(
+                'tipo',
+                f'Atencion! El empleado ya tiene {empleado.correccionesAnuales()} correccionesen el año.'
+                'Protocolo requiere suspensión (3+ correcciones). '
+            )
+        
+        return cleaned_data
 
 
 class FormEmpleado(forms.ModelForm):
@@ -1037,3 +1066,18 @@ class FiltroActivoForm(forms.Form):
             )
         )
 
+class FiltroSuspensionCorreccionForm(forms.Form):
+    ESTADOS = [('Todos', 'Todos'), ('Correccion', 'Correccion'), ('Suspension', 'Suspension')]
+    estado = forms.ChoiceField(choices=ESTADOS, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(FiltroSuspensionCorreccionForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    'estado', css_class='form-select form-select-sm form-select-filter'),
+                css_class='contenedorFiltersForm'
+            )
+        )

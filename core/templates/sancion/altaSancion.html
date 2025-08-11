@@ -2,13 +2,47 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extracss %}{{block.super}}
-    <link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
+<link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block title %}
 <h1 class="titulo">Sanción <span class="operacion">> Alta Sanción</span></h1>
 {% endblock %}
 {% block formulario %}
-    <div class="container container-form">
-        {% crispy form %}
-    </div>
+<div class="container container-form">
+    {% crispy form %}
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tipoField = document.getElementById('id_tipo');
+        const diasField = document.getElementById('dias_suspension_field');
+        const diasLabel = document.querySelector('.dias-suspension-label');
+        const empleadoField = document.getElementById('id_empleado');
+        const form = document.getElementById('sancion-form');
+
+        function toggleDiasField() {
+            if (parseInt(tipoField.value) === 2) {
+                diasField.style.display = 'block';
+                diasLabel.style.display = 'block';
+            } else {
+                diasField.style.display = 'none';
+                diasLabel.style.display = 'none';
+                document.getElementById('id_diasSuspension').value = 0;
+            }
+        }
+
+        tipoField.addEventListener('change', toggleDiasField);
+        toggleDiasField();
+        // Función para validar ANTES de enviar
+        form.addEventListener('submit', function (e) {
+            if (tipoField.value === '1' && empleadoField.value) {
+                e.preventDefault();  // Detener el envío
+                validarCorrecciones(() => {
+                    form.submit();  // Reintentar envío después de validar
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

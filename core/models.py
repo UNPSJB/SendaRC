@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 
 
 def formato_moneda(valor):
@@ -232,13 +234,35 @@ class Empleado(models.Model):
 
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
-
+    def correccionesAnuales(self):
+        return self.sancion_set.filter(tipo=1, fecha_sancion__year = timezone.now().year).count()
 
 class Sancion(models.Model):
-    TIPO = {(1, "Correcion"), (2, "Suspension")}
+    TIPO = {
+        (1, 'Correcion'),
+        (2, 'Suspension')
+    }
     tipo = models.PositiveIntegerField(choices=TIPO)
-    nroSancion = models.IntegerField()
+    nroSancion = models.AutoField(primary_key=True)
     empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
+    fecha_sancion = models.DateField(default=timezone.now)
+    descripcion = models.TextField()
+    diasSuspension = models.PositiveIntegerField(default=0, blank=True)
+    
+    def getDNIEmpleado(self):
+        return self.empleado.numDNI
 
-    def getEmpleado(self):
-        return self.empleado.numLegajo
+    def getNombreEmpleado(self):
+        return f"{self.empleado.nombre} {self.empleado.apellido}"
+
+    def getTipo(self):
+        return dict(self.TIPO)[self.tipo]
+
+    def getFechaFinSancion(self):
+        return self.fecha_sancion + timedelta(days=self.diasSuspension)
+    
+    def getEstadoSuspencion(self):
+        if self.getFechaFinSancion() < timezone.now().date():
+            return "Vencida"
+        else:
+            return "Vigente"

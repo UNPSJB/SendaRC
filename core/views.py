@@ -973,6 +973,46 @@ def obtener_color_por_turno(turno):
     return colores.get(turno, '#6c757d')
 
 
+@method_decorator(login_required, name='dispatch')
+class altaSancion(CreateView):
+    model = Sancion
+    form_class = FormSancion
+    template_name = 'sancion/altaSancion.html'
+    success_url = reverse_lazy('gestionSanciones')
+
+@method_decorator(login_required, name='dispatch')
+class gestionSancion(ListView):
+    model = Sancion
+    template_name = 'sancion/gestionSanciones.html'
+    context_object_name = 'sanciones'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FiltroSuspensionCorreccionForm(self.request.GET)
+        return context
+    
+    def get_queryset(self):
+        queryset = Sancion.objects.select_related('empleado').all()
+        estado = self.request.GET.get('estado', '')
+        if estado == 'Correccion':
+            queryset = queryset.filter(tipo=1)
+        elif estado == 'Suspension':
+            queryset = queryset.filter(tipo=2)
+        
+        return queryset.order_by('-fecha_sancion')
+    def render_to_response(self, context, **response_kwargs):
+        try:
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('sancion/sancionesList.html', context, request=self.request)
+                return JsonResponse({'html': html})
+            else:
+                return super().render_to_response(context, **response_kwargs)
+        except Exception as e:
+            print(f"Error al renderizar la respuesta: {e}")
+            return super().render_to_response(context, **response_kwargs)
+
+def detalleSancion(request, pk):
+    sancion = Sancion.objects.get(nroSancion=pk)
+    return render(request, 'sancion/detalleSancion.html', {'sancion': sancion})
 
 
 

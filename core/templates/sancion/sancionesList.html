@@ -1,0 +1,16 @@
+{% for sancion in sanciones %}
+<tr class="fila-tabla">
+    <td scope="row">{{ sancion.pk }}</td>
+    <td scope="row">{{ sancion.getTipo }}</td>
+    <td scope="row">{{ sancion.getDNIEmpleado }}</td>
+    <td scope="row">{{ sancion.getNombreEmpleado }}</td>
+    <td scope="row">{{ sancion.fecha_sancion }}</td>
+    <td scope="row">
+        <button href="{% url 'detalleSancion' sancion.pk %}" class="opcion" type="button" 
+            data-url="/gestionSanciones/{{sancion.pk}}"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasExample"
+            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+    </td>
+</tr>
+{% endfor %}
