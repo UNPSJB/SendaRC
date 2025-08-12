@@ -1,7 +1,7 @@
 from typing import Any, Self
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, UpdateView, TemplateView, FormView
+from django.views.generic import ListView, UpdateView, TemplateView, FormView, CreateView
 from django.urls import reverse_lazy
 from django.forms import formset_factory
 from django import forms
@@ -10,7 +10,7 @@ from factura.models import Detalle_Empleados, Detalle_Servicios, Factura
 from .forms import *
 from .models import *
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, date
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.template.loader import render_to_string
@@ -25,6 +25,8 @@ from .models import Frecuencia
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.timezone import now
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 
 dias_json = json.dumps([{"value": d[0], "label": d[1]} for d in Frecuencia.DIA])
 turnos_json = json.dumps([{"value": t[0], "label": t[1]} for t in Frecuencia.TURNO])
@@ -1466,3 +1468,138 @@ def cancelar_servicio(request, pk):
     servicio.save()
     messages.success(request, "El servicio fue cancelado correctamente.")
     return redirect("gestionServicios")
+
+# Seccion Reclamos
+class altaReclamo(CreateView):
+    model = Reclamo
+    form_class = FormReclamo
+    template_name = 'reclamo/altaReclamo.html'
+    success_url = reverse_lazy('gestionReclamos')
+
+def empleados_por_servicio(request, servicio_id):
+    try:
+        servicio = Servicio.objects.get(pk=servicio_id)
+        empleados = servicio.getEmpleadosAsignados().values('id', 'nombre', 'apellido')
+        # Convertir el QuerySet a lista directamente
+        data = list(empleados)
+        
+        return JsonResponse(data, safe=False)
+    except Servicio.DoesNotExist:
+        return JsonResponse([], safe=False)
+
+class gestionReclamos(ListView):
+    model = Reclamo
+    template_name = 'reclamo/gestionReclamos.html'
+    context_object_name = 'reclamos'
+        
+    def get_queryset(self):
+        queryset = super().get_queryset().select_related('servicio', 'empleado')
+        queryset = queryset.order_by('-fecha_reclamo')
+
+        if 'servicio_id' in self.request.GET:
+            queryset = queryset.filter(servicio_id=self.request.GET['servicio_id'])
+        return queryset.order_by('-fecha_reclamo')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['servicios'] = Servicio.objects.all()
+        return context
+
+
+# Asistencia
+class RegistrarAsistenciaView(TemplateView):
+    template_name = 'asistencia/registroAsistencia.html'
+
+    def get(self, request, servicio_id):
+        servicio = Servicio.objects.get(pk=servicio_id)
+        # Obtiene la fecha seleccionada en formato YYYY-MM-DD, o la actual
+        fecha_seleccionada = request.GET.get('fecha', date.today().isoformat())
+        # Empleados activos asignados al servicio
+        empleados = servicio.empleado.filter(activo=True)
+        # Asistencias ya registradas para esa fecha y servicio
+        asistencias = Asistencia.objects.filter(
+            servicio=servicio,
+            fecha=fecha_seleccionada
+        ).select_related('empleado')
+        # Diccionario para mostrar el estado si ya existe
+        asistencias_dict = {a.empleado_id: a for a in asistencias}
+
+        context = {
+            'servicio': servicio,
+            'empleados': empleados,
+            'fecha': fecha_seleccionada,
+            'asistencias': asistencias_dict,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, servicio_id):
+        servicio = Servicio.objects.get(pk=servicio_id)
+        fecha = request.POST.get('fecha')
+        # Validar formato de fecha
+        try:
+            fecha_obj = date.fromisoformat(fecha)
+            fecha = fecha_obj.isoformat()  # Asegura formato YYYY-MM-DD
+        except Exception:
+            messages.error(request, "La fecha es inválida.")
+            return redirect('registroAsistencia', servicio_id=servicio.id)
+
+        # Guardar asistencia de cada empleado activo
+        with transaction.atomic():
+            for empleado in servicio.empleado.filter(activo=True):
+                estado = request.POST.get(f'estado_{empleado.id}')
+                Asistencia.objects.update_or_create(
+                    fecha=fecha,
+                    empleado=empleado,
+                    servicio=servicio,
+                    defaults={'estado': estado}
+                )
+        # Redirige a la gestión de asistencias
+        messages.success(request, "¡Asistencia registrada correctamente!")
+        return redirect('gestionAsistencia')
+
+class GestionAsistencia(TemplateView):
+    template_name = 'asistencia/gestionAsistencia.html'
+
+class GestionAsistencia(TemplateView):
+    template_name = 'asistencia/gestionAsistencia.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        servicios = Servicio.objects.filter(estado=3)
+        servicio_id = self.request.GET.get('servicio_id')
+        servicio_seleccionado = None
+        dias_pendientes = []
+        dias_registrados = []
+
+        if servicio_id:
+            servicio_seleccionado = Servicio.objects.get(pk=servicio_id)
+            fecha_inicio = servicio_seleccionado.fecha_inicio
+            fecha_fin = servicio_seleccionado.fecha_finaliza or date.today()
+            delta = fecha_fin - fecha_inicio
+            todos_los_dias = [fecha_inicio + timedelta(days=i) for i in range(delta.days + 1)]
+            dias_registrados_qs = Asistencia.objects.filter(servicio=servicio_seleccionado).values_list('fecha', flat=True).distinct()
+            dias_registrados = [dia for dia in dias_registrados_qs if dia in todos_los_dias]
+            dias_pendientes = [dia for dia in todos_los_dias if dia not in dias_registrados and dia <= date.today()]
+
+        context['servicios'] = Servicio.objects.filter(estado=3)
+        context['servicio_seleccionado'] = servicio_seleccionado
+        context['dias_pendientes'] = sorted(dias_pendientes)
+        context['dias_registrados'] = sorted(dias_registrados)
+        return context
+
+    def post(self, request, servicio_id):
+        servicio = Servicio.objects.get(pk=servicio_id)
+        fecha = request.POST.get('fecha')
+        
+        with transaction.atomic():
+            for empleado in servicio.empleado.filter(activo=True):
+                estado = request.POST.get(f'estado_{empleado.id}')
+                Asistencia.objects.update_or_create(
+                    fecha=fecha,
+                    empleado=empleado,
+                    servicio=servicio,
+                    defaults={'estado': estado}
+                )
+        
+        # Redirige a la gestión de asistencias
+        return redirect('gestion_asistencia')
