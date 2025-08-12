@@ -164,7 +164,8 @@ class Servicio(models.Model):
         dias_numeros = self.frecuencias.values_list("dia", flat=True).distinct()
         return [dict(Frecuencia.DIA)[dia] for dia in dias_numeros]
 
-
+    def getEmpleadosAsignados(self):
+        return self.empleado.filter(activo=True)
 
 class CantServicioTipoServicio(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
@@ -238,13 +239,30 @@ class Frecuencia(models.Model):
 
 
 class Reclamo(models.Model):
+    fecha_reclamo = models.DateField(default=timezone.now)
     descripcion = models.CharField(max_length=400)
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)
+    empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING, null=True)
 
+    def __str__(self):
+        return f"Reclamo #{self.id} - {self.servicio}"
+    
+    @property
+    def nombre_completo_empleado(self):
+        return f"{self.empleado.nombre} {self.empleado.apellido}"
 
 class Asistencia(models.Model):
+    ESTADO_ASISTENCIA = [
+        ('A', 'Asistió'),
+        ('F', 'Faltó')
+    ]
+    
     fecha = models.DateField()
-    hora_entrada = models.TimeField()
-    hora_salida = models.TimeField()
-    empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
-    frecuencia = models.ForeignKey(Frecuencia, on_delete=models.DO_NOTHING)
+    empleado = models.ForeignKey(Empleado, on_delete=models.PROTECT)
+    servicio = models.ForeignKey(Servicio, on_delete=models.PROTECT)
+    estado = models.CharField(max_length=1, choices=ESTADO_ASISTENCIA)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['fecha', 'empleado', 'servicio']
+        verbose_name_plural = "Asistencias"

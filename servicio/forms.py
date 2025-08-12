@@ -552,3 +552,55 @@ class FormAsignarEmpleados(forms.Form):
         widget=forms.SelectMultiple(attrs={"class": "input"}),
         label="Empleados",
     )
+
+# Reclamos
+class FormReclamo(forms.ModelForm):
+    class Meta:
+        model = Reclamo
+        fields = ['servicio', 'descripcion', 'empleado']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Configuración básica de crispy forms
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'needs-validation'
+        
+        # Campos del formulario
+        self.fields['empleado'].queryset = Empleado.habilitados.all()
+        self.fields['servicio'].queryset = Servicio.objects.filter(estado__in=[3,4, 5, 6])
+        
+        # Asignar atributos para el JavaScript
+        self.fields['servicio'].widget.attrs.update({
+            'onchange': 'filtrarEmpleados(this.value)',
+            'id': 'id_servicio'
+        })
+        self.fields['empleado'].widget.attrs.update({
+            'id': 'id_empleado'
+        })
+        
+        # Layout más simple
+        self.helper.layout = Layout(
+            HTML('<p class="info-formulario">Ingrese los datos del reclamo, Dale click en guardar al terminar</p>'),
+            Field('servicio', css_class='form-select'),
+            Field('empleado', css_class='form-select'),
+            Field('descripcion', css_class='form-control', rows=3),
+            Div(
+                HTML('<a href="{% url "gestionReclamos" %}" class="btn btn-secondary">Cancelar</a>'),
+                Submit('submit', 'Guardar Reclamo', css_class='btn btn-primary'),
+                css_class='d-flex gap-2 justify-content-end mt-4'
+            )
+        )
+    
+def clean(self):
+    cleaned_data = super().clean()
+    servicio = cleaned_data.get('servicio')
+    empleado = cleaned_data.get('empleado')
+    
+    if servicio and empleado:
+        if not servicio.empleados.filter(id=empleado.id).exists():
+            raise forms.ValidationError("El empleado seleccionado no está asignado a este servicio")
+    
+    return cleaned_data

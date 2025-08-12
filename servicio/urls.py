@@ -24,5 +24,12 @@ urlpatterns = [
     path('factura/', include('factura.urls')),
     path("cancelar-servicio/<int:pk>/", cancelar_servicio, name="cancelarServicio"),
     path("eliminar-presupuesto/<int:pk>/", eliminar_presupuesto, name="eliminarPresupuesto"),
+    #Reclamos
+    path('registrarReclamo/', altaReclamo.as_view(), name = 'altaReclamo'),
+    path('gestionReclamos/', gestionReclamos.as_view(), name = 'gestionReclamos'),
+    path('api/empleados-por-servicio/<int:servicio_id>/', empleados_por_servicio, name='empleados_por_servicio'),
+    #Asistencia
+    path('registroAsistencia/<int:servicio_id>/', RegistrarAsistenciaView.as_view(), name = 'registroAsistencia'),
+    path('gestionAsistencia/', GestionAsistencia.as_view(), name = 'gestionAsistencia'),
 ]
  
