@@ -1,0 +1,90 @@
+{% extends 'layouts/baseForm.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+<h1>Reclamo</h1>
+<p>Registro de reclamos de servicios</p>
+{% endblock %}
+{% block titleNavegador %}SendaRC - Registro de Reclamos{% endblock %}
+
+{% block formulario %}
+<div class="animate-fade-in">
+        {% crispy form %}
+</div>
+{% endblock %}
+
+{% block extrajs %}<script>
+$(document).ready(() => {
+    // Validación genérica
+    $('form').on('submit', function (e) {
+        let isValid = true;
+        $(this).find('input[required], select[required], textarea[required]').each(function () {
+            if (!$(this).val()) {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+        if (!isValid) {
+            e.preventDefault();
+            $('.is-invalid').first().focus();
+        }
+    });
+    $('input, select, textarea').on('input change', function () {
+        $(this).removeClass('is-invalid');
+    });
+});
+
+// Función mejorada para filtrar empleados
+async function filtrarEmpleados(servicioId) {
+    const empleadoSelect = document.getElementById('id_empleado');
+    
+    if (!servicioId) {
+        empleadoSelect.innerHTML = '<option value="">---------</option>';
+        return;
+    }
+
+    try {
+        // Mostrar estado de carga
+        empleadoSelect.disabled = true;
+        empleadoSelect.innerHTML = '<option value="">Cargando empleados...</option>';
+        
+        // Hacer la petición AJAX
+        const response = await fetch(`/servicio/api/empleados-por-servicio/${servicioId}/`);
+        
+        if (!response.ok) throw new Error('Error en la respuesta');
+        
+        const data = await response.json();
+        
+        // Construir opciones - CORRECCIÓN PRINCIPAL AQUÍ
+        let options = '<option value="">---------</option>';
+        data.forEach(emp => {
+            const nombreCompleto = `${emp.nombre} ${emp.apellido}`;  // Concatenar nombre y apellido
+            options += `<option value="${emp.id}">${nombreCompleto}</option>`;
+        });
+        
+        empleadoSelect.innerHTML = options;
+    } catch (error) {
+        console.error('Error:', error);
+        empleadoSelect.innerHTML = '<option value="">Error al cargar</option>';
+    } finally {
+        empleadoSelect.disabled = false;
+    }
+}
+
+// Inicialización
+$(document).ready(() => {
+    // Cargar empleados si ya hay un servicio seleccionado
+    const servicioSelect = document.getElementById('id_servicio');
+    if (servicioSelect && servicioSelect.value) {
+        filtrarEmpleados(servicioSelect.value);
+    }
+    
+    // Evento change para el select de servicio
+    $('#id_servicio').change(function() {
+        filtrarEmpleados(this.value);
+    });
+});
+</script>
+{% endblock %}

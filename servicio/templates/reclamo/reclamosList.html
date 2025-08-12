@@ -1,0 +1,21 @@
+{% for reclamo in reclamos %}
+<tr>
+    <td>{{ reclamo.id }}</td>
+    <td>{{ reclamo.fecha_reclamo|date:"d/m/Y" }}</td>
+    <td>{{ reclamo.servicio }}</td>
+    <td>{{ reclamo.empleado.nombre_completo }}</td>
+    <td>
+        <button class="btn btn-sm btn-primary btn-detalle" data-url="%">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            Detalle
+        </button>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center">No hay reclamos registrados</td>
+</tr>
+{% endfor %}

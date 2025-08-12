@@ -1,0 +1,194 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block titleNavegador %}SendaRC - Gestión de Reclamos{% endblock %}
+{% block title %}
+<h1>Reclamos</h1>
+<p>Gestión y administración de reclamos</p>
+<div class="d-flex gap-2 mt-3">
+    <a href="{% url 'altaReclamo' %}" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Nuevo Reclamo
+    </a>
+</div>
+{% endblock %}
+
+{% block listado %}
+<div class="animate-fade-in">
+    <!-- Filtros -->
+    <h5 class="card-title mb-3">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        Filtros de búsqueda
+    </h5>
+
+    <!-- Tabla -->
+    <div class="table-responsive mt-4">
+        <table class="datatableEntity table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Nº Reclamo
+                    </th>
+                    <th scope="col">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Fecha
+                    </th>
+                    <th scope="col">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Servicio
+                    </th>
+                    <th scope="col">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Empleado
+                    </th>
+                    <th scope="col">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        Opciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="reclamosList">
+                {% include 'reclamo/reclamosList.html' %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Offcanvas para detalles -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDetalleReclamo"
+     aria-labelledby="offcanvasDetalleReclamoLabel" data-bs-backdrop="true"
+     data-bs-keyboard="true" style="width: 500px;">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="offcanvasDetalleReclamoLabel">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" class="me-2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            Detalle del Reclamo
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div id="contenidoDetalleReclamo" class="p-3">
+            <!-- Contenido dinámico -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+    $(document).ready(function () {
+        let tableSelector = ".datatableEntity";
+        let formSelector = ".filtersForm";
+        let resultSelector = "#reclamosList";
+
+        // Inicializar DataTable
+        initializeDataTable(tableSelector);
+
+        // Configurar filtros
+        setupDataTableFilters(tableSelector, formSelector, resultSelector);
+
+        // Variable para almacenar la instancia del offcanvas
+        let offcanvasInstance = null;
+
+        // Inicializar el offcanvas
+        const offcanvasElement = document.getElementById('offcanvasDetalleReclamo');
+        if (offcanvasElement) {
+            offcanvasInstance = new bootstrap.Offcanvas(offcanvasElement);
+        }
+
+        // Manejar clic en botones de detalle
+        $(document).on('click', '.btn-detalle', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const url = $(this).data('url');
+            
+            if (!url) {
+                console.error('No se encontró la URL para cargar los detalles');
+                return;
+            }
+
+            // Mostrar loading en el contenido del offcanvas
+            $('#contenidoDetalleReclamo').html(`
+                <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            `);
+
+            // Mostrar el offcanvas inmediatamente
+            if (offcanvasInstance) {
+                offcanvasInstance.show();
+            }
+
+            // Cargar contenido
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#contenidoDetalleReclamo').html(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al cargar los detalles:', error);
+                    $('#contenidoDetalleReclamo').html(`
+                        <div class="alert alert-danger m-3">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                            Error al cargar los detalles del reclamo
+                        </div>
+                    `);
+                }
+            });
+        });
+
+        // Manejar eventos del offcanvas
+        if (offcanvasElement) {
+            offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
+                // Limpiar contenido cuando se cierre
+                $('#contenidoDetalleReclamo').empty();
+            });
+        }
+    });
+</script>
+{% endblock %}

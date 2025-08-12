@@ -1,0 +1,93 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block titleNavegador %}SendaRC - Registro de Asistencia{% endblock %}
+{% block title %}
+<h1>Registro de Asistencia</h1>
+<p>Registrar asistencia de empleados</p>
+{% endblock %}
+
+{% block listado %}
+<div class="seccion-cabecera animate-fade-in">
+    <div class="header-content">
+        <div class="header-left">
+            <h1>Registro de Asistencia para Servicio #{{ servicio.id }}</h1>
+            <p>Procesamiento de asistencia del dia {{ fecha_seleccionada }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="fecha" value="{{ fecha }}">
+            <!-- Barra de empleados asignados -->
+            <div class="mb-3">
+                <div class="px-3 py-2 rounded" style="background-color: #e3f2fd; color: #1565c0; font-weight: 500;">
+                    <i class="bi bi-people-fill me-2"></i> Empleados Asignados
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Empleado</th>
+                            <th>DNI</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empleado in empleados %}
+                        <tr>
+                            <td>{{ empleado.nombre }} {{ empleado.apellido }}</td>
+                            <td>{{ empleado.numDNI }}</td>
+                            <td>
+                                <select name="estado_{{ empleado.id }}" class="form-select">
+                                    <option value="A">Asistió</option>
+                                    <option value="F">Faltó</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+                <button type="button" class="btn btn-primary" id="showToastBtn">
+                    <i class="bi bi-save me-1"></i> Guardar Asistencia
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Toast de confirmación con estilo shadcn -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+  <div id="toastConfirm" class="toast toast-shadcn" role="alert" aria-live="assertive" aria-atomic="true" style="display:none; min-width: 350px;">
+    <div class="toast-header-shadcn d-flex align-items-center justify-content-between">
+      <div class="toast-content" style="padding-left: 1em;">
+        <div class="toast-title fw-bold mb-1">Confirmar registro</div>
+        <div class="toast-message text-secondary">¿Está seguro que desea registrar la asistencia?</div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 px-3 pb-3 pt-2">
+      <button type="button" class="btn btn-success btn-sm" id="confirmBtn">Confirmar</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelBtn">Cancelar</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script>
+document.getElementById('showToastBtn').onclick = function() {
+    document.getElementById('toastConfirm').style.display = 'block';
+};
+document.getElementById('cancelBtn').onclick = function() {
+    document.getElementById('toastConfirm').style.display = 'none';
+};
+document.getElementById('confirmBtn').onclick = function() {
+    document.getElementById('toastConfirm').style.display = 'none';
+    document.querySelector('form').submit();
+};
+</script>
+{% endblock %}
