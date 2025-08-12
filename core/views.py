@@ -700,35 +700,6 @@ def detalleEmpleado(request, pk):
     empleado = Empleado.objects.get(id=pk)
     return render(request, "empleado/detalleEmpleado.html", {"empleado": empleado})
 
-
-@method_decorator(login_required, name="dispatch")
-class altaSancion(CreateView):
-    model = Sancion
-    form_class = FormSancion
-    template_name = "sancion/altaSancion.html"
-    success_url = reverse_lazy("gestionSanciones")
-
-
-@method_decorator(login_required, name="dispatch")
-class updateSancion(UpdateView):
-    model = Sancion
-    form_class = FormSancion
-    template_name = "sancion/modificarSancion.html"
-    success_url = reverse_lazy("gestionSanciones")
-
-    def get_form_kwargs(self):
-        kwargs = super(updateSancion, self).get_form_kwargs()
-        kwargs["is_modificar"] = True
-        return kwargs
-
-
-@method_decorator(login_required, name="dispatch")
-class gestionSancion(ListView):
-    model = Sancion
-    template_name = "sancion/gestionSanciones.html"
-    context_object_name = "sanciones"
-
-
 import logging
 
 # Configurar logging
