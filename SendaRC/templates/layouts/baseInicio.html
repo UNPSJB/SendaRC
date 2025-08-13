@@ -110,7 +110,44 @@
                     <li class="nav-section">
                         <span class="section-title">Operaciones</span>
                     </li>
+                    {% url 'gestionAsistencia' as asistencia_url %}
+{% url 'gestionReclamos' as reclamos_url %}
+{% url 'gestionSanciones' as sanciones_url %}
 
+<li class="nav-item">
+    <a href="{{ asistencia_url }}" class="nav-link {% if request.path == asistencia_url %}active{% endif %}">
+        <!-- Icono de check-list -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M2 20h7"></path>
+            <path d="M2 10h7"></path>
+        </svg>
+        <span class="nav-text">Asistencias</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="{{ reclamos_url }}" class="nav-link {% if request.path == reclamos_url %}active{% endif %}">
+        <!-- Icono de mensaje/alerta -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="nav-text">Reclamos</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="{{ sanciones_url }}" class="nav-link {% if request.path == sanciones_url %}active{% endif %}">
+        <!-- Icono de advertencia -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span class="nav-text">Sanciones</span>
+    </a>
+</li>
+           
                     <li class="nav-item">
                         <a href="{% url 'gestionServicios' %}" class="nav-link {% if '/servicio/' in request.path %}active{% endif %}">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

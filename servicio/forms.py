@@ -19,7 +19,7 @@ from django.forms import (
     ModelMultipleChoiceField,
     CheckboxSelectMultiple,
 )
-from datetime import datetime
+from datetime import datetime,timedelta
 from core.models import *
 from .models import *
 import datetime
@@ -497,6 +497,12 @@ class FormContratarServicio(forms.ModelForm):
                         "fecha_finaliza",
                         "La fecha de finalización no puede ser anterior o igual a la fecha de inicio.",
                     )
+
+                if fecha_finaliza <= fecha_inicio + timedelta(days=30):
+                    self.add_error(
+                        "fecha_finaliza",
+                        "La fecha de finalización debe ser al menos un mes después de la fecha de inicio.",
+                    )         
 
         # Validar que la fecha de inicio no sea antes que la de emisión
         if fecha_inicio and self.instance.fecha_emision:
