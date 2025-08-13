@@ -13,7 +13,8 @@
 </div>
 {% endblock %}
 
-{% block extrajs %}<script>
+{% block extrajs %}
+<script>
 $(document).ready(() => {
     // Validación genérica
     $('form').on('submit', function (e) {
@@ -84,6 +85,16 @@ $(document).ready(() => {
     // Evento change para el select de servicio
     $('#id_servicio').change(function() {
         filtrarEmpleados(this.value);
+    });
+    $('#servicio_id').select2({
+        placeholder: "Seleccione un servicio...",
+        allowClear: true,
+        width: '100%',
+        language: {
+            noResults: function() {
+                return "No se encuentra el servicio";
+            }
+        }
     });
 });
 </script>

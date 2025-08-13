@@ -1560,12 +1560,9 @@ class RegistrarAsistenciaView(TemplateView):
 class GestionAsistencia(TemplateView):
     template_name = 'asistencia/gestionAsistencia.html'
 
-class GestionAsistencia(TemplateView):
-    template_name = 'asistencia/gestionAsistencia.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        servicios = Servicio.objects.filter(estado=3)
+        servicios = Servicio.objects.all().order_by('fecha_finaliza', 'fecha_inicio')
         servicio_id = self.request.GET.get('servicio_id')
         servicio_seleccionado = None
         dias_pendientes = []
@@ -1581,7 +1578,7 @@ class GestionAsistencia(TemplateView):
             dias_registrados = [dia for dia in dias_registrados_qs if dia in todos_los_dias]
             dias_pendientes = [dia for dia in todos_los_dias if dia not in dias_registrados and dia <= date.today()]
 
-        context['servicios'] = Servicio.objects.filter(estado=3)
+        context['servicios'] = servicios
         context['servicio_seleccionado'] = servicio_seleccionado
         context['dias_pendientes'] = sorted(dias_pendientes)
         context['dias_registrados'] = sorted(dias_registrados)

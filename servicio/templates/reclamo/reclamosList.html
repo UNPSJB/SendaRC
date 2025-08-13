@@ -2,7 +2,7 @@
 <tr>
     <td>{{ reclamo.id }}</td>
     <td>{{ reclamo.fecha_reclamo|date:"d/m/Y" }}</td>
-    <td>{{ reclamo.servicio }}</td>
+    <td>{{ reclamo.servicio.cliente.nombre }} {{ reclamo.servicio.cliente.apellido }} - {{ reclamo.servicio.direccion }}</td>
     <td>{{ reclamo.empleado.nombre_completo }}</td>
     <td>
         <button class="btn btn-sm btn-primary btn-detalle" data-url="%">

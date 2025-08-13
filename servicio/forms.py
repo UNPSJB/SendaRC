@@ -558,20 +558,31 @@ class FormReclamo(forms.ModelForm):
     class Meta:
         model = Reclamo
         fields = ['servicio', 'descripcion', 'empleado']
+        widgets = {
+            'servicio': forms.Select(attrs={'class': 'form-select'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'empleado': forms.Select(attrs={'class': 'form-select'}),
+        }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         # Configuración básica de crispy forms
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.form_method = 'post'
         self.helper.form_class = 'needs-validation'
-        
+        self.helper.form_show_labels = False
+
         # Campos del formulario
         self.fields['empleado'].queryset = Empleado.habilitados.all()
-        self.fields['servicio'].queryset = Servicio.objects.filter(estado__in=[3,4, 5, 6])
-        
+        self.fields['servicio'].queryset = Servicio.objects.filter(estado__in=[3,4,5,6])
+
+        # Formato personalizado para el select de servicios
+        self.fields['servicio'].label_from_instance = lambda obj: (
+            f"{obj.id} - {obj.cliente.nombre} {obj.cliente.apellido} - {obj.direccion} - {obj.fecha_inicio.strftime('%d/%m/%Y')}"
+        )
+
         # Asignar atributos para el JavaScript
         self.fields['servicio'].widget.attrs.update({
             'onchange': 'filtrarEmpleados(this.value)',
@@ -580,19 +591,62 @@ class FormReclamo(forms.ModelForm):
         self.fields['empleado'].widget.attrs.update({
             'id': 'id_empleado'
         })
-        
-        # Layout más simple
+
         self.helper.layout = Layout(
             HTML('<p class="info-formulario">Ingrese los datos del reclamo, Dale click en guardar al terminar</p>'),
-            Field('servicio', css_class='form-select'),
-            Field('empleado', css_class='form-select'),
-            Field('descripcion', css_class='form-control', rows=3),
+            Div(
+                Div(
+                    HTML("""
+                    <label for="{{ form.servicio.id_for_label }}" class="form-label fw-bold">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                         <line x1="16" y1="2" x2="16" y2="6"></line>
+                         <line x1="8" y1="2" x2="8" y2="6"></line>
+                         <line x1="3" y1="10" x2="21" y2="10"></line>
+                     </svg>
+                      Servicio
+                     </label>
+                    """),
+                    Field('servicio', wrapper_class=''),
+                    css_class='col-md-12',
+                ),
+                Div(
+                    HTML(
+"""
+<label for="{{ form.empleado.id_for_label }}" class="form-label fw-bold">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+    <circle cx="12" cy="7" r="4"></circle>
+  </svg>
+  Empleado
+</label>
+"""
+                    ),                    
+                    Field('empleado', css_class='form-select'),
+                ),
+            Div(
+                HTML(
+                        """
+                        <label for="{{ form.descripcion.id_for_label }}" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                            Descripción
+                        </label>
+                        """
+                    ),
+                Field('descripcion', css_class='form-control', rows=3),
+            ),
             Div(
                 HTML('<a href="{% url "gestionReclamos" %}" class="btn btn-secondary">Cancelar</a>'),
                 Submit('submit', 'Guardar Reclamo', css_class='btn btn-primary'),
                 css_class='d-flex gap-2 justify-content-end mt-4'
             )
         )
+    )
     
 def clean(self):
     cleaned_data = super().clean()

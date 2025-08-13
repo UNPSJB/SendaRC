@@ -38,36 +38,44 @@
         <i class="bi bi-calendar-check me-2"></i> Asistencia pendiente <strong>{{ servicio_seleccionado.nombre }}</strong>
     </div>
     <div class="card-body">
-        {% if dias_pendientes %}
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Dia</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for dia in dias_pendientes %}
-                <tr>
-                    <td>{{ dia|date:"d/m/Y" }}</td>
-                    <td>{{ dia|date:"l" }}</td>
-                    <td>
-                        <a href="{% url 'registroAsistencia' servicio_seleccionado.id %}?fecha={{ dia|date:'Y-m-d' }}" class="btn btn-success btn-sm">
-                           <i class="bi bi-pencil-square"></i> Registrar Asistencia
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div class="alert alert-success">
-            No hay días pendientes de asistencia para este servicio.
+        {% if servicio_seleccionado.estado == 6 %}
+        <div class="alert alert-warning">
+            El servicio seleccionado está finalizado. No se pueden registrar nuevas asistencias.
         </div>
+        {%else %}
+
+                {% if dias_pendientes %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Dia</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dia in dias_pendientes %}
+                        <tr>
+                            <td>{{ dia|date:"d/m/Y" }}</td>
+                            <td>{{ dia|date:"l" }}</td>
+                            <td>
+                                <a href="{% url 'registroAsistencia' servicio_seleccionado.id %}?fecha={{ dia|date:'Y-m-d' }}" class="btn btn-success btn-sm">
+                                <i class="bi bi-pencil-square"></i> Registrar Asistencia
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-success">
+                    No hay días pendientes de asistencia para este servicio.
+                </div>
+                {% endif %}
+            </div>
         {% endif %}
+        </div>
     </div>
-</div>
 <div class="card mt-4">
     <div class="card-header bg-success text-white">
         <i class="bi bi-calendar-check me-2"></i>Asistencias Cerradas <strong>{{ servicio_seleccionado.nombre }}</strong>
