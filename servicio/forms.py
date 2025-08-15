@@ -582,7 +582,7 @@ class FormReclamo(forms.ModelForm):
 
         # Campos del formulario
         self.fields['empleado'].queryset = Empleado.habilitados.all()
-        self.fields['servicio'].queryset = Servicio.objects.filter(estado__in=[3,4,5,6])
+        self.fields['servicio'].queryset = Servicio.objects.filter(estado__in=[3])
 
         # Formato personalizado para el select de servicios
         self.fields['servicio'].label_from_instance = lambda obj: (

@@ -32,8 +32,8 @@
     </div>
 </form>
 
-{% if servicio_seleccionado %}
 <div class="card">
+{% if servicio_seleccionado %}
     <div class="card-header bg-info text-white">
         <i class="bi bi-calendar-check me-2"></i> Asistencia pendiente <strong>{{ servicio_seleccionado.nombre }}</strong>
     </div>
@@ -43,7 +43,6 @@
             El servicio seleccionado está finalizado. No se pueden registrar nuevas asistencias.
         </div>
         {%else %}
-
                 {% if dias_pendientes %}
                 <table class="table table-hover">
                     <thead>
@@ -72,7 +71,6 @@
                     No hay días pendientes de asistencia para este servicio.
                 </div>
                 {% endif %}
-            </div>
         {% endif %}
         </div>
     </div>

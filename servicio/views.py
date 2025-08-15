@@ -1557,6 +1557,20 @@ class RegistrarAsistenciaView(TemplateView):
         messages.success(request, "¡Asistencia registrada correctamente!")
         return redirect('gestionAsistencia')
 
+def get_fechas_asistencia(servicio):
+    frecuencias = servicio.frecuencias.all()
+    dias_frecuencia = [f.dia for f in frecuencias]  # Ej: [1, 3, 5] para Lunes, Miércoles, Viernes
+    fecha_inicio = servicio.fecha_inicio
+    fecha_fin = servicio.fecha_finaliza or date.today()
+    fechas_asistencia = []
+
+    fecha_actual = fecha_inicio
+    while fecha_actual <= fecha_fin:
+        if fecha_actual.isoweekday() in dias_frecuencia:
+            fechas_asistencia.append(fecha_actual)
+        fecha_actual += timedelta(days=1)
+    return fechas_asistencia
+
 class GestionAsistencia(TemplateView):
     template_name = 'asistencia/gestionAsistencia.html'
 
@@ -1567,17 +1581,12 @@ class GestionAsistencia(TemplateView):
         servicio_seleccionado = None
         dias_pendientes = []
         dias_registrados = []
-
         if servicio_id:
             servicio_seleccionado = Servicio.objects.get(pk=servicio_id)
-            fecha_inicio = servicio_seleccionado.fecha_inicio
-            fecha_fin = servicio_seleccionado.fecha_finaliza or date.today()
-            delta = fecha_fin - fecha_inicio
-            todos_los_dias = [fecha_inicio + timedelta(days=i) for i in range(delta.days + 1)]
+            fechas_asistencia = get_fechas_asistencia(servicio_seleccionado)
             dias_registrados_qs = Asistencia.objects.filter(servicio=servicio_seleccionado).values_list('fecha', flat=True).distinct()
-            dias_registrados = [dia for dia in dias_registrados_qs if dia in todos_los_dias]
-            dias_pendientes = [dia for dia in todos_los_dias if dia not in dias_registrados and dia <= date.today()]
-
+            dias_registrados = [dia for dia in dias_registrados_qs if dia in fechas_asistencia]
+            dias_pendientes = [dia for dia in fechas_asistencia if dia not in dias_registrados and dia <= date.today()]
         context['servicios'] = servicios
         context['servicio_seleccionado'] = servicio_seleccionado
         context['dias_pendientes'] = sorted(dias_pendientes)
