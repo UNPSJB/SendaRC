@@ -27,6 +27,7 @@ urlpatterns = [
     #Reclamos
     path('registrarReclamo/', altaReclamo.as_view(), name = 'altaReclamo'),
     path('gestionReclamos/', gestionReclamos.as_view(), name = 'gestionReclamos'),
+    path('gestionReclamos/<int:pk>/', detalleReclamo, name='detalleReclamo'),
     path('api/empleados-por-servicio/<int:servicio_id>/', empleados_por_servicio, name='empleados_por_servicio'),
     #Asistencia
     path('registroAsistencia/<int:servicio_id>/', RegistrarAsistenciaView.as_view(), name = 'registroAsistencia'),

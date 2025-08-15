@@ -84,6 +84,7 @@
             <thead>
                 <tr>
                     <th>Fecha</th>
+                    <th>Dia</th>
                     <th>Estado</th>
                 </tr>
             </thead>
@@ -91,6 +92,7 @@
                 {% for dia in dias_registrados %}
                 <tr>
                     <td>{{ dia|date:"d/m/Y" }}</td>
+                    <td>{{ dia|date:"l" }}</td>
                     <td>
                         <span class="badge bg-secondary">Cerrado</span>
                     </td>

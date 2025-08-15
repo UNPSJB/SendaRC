@@ -3,15 +3,10 @@
     <td>{{ reclamo.id }}</td>
     <td>{{ reclamo.fecha_reclamo|date:"d/m/Y" }}</td>
     <td>{{ reclamo.servicio.cliente.nombre }} {{ reclamo.servicio.cliente.apellido }} - {{ reclamo.servicio.direccion }}</td>
-    <td>{{ reclamo.empleado.nombre_completo }}</td>
     <td>
-        <button class="btn btn-sm btn-primary btn-detalle" data-url="%">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            Detalle
-        </button>
+      <button class="btn btn-sm btn-outline-primary me-1 btn-detalle"  data-url="{% url 'detalleReclamo' reclamo.pk %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles del reclamo">
+          <i class="bi bi-eye"></i>
+      </button>
     </td>
 </tr>
 {% empty %}

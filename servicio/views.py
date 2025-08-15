@@ -1496,15 +1496,17 @@ class gestionReclamos(ListView):
         queryset = super().get_queryset().select_related('servicio', 'empleado')
         queryset = queryset.order_by('-fecha_reclamo')
 
-        if 'servicio_id' in self.request.GET:
-            queryset = queryset.filter(servicio_id=self.request.GET['servicio_id'])
+        servicio_id = self.request.GET.get('servicio_id')
+        if servicio_id:
+            queryset = queryset.filter(servicio_id=servicio_id)
         return queryset.order_by('-fecha_reclamo')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['servicios'] = Servicio.objects.all()
+        # Solo servicios que tienen al menos un reclamo
+        servicios_con_reclamos = Servicio.objects.filter(reclamo__isnull=False).distinct()
+        context['servicios'] = servicios_con_reclamos
         return context
-
 
 # Asistencia
 class RegistrarAsistenciaView(TemplateView):
@@ -1609,3 +1611,7 @@ class GestionAsistencia(TemplateView):
         
         # Redirige a la gestión de asistencias
         return redirect('gestion_asistencia')
+    
+def detalleReclamo(request, pk):
+    reclamo = Reclamo.objects.get(id=pk)
+    return render(request, "reclamo/detalleReclamo.html", {"reclamo": reclamo})

@@ -26,6 +26,29 @@
         </svg>
         Filtros de búsqueda
     </h5>
+    <!-- ...dentro del bloque de filtros... -->
+    <form method="get" class="filtersForm mb-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-6">
+                <label for="servicio_id" class="form-label">Servicio</label>
+                <select name="servicio_id" id="servicio_id" class="form-select">
+                    <option value="">Todos los servicios</option>
+                    {% for servicio in servicios %}
+                        <option value="{{ servicio.id }}"
+                            {% if request.GET.servicio_id == servicio.id|stringformat:"s" %}selected{% endif %}>
+                            Servicio #{{ servicio.id }} - {{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }} - {{ servicio.direccion }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'gestionReclamos' %}" class="btn btn-secondary">Limpiar</a>
+            </div>
+        </div>
+    </form>
 
     <!-- Tabla -->
     <div class="table-responsive mt-4">
@@ -61,14 +84,6 @@
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                         Servicio
-                    </th>
-                    <th scope="col">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        Empleado
                     </th>
                     <th scope="col">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"

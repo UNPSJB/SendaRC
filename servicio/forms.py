@@ -582,11 +582,11 @@ class FormReclamo(forms.ModelForm):
 
         # Campos del formulario
         self.fields['empleado'].queryset = Empleado.habilitados.all()
-        self.fields['servicio'].queryset = Servicio.objects.filter(estado__in=[3])
+        self.fields['servicio'].queryset = Servicio.objects.filter(estado__in=[3, 4, 5, 6])
 
         # Formato personalizado para el select de servicios
         self.fields['servicio'].label_from_instance = lambda obj: (
-            f"{obj.id} - {obj.cliente.nombre} {obj.cliente.apellido} - {obj.direccion} - {obj.fecha_inicio.strftime('%d/%m/%Y')}"
+            f"{obj.id} - {obj.cliente.nombre} {obj.cliente.apellido} - {obj.direccion} - {obj.fecha_inicio.strftime('%d/%m/%Y')} - {obj.get_estado_display()}"
         )
 
         # Asignar atributos para el JavaScript
@@ -597,6 +597,7 @@ class FormReclamo(forms.ModelForm):
         self.fields['empleado'].widget.attrs.update({
             'id': 'id_empleado'
         })
+        self.fields['empleado'].required = False
 
         self.helper.layout = Layout(
             HTML('<p class="info-formulario">Ingrese los datos del reclamo, Dale click en guardar al terminar</p>'),
@@ -628,7 +629,7 @@ class FormReclamo(forms.ModelForm):
 </label>
 """
                     ),                    
-                    Field('empleado', css_class='form-select'),
+                    Field('empleado', css_class='form-select', null=True),
                 ),
             Div(
                 HTML(

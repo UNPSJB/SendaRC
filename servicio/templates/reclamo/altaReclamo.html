@@ -17,25 +17,30 @@
 <script>
 $(document).ready(() => {
     // Validación genérica
-    $('form').on('submit', function (e) {
-        let isValid = true;
-        $(this).find('input[required], select[required], textarea[required]').each(function () {
-            if (!$(this).val()) {
-                $(this).addClass('is-invalid');
-                isValid = false;
-            } else {
-                $(this).removeClass('is-invalid');
+
+    // Inicialización
+    $(document).ready(() => {
+        // Cargar empleados si ya hay un servicio seleccionado
+        const servicioSelect = document.getElementById('id_servicio');
+        if (servicioSelect && servicioSelect.value) {
+            filtrarEmpleados(servicioSelect.value);
+        }
+        
+        // Evento change para el select de servicio
+        $('#id_servicio').change(function() {
+            filtrarEmpleados(this.value);
+        });
+        $('#servicio_id').select2({
+            placeholder: "Seleccione un servicio...",
+            allowClear: true,
+            width: '100%',
+            language: {
+                noResults: function() {
+                    return "No se encuentra el servicio";
+                }
             }
         });
-        if (!isValid) {
-            e.preventDefault();
-            $('.is-invalid').first().focus();
-        }
     });
-    $('input, select, textarea').on('input change', function () {
-        $(this).removeClass('is-invalid');
-    });
-});
 
 // Función mejorada para filtrar empleados
 async function filtrarEmpleados(servicioId) {
@@ -74,28 +79,5 @@ async function filtrarEmpleados(servicioId) {
     }
 }
 
-// Inicialización
-$(document).ready(() => {
-    // Cargar empleados si ya hay un servicio seleccionado
-    const servicioSelect = document.getElementById('id_servicio');
-    if (servicioSelect && servicioSelect.value) {
-        filtrarEmpleados(servicioSelect.value);
-    }
-    
-    // Evento change para el select de servicio
-    $('#id_servicio').change(function() {
-        filtrarEmpleados(this.value);
-    });
-    $('#servicio_id').select2({
-        placeholder: "Seleccione un servicio...",
-        allowClear: true,
-        width: '100%',
-        language: {
-            noResults: function() {
-                return "No se encuentra el servicio";
-            }
-        }
-    });
-});
 </script>
 {% endblock %}
