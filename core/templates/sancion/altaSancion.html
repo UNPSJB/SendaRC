@@ -1,12 +1,11 @@
 {% extends 'layouts/baseForm.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extracss %}{{block.super}}
-<link href="{% static 'css/formsChicos.css' %}" rel="stylesheet" />
-{% endblock %}
 {% block title %}
-<h1 class="titulo">Sanción <span class="operacion">> Alta Sanción</span></h1>
+<h1>Sancion</h1>
+<p>Registro de Sanciones a Empleados</p>
 {% endblock %}
+{% block titleNavegador %}SendaRC - Registro de Sanciones{% endblock %}
 {% block formulario %}
 <div class="container container-form">
     {% crispy form %}
@@ -16,33 +15,27 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tipoField = document.getElementById('id_tipo');
-        const diasField = document.getElementById('dias_suspension_field');
-        const diasLabel = document.querySelector('.dias-suspension-label');
-        const empleadoField = document.getElementById('id_empleado');
-        const form = document.getElementById('sancion-form');
+        const diasField = document.getElementById('id_diasSuspension'); // Campo de días de suspensión
+        const diasContainer = document.querySelector('.dias-suspension-container'); // Contenedor del campo
+        const diasLabel = document.querySelector('.dias-suspension-label'); // Etiqueta del campo
 
         function toggleDiasField() {
+            // Verifica si el valor seleccionado es "2" (Suspensión)
             if (parseInt(tipoField.value) === 2) {
-                diasField.style.display = 'block';
-                diasLabel.style.display = 'block';
+                diasContainer.style.display = 'block'; // Muestra el contenedor
+                diasLabel.style.display = 'block'; // Muestra la etiqueta
+                diasField.style.display = 'block'; // Asegura que el campo sea visible
             } else {
-                diasField.style.display = 'none';
-                diasLabel.style.display = 'none';
-                document.getElementById('id_diasSuspension').value = 0;
+                diasContainer.style.display = 'none'; // Oculta el contenedor
+                diasLabel.style.display = 'none'; // Oculta la etiqueta
+                diasField.style.display = 'none'; // Oculta el campo
+                diasField.value = ''; // Limpia el valor del campo
             }
         }
 
+        // Llama a la función al cargar la página y al cambiar el valor del campo
         tipoField.addEventListener('change', toggleDiasField);
         toggleDiasField();
-        // Función para validar ANTES de enviar
-        form.addEventListener('submit', function (e) {
-            if (tipoField.value === '1' && empleadoField.value) {
-                e.preventDefault();  // Detener el envío
-                validarCorrecciones(() => {
-                    form.submit();  // Reintentar envío después de validar
-                });
-            }
-        });
     });
 </script>
 {% endblock %}

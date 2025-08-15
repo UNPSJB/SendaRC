@@ -4,13 +4,23 @@
     <td scope="row">{{ sancion.getTipo }}</td>
     <td scope="row">{{ sancion.getDNIEmpleado }}</td>
     <td scope="row">{{ sancion.getNombreEmpleado }}</td>
+    <td scope="row">
+        {% if sancion.getEstadoSuspencion == "Vencida" %}
+            <span class="badge bg-success">Vencida</span>
+        {% else %}
+            <span class="badge bg-warning text-dark">Vigente</span>
+        {% endif %}
+    </td>
     <td scope="row">{{ sancion.fecha_sancion }}</td>
     <td scope="row">
-        <button href="{% url 'detalleSancion' sancion.pk %}" class="opcion" type="button" 
-            data-url="/gestionSanciones/{{sancion.pk}}"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasExample"
-            aria-controls="offcanvasExample"><i class="bi bi-eye-fill"></i></button>
+        <!-- Botón para ver detalles -->
+        <button class="btn btn-sm btn-outline-primary me-1 btn-detalle"  data-url="{% url 'detalleSancion' sancion.pk %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalles de la Sancion">
+        <i class="bi bi-eye"></i>
+        </button>
     </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6" class="text-center text-muted">No hay sanciones registradas</td>
 </tr>
 {% endfor %}

@@ -12,66 +12,138 @@ from .models import *
 class FormSancion(forms.ModelForm):
     class Meta:
         model = Sancion
-        fields = ['tipo', 'diasSuspension', 'empleado', 'descripcion']
+        fields = ['tipo', 'diasSuspension', 'empleado', 'fecha_sancion', 'descripcion']
 
     def __init__(self, *args, **kwargs):
         is_modificar = kwargs.pop('is_modificar', False)
-        if is_modificar:
-            mensaje = 'Modificar una sancion aquí. Dale click en guardar al terminar'
-        else:
-            mensaje = 'Agregar una sancion aquí. Dale click en guardar al terminar'
-        super(FormSancion, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+        mensaje = (
+            "Modificar una sanción aquí. Dale click en guardar al terminar"
+            if is_modificar
+            else "Agregar una sanción aquí. Dale click en guardar al terminar"
+        )
+
+        self.fields['empleado'].queryset = Empleado.habilitados.all()
+        self.fields['diasSuspension'].widget.attrs.update({
+            'class': 'form-control dias-suspension-field',
+            'style': 'display:none;',  # Oculto por defecto
+        })
+        self.fields['fecha_sancion'].widget.attrs.update({
+            'class': 'form-control',
+            'readonly': 'readonly'
+        })
+
         self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_class = "needs-validation"
+        self.helper.attrs = {"novalidate": ""}
+        self.helper.form_show_labels = False
+
         self.helper.layout = Layout(
             Div(
                 HTML(f'<p class="info-formulario">{mensaje}</p>'),
-                Fieldset(
-                    Div(
-
-                    ),
-                    Div(
-                        FloatingField('tipo'),
-                        Div(
-                            FloatingField('diasSuspension', 
-                                 id="dias_suspension_field",
-                                 style="display: none;",
-                                 wrapper_class="dias-suspension-wrapper"),
-                            css_class='dias-suspension-container',
-                        ),
-                        FloatingField('empleado'),
-                        Field('fecha_sancion'),
-                        FloatingField('descripcion'),
-                        css_class='container-inputs-form'
-                    ),
-                ),
                 Div(
-                HTML(
-                    '<a href="{% url "gestionSanciones" %}" class="btn btn-secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> Cancelar</a>'
+                    # Empleado
+                    Div(
+                        HTML("""
+                        <label for="{{ form.empleado.id_for_label }}" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Empleado
+                        </label>
+                        """),
+                        Field("empleado", wrapper_class=""),
+                        css_class="col-md-6",
+                    ),
+                    # Fecha sanción
+                    Div(
+                        HTML("""
+                        <label for="{{ form.fecha_sancion.id_for_label }}" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Fecha sanción
+                        </label>
+                        """),
+                        Field("fecha_sancion", wrapper_class=""),
+                        css_class="col-md-6",
+                    ),
+                    # Tipo
+                    Div(
+                        HTML("""
+                        <label for="{{ form.tipo.id_for_label }}" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                            Tipo
+                        </label>
+                        """),
+                        Field("tipo", wrapper_class=""),
+                        css_class="col-md-6",
+                    ),
+                    # Días de suspensión
+                    Div(
+                        HTML("""
+                        <label for="{{ form.diasSuspension.id_for_label }}" class="form-label dias-suspension-label" style="display:none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            </svg>
+                            Días de suspensión
+                        </label>
+                        """),
+                        Field("diasSuspension", wrapper_class="", css_class="dias-suspension-field"),
+                        css_class="col-md-6 dias-suspension-container",
+                    ),
+                    # Descripción
+                    Div(
+                        HTML("""
+                        <label for="{{ form.descripcion.id_for_label }}" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                            Descripción
+                        </label>
+                        """),
+                        Field("descripcion", wrapper_class=""),
+                        css_class="col-md-12",
+                    ),
+                    css_class="row g-3",
                 ),
-                Submit("submit", "Guardar Sancion", css_class="btn btn-primary"),
-                css_class="d-flex gap-2 justify-content-end mt-4",
+                # Botones
+                Div(
+                    HTML(
+                        '<a href="{% url "gestionSanciones" %}" class="btn btn-secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> Cancelar</a>'
+                    ),
+                    Submit("submit", "Guardar Sanción", css_class="btn btn-primary"),
+                    css_class="d-flex gap-2 justify-content-end mt-4",
+                ),
             )
         )
-        )
-        self.fields['empleado'].queryset = Empleado.habilitados.all()
-        self.helper.form_id = 'sancion-form'
-        self.helper.form_show_labels = False
-
-        if self.instance.pk and self.instance.tipo == 2:
-            self.fields['diasSuspension'].widget.attrs['style'] = 'display: block;'
 
     def clean(self):
         cleaned_data = super().clean()
         tipo = cleaned_data.get('tipo')
         empleado = cleaned_data.get('empleado')
-        
+
         if tipo == 1 and empleado and (empleado.correccionesAnuales() >= 3):
             self.add_error(
                 'tipo',
-                f'Atencion! El empleado ya tiene {empleado.correccionesAnuales()} correccionesen el año.'
-                'Protocolo requiere suspensión (3+ correcciones). '
+                f'Atención! El empleado ya tiene {empleado.correccionesAnuales()} correcciones en el año.'
+                ' Protocolo requiere suspensión (3+ correcciones). '
             )
-        
+
         return cleaned_data
 
 
