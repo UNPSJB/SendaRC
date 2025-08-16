@@ -63,10 +63,8 @@ def get_ultimo_horario_finalizacion(servicio):
 
 
 
-def desvincular_empleados_servicio(servicio):
-    """
-    Función auxiliar para desvincular empleados de un servicio
-    """
+"""def desvincular_empleados_servicio(servicio):
+    #Función auxiliar para desvincular empleados de un servicio
     # Desvincular empleados de las frecuencias del servicio
     for frecuencia in servicio.frecuencias.all():
         frecuencia.empleados.clear()
@@ -74,7 +72,7 @@ def desvincular_empleados_servicio(servicio):
     # Desvincular empleados directamente del servicio
     servicio.empleado.clear()
     
-    logger.info(f"Empleados desvinculados del servicio ID: {servicio.id}")
+    logger.info(f"Empleados desvinculados del servicio ID: {servicio.id}")"""
 
 def actualizar_estados_servicios():
     hoy = timezone.now().date()
@@ -126,7 +124,6 @@ def actualizar_estados_servicios():
             finalizados_ids.append(servicio.id)
 
             logger.info(f"[Servicio {servicio.id}] Marcado como FINALIZADO automáticamente.")
-            desvincular_empleados_servicio(servicio)
         else:
             logger.info(f"[Servicio {servicio.id}] No finalizado aún. Hora actual ({ahora_local}) es menor que hora fin ({hora_fin}).")
 
@@ -139,7 +136,7 @@ def actualizar_estados_servicios():
     print("fecha_limite:", fecha_limite)
     
     servicios_con_facturas_vencidas = Servicio.objects.filter(
-        Q(estado=3) | Q(estado=4),
+        Q(estado=3) | Q(estado=4) | Q(estado=6),
         factura__fechaPago__isnull=True,
         factura__fecha_vencimiento__lt=fecha_limite
     ).distinct()
@@ -151,8 +148,7 @@ def actualizar_estados_servicios():
             servicio.save()
             vencidos_ids.append(servicio.id)
             
-            # Desvincular empleados del servicio vencido
-            desvincular_empleados_servicio(servicio)
+
     
     if vencidos_ids:
         logger.info(f"Se marcaron como vencidos {len(vencidos_ids)} servicios: {vencidos_ids}")

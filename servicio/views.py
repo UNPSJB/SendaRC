@@ -1454,11 +1454,11 @@ def cancelar_servicio(request, pk):
         ).delete()
 
     # Desvincular empleados de las frecuencias del servicio
-    for frecuencia in servicio.frecuencias.all():
-        frecuencia.empleados.clear()
+    #for frecuencia in servicio.frecuencias.all():
+    #    frecuencia.empleados.clear()
 
     # Desvincular empleados directamente del servicio
-    servicio.empleado.clear()
+    #servicio.empleado.clear()
 
     # -------------------------------
     # Marcar como cancelado

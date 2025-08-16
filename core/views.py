@@ -318,10 +318,10 @@ class updateTipoServicio(UpdateView):
         tiposervicio = form.save(commit=False)
         # Verifica si se intenta desactivar un tipoServicio usado por un servicio en curso
         if (
-            form.cleaned_data["activo"] == False
+            form.cleaned_data["activo"] is False
             and CantServicioTipoServicio.objects.filter(
                 tipoServicio=tiposervicio,
-                servicio=Servicio.estado.en_curso  # ⚠️ Ver abajo
+                servicio__estado=4
             ).exists()
         ):
             form.add_error(

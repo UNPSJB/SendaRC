@@ -175,19 +175,17 @@ class EmpleadoManager(models.Manager):
         return qs.filter(activo=self.habilitado) if self.habilitado is not None else qs
 
     def disponibles(self, desde, hasta, dia, turno):
-        qfin = models.Q(frecuencias__servicio__fecha_finaliza__lt=desde)
-        qinicio = models.Q(frecuencias__servicio__fecha_inicio__gt=hasta)
-        qdia = models.Q(frecuencias__dia=dia)
-        qturno = models.Q(frecuencias__turno=turno)
-
         empleados = self.get_queryset()
 
-        # Esto te muestra qué empleados están ocupados en el mismo día y turno
+        # Solo considerar servicios que están Contratado (3) o En Curso (4)
+        estados_ocupados = [3, 4]
+
         ocupados = empleados.filter(
             frecuencias__dia=dia,
             frecuencias__turno=turno,
             frecuencias__servicio__fecha_inicio__lte=hasta,
             frecuencias__servicio__fecha_finaliza__gte=desde,
+            frecuencias__servicio__estado__in=estados_ocupados,
         ).distinct()
 
         print("\n--- EMPLEADOS OCUPADOS en misma frecuencia ---")

@@ -61,6 +61,6 @@ python manage.py runserver
 - Sergio Pereyra<br> 
 
 
-exec(open(r'/home/architin777/Projects/SendaRC/fakerScript.py', encoding='utf-8').read())
+exec(open(r'C:\Users\hayley777\Desktop\SendaRC\fakerScript.py', encoding='utf-8').read())
 exec(open(r'/home/architin777/Projects/SendaRC/fakerScript.py', encoding='utf-8').read())
 
