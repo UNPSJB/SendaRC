@@ -1706,7 +1706,6 @@ def get_fechas_asistencia(servicio):
 
 class GestionAsistencia(TemplateView):
     template_name = 'asistencia/gestionAsistencia.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         servicios = Servicio.objects.exclude(estado__in=[1, 2]).order_by('fecha_finaliza', 'fecha_inicio')
