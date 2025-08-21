@@ -1709,7 +1709,7 @@ class GestionAsistencia(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        servicios = Servicio.objects.all().order_by('fecha_finaliza', 'fecha_inicio')
+        servicios = Servicio.objects.exclude(estado__in=[1, 2]).order_by('fecha_finaliza', 'fecha_inicio')
         servicio_id = self.request.GET.get('servicio_id')
         servicio_seleccionado = None
         dias_pendientes = []
