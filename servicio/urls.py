@@ -32,5 +32,6 @@ urlpatterns = [
     #Asistencia
     path('registroAsistencia/<int:servicio_id>/', RegistrarAsistenciaView.as_view(), name = 'registroAsistencia'),
     path('gestionAsistencia/', GestionAsistencia.as_view(), name = 'gestionAsistencia'),
+    path('asistencia/historial/<int:servicio_id>/<str:fecha>/', HistorialAsistencia.as_view(), name='historialAsistencia'),
 ]
  

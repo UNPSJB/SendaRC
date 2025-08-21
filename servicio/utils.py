@@ -130,8 +130,20 @@ def actualizar_estados_servicios():
     if finalizados_ids:
         logger.info(f"Se finalizaron {len(finalizados_ids)} servicios (En Curso -> Finalizado): {finalizados_ids}")
 
+    # Marcar servicios presupuestados como Vencidos según plazo de vigencia
+    servicios_a_vencer = Servicio.objects.filter(estado=1, plazo_vigencia=hoy)
+    vencidos_plazo_ids = []
+
+    for servicio in servicios_a_vencer:
+        servicio.estado = 2
+        servicio.save()
+        vencidos_plazo_ids.append(servicio.id)
+        logger.info(f"[Servicio {servicio.id}] Marcado como VENCIDO automáticamente por plazo de vigencia.")
+
+    if vencidos_plazo_ids:
+        logger.info(f"Se marcaron como vencidos por plazo de vigencia {len(vencidos_plazo_ids)} servicios: {vencidos_plazo_ids}")
     
-    # Marcar servicios como vencidos
+    # Marcar servicios como suspendidos
     fecha_limite = hoy - timedelta(days=30)
     print("fecha_limite:", fecha_limite)
     
@@ -144,14 +156,14 @@ def actualizar_estados_servicios():
     vencidos_ids = []
     for servicio in servicios_con_facturas_vencidas:
         if Factura.objects.filter(servicio=servicio, fechaPago__isnull=True, fecha_vencimiento__lt=fecha_limite).exists():
-            servicio.estado = 2
+            servicio.estado = 5
             servicio.save()
             vencidos_ids.append(servicio.id)
             
 
     
     if vencidos_ids:
-        logger.info(f"Se marcaron como vencidos {len(vencidos_ids)} servicios: {vencidos_ids}")
+        logger.info(f"Se marcaron como suspendidos {len(vencidos_ids)} servicios: {vencidos_ids}")
     
     logger.info("Finalizada la actualización de estados de servicios")
     return {

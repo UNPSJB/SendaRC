@@ -94,7 +94,7 @@
           </li>
           <li><hr class="dropdown-divider"></li>
         {% endif %}
-        {% if servicio.getEstado == 'En Curso' %}
+        {% if servicio.getEstado == 'En Curso' or servicio.getEstado == 'Contratado' %}
         <li>
           <button class="dropdown-item dropdown-item-danger" 
                   type="button" 
@@ -128,6 +128,7 @@
   <td></td>
 </tr>
 {% endfor %}
+
 
 <!-- Modal de confirmación de eliminacion de presupuesto -->
 <div class="modal-overlay" id="eliminarPresupuestoModal" style="display: none;">
@@ -170,6 +171,7 @@
               </svg>
           </div>
           <p class="modal-text" id="cancelModalText">¿Está seguro que desea cancelar este servicio?</p>
+          <p class="modal-text" id="cancelModalText">*IMPORTANTE: registre Asistencia si el servicio esta En Curso</p>
       </div>
       <div class="modal-actions">
           <button type="button" class="btn btn-sm  btn-outline-primary me-1 closeModalConfirmacion" onclick="cerrarModalConfirmacion()">Cancelar</button>
@@ -180,6 +182,7 @@
       </div>
   </div>
 </div>
+
 
 <script>
     function mostrarModalCancelacion(servicioId) {
@@ -195,6 +198,7 @@
 
         // Cambiar el texto del modal según el contexto
         document.getElementById('cancelModalText').innerText = "¿Está seguro que desea cancelar este servicio?";
+        document.getElementById('cancelModalText').innerText = "*IMPORTANTE: registre Asistencia si el servicio esta En Curso";
         modal.querySelector('.modal-title').innerText = "Cancelar Servicio";
 
         form.action = "{% url 'cancelarServicio' 0 %}".replace("0", servicioId);

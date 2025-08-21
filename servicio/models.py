@@ -166,6 +166,12 @@ class Servicio(models.Model):
 
     def getEmpleadosAsignados(self):
         return self.empleado.filter(activo=True)
+    
+    def facturas(self):
+        return self.factura_set.all()
+    
+    def frecuencias(self):
+        return self.frecuencias_set.all()
 
 class CantServicioTipoServicio(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.DO_NOTHING)

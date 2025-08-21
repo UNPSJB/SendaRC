@@ -42,6 +42,10 @@
         <div class="alert alert-warning">
             El servicio seleccionado está finalizado. No se pueden registrar nuevas asistencias.
         </div>
+        {% elif servicio_seleccionado.estado == 7 %}
+        <div class="alert alert-warning">
+            El servicio seleccionado está cancelado. No se pueden registrar nuevas asistencias.
+        </div>
         {%else %}
                 {% if dias_pendientes %}
                 <table class="table table-hover">
@@ -86,6 +90,7 @@
                     <th>Fecha</th>
                     <th>Dia</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,6 +100,15 @@
                     <td>{{ dia|date:"l" }}</td>
                     <td>
                         <span class="badge bg-secondary">Cerrado</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'historialAsistencia' servicio_seleccionado.id dia|date:'Y-m-d' %}" 
+                        class="btn btn-sm btn-outline-primary me-1" 
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="top" 
+                        title="Ver historial de asistencia">
+                            <i class="bi bi-clock-history"></i>
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}

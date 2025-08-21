@@ -329,6 +329,30 @@ class updateTipoServicio(UpdateView):
                 "No puedes desactivar el tipo de servicio, porque un servicio en curso lo está utilizando.",
             )
             return self.form_invalid(form)
+        elif (
+            form.cleaned_data["activo"] is False
+            and CantServicioTipoServicio.objects.filter(
+                tipoServicio=tiposervicio,
+                servicio__estado=3
+            ).exists()
+        ):
+            form.add_error(
+                "activo",
+                "No puedes desactivar el tipo de servicio, porque un servicio contratado lo utilizara a futuro.",
+            )
+            return self.form_invalid(form)
+        elif (
+            form.cleaned_data["activo"] is False
+            and CantServicioTipoServicio.objects.filter(
+                tipoServicio=tiposervicio,
+                servicio__estado=5
+            ).exists()
+        ):
+            form.add_error(
+                "activo",
+                "No puedes desactivar el tipo de servicio, porque hay un servicio suspendido que puedo volver a utilizarlo a futuro.",
+            )
+            return self.form_invalid(form)
         else:
             tiposervicio.save()
             return super().form_valid(form)

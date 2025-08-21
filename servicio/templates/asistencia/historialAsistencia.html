@@ -1,0 +1,53 @@
+{% extends 'layouts/baseGestion.html' %}
+{% load static %}
+{% block titleNavegador %}SendaRC - Historial de Asistencia{% endblock %}
+{% block title %}
+<h1>Historial de Asistencia</h1>
+<p>Servicio: {{ servicio.cliente.nombre }} {{ servicio.cliente.apellido }} - {{ servicio.direccion }}</p>
+<p>Fecha: {{ fecha_trabajo|date:"d/m/Y" }}</p>
+{% endblock %}
+
+{% block listado %}
+<div class="animate-fade-in">
+    <div class="table-responsive mt-4">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Empleado</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asistencia in asistencias %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ asistencia.empleado.nombre }} {{ asistencia.empleado.apellido }}</td>
+                    <td>
+                        {% if asistencia.estado == 'A' %}
+                            <span class="badge bg-success">Asistió</span>
+                        {% elif asistencia.estado == 'F' %}
+                            <span class="badge bg-danger">Ausente</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ asistencia.get_estado_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">No hay asistencias registradas para esta fecha</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-flex gap-2 mt-3">
+            <a href="{% url 'gestionAsistencia' %}?servicio_id={{ servicio.id }}" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                Volver
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -498,11 +498,20 @@ class FormContratarServicio(forms.ModelForm):
                         "La fecha de finalización no puede ser anterior o igual a la fecha de inicio.",
                     )
 
-                if fecha_finaliza <= fecha_inicio + timedelta(days=30):
+                #if (fecha_finaliza - fecha_inicio).days >= 21:
+                if (fecha_finaliza - fecha_inicio).days < 21:
+                    self.add_error("fecha_inicio", "",)
                     self.add_error(
                         "fecha_finaliza",
-                        "La fecha de finalización debe ser al menos un mes después de la fecha de inicio.",
-                    )         
+                        "Las fechas no son aptas para un Servicio Determinado. El periodo minimo es de 20 dias.",
+                    )
+                    
+                
+                #if fecha_finaliza <= fecha_inicio + timedelta(days=30):
+                #    self.add_error(
+                #        "fecha_finaliza",
+                #        "La fecha de finalización debe ser al menos un mes después de la fecha de inicio.",
+                #    )         
 
         # Validar que la fecha de inicio no sea antes que la de emisión
         if fecha_inicio and self.instance.fecha_emision:

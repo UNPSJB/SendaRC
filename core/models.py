@@ -245,7 +245,7 @@ class Sancion(models.Model):
     empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
     fecha_sancion = models.DateField(default=timezone.now)
     descripcion = models.TextField()
-    diasSuspension = models.PositiveIntegerField(default=0, blank=True)
+    diasSuspension = models.PositiveIntegerField(default=0, blank=True, null=True)
     
     def getDNIEmpleado(self):
         return self.empleado.numDNI

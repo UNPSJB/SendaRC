@@ -10,7 +10,7 @@ from factura.models import Detalle_Empleados, Detalle_Servicios, Factura
 from .forms import *
 from .models import *
 from django.utils import timezone
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.template.loader import render_to_string
@@ -1017,6 +1017,7 @@ def contratarServicioCorrecto(request, pk):
             # Verificamos que aún no se haya generado la factura restante
             if not Factura.objects.filter(servicio=servicio, tipo=2).exists():
                 factura = Factura.objects.create(
+                    fechaEmision = fecha_actual,
                     fecha_vencimiento=primer_dia_next_mes.replace(day=10),
                     cliente=cliente,
                     servicio=servicio,
@@ -1055,6 +1056,7 @@ def contratarServicioCorrecto(request, pk):
         else:  # Habitual: paga todo junto (sin seña)
             if not Factura.objects.filter(servicio=servicio, tipo=2).exists():
                 factura = Factura.objects.create(
+                    fechaEmision = fecha_actual,
                     fecha_vencimiento=primer_dia_next_mes.replace(day=10),
                     cliente=cliente,
                     servicio=servicio,
@@ -1103,6 +1105,7 @@ def contratarServicioCorrecto(request, pk):
             # Verificamos que aún no se haya generado la factura restante
             if not Factura.objects.filter(servicio=servicio, tipo=2).exists():
                 factura = Factura.objects.create(
+                    fechaEmision = fecha_actual,
                     fecha_vencimiento=primer_dia_next_mes.replace(day=10),
                     cliente=cliente,
                     servicio=servicio,
@@ -1161,6 +1164,7 @@ def contratarServicioCorrecto(request, pk):
                     periodo=periodo_str
                 ).exists():
                     factura = Factura.objects.create(
+                        fechaEmision = fecha_actual,
                         fecha_vencimiento=vencimiento,
                         cliente=cliente,
                         servicio=servicio,
@@ -1399,11 +1403,14 @@ def cancelar_servicio(request, pk):
     cliente = servicio.cliente
     hoy = now().date()
     periodo_actual = hoy.strftime("%Y-%m")
+    mensaje_facturas = "-"
+    mensaje_devolucion = "-"
 
     # -------------------------------
     # SERVICIO EVENTUAL
     # -------------------------------
-    if servicio.tipo == 1:
+    # En Curso y Eventual
+    if servicio.estado == 4 and servicio.tipo == 1:
         facturas_impagas = Factura.objects.filter(
             servicio=servicio,
             formaPago__isnull=True
@@ -1417,57 +1424,180 @@ def cancelar_servicio(request, pk):
         servicio.fecha_cancelada = hoy
         servicio.save()
         messages.success(request, "El servicio fue cancelado correctamente.")
+        messages.info(request, "No hay devolucion de dinero al cliente. No se eliminaron facturas")
+        return redirect("gestionServicios")
+    
+    # Contratado y Eventual
+    if servicio.estado == 3 and servicio.tipo == 1:
+        facturas_impagas = Factura.objects.filter(servicio=servicio, tipo=2, formaPago__isnull=True)
+        # Ocasional
+        if cliente.tipo == 1:
+            if facturas_impagas.exists(): 
+                #Si no se pago la segunda factura unica, se elimina
+                Factura.objects.filter(servicio=servicio, tipo=2).delete()  
+                mensaje_facturas = "Se elimino la segunda factura unica correctamente."
+                mensaje_devolucion = "No hay devolucion de dinero al cliente"
+            else: 
+                # Si se pago la segunda facura unica, se devuelve dinero y elimina
+                factura_pagada = Factura.objects.filter(servicio=servicio, tipo=2).first()
+                importe = factura_pagada.getImporteFormateado()
+                factura_pagada.delete()   
+                mensaje_facturas = "Se eliminó la segunda factura única correctamente."
+                mensaje_devolucion = (f"Se realizo la devolucion de {importe} al cliente correspondiente a la factura.")
+    
+        # Habitual
+        if cliente.tipo == 2:
+            if facturas_impagas.exists(): 
+                # Si no se pago la segunda factura unica, se elimina
+                Factura.objects.filter(servicio=servicio, tipo=2).delete()  
+                mensaje_facturas = "Se elimino la factura unica correctamente."
+                mensaje_devolucion = "No hay devolucion de dinero al cliente"
+            else: 
+                # Si se pago la segunda factura unica, se devuelve dinero y elimina
+                factura_pagada = Factura.objects.filter(servicio=servicio, tipo=2).first()
+                importe = factura_pagada.getImporteFormateado()
+                factura_pagada.delete()   
+                mensaje_facturas = "Se eliminó la factura única correctamente. "
+                mensaje_devolucion = (f"Se realizo la devolucion de {importe} al cliente correspondiente a la factura.")
+        
+        # Desvincular empleados de las frecuencias del servicio
+        frecuencias = Frecuencia.objects.filter(servicio=servicio)
+        for frecuencia in frecuencias :
+            frecuencia.empleados.clear()
+    
+        # Desvincular empleados directamente del servicio
+        servicio.empleado.clear()      
+                    
+        # Si todas están pagas, cancelar
+        servicio.estado = 7
+        servicio.fecha_cancelada = hoy
+        servicio.save()
+        messages.success(request, "El servicio fue cancelado correctamente.")
+        messages.info(request, mensaje_facturas)
+        messages.info(request, mensaje_devolucion)
         return redirect("gestionServicios")
 
     # -------------------------------
     # SERVICIO DETERMINADO
     # -------------------------------
-    if cliente.tipo == 1:  # Cliente OCASIONAL
-        # Solo eliminar si NO tiene facturas restantes (impagas) y el servicio no esta contratado
-        facturas_restantes = Factura.objects.filter(
-            servicio=servicio,
-            tipo=2,
-            formaPago__isnull=True
-        )
+    # Contratado y Determinado
+    if servicio.estado == 3 and servicio.tipo == 2:
+        # Ocasional
+        if cliente.tipo == 1:
+            facturas_impagas = Factura.objects.filter(servicio=servicio, tipo=2, formaPago__isnull=True)
+            print("CONTRATADO - DETERMINADO - OCASIONAL ")
+            if facturas_impagas.exists(): 
+                #Si no se pago la segunda factura unica, se elimina
+                Factura.objects.filter(servicio=servicio, tipo=2).delete()  
+                mensaje_facturas = "Se elimino la segunda factura unica correctamente."
+                mensaje_devolucion = "No hay devolucion de dinero al cliente."         
+            else: 
+                # Si se pago la segunda facura unica, se devuelve dinero y elimina
+                factura_pagada = Factura.objects.filter(servicio=servicio, tipo=2).first()
+                importe = factura_pagada.getImporteFormateado()
+                factura_pagada.delete()   
+                mensaje_facturas = "Se eliminó la segunda factura única correctamente. "
+                mensaje_devolucion = (f"Se realizo la devolucion de {importe} al cliente correspondiente a la factura unica pagada.")
+                
+        # Habitual
+        if cliente.tipo == 2:
+            facturas_pagadas = 0
+            importe = 0
+            facturas = Factura.objects.filter(servicio=servicio, tipo=3)
+            print("CONTRATADO - DETERMINADO - HABITUAL ")
+            for factura in facturas :
+                importe = factura.importe
+                if factura.formaPago :
+                    # Esta pagada
+                    facturas_pagadas = facturas_pagadas + 1
+            # Si no se pagaron todas las facturas mensuales, se eliminan todas las facturas mensuales
+            if facturas_pagadas == 0:
+                Factura.objects.filter(servicio=servicio, tipo=3).delete()  
+                mensaje_facturas = "Se eliminaron todas las facturas mensuales correctamente."
+                mensaje_devolucion = "No hay devolucion de dinero al cliente."          
+            elif facturas_pagadas <= facturas.count(): 
+                # Si se pagaron algunas de las factuas mensuales, se devuelve la plata correspondiente y se eliminan todas las facturas
+                importe = importe * facturas_pagadas      
+                Factura.objects.filter(servicio=servicio, tipo=3).delete()   
+                mensaje_facturas = (f"Se eliminaron todas las facturas mensuales correctamente. Las facturas pagadas fueron de un total: ${facturas_pagadas}")
+                mensaje_devolucion = (f"Se realizó la devolución de ${importe:,.0f}".replace(",", ".") + " al cliente correspondiente a las facturas pagadas.")
+        
+        print("Desvincular empleados de las frecuencias del servicio")
+        # Desvincular empleados de las frecuencias del servicio
+        frecuencias = Frecuencia.objects.filter(servicio=servicio)
+        print(frecuencias)
+        for frecuencia in frecuencias :
+            frecuencia.empleados.clear()
+        
+        print("Desvincular empleados directamente del servicio")
+        # Desvincular empleados directamente del servicio
+        print(servicio.getEmpleadosAsignados())
+        servicio.empleado.clear()      
+                    
+        # Si todas están pagas, cancelar
+        servicio.estado = 7
+        servicio.fecha_cancelada = hoy
+        servicio.save()
+        messages.success(request, "El servicio fue cancelado correctamente.")
+        messages.info(request, mensaje_facturas)
+        messages.info(request, mensaje_devolucion)
+        return redirect("gestionServicios")
+    
+    # En Curso y Determinado
+    if servicio.estado == 4 and servicio.tipo == 2:
+        # Ocasional
+        if cliente.tipo == 1:
+            # Solo eliminar si NO tiene facturas restantes (impagas) y el servicio no esta contratado
+            print("EN CURSO - DETERMINADO - OCASIONAL ")
+            facturas_restantes = Factura.objects.filter(servicio=servicio, tipo=2, formaPago__isnull=True)
+
+            if facturas_restantes.exists():
+                messages.error(request, "No se puede cancelar: existen facturas restantes (impagas).")
+                return redirect("gestionServicios")  
             
-        if facturas_restantes.exists():
-            messages.error(request, "No se puede cancelar: existen facturas restantes (impagas).")
-            return redirect("gestionServicios")
+            mensaje_facturas = "No se eliminaron facturas."
+            mensaje_devolucion = "No hay devolucion de dinero al cliente." 
+        
+        # Habitual
+        elif cliente.tipo == 2:  
+            # Verificar facturas impagas hasta el mes actual
+            print("EN CURSO - DETERMINADO - HABITUAL ")
+            facturas_impagas = Factura.objects.filter(servicio=servicio, tipo=3,
+                formaPago__isnull=True,
+                periodo__lte=periodo_actual
+            )
+            if facturas_impagas.exists():
+                messages.error(request, "No se puede cancelar: existen facturas impagas hasta el mes actual.")
+                return redirect("gestionServicios")
 
-    elif cliente.tipo == 2:  # Cliente HABITUAL
-        # Verificar facturas impagas hasta el mes actual
-        facturas_impagas = Factura.objects.filter(
-            servicio=servicio,
-            tipo=3,
-            formaPago__isnull=True,
-            periodo__lte=periodo_actual
-        )
-        if facturas_impagas.exists():
-            messages.error(request, "No se puede cancelar: existen facturas impagas hasta el mes actual.")
-            return redirect("gestionServicios")
+            # Eliminar futuras facturas
+            facturas_sin_pago = Factura.objects.filter(servicio=servicio, tipo=3, periodo__gt=periodo_actual).count()
+            Factura.objects.filter(servicio=servicio, tipo=3, periodo__gt=periodo_actual).delete()
+            mensaje_facturas = (f"Se eliminaron un total de {facturas_sin_pago} facturas correspondientes a futuras facturas.")
+            mensaje_devolucion = "No hay devolucion de dinero."
 
-        # Eliminar futuras facturas
-        Factura.objects.filter(
-            servicio=servicio,
-            tipo=3,
-            periodo__gt=periodo_actual
-        ).delete()
+        print("Desvincular empleados de las frecuencias del servicio")
+        # Desvincular empleados de las frecuencias del servicio
+        frecuencias = Frecuencia.objects.filter(servicio=servicio)
+        print(frecuencias)
+        for frecuencia in frecuencias :
+            frecuencia.empleados.clear()
+            
+        print("Desvincular empleados directamente del servicio")
+        # Desvincular empleados directamente del servicio
+        print(servicio.getEmpleadosAsignados())
+        servicio.empleado.clear()
 
-    # Desvincular empleados de las frecuencias del servicio
-    #for frecuencia in servicio.frecuencias.all():
-    #    frecuencia.empleados.clear()
-
-    # Desvincular empleados directamente del servicio
-    #servicio.empleado.clear()
-
-    # -------------------------------
-    # Marcar como cancelado
-    # -------------------------------
-    servicio.estado = 7
-    servicio.fecha_cancelada = hoy
-    servicio.save()
-    messages.success(request, "El servicio fue cancelado correctamente.")
-    return redirect("gestionServicios")
+        # -------------------------------
+        # Marcar como cancelado
+        # -------------------------------
+        servicio.estado = 7
+        servicio.fecha_cancelada = hoy
+        servicio.save()
+        messages.success(request, "El servicio fue cancelado correctamente.")
+        messages.info(request, mensaje_facturas)
+        messages.info(request, mensaje_devolucion)
+        return redirect("gestionServicios")
 
 # Seccion Reclamos
 class altaReclamo(CreateView):
@@ -1573,6 +1703,7 @@ def get_fechas_asistencia(servicio):
         fecha_actual += timedelta(days=1)
     return fechas_asistencia
 
+
 class GestionAsistencia(TemplateView):
     template_name = 'asistencia/gestionAsistencia.html'
 
@@ -1587,12 +1718,12 @@ class GestionAsistencia(TemplateView):
             servicio_seleccionado = Servicio.objects.get(pk=servicio_id)
             fechas_asistencia = get_fechas_asistencia(servicio_seleccionado)
             dias_registrados_qs = Asistencia.objects.filter(servicio=servicio_seleccionado).values_list('fecha', flat=True).distinct()
-            dias_registrados = [dia for dia in dias_registrados_qs if dia in fechas_asistencia]
+            dias_registrados = sorted([dia for dia in dias_registrados_qs if dia in fechas_asistencia], reverse=True)
             dias_pendientes = [dia for dia in fechas_asistencia if dia not in dias_registrados and dia <= date.today()]
         context['servicios'] = servicios
         context['servicio_seleccionado'] = servicio_seleccionado
         context['dias_pendientes'] = sorted(dias_pendientes)
-        context['dias_registrados'] = sorted(dias_registrados)
+        context['dias_registrados'] = dias_registrados
         return context
 
     def post(self, request, servicio_id):
@@ -1615,3 +1746,28 @@ class GestionAsistencia(TemplateView):
 def detalleReclamo(request, pk):
     reclamo = Reclamo.objects.get(id=pk)
     return render(request, "reclamo/detalleReclamo.html", {"reclamo": reclamo})
+
+class HistorialAsistencia(TemplateView):
+    template_name = 'asistencia/historialAsistencia.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        servicio_id = kwargs.get('servicio_id')
+        fecha_str = kwargs.get('fecha')
+        
+        # Convertir fecha string a objeto date
+        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        
+        # Obtener servicio y asistencias filtradas
+        servicio = get_object_or_404(Servicio, pk=servicio_id)
+        asistencias = Asistencia.objects.filter(
+            servicio=servicio,
+            fecha=fecha
+        ).select_related('empleado').order_by('empleado__nombre')
+        
+        context.update({
+            'asistencias': asistencias,
+            'servicio': servicio,
+            'fecha_trabajo': fecha
+        })
+        return context

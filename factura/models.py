@@ -18,7 +18,7 @@ class Factura(models.Model):
     }
     tipo = models.PositiveIntegerField(choices=TIPOFACTURA)
     importe = models.IntegerField()
-    fechaEmision = models.DateField(auto_now=True, auto_now_add=False)
+    fechaEmision = models.DateField(auto_now=False, auto_now_add=False)
     fecha_vencimiento = models.DateField(auto_now=False, auto_now_add=False, null=True)
     periodoServicio = models.IntegerField(null=True)
     cliente = models.ForeignKey(Cliente,on_delete=models.DO_NOTHING)
