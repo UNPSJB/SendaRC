@@ -32,6 +32,10 @@
                     <span class="badge badge-cancelado align-self-start">
                       <span class="badge-with-icon">{{ servicio.getEstado }}</span>
                     </span>
+                    {% elif servicio.getEstado == 'Vencido' %}
+                    <span class="badge badge-vencido align-self-start">
+                      <span class="badge-with-icon">{{ servicio.getEstado }}</span>
+                    </span>
                     {% else %}
                     <span class="badge badge-pendiente align-self-start">
                       <span class="badge-with-icon">{{ servicio.getEstado }}</span>

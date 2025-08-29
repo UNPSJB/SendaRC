@@ -20,6 +20,8 @@ from .models import Factura, Detalle_Servicios, Detalle_Empleados
 from django.http import JsonResponse
 import logging
 import traceback
+from datetime import date
+
 
 
 @login_required
@@ -230,7 +232,15 @@ def get_facturas_ajax(request):
     """Función para manejar peticiones AJAX"""
     try:
         context = get_facturas_context(request)
-        
+        facturas = context.get('facturas', [])
+        from datetime import date
+        today = date.today()
+    
+        for factura in facturas:
+            print("get_facturas_ajax - tipo fecha_vencimiento:", type(factura.fecha_vencimiento))
+            print("get_facturas_ajax - valor fecha_vencimiento:", factura.fecha_vencimiento)
+            print("get_facturas_ajax - tipo today:", type(today))
+            print("get_facturas_ajax - valor today:", today)
         # Renderizar solo las partes que necesitan actualizarse
         try:
             stats_html = render_to_string('factura/partials/stats_section.html', context, request=request)
@@ -462,6 +472,12 @@ def detalleFactura(request, pk):
     factura = get_object_or_404(
         Factura.objects.select_related("cliente", "servicio"), pk=pk
     )
+    today = date.today()
+    
+    print("detalleFactura - tipo fecha_vencimiento:", type(factura.fecha_vencimiento))
+    print("detalleFactura - valor fecha_vencimiento:", factura.fecha_vencimiento)
+    print("detalleFactura - tipo today:", type(today))
+    print("detalleFactura - valor today:", today)
 
     # Fetch related DetalleServicio instances, if any
     detalles_servicios = Detalle_Servicios.objects.filter(factura=factura)
@@ -477,10 +493,35 @@ def detalleFactura(request, pk):
     # Fetch related DetalleEmpleado instance, if any
     detalle_empleado = Detalle_Empleados.objects.filter(factura=factura).first()
 
+    # Determinar estado de la factura
+    def get_estado_factura(factura):
+        if factura.fechaPago:
+            return {
+                'clase': 'badge-pagada',
+                'texto': 'Pagada',
+                'icono': 'check'
+            }
+        elif factura.fecha_vencimiento and factura.fecha_vencimiento < today:
+            return {
+                'clase': 'badge-vencida',
+                'texto': 'Vencida',
+                'icono': 'warning'
+            }
+        else:
+            return {
+                'clase': 'badge-pendiente',
+                'texto': 'Pendiente',
+                'icono': 'clock'
+            }
+
+    estado_factura = get_estado_factura(factura)
+
     context = {
         "factura": factura,
         "detalles_servicios": detalles_servicios,
         "detalle_empleado": detalle_empleado,
+        "estado_factura": estado_factura,
+        "today": today,  # Por si lo necesitas en el template
     }
 
     return render(request, "factura/detalleFactura.html", context)

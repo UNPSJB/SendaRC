@@ -12,20 +12,26 @@
             </div>
             <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
                 <div class="d-flex flex-wrap gap-2 justify-content-md-end">
-                    <div class="badge {% if factura.fechaPago %}badge-pagada{% else %}badge-pendiente{% endif %} d-flex align-items-center">
-                        {% if factura.fechaPago %}
+                    <div class="badge {{ estado_factura.clase }} d-flex align-items-center">
+                        {% if estado_factura.icono == "check" %}
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
-                            <span>Pagada</span>
+                        {% elif estado_factura.icono == "warning" %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
                         {% else %}
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            <span>Pendiente</span>
                         {% endif %}
+                        <span>{{ estado_factura.texto }}</span>
                     </div>
+                
                     <a href="javascript:history.back()" class="btn btn-primary btn-sm d-flex align-items-center">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
                             <polyline points="15,18 9,12 15,6"></polyline>
@@ -122,7 +128,7 @@
                                     <div class="fw-medium">
                                         {% if factura.fechaPago %}
                                             <span class="text-success">Pagada el {{factura.fechaPago|date:"d/m/Y"}}</span>
-                                        {% else %}
+                                        {% elif %}
                                             <span class="text-warning">Pendiente de pago</span>
                                         {% endif %}
                                     </div>

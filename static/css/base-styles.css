@@ -70,12 +70,13 @@
   --badge-cancelado-fg: 0 0% 98%;
   --badge-pendiente: 220 8.9% 46.1%;
   --badge-pendiente-fg: 0 0% 98%;
+  --badge-vencido: 27 96% 61%;
 
   /* Tipos de servicios */
   --badge-determinado: 82.7 78% 55.5%;
   --badge-determinado-fg: 0 0% 3.9%;
 
-  --badge-eventual: 0 90.6% 70.8%;
+  --badge-eventual: 263.5 67.4% 34.9%;
   --badge-eventual-fg: 0 0% 98%;
 
   /* Fuentes */
@@ -1439,7 +1440,7 @@ table.dataTable {
 
 /* Cancelado - Rojo */
 .badge.bg-danger,
-.badge-cancelado {
+.badge-cancelado, .badge-vencida {
   background-color: hsl(var(--badge-cancelado)) !important;
   color: hsl(var(--badge-cancelado-fg)) !important;
   border-color: hsl(var(--badge-cancelado) / 0.2) !important;
@@ -1447,10 +1448,23 @@ table.dataTable {
 }
 
 .badge.bg-danger:hover,
-.badge-cancelado:hover {
+.badge-cancelado:hover, .badge-vencida:hover {
   background-color: hsl(var(--badge-cancelado) / 0.9) !important;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px hsl(var(--badge-cancelado) / 0.2);
+}
+
+.badge-vencido {
+  background-color: hsl(27 96% 61%) !important;
+  color: hsl(var(--badge-cancelado-fg)) !important;
+  border-color: hsl(27 96% 61% / 0.2) !important;
+  box-shadow: 0 1px 2px hsl(var(27 96% 61%) / 0.1);
+}
+
+.badge-vencido:hover {
+  background-color: hsl(27 96% 61% / 0.9) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px hsl(27 96% 61% / 0.2);
 }
 
 /* Estado por defecto/pendiente - Gris */
